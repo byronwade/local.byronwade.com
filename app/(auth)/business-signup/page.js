@@ -1,4 +1,4 @@
-import businessignupForm from "@/components/auth/businessignupForm";
+import BusinessSignupForm from "@/components/auth/BusinessSignupForm";
 
 export const metadata = {
 	title: "businessfessional Signup - Thorbis",
@@ -56,11 +56,11 @@ const jsonLdData = {
 	},
 };
 
-export default function businessignup() {
+export default function BusinesSignup() {
 	return (
 		<>
 			<main>
-				<businessignupForm />
+				<BusinessSignupForm />
 				<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdData) }} />
 			</main>
 		</>

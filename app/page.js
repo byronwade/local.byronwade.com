@@ -2,15 +2,13 @@
 
 import Header from "@/components/site/Header";
 
-import SearchForm from "@/components/site/SearchForm";
-
 export const metadata = {
-	title: "Thorbis - Find businessfessional Services Easily",
-	description: "Thorbis connects customers with businessfessional service businessviders effortlessly. Post your job and get connected with the right businessfessionals.",
-	keywords: ["Thorbis", "businessfessional services", "find business", "contractors", "home imbusinessvement"],
+	title: "Thorbis - Discover and Review Local Services",
+	description: "Thorbis connects customers with local professional services effortlessly. Post your job and get connected with the right professionals. Read reviews and find the best local businesses.",
+	keywords: ["Thorbis", "professional services", "find professionals", "contractors", "home improvement", "local businesses", "reviews"],
 	openGraph: {
-		title: "Thorbis - Find businessfessional Services Easily",
-		description: "Thorbis connects customers with businessfessional service businessviders effortlessly. Post your job and get connected with the right businessfessionals.",
+		title: "Thorbis - Discover and Review Local Services",
+		description: "Thorbis connects customers with local professional services effortlessly. Post your job and get connected with the right professionals. Read reviews and find the best local businesses.",
 		url: "https://thorbis",
 		siteName: "Thorbis",
 		images: [
@@ -26,8 +24,8 @@ export const metadata = {
 	},
 	twitter: {
 		card: "summary_large_image",
-		title: "Thorbis - Find businessfessional Services Easily",
-		description: "Thorbis connects customers with businessfessional service businessviders effortlessly. Post your job and get connected with the right businessfessionals.",
+		title: "Thorbis - Discover and Review Local Services",
+		description: "Thorbis connects customers with local professional services effortlessly. Post your job and get connected with the right professionals. Read reviews and find the best local businesses.",
 		images: ["https://thorbis/twitter-image.jpg"],
 	},
 	alternates: {
@@ -44,7 +42,7 @@ export default function Home() {
 		<>
 			<Header />
 			<main>
-				<SearchForm />
+				<div>home page</div>
 				<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdData) }} />
 			</main>
 		</>
@@ -56,7 +54,7 @@ const jsonLdData = {
 	"@type": "WebSite",
 	url: "https://thorbis",
 	name: "Thorbis",
-	description: "Thorbis connects customers with businessfessional service businessviders effortlessly. Post your job and get connected with the right businessfessionals.",
+	description: "Thorbis connects customers with local professional services effortlessly. Post your job and get connected with the right professionals. Read reviews and find the best local businesses.",
 	publisher: {
 		"@type": "Organization",
 		name: "Thorbis",

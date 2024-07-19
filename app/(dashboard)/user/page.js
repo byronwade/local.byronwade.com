@@ -12,7 +12,7 @@ const features = [
 		content: (
 			<div className="p-4 text-white">
 				<p>Welcome to your new dashboard. Show</p>
-				<p>You're not receiving requests for Nationwide as there are no services added for it</p>
+				<p>You&apos;re not receiving requests for Nationwide as there are no services added for it</p>
 				<Button variant="outline" className="mt-2">
 					<Edit className="w-4 h-4 mr-2" />
 					Edit location
@@ -56,7 +56,7 @@ const features = [
 		className: "col-span-2 row-span-1",
 		content: (
 			<div className="p-4 text-white">
-				<p>You'll receive leads in these categories</p>
+				<p>You&apos;ll receive leads in these categories</p>
 				<ul className="list-disc list-inside">
 					<li>Web Design</li>
 				</ul>
@@ -69,7 +69,7 @@ const features = [
 	},
 	{
 		name: "Locations",
-		description: "You're receiving customers within",
+		description: "You&apos;re receiving customers within",
 		className: "col-span-1 row-span-1",
 		content: (
 			<div className="p-4 text-white">

@@ -29,7 +29,13 @@ const nextConfig = {
 			},
 			{
 				protocol: "https",
-				hostname: "example.com",
+				hostname: "images.unsplash.com",
+				port: "",
+				pathname: "**",
+			},
+			{
+				protocol: "https",
+				hostname: "flowbite.s3.amazonaws.com",
 				port: "",
 				pathname: "**",
 			},

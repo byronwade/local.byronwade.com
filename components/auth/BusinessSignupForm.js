@@ -45,7 +45,7 @@ const signupSchema = z.object({
 
 const leadsData = { leads: 2416 };
 
-export function businessignupForm() {
+export function BusinessSignupForm() {
 	const form = useForm({
 		resolver: zodResolver(signupSchema),
 		defaultValues: {
@@ -560,4 +560,4 @@ export function businessignupForm() {
 	);
 }
 
-export default businessignupForm;
+export default BusinessSignupForm;
