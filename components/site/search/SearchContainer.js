@@ -6,7 +6,7 @@ import BusinessInfoPanel from "@/components/site/search/BusinessInfoPanel";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import * as turf from "@turf/turf"; // Import Turf.js for GeoJSON manipulation
 import Link from "next/link";
-import { FullSearchBox } from "@/components/shared/SearchBox";
+import { FullSearchBox } from "@/components/shared/searchBox/SearchBox";
 import { ChevronLeft } from "react-feather";
 
 const SearchContainer = () => {
