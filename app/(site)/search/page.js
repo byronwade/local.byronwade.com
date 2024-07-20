@@ -1,5 +1,5 @@
 import React from "react";
-import SearchFeed from "@/components/site/search/SearchFeed";
+import SearchContainer from "@/components/site/search/SearchContainer";
 import "mapbox-gl/dist/mapbox-gl.css";
 import Script from "next/script";
 
@@ -85,7 +85,7 @@ export default function Search() {
 		<>
 			<Script data-testid="ldjson" id="json" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd, null, "\t") }} />
 			<div>
-				<SearchFeed />
+				<SearchContainer />
 			</div>
 		</>
 	);

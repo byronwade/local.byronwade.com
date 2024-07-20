@@ -6,10 +6,10 @@ import BusinessInfoPanel from "@/components/site/search/BusinessInfoPanel";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import * as turf from "@turf/turf"; // Import Turf.js for GeoJSON manipulation
 import Link from "next/link";
-import SearchBox from "@/components/shared/SearchBox";
+import { FullSearchBox } from "@/components/shared/SearchBox";
 import { ChevronLeft } from "react-feather";
 
-const SearchFeed = () => {
+const SearchContainer = () => {
 	const [businesses, setBusinesses] = useState([
 		{
 			id: 1,
@@ -232,7 +232,7 @@ const SearchFeed = () => {
 						</Link>
 					</header>
 					<div className="w-full px-4 pt-4">
-						<SearchBox />
+						<FullSearchBox />
 					</div>
 					<div className="w-full">
 						<div className="px-4 mb-4">
@@ -254,4 +254,4 @@ const SearchFeed = () => {
 	);
 };
 
-export default SearchFeed;
+export default SearchContainer;

@@ -102,7 +102,9 @@ export function UserSignupForm() {
 											name="firstName"
 											render={({ field }) => (
 												<FormItem className="flex-1">
-													<FormLabel>First Name</FormLabel>
+													<FormLabel>
+														First Name <span className="text-red-500">*</span>
+													</FormLabel>
 													<FormControl>
 														<Input {...field} placeholder="First Name" className={getValidationClass("firstName")} />
 													</FormControl>
@@ -115,7 +117,9 @@ export function UserSignupForm() {
 											name="lastName"
 											render={({ field }) => (
 												<FormItem className="flex-1">
-													<FormLabel>Last Name</FormLabel>
+													<FormLabel>
+														Last Name <span className="text-red-500">*</span>
+													</FormLabel>
 													<FormControl>
 														<Input {...field} placeholder="Last Name" className={getValidationClass("lastName")} />
 													</FormControl>
@@ -129,7 +133,9 @@ export function UserSignupForm() {
 										name="phoneNumber"
 										render={({ field }) => (
 											<FormItem>
-												<FormLabel>Mobile Number</FormLabel>
+												<FormLabel>
+													Mobile Number <span className="text-red-500">*</span>
+												</FormLabel>
 												<FormControl>
 													<Input {...field} placeholder="xxx-xxx-xxxx" className={getValidationClass("phoneNumber")} />
 												</FormControl>
@@ -146,7 +152,9 @@ export function UserSignupForm() {
 										name="email"
 										render={({ field }) => (
 											<FormItem>
-												<FormLabel>Email</FormLabel>
+												<FormLabel>
+													Email <span className="text-red-500">*</span>
+												</FormLabel>
 												<FormControl>
 													<Input {...field} placeholder="Email" className={getValidationClass("email")} />
 												</FormControl>
@@ -159,7 +167,9 @@ export function UserSignupForm() {
 										name="address.street"
 										render={({ field }) => (
 											<FormItem>
-												<FormLabel>Street</FormLabel>
+												<FormLabel>
+													Street <span className="text-red-500">*</span>
+												</FormLabel>
 												<FormControl>
 													<Input {...field} placeholder="Street" className={getValidationClass("address.street")} />
 												</FormControl>
@@ -172,7 +182,9 @@ export function UserSignupForm() {
 										name="address.city"
 										render={({ field }) => (
 											<FormItem>
-												<FormLabel>City</FormLabel>
+												<FormLabel>
+													City <span className="text-red-500">*</span>
+												</FormLabel>
 												<FormControl>
 													<Input {...field} placeholder="City" className={getValidationClass("address.city")} />
 												</FormControl>
@@ -185,7 +197,9 @@ export function UserSignupForm() {
 										name="address.state"
 										render={({ field }) => (
 											<FormItem>
-												<FormLabel>State</FormLabel>
+												<FormLabel>
+													State <span className="text-red-500">*</span>
+												</FormLabel>
 												<FormControl>
 													<Input {...field} placeholder="State" className={getValidationClass("address.state")} />
 												</FormControl>
@@ -198,7 +212,9 @@ export function UserSignupForm() {
 										name="address.zip"
 										render={({ field }) => (
 											<FormItem>
-												<FormLabel>ZIP Code</FormLabel>
+												<FormLabel>
+													ZIP Code <span className="text-red-500">*</span>
+												</FormLabel>
 												<FormControl>
 													<Input {...field} placeholder="ZIP Code" className={getValidationClass("address.zip")} />
 												</FormControl>

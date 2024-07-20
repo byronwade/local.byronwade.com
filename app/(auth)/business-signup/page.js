@@ -1,20 +1,21 @@
 import BusinessSignupForm from "@/components/auth/BusinessSignupForm";
 
+// SEO metadata for the page
 export const metadata = {
-	title: "businessfessional Signup - Thorbis",
-	description: "Join Thorbis as a contractor or service businessvider to find job leads and connect with potential customers.",
-	keywords: ["Thorbis", "businessfessional signup", "contractors", "service businessviders", "job leads", "home imbusinessvement"],
+	title: "Business Professional Signup - Thorbis",
+	description: "Join Thorbis as a contractor or service business provider to find job leads and connect with potential customers.",
+	keywords: ["Thorbis", "business professional signup", "contractors", "service business providers", "job leads", "home improvement"],
 	openGraph: {
-		title: "businessfessional Signup - Thorbis",
-		description: "Join Thorbis as a contractor or service businessvider to find job leads and connect with potential customers.",
-		url: "https://thorbis/business-signup",
+		title: "Business Professional Signup - Thorbis",
+		description: "Join Thorbis as a contractor or service business provider to find job leads and connect with potential customers.",
+		url: "https://thorbis.com/business-signup",
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://thorbis/og-business-signup.jpg",
+				url: "https://thorbis.com/og-business-signup.jpg",
 				width: 800,
 				height: 600,
-				alt: "businessfessional Signup at Thorbis",
+				alt: "Business Professional Signup at Thorbis",
 			},
 		],
 		locale: "en_US",
@@ -22,41 +23,41 @@ export const metadata = {
 	},
 	twitter: {
 		card: "summary_large_image",
-		title: "businessfessional Signup - Thorbis",
-		description: "Join Thorbis as a contractor or service businessvider to find job leads and connect with potential customers.",
-		images: ["https://thorbis/twitter-business-signup.jpg"],
+		title: "Business Professional Signup - Thorbis",
+		description: "Join Thorbis as a contractor or service business provider to find job leads and connect with potential customers.",
+		images: ["https://thorbis.com/twitter-business-signup.jpg"],
 	},
 	alternates: {
-		canonical: "https://thorbis/business-signup",
+		canonical: "https://thorbis.com/business-signup",
 		languages: {
-			"en-US": "https://thorbis/en-US/business-signup",
-			"es-ES": "https://thorbis/es-ES/business-signup",
+			"en-US": "https://thorbis.com/en-US/business-signup",
+			"es-ES": "https://thorbis.com/es-ES/business-signup",
 		},
 	},
 };
 
 const jsonLdData = {
 	"@context": "http://schema.org",
-	"@type": "WebSite",
-	url: "https://thorbis/business-signup",
-	name: "Thorbis",
-	description: "Join Thorbis as a contractor or service businessvider to find job leads and connect with potential customers.",
+	"@type": "WebPage",
+	url: "https://thorbis.com/business-signup",
+	name: "Thorbis Business Professional Signup",
+	description: "Join Thorbis as a contractor or service business provider to find job leads and connect with potential customers.",
 	publisher: {
 		"@type": "Organization",
 		name: "Thorbis",
 		logo: {
 			"@type": "ImageObject",
-			url: "https://thorbis/logo.png",
+			url: "https://thorbis.com/logo.png",
 		},
 	},
 	potentialAction: {
 		"@type": "SearchAction",
-		target: "https://thorbis/search?q={search_term_string}",
+		target: "https://thorbis.com/search?q={search_term_string}",
 		"query-input": "required name=search_term_string",
 	},
 };
 
-export default function BusinesSignup() {
+export default function BusinessSignup() {
 	return (
 		<>
 			<main>

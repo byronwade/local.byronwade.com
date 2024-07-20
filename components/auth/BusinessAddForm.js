@@ -7,7 +7,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Slider } from "@/components/ui/slider";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -16,10 +15,11 @@ import Link from "next/link";
 const services = [
 	{ value: "plumbing", label: "Plumbing" },
 	{ value: "water_heater_installation", label: "Water Heater Installation" },
+	// Add more services as needed
 ];
 
 const phoneNumberSchema = z.string().regex(/^(\+1|1)?\s*\-?\s*(\([2-9][0-9]{2}\)|[2-9][0-9]{2})\s*\-?\s*[2-9][0-9]{2}\s*\-?\s*[0-9]{4}$/, { message: "Invalid phone number" });
-const einSchema = z.string().regex(/^\d{2}-\d{7}$/, { message: "Invalid EIN format. Must be XX-XXXXXXX." });
+const websiteSchema = z.string().url({ message: "Invalid URL" }).optional();
 
 const addressSchema = z.object({
 	street: z.string().nonempty({ message: "Street is required" }),
@@ -28,39 +28,38 @@ const addressSchema = z.object({
 	zip: z.string().regex(/^\d{5}$/, { message: "Invalid ZIP code. Must be 5 digits." }),
 });
 
-const signupSchema = z.object({
-	firstName: z.string().nonempty({ message: "First name is required" }),
-	lastName: z.string().nonempty({ message: "Last name is required" }),
+const submissionSchema = z.object({
 	businessName: z.string().nonempty({ message: "Business name is required" }),
-	service: z.string().nonempty({ message: "Service is required" }),
-	phoneNumber: phoneNumberSchema,
+	service: z.string().optional(),
 	businessPhoneNumber: phoneNumberSchema,
-	email: z.string().email({ message: "Invalid email address" }),
+	email: z.string().email({ message: "Invalid email address" }).optional(),
+	website: websiteSchema,
 	address: addressSchema,
-	ein: einSchema,
-	serviceArea: z.number().min(1, { message: "Service area must be at least 1 mile" }).max(100, { message: "Service area can't exceed 100 miles" }),
-	proofOfOwnership: z.array(z.any()).refine((files) => files.length > 0, { message: "Proof of ownership is required" }),
-	insurance: z.array(z.any()).refine((files) => files.length > 0, { message: "Company insurance is required" }),
+	hoursOfOperation: z.string().optional(),
+	socialMediaLinks: z
+		.object({
+			facebook: websiteSchema,
+			twitter: websiteSchema,
+			instagram: websiteSchema,
+			linkedin: websiteSchema,
+		})
+		.optional(),
 });
 
 const leadsData = { leads: 2416 };
 
-export function BusinessSignupForm() {
+export function BusinessSubmissionForm() {
 	const form = useForm({
-		resolver: zodResolver(signupSchema),
+		resolver: zodResolver(submissionSchema),
 		defaultValues: {
-			firstName: "",
-			lastName: "",
 			businessName: "",
 			service: "",
-			phoneNumber: "",
 			businessPhoneNumber: "",
 			email: "",
+			website: "",
 			address: { street: "", city: "", state: "", zip: "" },
-			ein: "",
-			serviceArea: 50,
-			proofOfOwnership: [],
-			insurance: [],
+			hoursOfOperation: "",
+			socialMediaLinks: { facebook: "", twitter: "", instagram: "", linkedin: "" },
 		},
 	});
 
@@ -69,21 +68,20 @@ export function BusinessSignupForm() {
 	const handleNext = async () => {
 		const valid = await form.trigger(
 			[
-				currentStep === 0 ? "firstName" : "",
-				currentStep === 0 ? "lastName" : "",
-				currentStep === 0 ? "phoneNumber" : "",
-				currentStep === 1 ? "businessName" : "",
-				currentStep === 1 ? "service" : "",
-				currentStep === 1 ? "businessPhoneNumber" : "",
-				currentStep === 1 ? "email" : "",
+				currentStep === 0 ? "businessName" : "",
+				currentStep === 0 ? "service" : "",
+				currentStep === 0 ? "businessPhoneNumber" : "",
+				currentStep === 0 ? "email" : "",
+				currentStep === 0 ? "website" : "",
 				currentStep === 1 ? "address.street" : "",
 				currentStep === 1 ? "address.city" : "",
 				currentStep === 1 ? "address.state" : "",
 				currentStep === 1 ? "address.zip" : "",
-				currentStep === 1 ? "ein" : "",
-				currentStep === 1 ? "serviceArea" : "",
-				currentStep === 2 ? "proofOfOwnership" : "",
-				currentStep === 2 ? "insurance" : "",
+				currentStep === 2 ? "hoursOfOperation" : "",
+				currentStep === 2 ? "socialMediaLinks.facebook" : "",
+				currentStep === 2 ? "socialMediaLinks.twitter" : "",
+				currentStep === 2 ? "socialMediaLinks.instagram" : "",
+				currentStep === 2 ? "socialMediaLinks.linkedin" : "",
 			].filter(Boolean)
 		);
 		if (valid) {
@@ -95,9 +93,9 @@ export function BusinessSignupForm() {
 		setCurrentStep((prev) => Math.max(prev - 1, 0));
 	};
 
-	const handleSignup = async (values) => {
-		console.log("Signup values:", values);
-		// Add your signup logic here
+	const handleSubmission = async (values) => {
+		console.log("Submission values:", values);
+		// Add your submission logic here
 	};
 
 	const {
@@ -106,13 +104,12 @@ export function BusinessSignupForm() {
 		formState: { errors, touchedFields },
 	} = form;
 
-	const watchFields = watch(["firstName", "lastName", "businessName", "service", "phoneNumber", "businessPhoneNumber", "email", "address.street", "address.city", "address.state", "address.zip", "ein", "serviceArea", "proofOfOwnership", "insurance"]);
+	const watchFields = watch(["businessName", "service", "businessPhoneNumber", "email", "website", "address.street", "address.city", "address.state", "address.zip", "hoursOfOperation", "socialMediaLinks.facebook", "socialMediaLinks.twitter", "socialMediaLinks.instagram", "socialMediaLinks.linkedin"]);
 
-	const isStep0Valid = watchFields[0] && watchFields[1] && watchFields[4];
-	const isStep1Valid = watchFields[2] && watchFields[3] && watchFields[5] && watchFields[6] && watchFields[7] && watchFields[8] && watchFields[9] && watchFields[10] && watchFields[11];
-	const isStep2Valid = watchFields[12] && watchFields[13];
+	const isStep0Valid = watchFields[0] && watchFields[2];
+	const isStep1Valid = watchFields[5] && watchFields[6] && watchFields[7] && watchFields[8];
 
-	const progress = ((currentStep + 1) / 4) * 100;
+	const progress = ((currentStep + 1) / 3) * 100;
 
 	const getValidationClass = (fieldName) => {
 		if (errors[fieldName]) {
@@ -128,8 +125,8 @@ export function BusinessSignupForm() {
 		<div className="max-w-lg mx-auto mt-6 md:mt-10">
 			<div>
 				<div className="text-center">
-					<h2 className="text-3xl font-bold">Let&apos;s sign you up</h2>
-					<p className="text-muted-foreground">{leadsData.leads} leads looking for business like you last month.</p>
+					<h2 className="text-3xl font-bold">Submit Your Business</h2>
+					<p className="text-muted-foreground">{leadsData.leads} leads looking for businesses like yours last month.</p>
 				</div>
 				<div className="mt-4">
 					<h3 className="mb-1 text-sm">Form Progress</h3>
@@ -137,59 +134,8 @@ export function BusinessSignupForm() {
 				</div>
 				<div>
 					<Form {...form}>
-						<form onSubmit={form.handleSubmit(handleSignup)} className="space-y-4">
+						<form onSubmit={form.handleSubmit(handleSubmission)} className="space-y-4">
 							{currentStep === 0 && (
-								<div className="space-y-4">
-									<div className="flex space-x-4">
-										<FormField
-											control={form.control}
-											name="firstName"
-											render={({ field }) => (
-												<FormItem className="flex-1">
-													<FormLabel>
-														First Name <span className="text-red-500">*</span>
-													</FormLabel>
-													<FormControl>
-														<Input {...field} placeholder="First Name" className={getValidationClass("firstName")} />
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										<FormField
-											control={form.control}
-											name="lastName"
-											render={({ field }) => (
-												<FormItem className="flex-1">
-													<FormLabel>
-														Last Name <span className="text-red-500">*</span>
-													</FormLabel>
-													<FormControl>
-														<Input {...field} placeholder="Last Name" className={getValidationClass("lastName")} />
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-									</div>
-									<FormField
-										control={form.control}
-										name="phoneNumber"
-										render={({ field }) => (
-											<FormItem>
-												<FormLabel>
-													Mobile Number <span className="text-red-500">*</span>
-												</FormLabel>
-												<FormControl>
-													<Input {...field} placeholder="xxx-xxx-xxxx" className={getValidationClass("phoneNumber")} />
-												</FormControl>
-												<FormMessage />
-											</FormItem>
-										)}
-									/>
-								</div>
-							)}
-							{currentStep === 1 && (
 								<div className="space-y-4">
 									<FormField
 										control={form.control}
@@ -211,9 +157,7 @@ export function BusinessSignupForm() {
 										name="service"
 										render={({ field }) => (
 											<FormItem>
-												<FormLabel>
-													Service Offered <span className="text-red-500">*</span>
-												</FormLabel>
+												<FormLabel>Service Offered</FormLabel>
 												<Select onValueChange={field.onChange} defaultValue={field.value}>
 													<FormControl>
 														<SelectTrigger className="w-full">
@@ -252,9 +196,7 @@ export function BusinessSignupForm() {
 										name="email"
 										render={({ field }) => (
 											<FormItem>
-												<FormLabel>
-													Email <span className="text-red-500">*</span>
-												</FormLabel>
+												<FormLabel>Email</FormLabel>
 												<FormControl>
 													<Input {...field} placeholder="Email" className={getValidationClass("email")} />
 												</FormControl>
@@ -262,6 +204,23 @@ export function BusinessSignupForm() {
 											</FormItem>
 										)}
 									/>
+									<FormField
+										control={form.control}
+										name="website"
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>Website</FormLabel>
+												<FormControl>
+													<Input {...field} placeholder="https://yourwebsite.com" className={getValidationClass("website")} />
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+								</div>
+							)}
+							{currentStep === 1 && (
+								<div className="space-y-4">
 									<FormField
 										control={form.control}
 										name="address.street"
@@ -322,51 +281,18 @@ export function BusinessSignupForm() {
 											</FormItem>
 										)}
 									/>
-									<FormField
-										control={form.control}
-										name="ein"
-										render={({ field }) => (
-											<FormItem>
-												<FormLabel>
-													EIN <span className="text-red-500">*</span>
-												</FormLabel>
-												<FormControl>
-													<Input {...field} placeholder="XX-XXXXXXX" className={getValidationClass("ein")} />
-												</FormControl>
-												<FormMessage />
-											</FormItem>
-										)}
-									/>
-									<FormField
-										control={form.control}
-										name="serviceArea"
-										render={({ field }) => (
-											<FormItem>
-												<FormLabel>
-													Service Area (miles) <span className="text-red-500">*</span>
-												</FormLabel>
-												<FormControl>
-													<Slider defaultValue={[50]} max={100} step={1} value={[field.value]} onValueChange={(val) => field.onChange(val[0])} className="w-full" />
-												</FormControl>
-												<FormMessage />
-												<div className="mt-2 text-center">Service area from your business location: {field.value} miles</div>
-											</FormItem>
-										)}
-									/>
 								</div>
 							)}
 							{currentStep === 2 && (
 								<div className="space-y-4">
 									<FormField
 										control={form.control}
-										name="proofOfOwnership"
+										name="hoursOfOperation"
 										render={({ field }) => (
 											<FormItem>
-												<FormLabel>
-													Proof of Company Ownership <span className="text-red-500">*</span>
-												</FormLabel>
+												<FormLabel>Hours of Operation</FormLabel>
 												<FormControl>
-													<Input type="file" onChange={(e) => form.setValue("proofOfOwnership", Array.from(e.target.files))} className={getValidationClass("proofOfOwnership")} />
+													<Input {...field} placeholder="e.g., Mon-Fri: 9am - 5pm" className={getValidationClass("hoursOfOperation")} />
 												</FormControl>
 												<FormMessage />
 											</FormItem>
@@ -374,14 +300,51 @@ export function BusinessSignupForm() {
 									/>
 									<FormField
 										control={form.control}
-										name="insurance"
+										name="socialMediaLinks.facebook"
 										render={({ field }) => (
 											<FormItem>
-												<FormLabel>
-													Company Insurance <span className="text-red-500">*</span>
-												</FormLabel>
+												<FormLabel>Facebook</FormLabel>
 												<FormControl>
-													<Input type="file" onChange={(e) => form.setValue("insurance", Array.from(e.target.files))} className={getValidationClass("insurance")} />
+													<Input {...field} placeholder="https://facebook.com/yourpage" className={getValidationClass("socialMediaLinks.facebook")} />
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+									<FormField
+										control={form.control}
+										name="socialMediaLinks.twitter"
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>Twitter</FormLabel>
+												<FormControl>
+													<Input {...field} placeholder="https://twitter.com/yourhandle" className={getValidationClass("socialMediaLinks.twitter")} />
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+									<FormField
+										control={form.control}
+										name="socialMediaLinks.instagram"
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>Instagram</FormLabel>
+												<FormControl>
+													<Input {...field} placeholder="https://instagram.com/yourhandle" className={getValidationClass("socialMediaLinks.instagram")} />
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+									<FormField
+										control={form.control}
+										name="socialMediaLinks.linkedin"
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>LinkedIn</FormLabel>
+												<FormControl>
+													<Input {...field} placeholder="https://linkedin.com/company/yourpage" className={getValidationClass("socialMediaLinks.linkedin")} />
 												</FormControl>
 												<FormMessage />
 											</FormItem>
@@ -396,7 +359,7 @@ export function BusinessSignupForm() {
 									<div className="grid grid-cols-3 gap-4 text-sm">
 										<div className="flex items-center col-span-2">
 											<div>
-												<span className="block font-semibold">First Name:</span>
+												<span className="block font-semibold">Business Name:</span>
 												<span>{watchFields[0]}</span>
 											</div>
 										</div>
@@ -407,8 +370,8 @@ export function BusinessSignupForm() {
 										</div>
 										<div className="flex items-center col-span-2">
 											<div>
-												<span className="block font-semibold">Last Name:</span>
-												<span>{watchFields[1]}</span>
+												<span className="block font-semibold">Service Offered:</span>
+												<span>{services.find((service) => service.value === watchFields[1])?.label}</span>
 											</div>
 										</div>
 										<div className="flex items-center justify-end">
@@ -418,7 +381,29 @@ export function BusinessSignupForm() {
 										</div>
 										<div className="flex items-center col-span-2">
 											<div>
-												<span className="block font-semibold">Mobile Number:</span>
+												<span className="block font-semibold">Business Phone Number:</span>
+												<span>{watchFields[2]}</span>
+											</div>
+										</div>
+										<div className="flex items-center justify-end">
+											<Button variant="link" size="sm" onClick={() => setCurrentStep(0)}>
+												Edit
+											</Button>
+										</div>
+										<div className="flex items-center col-span-2">
+											<div>
+												<span className="block font-semibold">Email:</span>
+												<span>{watchFields[3]}</span>
+											</div>
+										</div>
+										<div className="flex items-center justify-end">
+											<Button variant="link" size="sm" onClick={() => setCurrentStep(0)}>
+												Edit
+											</Button>
+										</div>
+										<div className="flex items-center col-span-2">
+											<div>
+												<span className="block font-semibold">Website:</span>
 												<span>{watchFields[4]}</span>
 											</div>
 										</div>
@@ -429,52 +414,8 @@ export function BusinessSignupForm() {
 										</div>
 										<div className="flex items-center col-span-2">
 											<div>
-												<span className="block font-semibold">Business Name:</span>
-												<span>{watchFields[2]}</span>
-											</div>
-										</div>
-										<div className="flex items-center justify-end">
-											<Button variant="link" size="sm" onClick={() => setCurrentStep(1)}>
-												Edit
-											</Button>
-										</div>
-										<div className="flex items-center col-span-2">
-											<div>
-												<span className="block font-semibold">Service Offered:</span>
-												<span>{services.find((service) => service.value === watchFields[3])?.label}</span>
-											</div>
-										</div>
-										<div className="flex items-center justify-end">
-											<Button variant="link" size="sm" onClick={() => setCurrentStep(1)}>
-												Edit
-											</Button>
-										</div>
-										<div className="flex items-center col-span-2">
-											<div>
-												<span className="block font-semibold">Business Phone Number:</span>
-												<span>{watchFields[5]}</span>
-											</div>
-										</div>
-										<div className="flex items-center justify-end">
-											<Button variant="link" size="sm" onClick={() => setCurrentStep(1)}>
-												Edit
-											</Button>
-										</div>
-										<div className="flex items-center col-span-2">
-											<div>
-												<span className="block font-semibold">Email:</span>
-												<span>{watchFields[6]}</span>
-											</div>
-										</div>
-										<div className="flex items-center justify-end">
-											<Button variant="link" size="sm" onClick={() => setCurrentStep(1)}>
-												Edit
-											</Button>
-										</div>
-										<div className="flex items-center col-span-2">
-											<div>
 												<span className="block font-semibold">Address:</span>
-												<span>{`${watchFields[7] || ""}, ${watchFields[8] || ""}, ${watchFields[9] || ""} ${watchFields[10] || ""}`}</span>
+												<span>{`${watchFields[5] || ""}, ${watchFields[6] || ""}, ${watchFields[7] || ""} ${watchFields[8] || ""}`}</span>
 											</div>
 										</div>
 										<div className="flex items-center justify-end">
@@ -484,30 +425,8 @@ export function BusinessSignupForm() {
 										</div>
 										<div className="flex items-center col-span-2">
 											<div>
-												<span className="block font-semibold">EIN:</span>
-												<span>{watchFields[11]}</span>
-											</div>
-										</div>
-										<div className="flex items-center justify-end">
-											<Button variant="link" size="sm" onClick={() => setCurrentStep(1)}>
-												Edit
-											</Button>
-										</div>
-										<div className="flex items-center col-span-2">
-											<div>
-												<span className="block font-semibold">Service Area:</span>
-												<span>{watchFields[12]} miles</span>
-											</div>
-										</div>
-										<div className="flex items-center justify-end">
-											<Button variant="link" size="sm" onClick={() => setCurrentStep(1)}>
-												Edit
-											</Button>
-										</div>
-										<div className="flex items-center col-span-2">
-											<div>
-												<span className="block font-semibold">Proof of Company Ownership:</span>
-												<span>{watchFields[13]?.[0]?.name}</span>
+												<span className="block font-semibold">Hours of Operation:</span>
+												<span>{watchFields[9]}</span>
 											</div>
 										</div>
 										<div className="flex items-center justify-end">
@@ -517,8 +436,41 @@ export function BusinessSignupForm() {
 										</div>
 										<div className="flex items-center col-span-2">
 											<div>
-												<span className="block font-semibold">Company Insurance:</span>
-												<span>{watchFields[14]?.[0]?.name}</span>
+												<span className="block font-semibold">Facebook:</span>
+												<span>{watchFields[10]}</span>
+											</div>
+										</div>
+										<div className="flex items-center justify-end">
+											<Button variant="link" size="sm" onClick={() => setCurrentStep(2)}>
+												Edit
+											</Button>
+										</div>
+										<div className="flex items-center col-span-2">
+											<div>
+												<span className="block font-semibold">Twitter:</span>
+												<span>{watchFields[11]}</span>
+											</div>
+										</div>
+										<div className="flex items-center justify-end">
+											<Button variant="link" size="sm" onClick={() => setCurrentStep(2)}>
+												Edit
+											</Button>
+										</div>
+										<div className="flex items-center col-span-2">
+											<div>
+												<span className="block font-semibold">Instagram:</span>
+												<span>{watchFields[12]}</span>
+											</div>
+										</div>
+										<div className="flex items-center justify-end">
+											<Button variant="link" size="sm" onClick={() => setCurrentStep(2)}>
+												Edit
+											</Button>
+										</div>
+										<div className="flex items-center col-span-2">
+											<div>
+												<span className="block font-semibold">LinkedIn:</span>
+												<span>{watchFields[13]}</span>
 											</div>
 										</div>
 										<div className="flex items-center justify-end">
@@ -544,21 +496,20 @@ export function BusinessSignupForm() {
 										onClick={async () => {
 											const valid = await form.trigger(
 												[
-													currentStep === 0 ? "firstName" : "",
-													currentStep === 0 ? "lastName" : "",
-													currentStep === 0 ? "phoneNumber" : "",
-													currentStep === 1 ? "businessName" : "",
-													currentStep === 1 ? "service" : "",
-													currentStep === 1 ? "businessPhoneNumber" : "",
-													currentStep === 1 ? "email" : "",
+													currentStep === 0 ? "businessName" : "",
+													currentStep === 0 ? "service" : "",
+													currentStep === 0 ? "businessPhoneNumber" : "",
+													currentStep === 0 ? "email" : "",
+													currentStep === 0 ? "website" : "",
 													currentStep === 1 ? "address.street" : "",
 													currentStep === 1 ? "address.city" : "",
 													currentStep === 1 ? "address.state" : "",
 													currentStep === 1 ? "address.zip" : "",
-													currentStep === 1 ? "ein" : "",
-													currentStep === 1 ? "serviceArea" : "",
-													currentStep === 2 ? "proofOfOwnership" : "",
-													currentStep === 2 ? "insurance" : "",
+													currentStep === 2 ? "hoursOfOperation" : "",
+													currentStep === 2 ? "socialMediaLinks.facebook" : "",
+													currentStep === 2 ? "socialMediaLinks.twitter" : "",
+													currentStep === 2 ? "socialMediaLinks.instagram" : "",
+													currentStep === 2 ? "socialMediaLinks.linkedin" : "",
 												].filter(Boolean)
 											);
 											if (valid) {
@@ -566,7 +517,7 @@ export function BusinessSignupForm() {
 											}
 										}}
 										className="w-full bg-brand"
-										disabled={(currentStep === 0 && !isStep0Valid) || (currentStep === 1 && !isStep1Valid) || (currentStep === 2 && !isStep2Valid)}
+										disabled={(currentStep === 0 && !isStep0Valid) || (currentStep === 1 && !isStep1Valid)}
 									>
 										Next
 									</Button>
@@ -590,4 +541,4 @@ export function BusinessSignupForm() {
 	);
 }
 
-export default BusinessSignupForm;
+export default BusinessSubmissionForm;

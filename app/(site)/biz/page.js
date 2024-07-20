@@ -98,7 +98,7 @@ export default function BizProfile() {
 							<TabsList className="relative flex gap-2">
 								<div className="relative">
 									<TabsTrigger value="home">Home</TabsTrigger>
-									<Badge className="absolute -top-2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-brand text-white text-[9px] py-[1px] whitespace-nowrap">Beta</Badge>
+									<Badge className="absolute -top-2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-purple-500 text-white text-[9px] py-[1px] whitespace-nowrap">Beta</Badge>
 								</div>
 								<div className="relative">
 									<TabsTrigger value="about-us">About Us</TabsTrigger>
@@ -108,7 +108,7 @@ export default function BizProfile() {
 								</div>
 								<div className="relative">
 									<TabsTrigger value="reviews">Reviews</TabsTrigger>
-									<Badge className="absolute -top-2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-brand text-white text-[9px] py-[1px] whitespace-nowrap">Beta</Badge>
+									<Badge className="absolute -top-2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-purple-500 text-white text-[9px] py-[1px] whitespace-nowrap">Beta</Badge>
 								</div>
 								<div className="relative">
 									<TabsTrigger value="photos">Photos</TabsTrigger>

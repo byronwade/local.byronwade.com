@@ -78,7 +78,7 @@ const MapContainer = ({ businesses, coordinates, activeMarker, handleMarkerClick
 			<Button className="absolute bottom-4 right-4 inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow py-2 z-50 h-[calc(theme(spacing.7)_-_1px)] gap-1 rounded-[6px] bg-black px-3 text-xs text-white hover:bg-black hover:text-white dark:bg-white dark:text-black">
 				<BuildingStorefrontIcon className="w-3 h-3 mr-2" />
 				<span>Can&apos;t find the business?</span>
-				<Link className="font-bold text-brand" href="/add-buiseness">
+				<Link className="font-bold text-brand" href="/add-a-business">
 					Add it here
 				</Link>
 			</Button>

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Circle, Clock, Info } from "react-feather";
 import { StarFilledIcon } from "@radix-ui/react-icons";
+import Link from "next/link";
 
 const BusinessCard = ({ business, onClick, isActive }) => {
 	return (
@@ -44,9 +45,11 @@ const BusinessCard = ({ business, onClick, isActive }) => {
 							Ratings
 							<ChevronDown className="w-4 h-4 text-secondary-foreground" />
 						</Button> */}
-						<Button className="flex items-center justify-center h-8 gap-2 px-2 py-2 text-sm font-medium transition-colors bg-gray-800 rounded-md select-none shrink-0 whitespace-nowrap focus-visible:outline-none focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 focus-visible:bg-gray-800 focus-visible:ring-0 hover:bg-gray-700/70 text-white/70 focus-within:bg-gray-700 hover:text-white sm:px-3" type="button">
-							View Profile
-						</Button>
+						<Link href={`/biz/${business.id}`} passHref legacyBehavior>
+							<a target="_blank" className="flex items-center justify-center h-8 gap-2 px-2 py-2 text-sm font-medium transition-colors bg-gray-800 rounded-md select-none shrink-0 whitespace-nowrap focus-visible:outline-none focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 focus-visible:bg-gray-800 focus-visible:ring-0 hover:bg-gray-700/70 text-white/70 focus-within:bg-gray-700 hover:text-white sm:px-3" type="button">
+								View Profile
+							</a>
+						</Link>
 					</div>
 				</div>
 				<div className="p-6 pt-0">

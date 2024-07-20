@@ -48,7 +48,7 @@ export default function PublicHeader() {
 					<NavigationMenuList>
 						<NavigationMenuItem>
 							<NavigationMenuTrigger>Businesses</NavigationMenuTrigger>
-							<NavigationMenuContent>
+							<NavigationMenuContent className="bg-black">
 								<ul className="grid gap-3 p-2 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
 									{components.map((component) => (
 										<ListItem key={component.title} title={component.title} href={component.href}>
