@@ -1,8 +1,9 @@
 "use client";
 
 import React from "react";
+import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import SearchBar from "@/components/site/SearchBar";
+// import SearchBar from "@/components/site/SearchBar";
 import Link from "next/link";
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
 
@@ -30,6 +31,13 @@ const components = [
 ];
 
 export default function PublicHeader() {
+	const pathname = usePathname();
+
+	// Check if the current route is /search
+	if (pathname === "/search") {
+		return null;
+	}
+
 	return (
 		<header className="sticky top-0 z-50 flex items-center justify-between h-16 px-4 mx-auto bg-black">
 			<div className="flex items-center space-x-4">
@@ -39,7 +47,7 @@ export default function PublicHeader() {
 				<NavigationMenu>
 					<NavigationMenuList>
 						<NavigationMenuItem>
-							<NavigationMenuTrigger>Buisnesses</NavigationMenuTrigger>
+							<NavigationMenuTrigger>Businesses</NavigationMenuTrigger>
 							<NavigationMenuContent>
 								<ul className="grid gap-3 p-2 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
 									{components.map((component) => (
@@ -68,7 +76,7 @@ export default function PublicHeader() {
 					</NavigationMenuList>
 				</NavigationMenu>
 			</div>
-			<SearchBar className="flex-1 mx-4" />
+			{/* <SearchBar className="flex-1 mx-4" /> */}
 			<div className="flex items-center space-x-2">
 				<Button variant="link" className="hidden md:inline-block hover:no-underline hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50" asChild>
 					<Link href="/business-signup">For Businesses</Link>

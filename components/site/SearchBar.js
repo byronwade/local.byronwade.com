@@ -34,7 +34,6 @@ export default function SearchBar() {
 	const [suggestions, setSuggestions] = useState([]);
 	const [userLocation, setUserLocation] = useState("");
 	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState("");
 
 	useEffect(() => {
 		// Fetch user's location
@@ -57,12 +56,11 @@ export default function SearchBar() {
 						})
 						.catch((error) => {
 							console.error("Error fetching location:", error);
-							setError("Failed to fetch location.");
 							setLoading(false);
 						});
 				},
 				() => {
-					setError("Location access denied.");
+					console.error("Location access denied.");
 					setLoading(false);
 				}
 			);
@@ -114,14 +112,14 @@ export default function SearchBar() {
 	}
 
 	return (
-		<div className="flex items-center max-w-2xl mx-auto">
+		<div className="flex items-center max-w-2xl p-4 mx-auto text-black bg-white rounded-md">
 			<div className="relative flex-1">
 				<Input
 					type="text"
 					value={query}
 					onChange={handleQueryChange}
 					placeholder="Search"
-					className="pl-4 pr-16 border-r-0 rounded-r-none rounded-l-md"
+					className="pl-4 pr-16 text-black bg-white border-r-0 rounded-r-none rounded-l-md"
 					onKeyDown={(e) => {
 						if (e.key === "ArrowDown" && suggestions.length > 0) {
 							document.getElementById("suggestion-0").focus();
@@ -160,8 +158,7 @@ export default function SearchBar() {
 				)}
 			</div>
 			<div className="relative flex-1 border-l">
-				<Input type="text" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Location" className="border-l-0 rounded-none" />
-				{error && <span className="text-red-500">{error}</span>}
+				<Input type="text" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Location" className="text-black bg-white border-l-0 rounded-none" />
 			</div>
 			<Button type="submit" className="px-4 rounded-l-none bg-primary text-primary-foreground rounded-r-md">
 				Go

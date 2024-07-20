@@ -1,116 +1,92 @@
-"use client";
-// src/components/Search.js
-import React, { useState, useEffect, useRef } from "react";
-import Map, { Marker } from "react-map-gl";
+import React from "react";
+import SearchFeed from "@/components/site/search/SearchFeed";
 import "mapbox-gl/dist/mapbox-gl.css";
-import BusinessCard from "@/components/site/search/BusinessCard";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
-import Image from "next/image";
+import Script from "next/script";
 
-const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
-
-const headerHeight = 64; // Example header height, replace with actual if dynamic
-
-const Search = () => {
-	const [businesses, setBusinesses] = useState([
-		// Example data, replace with actual data
-		{
-			id: 1,
-			name: "Business 1",
-			lat: 37.7749,
-			lng: -122.4194,
-			address: "123 Market St, San Francisco, CA",
-			phone: "(123) 456-7890",
-			rating: 4.5,
-			image: "/placeholder.svg",
+export const metadata = {
+	metadataBase: new URL("https://www.thorbis.com/"),
+	title: {
+		default: "Thorbis - Discover and Connect with Local Businesses",
+		template: "%s | Thorbis",
+	},
+	description: "Thorbis provides a powerful platform to discover and connect with top-rated local businesses. Explore and find businesses in your area with ease.",
+	generator: "Next.js",
+	applicationName: "Thorbis",
+	keywords: ["Business Directory", "Local Business Search", "Find Businesses", "Business Reviews", "Business Listings"],
+	authors: [{ name: "Byron Wade" }, { name: "Byron Wade", url: "https://www.thorbis.com/" }],
+	creator: "Byron Wade",
+	publisher: "Byron Wade",
+	robots: "index, follow",
+	alternates: {
+		canonical: "https://www.thorbis.com",
+		languages: {
+			"en-US": "https://www.thorbis.com/en-US",
+			"es-ES": "https://www.thorbis.com/es-ES",
 		},
-		{
-			id: 2,
-			name: "Business 2",
-			lat: 34.0522,
-			lng: -118.2437,
-			address: "456 Sunset Blvd, Los Angeles, CA",
-			phone: "(987) 654-3210",
-			rating: 4.0,
-			image: "/placeholder.svg",
+	},
+	formatDetection: {
+		email: false,
+		address: false,
+		telephone: false,
+	},
+	category: "directory",
+	bookmarks: ["https://www.thorbis.com/"],
+	twitter: {
+		card: "summary_large_image",
+		title: "Thorbis - Discover and Connect with Local Businesses",
+		description: "Explore top-rated local businesses with Thorbis. Your comprehensive platform for finding and connecting with businesses in your area.",
+		creator: "@thorbis",
+		images: {
+			url: "https://www.thorbis.com/_next/image?url=%2FThorbisLogo.webp&w=96&q=75",
+			alt: "Thorbis Social Logo",
 		},
-	]);
-
-	const mapContainerRef = useRef(null);
-
-	useEffect(() => {
-		// Adjust map height dynamically on window resize
-		const handleResize = () => {
-			if (mapContainerRef.current) {
-				mapContainerRef.current.style.height = `calc(100vh - ${headerHeight}px)`;
-			}
-		};
-
-		handleResize(); // Initial call
-		window.addEventListener("resize", handleResize);
-
-		return () => window.removeEventListener("resize", handleResize);
-	}, []);
-
-	const handleMarkerClick = (id) => {
-		document.getElementById(`business-${id}`).scrollIntoView({
-			behavior: "smooth",
-			block: "center",
-		});
-	};
-
-	return (
-		<div className="flex flex-col h-screen" style={{ height: `calc(100vh - ${headerHeight}px)` }}>
-			<div className="flex flex-1 overflow-hidden">
-				<div className="flex flex-row w-1/2 overflow-y-auto">
-					<div className="p-4 border-r w-[300px]">
-						<h2 className="text-xl font-semibold">Filters</h2>
-						<ScrollArea className="w-full">
-							<div className="p-4">
-								<h4 className="mb-4 text-sm font-medium leading-none">Tags</h4>
-								{["Tag1", "Tag2", "Tag3", "Tag4", "Tag5"].map((tag) => (
-									<div key={tag} className="text-sm">
-										{tag}
-									</div>
-								))}
-							</div>
-						</ScrollArea>
-					</div>
-					<div className="w-full">
-						<div className="p-4">
-							<h1>Top 10 Best Plumbing Companies</h1>
-						</div>
-						<ScrollArea className="flex-1 p-4">
-							{businesses.map((business) => (
-								<BusinessCard key={business.id} business={business} onClick={() => handleMarkerClick(business.id)} />
-							))}
-						</ScrollArea>
-					</div>
-				</div>
-				<div className="relative w-1/2">
-					<div ref={mapContainerRef} className="absolute top-0 left-0 right-0 h-full">
-						<Map
-							initialViewState={{
-								latitude: 37.7749,
-								longitude: -122.4194,
-								zoom: 10,
-							}}
-							style={{ width: "100%", height: "100%" }}
-							mapStyle="mapbox://styles/mapbox/streets-v11"
-							mapboxAccessToken={MAPBOX_TOKEN}
-						>
-							{businesses.map((business) => (
-								<Marker key={business.id} latitude={business.lat} longitude={business.lng} onClick={() => handleMarkerClick(business.id)}>
-									<div className="text-red-500 cursor-pointer">📍</div>
-								</Marker>
-							))}
-						</Map>
-					</div>
-				</div>
-			</div>
-		</div>
-	);
+	},
+	openGraph: {
+		title: "Thorbis - Discover and Connect with Local Businesses",
+		description: "Explore top-rated local businesses with Thorbis. Your comprehensive platform for finding and connecting with businesses in your area.",
+		url: "https://www.thorbis.com",
+		siteName: "Thorbis",
+		images: [
+			{
+				url: "https://www.thorbis.com/api/og?title=Thorbis%20-%20Discover%20and%20Connect%20with%20Local%20Businesses&description=Find%20and%20connect%20with%20top-rated%20local%20businesses",
+				width: 800,
+				height: 600,
+			},
+			{
+				url: "https://www.thorbis.com/api/og?title=Thorbis%20-%20Discover%20and%20Connect%20with%20Local%20Businesses&description=Find%20and%20connect%20with%20top-rated%20local%20businesses",
+				width: 1800,
+				height: 1600,
+				alt: "Thorbis",
+			},
+		],
+		locale: "en-US",
+		type: "website",
+	},
 };
 
-export default Search;
+const jsonLd = {
+	"@context": "https://schema.org",
+	"@type": "SearchService",
+	name: "Thorbis",
+	description: "Thorbis provides a powerful platform to discover and connect with top-rated local businesses. Explore and find businesses in your area with ease.",
+	url: "https://www.thorbis.com",
+	logo: "https://www.thorbis.com/_next/image?url=%2FThorbisLogo.webp&w=96&q=75",
+	image: "https://www.thorbis.com/api/og?title=Thorbis%20-%20Discover%20and%20Connect%20with%20Local%20Businesses&description=Find%20and%20connect%20with%20top-rated%20local%20businesses",
+	sameAs: ["https://www.facebook.com/thorbis", "https://www.instagram.com/thorbis/?hl=en"],
+	potentialAction: {
+		"@type": "SearchAction",
+		target: "https://www.thorbis.com/search?q={search_term_string}",
+		"query-input": "required name=search_term_string",
+	},
+};
+
+export default function Search() {
+	return (
+		<>
+			<Script data-testid="ldjson" id="json" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd, null, "\t") }} />
+			<div>
+				<SearchFeed />
+			</div>
+		</>
+	);
+}

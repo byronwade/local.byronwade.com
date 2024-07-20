@@ -1,6 +1,5 @@
-// app/page.tsx
-
 import Header from "@/components/site/Header";
+import SearchBox from "@/components/shared/SearchBox";
 
 export const metadata = {
 	title: "Thorbis - Discover and Review Local Services",
@@ -9,11 +8,11 @@ export const metadata = {
 	openGraph: {
 		title: "Thorbis - Discover and Review Local Services",
 		description: "Thorbis connects customers with local professional services effortlessly. Post your job and get connected with the right professionals. Read reviews and find the best local businesses.",
-		url: "https://thorbis",
+		url: "https://www.thorbis.com",
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://thorbis/og-image.jpg",
+				url: "https://www.thorbis.com/og-image.jpg",
 				width: 800,
 				height: 600,
 				alt: "Thorbis Logo",
@@ -26,15 +25,30 @@ export const metadata = {
 		card: "summary_large_image",
 		title: "Thorbis - Discover and Review Local Services",
 		description: "Thorbis connects customers with local professional services effortlessly. Post your job and get connected with the right professionals. Read reviews and find the best local businesses.",
-		images: ["https://thorbis/twitter-image.jpg"],
+		images: ["https://www.thorbis.com/twitter-image.jpg"],
+		creator: "@thorbis",
 	},
 	alternates: {
-		canonical: "https://thorbis",
+		canonical: "https://www.thorbis.com",
 		languages: {
-			"en-US": "https://thorbis/en-US",
-			"es-ES": "https://thorbis/es-ES",
+			"en-US": "https://www.thorbis.com/en-US",
+			"es-ES": "https://www.thorbis.com/es-ES",
 		},
 	},
+	robots: "index, follow",
+	formatDetection: {
+		email: false,
+		address: false,
+		telephone: false,
+	},
+	category: "directory",
+	bookmarks: ["https://www.thorbis.com/"],
+	generator: "Next.js",
+	applicationName: "Thorbis",
+	authors: [{ name: "Byron Wade", url: "https://www.thorbis.com/" }],
+	creator: "Byron Wade",
+	publisher: "Byron Wade",
+	ogLocale: "en_US",
 };
 
 export default function Home() {
@@ -42,7 +56,10 @@ export default function Home() {
 		<>
 			<Header />
 			<main>
-				<div>home page</div>
+				<div>
+					<h1>Thorbis is the best of all</h1>
+					<SearchBox />
+				</div>
 				<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdData) }} />
 			</main>
 		</>
@@ -50,9 +67,9 @@ export default function Home() {
 }
 
 const jsonLdData = {
-	"@context": "http://schema.org",
+	"@context": "https://schema.org",
 	"@type": "WebSite",
-	url: "https://thorbis",
+	url: "https://www.thorbis.com",
 	name: "Thorbis",
 	description: "Thorbis connects customers with local professional services effortlessly. Post your job and get connected with the right professionals. Read reviews and find the best local businesses.",
 	publisher: {
@@ -60,12 +77,15 @@ const jsonLdData = {
 		name: "Thorbis",
 		logo: {
 			"@type": "ImageObject",
-			url: "https://thorbis/logo.png",
+			url: "https://www.thorbis.com/logo.png",
 		},
 	},
 	potentialAction: {
 		"@type": "SearchAction",
-		target: "https://thorbis/search?q={search_term_string}",
+		target: "https://www.thorbis.com/search?q={search_term_string}",
 		"query-input": "required name=search_term_string",
 	},
+	sameAs: ["https://www.facebook.com/thorbis", "https://www.instagram.com/thorbis/?hl=en"],
+	logo: "https://www.thorbis.com/logo.png",
+	image: "https://www.thorbis.com/og-image.jpg",
 };

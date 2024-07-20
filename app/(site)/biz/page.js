@@ -179,10 +179,22 @@ export default function BizProfile() {
 }
 
 const jsonLdData = {
-	"@context": "http://schema.org",
-	"@type": "WebSite",
-	url: "https://acmewebdesign.com",
+	"@context": "https://schema.org",
+	"@type": "Organization",
 	name: "Acme Web Design",
-	description: "Acme Web Design offers top-notch web design services. Explore our portfolio, learn about our services, and get in touch with us to transform your online presence.",
-	sameAs: ["https://www.facebook.com/AcmeWebDesign", "https://twitter.com/AcmeWebDesign", "https://www.instagram.com/AcmeWebDesign", "https://www.linkedin.com/company/acme-web-design"],
+	url: "https://acmewebdesign.com",
+	logo: "https://acmewebdesign.com/logo.png",
+	contactPoint: {
+		"@type": "ContactPoint",
+		telephone: "+1-800-123-4567",
+		contactType: "Customer Service",
+	},
+	address: {
+		"@type": "PostalAddress",
+		streetAddress: "123 Main St",
+		addressLocality: "Anytown",
+		addressRegion: "USA",
+		postalCode: "12345",
+	},
+	sameAs: ["https://www.facebook.com/acmewebdesign", "https://twitter.com/acmewebdesign", "https://www.instagram.com/acmewebdesign", "https://www.linkedin.com/company/acmewebdesign"],
 };

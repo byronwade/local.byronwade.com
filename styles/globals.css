@@ -3,11 +3,6 @@
 @tailwind utilities;
 
 @layer base {
-  * {
-    @apply transition duration-200 ease-in-out;
-  }
-}
-@layer base {
   :root {
     --brand: 220 90% 56%;
       /* Replace with your brand color */
