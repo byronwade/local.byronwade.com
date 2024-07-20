@@ -155,7 +155,7 @@ export default function Home() {
 				<div className="py-24 text-black bg-white">
 					<div className="container mx-auto">
 						<h2 className="text-3xl font-extrabold text-center text-gray-900 sm:text-4xl">People ❤️ Thorbis</h2>
-						<p className="max-w-3xl mx-auto mt-3 text-xl text-center text-gray-500 sm:mt-4">Thorbis is built for scale and can serve sites with hundreds of millions of monthly visitors. Thousands of sites, startups, and some of the world's leading brands have already made the switch from other services.</p>
+						<p className="max-w-3xl mx-auto mt-3 text-xl text-center text-gray-500 sm:mt-4">Thorbis is built for scale and can serve sites with hundreds of millions of monthly visitors. Thousands of sites, startups, and some of the world&apos;s leading brands have already made the switch from other services.</p>
 						<div className="pb-12 mt-10 bg-white sm:pb-16">
 							<div className="relative w-full">
 								<div className="mx-auto">
