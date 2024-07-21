@@ -1,11 +1,19 @@
 // components/SortDropdown.js
 import React from "react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuCheckboxItem, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuLabel } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuLabel } from "@/components/ui/dropdown-menu";
 import { ChevronDown, X } from "react-feather";
 import { Button } from "@/components/ui/button";
 import { AdjustmentsHorizontalIcon } from "@heroicons/react/24/solid";
+import useSearchStore from "@/store/useSearchStore";
 
-const SortDropdown = ({ sortOption, handleSortChange, handleResetFilters, isSortModified }) => {
+const SortDropdown = () => {
+	const { sortOption, handleSortChange, handleResetFilters, isSortModified } = useSearchStore((state) => ({
+		sortOption: state.sortOption,
+		handleSortChange: state.handleSortChange,
+		handleResetFilters: state.handleResetFilters,
+		isSortModified: state.isSortModified,
+	}));
+
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
@@ -17,7 +25,7 @@ const SortDropdown = ({ sortOption, handleSortChange, handleResetFilters, isSort
 			</DropdownMenuTrigger>
 			{isSortModified ? (
 				<Button size="icon" className="w-5 h-5 mt-1.5 -ml-8 mr-1">
-					<X className="w-4 h-4" onClick={(e) => handleResetFilters("sort", e)} />
+					<X className="w-4 h-4" onClick={() => handleResetFilters("sort")} />
 				</Button>
 			) : null}
 			<DropdownMenuContent className="w-56 mt-2 bg-black rounded-md shadow-lg">

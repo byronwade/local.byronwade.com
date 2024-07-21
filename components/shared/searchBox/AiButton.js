@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { SparklesIcon } from "@heroicons/react/24/solid";
 import { Drawer, DrawerClose, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
-import Chat from "./chatBot/Chat";
+import Chat from "../chatBot/Chat";
 
 const AiButton = ({ handleTextareaInput, showBeta }) => {
 	const [isOpen, setIsOpen] = useState(false);

@@ -17,6 +17,7 @@
 		"styles": "@/styles",
 		"context": "@/context",
 		"hooks": "@/hooks",
-		"emails": "@/emails"
+		"emails": "@/emails",
+		"stores": "@/stores"
 	}
 }

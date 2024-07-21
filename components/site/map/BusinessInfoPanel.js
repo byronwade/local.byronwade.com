@@ -1,21 +1,25 @@
 import React from "react";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { X, Phone, Globe, ChevronLeft, ChevronRight } from "react-feather";
+import useBusinessStore from "@/store/useBusinessStore";
 
-const BusinessInfoPanel = ({ business, businessIndex, businesses, onClose, onNavigate }) => {
+const BusinessInfoPanel = () => {
+	const { activeBusiness: business, filteredBusinesses, navigateBusiness, setActiveBusiness } = useBusinessStore();
+
 	if (!business) return null;
+
+	const businessIndex = filteredBusinesses.findIndex((b) => b.id === business.id);
 
 	const handlePrev = () => {
 		if (businessIndex > 0) {
-			onNavigate(businessIndex - 1);
+			navigateBusiness(businessIndex - 1);
 		}
 	};
 
 	const handleNext = () => {
-		if (businessIndex < businesses.length - 1) {
-			onNavigate(businessIndex + 1);
+		if (businessIndex < filteredBusinesses.length - 1) {
+			navigateBusiness(businessIndex + 1);
 		}
 	};
 
@@ -27,11 +31,11 @@ const BusinessInfoPanel = ({ business, businessIndex, businesses, onClose, onNav
 						<Button variant="secondary" size="icon" onClick={handlePrev} disabled={businessIndex === 0}>
 							<ChevronLeft className="w-4 h-4" />
 						</Button>
-						<Button variant="secondary" size="icon" onClick={handleNext} disabled={businessIndex === businesses.length - 1}>
+						<Button variant="secondary" size="icon" onClick={handleNext} disabled={businessIndex === filteredBusinesses.length - 1}>
 							<ChevronRight className="w-4 h-4" />
 						</Button>
 					</div>
-					<Button variant="destructive" size="icon" onClick={onClose}>
+					<Button variant="destructive" size="icon" onClick={() => setActiveBusiness(null)}>
 						<X className="w-4 h-4" />
 					</Button>
 				</div>
@@ -157,14 +161,14 @@ const BusinessInfoPanel = ({ business, businessIndex, businesses, onClose, onNav
 								))}
 							</div>
 						</div>
-					</div>
-					<div className="flex space-x-4">
-						<a href={`tel:${business.phone}`} className="flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600">
-							<Phone className="w-4 h-4 mr-2" /> Call
-						</a>
-						<a href={business.website} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-600">
-							<Globe className="w-4 h-4 mr-2" /> Visit Website
-						</a>
+						<div className="flex space-x-4">
+							<a href={`tel:${business.phone}`} className="flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600">
+								<Phone className="w-4 h-4 mr-2" /> Call
+							</a>
+							<a href={business.website} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-600">
+								<Globe className="w-4 h-4 mr-2" /> Visit Website
+							</a>
+						</div>
 					</div>
 				</ScrollArea>
 			</div>

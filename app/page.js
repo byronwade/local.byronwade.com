@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/site/Header";
-import { SearchBarOnly } from "@/components/shared/searchBox/SearchBox";
+import SearchBarOnly from "@/components/shared/searchBox/SearchBarOnly";
 
 const testimonials = [
 	{

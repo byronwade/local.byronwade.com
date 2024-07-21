@@ -1,15 +1,20 @@
 import React, { useRef, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import Map, { NavigationControl } from "react-map-gl";
-import BusinessMarkers from "@/components/site/search/BusinessMarkers";
-import ServiceArea from "@/components/site/search/ServiceArea";
+import Map, { NavigationControl, Source, Layer } from "react-map-gl"; // Import Source and Layer
+import BusinessMarkers from "@/components/site/map/BusinessMarkers";
+import ServiceArea from "@/components/site/map/ServiceArea";
 import { BuildingStorefrontIcon } from "@heroicons/react/24/solid";
-import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Compass, Minus, Plus } from "react-feather";
+import { Compass, Minus, Plus } from "react-feather";
+import useBusinessStore from "@/store/useBusinessStore";
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
-const MapContainer = ({ businesses, coordinates, activeMarker, handleMarkerClick, selectedServiceArea, handleSearchInArea, setMapRef, flyToLocation }) => {
+const MapContainer = ({ activeMarker, handleMarkerClick, selectedServiceArea, setMapRef, flyToLocation }) => {
+	const { businesses, handleSearchInArea } = useBusinessStore((state) => ({
+		businesses: state.filteredBusinesses,
+		handleSearchInArea: state.handleSearchInArea,
+	}));
 	const mapRef = useRef(null);
 	const mapContainerRef = useRef(null);
 
@@ -20,7 +25,9 @@ const MapContainer = ({ businesses, coordinates, activeMarker, handleMarkerClick
 	}, [setMapRef]);
 
 	const handleSearchInAreaClick = () => {
-		handleSearchInArea();
+		if (mapRef.current) {
+			handleSearchInArea(mapRef.current.getBounds());
+		}
 	};
 
 	const handleZoomIn = () => {
@@ -57,8 +64,28 @@ const MapContainer = ({ businesses, coordinates, activeMarker, handleMarkerClick
 				mapboxAccessToken={MAPBOX_TOKEN}
 				attributionControl={false}
 			>
-				<BusinessMarkers businesses={businesses} coordinates={coordinates} activeMarker={activeMarker} handleMarkerClick={handleMarkerClick} flyToLocation={flyToLocation} />
-				<ServiceArea selectedServiceArea={selectedServiceArea} />
+				<BusinessMarkers businesses={businesses} activeMarker={activeMarker} handleMarkerClick={handleMarkerClick} flyToLocation={flyToLocation} />
+				{selectedServiceArea && (
+					<Source id="serviceArea" type="geojson" data={selectedServiceArea}>
+						<Layer
+							id="serviceArea-fill"
+							type="fill"
+							paint={{
+								"fill-color": "#888",
+								"fill-opacity": 0.4,
+							}}
+						/>
+						<Layer
+							id="serviceArea-outline"
+							type="line"
+							paint={{
+								"line-color": "#000",
+								"line-width": 2,
+							}}
+						/>
+					</Source>
+				)}
+				<NavigationControl position="top-left" />
 			</Map>
 
 			<div className="absolute flex flex-col items-end justify-end space-y-2 top-4 right-4">
@@ -75,13 +102,13 @@ const MapContainer = ({ businesses, coordinates, activeMarker, handleMarkerClick
 					<Compass className="w-4 h-4" />
 				</Button>
 			</div>
-			<Button className="absolute bottom-4 right-4 inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow py-2 z-50 h-[calc(theme(spacing.7)_-_1px)] gap-1 rounded-[6px] bg-black px-3 text-xs text-white hover:bg-black hover:text-white dark:bg-white dark:text-black">
+			<div className="absolute bottom-4 right-4 inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow py-2 z-50 h-[calc(theme(spacing.7)_-_1px)] gap-1 rounded-[6px] bg-black px-3 text-xs text-white hover:bg-black hover:text-white dark:bg-white dark:text-black">
 				<BuildingStorefrontIcon className="w-3 h-3 mr-2" />
 				<span>Can&apos;t find the business?</span>
 				<Link className="font-bold text-brand" href="/add-a-business">
 					Add it here
 				</Link>
-			</Button>
+			</div>
 		</div>
 	);
 };

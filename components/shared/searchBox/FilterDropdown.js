@@ -1,11 +1,24 @@
 // components/FilterDropdown.js
 import React from "react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuCheckboxItem, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuLabel } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuCheckboxItem, DropdownMenuLabel } from "@/components/ui/dropdown-menu";
 import { ChevronRight, ChevronDown, X } from "react-feather";
 import { Button } from "@/components/ui/button";
 import { FunnelIcon } from "@heroicons/react/24/solid";
+import useSearchStore from "@/store/useSearchStore";
 
-const FilterDropdown = ({ filterCount, isRatingModified, isOpenModified, isPriceModified, ratingFilters, openFilters, priceFilters, handleFilterChange, handleResetFilters }) => {
+const FilterDropdown = () => {
+	const { filterCount, isRatingModified, isOpenModified, isPriceModified, ratingFilters, openFilters, priceFilters, handleFilterChange, handleResetFilters } = useSearchStore((state) => ({
+		filterCount: state.filterCount,
+		isRatingModified: state.isRatingModified,
+		isOpenModified: state.isOpenModified,
+		isPriceModified: state.isPriceModified,
+		ratingFilters: state.ratingFilters,
+		openFilters: state.openFilters,
+		priceFilters: state.priceFilters,
+		handleFilterChange: state.handleFilterChangeCallback,
+		handleResetFilters: state.handleResetFilters,
+	}));
+
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
