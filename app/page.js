@@ -121,7 +121,7 @@ export default function Home() {
 								</p>
 							</div>
 							<div className="w-full m-auto sm:max-w-xl">
-								<SearchBarOnly />
+								<SearchBarOnly showLocationButton={true} showAiButton={true} />
 							</div>
 							<div className="absolute flex flex-wrap items-center justify-center max-w-full gap-2 px-4 mx-auto mt-6 text-sm top-full whitespace-nowrap">
 								<Button variant="outline">

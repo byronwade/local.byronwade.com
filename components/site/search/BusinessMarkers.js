@@ -2,7 +2,7 @@ import React from "react";
 import { Marker } from "react-map-gl";
 import ThorbisIcon from "@/components/site/search/ThorbisIcon"; // Ensure this is the correct path to your ThorbisIcon component
 
-const BusinessMarkers = ({ businesses, coordinates, activeMarker, handleMarkerClick, flyToLocation }) => {
+const BusinessMarkers = ({ businesses = [], coordinates = {}, activeMarker, handleMarkerClick, flyToLocation }) => {
 	return (
 		<>
 			{businesses.map((business) => {

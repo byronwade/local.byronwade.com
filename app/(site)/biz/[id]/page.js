@@ -54,7 +54,8 @@ export const metadata = {
 	},
 };
 
-export default function BizProfile() {
+export default function BizProfile({ params }) {
+	console.log(params);
 	return (
 		<>
 			<div className="flex flex-col min-h-[100dvh]">

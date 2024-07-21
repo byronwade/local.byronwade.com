@@ -33,8 +33,8 @@ const components = [
 export default function PublicHeader() {
 	const pathname = usePathname();
 
-	// Check if the current route is /search
-	if (pathname === "/search") {
+	// Check if the current route contains /search
+	if (pathname.includes("/search")) {
 		return null;
 	}
 

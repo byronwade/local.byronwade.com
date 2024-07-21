@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+/* In your styles.css or any global CSS file */
+.mx-auto.mt-4.h-2.w-\[100px\].rounded-full.bg-muted {
+  background-color: #2f2f2f !important;
+}
 @layer base {
   :root {
     --brand: 220 90% 56%;
