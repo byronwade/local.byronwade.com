@@ -9,6 +9,8 @@ import { Compass, Minus, Plus } from "react-feather";
 import useBusinessStore from "@/store/useBusinessStore";
 import useSearchStore from "@/store/useSearchStore";
 
+import FullScreenMapSkeleton from "@/components/site/map/FullScreenMapSkeleton";
+
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
 const MapContainer = () => {
@@ -113,14 +115,14 @@ const MapContainer = () => {
 	};
 
 	if (!initialCoordinates) {
-		return <div>Loading map...</div>;
+		return <FullScreenMapSkeleton />;
 	}
 
 	// console.log("MapContainer: initialCoordinates", initialCoordinates);
 
 	return (
 		<div className="relative w-full h-full">
-			<Map ref={mapRef} initialViewState={initialCoordinates} mapStyle="mapbox://styles/mapbox/streets-v11" mapboxAccessToken={MAPBOX_TOKEN} attributionControl={false} onLoad={onMapLoad}>
+			<Map ref={mapRef} initialViewState={initialCoordinates} mapStyle="mapbox://styles/byronwade/clywtphyo006d01r7ep5s0h8a" mapboxAccessToken={MAPBOX_TOKEN} attributionControl={false} onLoad={onMapLoad}>
 				<ServiceArea />
 				<BusinessMarkers />
 			</Map>
