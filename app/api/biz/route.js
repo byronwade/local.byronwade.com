@@ -1,241 +1,53 @@
-// app/api/businesses/route.js
 import { NextResponse } from "next/server";
+import * as turf from "@turf/turf";
+import fs from "fs";
+import path from "path";
 
-const businesses = [
-	{
-		id: 1,
-		name: "Practically Perfect Day Spa & Salon",
-		categories: ["Day Spas", "Massage", "Hair Salons"],
-		price: "$$",
-		deal: "$50 for $65 Deal",
-		description: "She truly has a love for what she does and a talent for skincare and helping to make the world and...",
-		logo: "/placeholder.svg",
-		isOpenNow: true,
-		reviewsCount: 44,
-		statusMessage: "Closed until 10:00 AM tomorrow",
-		isSponsored: true,
-		address: "123 Market St, San Francisco, CA",
-		phone: "(123) 456-7890",
-		ratings: {
-			overall: 4.5,
-			totalReviews: 68,
-			5: 30,
-			4: 25,
-			3: 8,
-			2: 3,
-			1: 2,
-		},
-		image: "/placeholder.svg",
-		images: ["/placeholder.svg", "/placeholder.svg", "/placeholder.svg"],
-		serviceArea: {
-			type: "radius",
-			value: 10,
-		},
-		reviews: [
-			{
-				reviewerName: "John Doe",
-				date: "2023-01-01",
-				text: "Amazing service, very friendly staff!",
-				rating: 5,
-			},
-			{
-				reviewerName: "Jane Smith",
-				date: "2023-01-15",
-				text: "Had a great experience, highly recommended.",
-				rating: 4,
-			},
-		],
-		hours: [
-			{ day: "Monday", open: "10:00 AM", close: "6:00 PM" },
-			{ day: "Tuesday", open: "10:00 AM", close: "6:00 PM" },
-			{ day: "Wednesday", open: "10:00 AM", close: "6:00 PM" },
-			{ day: "Thursday", open: "10:00 AM", close: "6:00 PM" },
-			{ day: "Friday", open: "10:00 AM", close: "6:00 PM" },
-			{ day: "Saturday", open: "10:00 AM", close: "6:00 PM" },
-			{ day: "Sunday", open: "Closed", close: "Closed" },
-		],
-		plusCode: "73G4+M5 San Francisco, California",
-		coordinates: {
-			lat: 37.79353,
-			lng: -122.39595,
-		},
-	},
-	{
-		id: 2,
-		name: "Urban Retreat Spa",
-		categories: ["Spas", "Beauty & Spas"],
-		price: "$$",
-		deal: "15% off your first visit",
-		description: "Relax and rejuvenate with our full range of spa services designed to refresh your mind and body.",
-		logo: "/placeholder.svg",
-		isOpenNow: true,
-		reviewsCount: 27,
-		statusMessage: "Open until 8:00 PM",
-		isSponsored: false,
-		address: "456 Elm St, San Francisco, CA",
-		phone: "(234) 567-8901",
-		ratings: {
-			overall: 4.2,
-			totalReviews: 35,
-			5: 15,
-			4: 12,
-			3: 5,
-			2: 2,
-			1: 1,
-		},
-		image: "/placeholder.svg",
-		images: ["/placeholder.svg", "/placeholder.svg", "/placeholder.svg"],
-		serviceArea: {
-			type: "radius",
-			value: 8,
-		},
-		reviews: [
-			{
-				reviewerName: "Emily Davis",
-				date: "2023-02-10",
-				text: "Fantastic experience, will definitely come back!",
-				rating: 5,
-			},
-			{
-				reviewerName: "Michael Brown",
-				date: "2023-02-25",
-				text: "Nice place but a bit pricey.",
-				rating: 4,
-			},
-		],
-		hours: [
-			{ day: "Monday", open: "9:00 AM", close: "8:00 PM" },
-			{ day: "Tuesday", open: "9:00 AM", close: "8:00 PM" },
-			{ day: "Wednesday", open: "9:00 AM", close: "8:00 PM" },
-			{ day: "Thursday", open: "9:00 AM", close: "8:00 PM" },
-			{ day: "Friday", open: "9:00 AM", close: "8:00 PM" },
-			{ day: "Saturday", open: "10:00 AM", close: "6:00 PM" },
-			{ day: "Sunday", open: "Closed", close: "Closed" },
-		],
-		plusCode: "73G5+H6 San Francisco, California",
-		coordinates: {
-			lat: 37.78155,
-			lng: -122.42038,
-		},
-	},
-	{
-		id: 3,
-		name: "Tranquil Retreat Spa",
-		categories: ["Massage", "Day Spas"],
-		price: "$$$",
-		deal: "Free aromatherapy with every massage",
-		description: "Enjoy the ultimate relaxation with our premium massage services and tranquil environment.",
-		logo: "/placeholder.svg",
-		isOpenNow: false,
-		reviewsCount: 19,
-		statusMessage: "Closed for renovation",
-		isSponsored: true,
-		address: "789 Pine St, San Francisco, CA",
-		phone: "(345) 678-9012",
-		ratings: {
-			overall: 4.0,
-			totalReviews: 22,
-			5: 8,
-			4: 9,
-			3: 3,
-			2: 1,
-			1: 1,
-		},
-		image: "/placeholder.svg",
-		images: ["/placeholder.svg", "/placeholder.svg", "/placeholder.svg"],
-		serviceArea: {
-			type: "radius",
-			value: 12,
-		},
-		reviews: [
-			{
-				reviewerName: "Sarah Johnson",
-				date: "2023-03-05",
-				text: "Wonderful experience, very relaxing.",
-				rating: 5,
-			},
-			{
-				reviewerName: "David Wilson",
-				date: "2023-03-20",
-				text: "Good service but the place could use some updates.",
-				rating: 3,
-			},
-		],
-		hours: [
-			{ day: "Monday", open: "10:00 AM", close: "7:00 PM" },
-			{ day: "Tuesday", open: "10:00 AM", close: "7:00 PM" },
-			{ day: "Wednesday", open: "10:00 AM", close: "7:00 PM" },
-			{ day: "Thursday", open: "10:00 AM", close: "7:00 PM" },
-			{ day: "Friday", open: "10:00 AM", close: "7:00 PM" },
-			{ day: "Saturday", open: "10:00 AM", close: "6:00 PM" },
-			{ day: "Sunday", open: "Closed", close: "Closed" },
-		],
-		plusCode: "73G6+J7 San Francisco, California",
-		coordinates: {
-			lat: 37.79107,
-			lng: -122.40879,
-		},
-	},
-	{
-		id: 4,
-		name: "The Zen Den Spa",
-		categories: ["Beauty & Spas", "Massage"],
-		price: "$",
-		deal: "Buy one get one free on select services",
-		description: "Escape the hustle and bustle of the city and find your inner peace at our cozy spa.",
-		logo: "/placeholder.svg",
-		isOpenNow: true,
-		reviewsCount: 12,
-		statusMessage: "Open until 9:00 PM",
-		isSponsored: false,
-		address: "101 Maple Ave, San Francisco, CA",
-		phone: "(456) 789-0123",
-		ratings: {
-			overall: 4.3,
-			totalReviews: 15,
-			5: 6,
-			4: 7,
-			3: 1,
-			2: 1,
-			1: 0,
-		},
-		image: "/placeholder.svg",
-		images: ["/placeholder.svg", "/placeholder.svg", "/placeholder.svg"],
-		serviceArea: {
-			type: "radius",
-			value: 5,
-		},
-		reviews: [
-			{
-				reviewerName: "Anna Brown",
-				date: "2023-04-01",
-				text: "A peaceful retreat, highly recommended!",
-				rating: 5,
-			},
-			{
-				reviewerName: "Paul Miller",
-				date: "2023-04-12",
-				text: "The massage was great but the ambiance could be better.",
-				rating: 3,
-			},
-		],
-		hours: [
-			{ day: "Monday", open: "10:00 AM", close: "9:00 PM" },
-			{ day: "Tuesday", open: "10:00 AM", close: "9:00 PM" },
-			{ day: "Wednesday", open: "10:00 AM", close: "9:00 PM" },
-			{ day: "Thursday", open: "10:00 AM", close: "9:00 PM" },
-			{ day: "Friday", open: "10:00 AM", close: "9:00 PM" },
-			{ day: "Saturday", open: "10:00 AM", close: "7:00 PM" },
-			{ day: "Sunday", open: "Closed", close: "Closed" },
-		],
-		plusCode: "73G7+K8 San Francisco, California",
-		coordinates: {
-			lat: 37.78333,
-			lng: -122.40444,
-		},
-	},
-];
+const businessesFilePath = path.join(process.cwd(), "businesses.json");
+let businesses = [];
 
-export async function GET() {
-	return NextResponse.json(businesses);
+try {
+	const rawData = fs.readFileSync(businessesFilePath, "utf-8");
+	const parsedData = JSON.parse(rawData);
+	businesses = parsedData.businesses || [];
+} catch (error) {
+	console.error("Error reading or parsing businesses.json:", error);
+}
+
+export async function GET(request) {
+	const url = new URL(request.url);
+	const southWestLat = parseFloat(url.searchParams.get("southWestLat"));
+	const southWestLng = parseFloat(url.searchParams.get("southWestLng"));
+	const northEastLat = parseFloat(url.searchParams.get("northEastLat"));
+	const northEastLng = parseFloat(url.searchParams.get("northEastLng"));
+
+	if (isNaN(southWestLat) || isNaN(southWestLng) || isNaN(northEastLat) || isNaN(northEastLng)) {
+		return NextResponse.json({ error: "Invalid bounding box coordinates" }, { status: 400 });
+	}
+
+	// Create a turf bounding box from the coordinates
+	const boundingBox = turf.bboxPolygon([southWestLng, southWestLat, northEastLng, northEastLat]);
+
+	// console.log("Bounding box:", { southWestLat, southWestLng, northEastLat, northEastLng });
+	// console.log("Bounding box polygon:", boundingBox);
+
+	if (!Array.isArray(businesses)) {
+		console.error("Businesses data is not an array:", businesses);
+		return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+	}
+
+	// Filter businesses within the bounding box
+	const filteredBusinesses = businesses.filter((business) => {
+		const { lat, lng } = business.coordinates;
+		const businessPoint = turf.point([lng, lat]);
+		const isInBoundingBox = turf.booleanPointInPolygon(businessPoint, boundingBox);
+		// console.log(`Business: ${business.name}, Coordinates: [${lat}, ${lng}], In bounding box: ${isInBoundingBox}`);
+		return isInBoundingBox;
+	});
+
+	return NextResponse.json({
+		businesses: filteredBusinesses,
+		total: filteredBusinesses.length,
+		hasMore: false,
+	});
 }

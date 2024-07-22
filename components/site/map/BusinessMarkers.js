@@ -1,28 +1,24 @@
 import React from "react";
 import { Marker } from "react-map-gl";
-import ThorbisIcon from "@/components/site/map/ThorbisIcon"; // Ensure this is the correct path to your ThorbisIcon component
+import ThorbisIcon from "@/components/site/map/ThorbisIcon";
 import useBusinessStore from "@/store/useBusinessStore";
 
-const BusinessMarkers = ({ activeMarker, handleMarkerClick, flyToLocation }) => {
-	const businesses = useBusinessStore((state) => state.filteredBusinesses);
+const BusinessMarkers = () => {
+	const { filteredBusinesses, handleMarkerClick, activeMarker } = useBusinessStore((state) => ({
+		filteredBusinesses: state.filteredBusinesses,
+		handleMarkerClick: state.handleMarkerClick,
+		activeMarker: state.activeMarker,
+	}));
 
 	return (
 		<>
-			{businesses.map((business) => {
+			{filteredBusinesses.map((business, index) => {
 				const coords = business.coordinates;
 				if (!coords) return null;
 				return (
-					<Marker
-						key={business.id}
-						latitude={coords.lat}
-						longitude={coords.lng}
-						onClick={() => {
-							handleMarkerClick(business);
-							flyToLocation(coords.lat, coords.lng, business.serviceArea.value);
-						}}
-					>
+					<Marker key={index} latitude={coords.lat} longitude={coords.lng} onClick={() => handleMarkerClick(business)}>
 						<div className="z-50 text-2xl cursor-pointer">
-							<ThorbisIcon number={business.id} isActive={activeMarker === business.id} />
+							<ThorbisIcon number={index + 1} isActive={activeMarker === business.id} />
 						</div>
 					</Marker>
 				);

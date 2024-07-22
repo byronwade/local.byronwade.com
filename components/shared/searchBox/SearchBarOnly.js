@@ -111,7 +111,7 @@ const SearchBarOnly = ({ showFilterButton, showSortButton, showLocationButton, s
 								/>
 							</div>
 						</div>
-						<div className="relative flex items-center space-x-1">
+						<div className="relative flex items-center space-x-2">
 							{showLocationButton && (
 								<LocationDropdown
 									dropdownOpen={dropdownOpen}

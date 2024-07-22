@@ -1,27 +1,40 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { X, Phone, Globe, ChevronLeft, ChevronRight } from "react-feather";
+import { X, ChevronLeft, ChevronRight } from "react-feather";
 import useBusinessStore from "@/store/useBusinessStore";
 
 const BusinessInfoPanel = () => {
-	const { activeBusiness: business, filteredBusinesses, navigateBusiness, setActiveBusiness } = useBusinessStore();
+	const { activeBusiness: business, filteredBusinesses, setActiveBusiness, flyToLocation } = useBusinessStore();
 
-	if (!business) return null;
+	const businessIndex = business ? filteredBusinesses.findIndex((b) => b.id === business.id) : -1;
 
-	const businessIndex = filteredBusinesses.findIndex((b) => b.id === business.id);
+	useEffect(() => {
+		if (business && business.coordinates) {
+			const { lat, lng } = business.coordinates;
+			const serviceAreaRadius = business.serviceArea.value;
+			flyToLocation(lat, lng, serviceAreaRadius);
+		}
+	}, [business, flyToLocation]);
 
 	const handlePrev = () => {
 		if (businessIndex > 0) {
-			navigateBusiness(businessIndex - 1);
+			setActiveBusiness(filteredBusinesses[businessIndex - 1]);
 		}
 	};
 
 	const handleNext = () => {
 		if (businessIndex < filteredBusinesses.length - 1) {
-			navigateBusiness(businessIndex + 1);
+			setActiveBusiness(filteredBusinesses[businessIndex + 1]);
 		}
 	};
+
+	const handleClose = () => {
+		// Clear the active business and related states
+		setActiveBusiness(null);
+	};
+
+	if (!business) return null;
 
 	return (
 		<div className="absolute top-0 left-0 z-10 w-1/4 h-full p-4 overflow-hidden min-w-96">
@@ -35,14 +48,14 @@ const BusinessInfoPanel = () => {
 							<ChevronRight className="w-4 h-4" />
 						</Button>
 					</div>
-					<Button variant="destructive" size="icon" onClick={() => setActiveBusiness(null)}>
+					<Button variant="destructive" size="icon" onClick={handleClose}>
 						<X className="w-4 h-4" />
 					</Button>
 				</div>
 				<ScrollArea className="flex-1 px-4 shadow-lg">
 					<div className="space-y-4">
 						<div className="grid gap-2">
-							<img alt="Product image" loading="lazy" width="300" height="300" decoding="async" className="object-cover w-full rounded-md aspect-square" style={{ color: "transparent" }} src={business.mainImage || "/placeholder.svg"} />
+							<img alt="Product image" loading="lazy" width="300" height="300" decoding="async" className="object-cover w-full rounded-md aspect-square" style={{ color: "transparent" }} src={business.image || "/placeholder.svg"} />
 							<div className="grid grid-cols-3 gap-2">
 								{business.images &&
 									business.images.slice(0, 2).map((src, index) => (
@@ -143,31 +156,15 @@ const BusinessInfoPanel = () => {
 							<div className="shrink-0 bg-border h-[1px] w-full my-2"></div>
 
 							<div className="grid gap-2">
-								<div className="font-semibold">Reviews</div>
-								{business.reviews.map((review, index) => (
-									<div key={index} className="mb-2">
-										<p>
-											<strong>{review.reviewerName}</strong> ({review.date})
-										</p>
-										<p>{review.text}</p>
-										<div className="flex items-center">
-											{[...Array(review.rating)].map((_, i) => (
-												<span key={i} className="text-yellow-500">
-													&#9733;
-												</span>
-											))}
-										</div>
-									</div>
-								))}
+								<div className="font-semibold">Website</div>
+								{business.website ? (
+									<a href={business.website} target="_blank" rel="noopener noreferrer" className="text-blue-500">
+										{business.website}
+									</a>
+								) : (
+									<p>No website available</p>
+								)}
 							</div>
-						</div>
-						<div className="flex space-x-4">
-							<a href={`tel:${business.phone}`} className="flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600">
-								<Phone className="w-4 h-4 mr-2" /> Call
-							</a>
-							<a href={business.website} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-600">
-								<Globe className="w-4 h-4 mr-2" /> Visit Website
-							</a>
 						</div>
 					</div>
 				</ScrollArea>

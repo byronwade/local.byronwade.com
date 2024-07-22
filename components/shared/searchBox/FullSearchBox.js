@@ -15,15 +15,14 @@ import useSearchStore from "@/store/useSearchStore";
 import useBusinessStore from "@/store/useBusinessStore";
 
 const FullSearchBox = ({ initialSearchQuery, initialZipCode, onFilterChange }) => {
-	const router = useRouter();
+    const router = useRouter();
 	const {
-		zipCode,
-		locationError,
 		searchQuery,
 		setSearchQuery,
-		dropdownQuery,
+		zipCode,
 		filteredLocations,
-		isValidZipCode,
+		locationError,
+		dropdownQuery,
 		isValidSearchQuery,
 		dropdownOpen,
 		setDropdownOpen,
@@ -54,7 +53,7 @@ const FullSearchBox = ({ initialSearchQuery, initialZipCode, onFilterChange }) =
 		...state,
 	}));
 
-	const { setBusinesses, filterBusinesses, fetchBusinesses, businesses, setFilteredBusinesses, handleSearchInArea } = useBusinessStore((state) => ({
+	const { filterAndSortBusinesses, handleSearchInArea } = useBusinessStore((state) => ({
 		...state,
 	}));
 
@@ -72,8 +71,9 @@ const FullSearchBox = ({ initialSearchQuery, initialZipCode, onFilterChange }) =
 	useEffect(() => {
 		if (initialSearchQuery) {
 			setSearchQuery(initialSearchQuery);
+			filterAndSortBusinesses(initialSearchQuery); // Apply initial filter
 		}
-	}, [initialSearchQuery, setSearchQuery]);
+	}, [initialSearchQuery, setSearchQuery, filterAndSortBusinesses]);
 
 	useEffect(() => {
 		if (initialZipCode) {
@@ -81,30 +81,11 @@ const FullSearchBox = ({ initialSearchQuery, initialZipCode, onFilterChange }) =
 		}
 	}, [initialZipCode, handleDropdownSearchChange]);
 
-	useEffect(() => {
-		if (searchQuery) {
-			const url = new URL(window.location);
-			url.searchParams.set("query", searchQuery);
-			window.history.pushState({}, "", url);
-		}
-	}, [searchQuery]);
-
-	useEffect(() => {
-		if (zipCode) {
-			const url = new URL(window.location);
-			url.searchParams.set("zip", zipCode);
-			window.history.pushState({}, "", url);
-		} else {
-			const url = new URL(window.location);
-			url.searchParams.delete("zip");
-			window.history.pushState({}, "", url);
-		}
-	}, [zipCode]);
-
 	const handleInputChange = (e) => {
 		const value = e.target.value;
 		setSearchTouched(true);
 		handleSearchChange(e);
+		filterAndSortBusinesses(value); // Ensure businesses are filtered and sorted after changing the search query
 		const filtered = suggestions.filter((suggestion) => suggestion.text.toLowerCase().includes(value.toLowerCase()));
 		setFilteredSuggestions(filtered);
 		setAutocompleteOpen(value.length > 0);
@@ -113,6 +94,7 @@ const FullSearchBox = ({ initialSearchQuery, initialZipCode, onFilterChange }) =
 	const handleDropdownSearchChangeTouched = (e) => {
 		setZipTouched(true);
 		handleDropdownSearchChange(e);
+		filterAndSortBusinesses(searchQuery); // Ensure businesses are filtered and sorted after changing the zip code
 	};
 
 	const handleSuggestionSelect = (text) => {
@@ -126,7 +108,8 @@ const FullSearchBox = ({ initialSearchQuery, initialZipCode, onFilterChange }) =
 		setZipTouched(true);
 		const url = handleSubmit(e);
 		if (url) {
-			await fetchBusinesses(zipCode, searchQuery);
+			await handleSearchInArea(); // Fetch businesses in the new area
+			filterAndSortBusinesses(searchQuery); // Ensure businesses are filtered and sorted after fetching
 			router.push(url);
 		}
 	};
@@ -136,6 +119,7 @@ const FullSearchBox = ({ initialSearchQuery, initialZipCode, onFilterChange }) =
 		const url = new URL(window.location);
 		url.searchParams.delete("zip");
 		window.history.pushState({}, "", url);
+		filterAndSortBusinesses(searchQuery); // Ensure businesses are filtered and sorted after clearing the zip code
 	};
 
 	const handleCurrentLocation = async () => {
@@ -147,6 +131,7 @@ const FullSearchBox = ({ initialSearchQuery, initialZipCode, onFilterChange }) =
 			url.searchParams.set("zip", zipCode);
 			window.history.pushState({}, "", url);
 			setDropdownOpen(false);
+			filterAndSortBusinesses(searchQuery); // Ensure businesses are filtered and sorted after setting the zip code
 		}
 	};
 
@@ -178,7 +163,7 @@ const FullSearchBox = ({ initialSearchQuery, initialZipCode, onFilterChange }) =
 										searchQuery ? "bg-brand" : "bg-gray-800"
 									} flex items-center justify-center h-8 gap-2 px-2 py-2 text-sm font-medium transition-colors rounded-md select-none ring-offset-background focus-visible:ring-offset-2 shrink-0 whitespace-nowrap focus-visible:outline-none focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 focus-visible:bg-gray-800 focus-visible:ring-0 hover:bg-gray-700/70 text-white/70 focus-within:bg-gray-700 hover:text-white sm:px-3`}
 									type="submit"
-									disabled={!isValidZipCode || !isValidSearchQuery || loading}
+									disabled={!isValidSearchQuery || loading}
 								>
 									{loading ? <Loader2 className="w-4 h-4 animate-spin" /> : searchQuery ? <ArrowRight className="w-4 h-4" /> : <Search className="w-4 h-4" />}
 								</Button>
@@ -200,7 +185,7 @@ const FullSearchBox = ({ initialSearchQuery, initialZipCode, onFilterChange }) =
 									setDropdownOpen={setDropdownOpen}
 									zipCode={zipCode}
 									dropdownQuery={dropdownQuery}
-									isValidZipCode={isValidZipCode}
+									isValidSearchQuery={isValidSearchQuery}
 									filteredLocations={filteredLocations}
 									handleDropdownSearchChange={handleDropdownSearchChangeTouched}
 									handleDropdownKeyDown={handleDropdownKeyDown}

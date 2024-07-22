@@ -41,6 +41,8 @@ const useSearchStore = create(
 		},
 		setDropdownQuery: (query) => set({ dropdownQuery: query }),
 		setDropdownOpen: (open) => set({ dropdownOpen: open }),
+		setLoading: (loading) => set({ loading }),
+
 		validateSearchQuery: (query) => {
 			try {
 				searchQuerySchema.parse(query);
@@ -77,10 +79,11 @@ const useSearchStore = create(
 		getCurrentLocation: async () => {
 			try {
 				set({ loading: true });
-				const response = await axios.post(`https://www.googleapis.com/geolocation/v1/geolocate?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`);
+				const response = await axios.post(`https://www.googleapis.com/geolocation/v1/geolocate?key=${process.env.NEXT_PUBLIC_GOOGLE_API_KEY}`);
 				const { lat, lng } = response.data.location;
 				const zip = await get().getZipCodeFromCoordinates(lat, lng);
 				set({ zipCode: zip, dropdownOpen: false });
+				get().validateZipCode(zip); // Validate zip code after setting it
 			} catch (error) {
 				set({ locationError: error.response ? error.response.data.error_message : "Unable to retrieve location." });
 			} finally {
@@ -88,7 +91,7 @@ const useSearchStore = create(
 			}
 		},
 		getZipCodeFromCoordinates: async (lat, lng) => {
-			const response = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`);
+			const response = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${process.env.NEXT_PUBLIC_GOOGLE_API_KEY}`);
 			const addressComponents = response.data.results[0].address_components;
 			const zipCodeComponent = addressComponents.find((component) => component.types.includes("postal_code"));
 			return zipCodeComponent ? zipCodeComponent.long_name : null;
@@ -127,7 +130,9 @@ const useSearchStore = create(
 		handleLocationSelect: (zip) => {
 			get().setZipCode(zip);
 			set({ dropdownQuery: zip, dropdownOpen: false, isZipModified: true });
+			get().validateZipCode(zip); // Validate zip code after setting it
 		},
+		setFilteredLocations: (locations) => set({ filteredLocations: locations }), // Added this line
 		handleSubmit: () => {
 			let isFormValid = true;
 			get().validateSearchQuery(get().searchQuery);

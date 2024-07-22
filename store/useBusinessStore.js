@@ -1,218 +1,170 @@
-// store/useBusinessStore.js
 import { create } from "zustand";
-import { devtools } from "zustand/middleware";
 import axios from "axios";
 import * as turf from "@turf/turf";
 
-const useBusinessStore = create(
-	devtools((set, get) => ({
-		businesses: [],
-		filteredBusinesses: [],
-		coordinates: {},
-		activeMarker: null,
-		hoveredBusiness: null,
-		selectedServiceArea: null,
-		initialFiltersApplied: false,
+const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
-		setBusinesses: (businesses) => set({ businesses }),
+const useBusinessStore = create((set, get) => ({
+	businesses: [],
+	filteredBusinesses: [],
+	coordinates: {},
+	activeMarker: null,
+	hoveredBusiness: null,
+	selectedServiceArea: null,
+	initialFiltersApplied: false,
+	mapRef: null,
+	activeBusiness: null,
+	businessPage: 1,
+	loading: false,
+	hasMoreBusinesses: true,
 
-		setActiveMarker: (id) => set({ activeMarker: id }),
-		setHoveredBusiness: (business) => set({ hoveredBusiness: business }),
-		setSelectedServiceArea: (area) => set({ selectedServiceArea: area }),
+	setBusinesses: (businesses) => set({ businesses, filteredBusinesses: businesses }),
+	setLoading: (loading) => set({ loading }),
+	setActiveMarker: (id) => set({ activeMarker: id }),
+	setHoveredBusiness: (business) => set({ hoveredBusiness: business }),
+	setSelectedServiceArea: (area) => set({ selectedServiceArea: area }),
+	setFilteredBusinesses: (filteredBusinesses) => set({ filteredBusinesses }),
+	setMapRef: (mapInstance) => {
+		console.log("setMapRef called with", mapInstance);
+		set({ mapRef: mapInstance });
+	},
+	setActiveBusiness: (business) =>
+		set({
+			activeBusiness: business,
+			activeMarker: business ? business.id : null,
+			selectedServiceArea: business ? get().convertServiceAreaToGeoJSON(business.coordinates.lat, business.coordinates.lng, business.serviceArea.value) : null,
+			hoveredBusiness: business || null,
+		}),
 
-		fetchBusinesses: async (zipCode, searchQuery, radius) => {
-			try {
-				const response = await axios.get(`/api/biz?zip=${zipCode}&query=${searchQuery}&radius=${radius}`);
-				const businesses = response.data;
-				set({ businesses });
-				get().fetchCoordinates(businesses);
-			} catch (error) {
-				console.error("Error fetching businesses:", error);
-			}
-		},
+	fetchBusinessesByBoundingBox: async (southWestLat, southWestLng, northEastLat, northEastLng) => {
+		try {
+			set({ loading: true });
+			console.log("Fetching businesses in bounds:", { southWestLat, southWestLng, northEastLat, northEastLng });
 
-		fetchCoordinates: async (businesses) => {
-			const newCoordinates = {};
-			for (const business of businesses) {
-				try {
-					const coords = await get().getCoordinatesFromAddress(business.address);
-					newCoordinates[business.id] = coords;
-				} catch (error) {
-					console.error(`Error fetching coordinates for ${business.name}:`, error);
-				}
-			}
-			set({ coordinates: newCoordinates });
-			if (businesses.length > 0 && Object.keys(newCoordinates).length > 0) {
-				get().handleMarkerClick(businesses[0]);
-			}
-		},
+			const response = await axios.get(`/api/biz`, {
+				params: {
+					southWestLat,
+					southWestLng,
+					northEastLat,
+					northEastLng,
+				},
+			});
 
-		handleFilterChange: async (filters) => {
-			const { businesses, coordinates } = get();
-			const { searchQuery, zipCode, ratingFilters, openFilters, priceFilters, sortOption } = filters;
-			let filteredBusinesses = [...businesses];
+			const data = response.data;
 
-			// Apply rating filters
-			if (Object.values(ratingFilters).some(Boolean)) {
-				filteredBusinesses = filteredBusinesses.filter((business) => {
-					const rating = business.ratings.overall;
-					return (ratingFilters.oneStar && rating >= 1) || (ratingFilters.twoStars && rating >= 2) || (ratingFilters.threeStars && rating >= 3) || (ratingFilters.fourStars && rating >= 4) || (ratingFilters.fiveStars && rating >= 5);
-				});
-			}
+			console.log("Fetched businesses:", data);
 
-			// Apply open now filter
-			if (openFilters.openNow) {
-				const now = new Date();
-				filteredBusinesses = filteredBusinesses.filter((business) => {
-					const today = now.toLocaleString("en-us", { weekday: "long" });
-					const hours = business.hours.find((h) => h.day === today);
-					if (!hours) return false;
-					const openTime = new Date(`1970-01-01T${hours.open}`);
-					const closeTime = new Date(`1970-01-01T${hours.close}`);
-					return now >= openTime && now <= closeTime;
-				});
-			}
-
-			// Apply price filters
-			if (Object.values(priceFilters).some(Boolean)) {
-				filteredBusinesses = filteredBusinesses.filter((business) => {
-					const priceLevel = business.price.length;
-					return (priceFilters.oneDollar && priceLevel === 1) || (priceFilters.twoDollars && priceLevel === 2) || (priceFilters.threeDollars && priceLevel === 3) || (priceFilters.fourDollars && priceLevel === 4);
-				});
-			}
-
-			// Apply search query filter
-			if (searchQuery) {
-				const normalizeString = (str) => str.toLowerCase().replace(/[^a-z0-9\s]/g, "");
-				const searchQueryNormalized = normalizeString(searchQuery);
-				filteredBusinesses = filteredBusinesses.filter((business) => {
-					const businessNameNormalized = normalizeString(business.name);
-					return businessNameNormalized.includes(searchQueryNormalized);
-				});
-			}
-
-			// Apply sorting option
-			if (sortOption) {
-				if (sortOption === "ratingHighToLow") {
-					filteredBusinesses.sort((a, b) => b.ratings.overall - a.ratings.overall);
-				} else if (sortOption === "ratingLowToHigh") {
-					filteredBusinesses.sort((a, b) => a.ratings.overall - b.ratings.overall);
-				} else if (sortOption === "recommended") {
-					filteredBusinesses.sort((a, b) => b.ratings.overall - a.ratings.overall);
-				} else if (sortOption === "priceLowToHigh") {
-					filteredBusinesses.sort((a, b) => a.price.length - b.price.length);
-				} else if (sortOption === "priceHighToLow") {
-					filteredBusinesses.sort((a, b) => b.price.length - a.price.length);
-				}
-			}
-
-			// Apply zip code filter
-			if (zipCode) {
-				try {
-					const { lat, lng } = await get().getCoordinatesFromZipCode(zipCode);
-					filteredBusinesses = filteredBusinesses.filter((business) => {
-						const businessCoords = coordinates[business.id];
-						if (businessCoords) {
-							const distance = get().getDistance(lat, lng, businessCoords.lat, businessCoords.lng);
-							return distance <= 50;
-						}
-						return false;
-					});
-				} catch (error) {
-					console.error(`Error fetching coordinates for ZIP code ${zipCode}:`, error);
-					return;
-				}
-			}
-
-			// Ensure only one sponsored business shows
-			const sponsoredBusiness = businesses.find((business) => business.isSponsored);
-			if (sponsoredBusiness) {
-				filteredBusinesses = [sponsoredBusiness, ...filteredBusinesses.filter((business) => business.id !== sponsoredBusiness.id)];
-			}
-
-			set({ filteredBusinesses });
-		},
-
-		handleMarkerClick: (business) => {
-			const { coordinates, flyToLocation, setHoveredBusiness, setActiveMarker, setSelectedServiceArea } = get();
-			const coords = coordinates[business.id];
-			if (!coords) {
-				console.error(`No coordinates found for ${business.name}`);
+			if (!Array.isArray(data.businesses)) {
+				console.error("Fetched data is not an array:", data.businesses);
+				set({ loading: false });
 				return;
 			}
-			setActiveMarker(business.id);
-			setHoveredBusiness(business);
-			const businessElement = document.getElementById(`business-${business.id}`);
-			if (businessElement) {
-				businessElement.scrollIntoView({
-					behavior: "smooth",
-					block: "center",
-				});
-			}
-			flyToLocation(coords.lat, coords.lng, business.serviceArea.value);
-			const serviceArea = get().convertServiceAreaToGeoJSON(coords.lat, coords.lng, business.serviceArea.value);
-			setSelectedServiceArea(serviceArea);
-		},
 
-		handleSearchInArea: (bounds) => {
-			const { businesses, coordinates, setFilteredBusinesses } = get();
-			const boundingBox = [bounds.getSouthWest().lng, bounds.getSouthWest().lat, bounds.getNorthEast().lng, bounds.getNorthEast().lat];
-			const filteredBusinesses = businesses.filter((business) => {
-				const coords = coordinates[business.id];
-				return coords && coords.lng >= boundingBox[0] && coords.lat >= boundingBox[1] && coords.lng <= boundingBox[2] && coords.lat <= boundingBox[3];
+			set({
+				businesses: data.businesses,
+				filteredBusinesses: data.businesses,
+				hasMoreBusinesses: data.businesses.length > get().businessesPerPage,
+				loading: false,
 			});
-			setFilteredBusinesses(filteredBusinesses);
-		},
+		} catch (error) {
+			console.error("Error fetching businesses:", error);
+			set({ loading: false });
+		}
+	},
 
-		getCoordinatesFromAddress: async (address) => {
-			const response = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${process.env.NEXT_PUBLIC_MAPBOX_TOKEN}`);
-			const data = await response.json();
-			if (data.features && data.features.length > 0) {
-				const { center } = data.features[0];
-				return {
-					lat: center[1],
-					lng: center[0],
-				};
+	filterAndSortBusinesses: (searchQuery) => {
+		const { businesses, sortOption } = get();
+		console.log("filterAndSortBusinesses called with:", { searchQuery, businesses });
+
+		let filteredBusinesses = [...businesses];
+
+		// Apply search query filter
+		if (searchQuery) {
+			const query = searchQuery.toLowerCase();
+			filteredBusinesses = filteredBusinesses.filter((business) => business.name.toLowerCase().includes(query));
+		}
+		console.log("Filtered by search query:", filteredBusinesses);
+
+		// Sort businesses based on the sortOption
+		filteredBusinesses.sort((a, b) => {
+			if (sortOption === "rating") {
+				return b.rating - a.rating;
+			} else if (sortOption === "name") {
+				return a.name.localeCompare(b.name);
 			}
-			throw new Error("Coordinates not found for address");
-		},
+			return 0;
+		});
+		console.log("Sorted businesses:", filteredBusinesses);
 
-		getCoordinatesFromZipCode: async (zipCode) => {
-			const response = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(zipCode)}.json?access_token=${process.env.NEXT_PUBLIC_MAPBOX_TOKEN}`);
-			const data = await response.json();
-			if (data.features && data.features.length > 0) {
-				const { center } = data.features[0];
-				return {
-					lat: center[1],
-					lng: center[0],
-				};
+		set({ filteredBusinesses });
+	},
+
+	handleMarkerClick: (business) => {
+		const { coordinates, setHoveredBusiness, setActiveMarker, setSelectedServiceArea, setActiveBusiness, flyToLocation } = get();
+		const coords = coordinates[business.id];
+		if (!coords) {
+			console.error(`No coordinates found for ${business.name}`);
+			return;
+		}
+		setActiveMarker(business.id);
+		setHoveredBusiness(business);
+		setActiveBusiness(business);
+		const businessElement = document.getElementById(`business-${business.id}`);
+		if (businessElement) {
+			businessElement.scrollIntoView({
+				behavior: "smooth",
+				block: "center",
+			});
+		}
+		flyToLocation(coords.lat, coords.lng, business.serviceArea.value);
+		const serviceArea = get().convertServiceAreaToGeoJSON(coords.lat, coords.lng, business.serviceArea.value);
+		setSelectedServiceArea(serviceArea);
+	},
+
+	handleSearchInArea: () => {
+		const { mapRef } = get();
+		if (mapRef) {
+			const bounds = mapRef.getBounds();
+			const southWest = bounds.getSouthWest();
+			const northEast = bounds.getNorthEast();
+			get().fetchBusinessesByBoundingBox(southWest.lat, southWest.lng, northEast.lat, northEast.lng);
+		}
+	},
+
+	fetchCoordinatesForZipCode: async (zipCode) => {
+		try {
+			const response = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${zipCode}.json?access_token=${MAPBOX_TOKEN}`);
+			if (response.data.features && response.data.features.length > 0) {
+				const [longitude, latitude] = response.data.features[0].center;
+				return { latitude, longitude };
+			} else {
+				throw new Error(`No coordinates found for zip code: ${zipCode}`);
 			}
-			throw new Error("Coordinates not found for ZIP code");
-		},
+		} catch (error) {
+			console.error("Error fetching coordinates for zip code:", error);
+			return null;
+		}
+	},
 
-		getDistance: (lat1, lng1, lat2, lng2) => {
-			const from = turf.point([lng1, lat1]);
-			const to = turf.point([lng2, lat2]);
-			return turf.distance(from, to, { units: "miles" });
-		},
+	flyToLocation: (lat, lng, serviceAreaRadius) => {
+		const { mapRef } = get();
+		if (mapRef && typeof mapRef.flyTo === "function") {
+			console.log("flyToLocation called with:", { lat, lng, mapRef });
+			mapRef.flyTo({
+				center: [lng, lat],
+				zoom: serviceAreaRadius ? Math.max(8, 14 - Math.log2(serviceAreaRadius)) : 14,
+				essential: true,
+			});
+		} else {
+			console.error("flyToLocation: mapRef is not set correctly or flyTo is not a function");
+		}
+	},
 
-		flyToLocation: (lat, lng, serviceAreaRadius) => {
-			const { mapRef } = get();
-			if (mapRef.current) {
-				mapRef.current.flyTo({
-					center: [lng, lat],
-					zoom: serviceAreaRadius ? Math.max(8, 14 - Math.log2(serviceAreaRadius)) : 14,
-					essential: true,
-				});
-			}
-		},
-
-		convertServiceAreaToGeoJSON: (lat, lng, radius) => {
-			const center = [lng, lat];
-			const options = { steps: 64, units: "miles" };
-			return turf.circle(center, radius, options);
-		},
-	}))
-);
+	convertServiceAreaToGeoJSON: (lat, lng, radius) => {
+		const center = [lng, lat];
+		const options = { steps: 64, units: "miles" };
+		return turf.circle(center, radius, options);
+	},
+}));
 
 export default useBusinessStore;

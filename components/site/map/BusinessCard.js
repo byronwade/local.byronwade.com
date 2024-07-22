@@ -8,17 +8,17 @@ import Link from "next/link";
 import useBusinessStore from "@/store/useBusinessStore";
 
 const BusinessCard = ({ businessId, isActive }) => {
-	const { businesses, setActiveBusiness } = useBusinessStore();
-	console.log("BuissnessCard Buissnesses", businesses);
-	const business = businesses.find((b) => b.id === businessId);
+  const { businesses, setActiveBusiness, handleMarkerClick } = useBusinessStore();
+  const business = businesses.find((b) => b.id === businessId);
 
-	if (!business) return null;
+  if (!business) return null;
 
-	const handleClick = () => {
-		setActiveBusiness(businessId);
-	};
+  const handleClick = () => {
+		setActiveBusiness(business);
+		handleMarkerClick(business);
+  };
 
-	return (
+  return (
 		<div className="px-4">
 			<div id={`business-${business.id}`} className={`flex items-center justify-center w-full mb-4 cursor-pointer ${isActive ? "bg-gray-900" : ""} transition-colors duration-200 ease-in-out`} onClick={handleClick}>
 				<div className="relative w-full border rounded-md shadow bg-card text-card-foreground">
@@ -32,7 +32,6 @@ const BusinessCard = ({ businessId, isActive }) => {
 						<div className="flex-1">
 							<h3 className="mb-1 text-lg font-semibold leading-none tracking-tight">
 								{business.name}
-
 								<Button variant="outline" size="icon" className="ml-2 inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow py-2 z-50 h-[calc(theme(spacing.7)_-_1px)] gap-1 rounded-[6px] px-3 text-xs ">
 									<p className="text-sm text-green-600">{business.price}</p>
 								</Button>
@@ -84,7 +83,7 @@ const BusinessCard = ({ businessId, isActive }) => {
 				</div>
 			</div>
 		</div>
-	);
+  );
 };
 
 export default BusinessCard;

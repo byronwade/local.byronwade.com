@@ -5,46 +5,46 @@ import ChatInput from "@/components/shared/chatBot/ChatInput";
 import ChatSuggestions from "@/components/shared/chatBot/ChatSuggestions";
 
 const initialMessages = [
-	{
-		id: 1,
-		sender: "user",
-		message: "hi",
-	},
-	{
-		id: 2,
-		sender: "thorbis",
-		message: "Hello! How can I assist you today?",
-	},
-	{
-		id: 3,
-		sender: "user",
-		message: "What are your working hours?",
-	},
-	{
-		id: 4,
-		sender: "thorbis",
-		message: "Our working hours are from 9 AM to 5 PM, Monday to Friday.",
-	},
-	{
-		id: 5,
-		sender: "user",
-		message: "Can you tell me a joke?",
-	},
-	{
-		id: 6,
-		sender: "thorbis",
-		message: "Why don’t scientists trust atoms? Because they make up everything!",
-	},
-	{
-		id: 7,
-		sender: "user",
-		message: "What services do you offer?",
-	},
-	{
-		id: 8,
-		sender: "thorbis",
-		message: "We offer a variety of services including plumbing repairs, installations, and maintenance. How can we help you today?",
-	},
+	// {
+	// 	id: 1,
+	// 	sender: "user",
+	// 	message: "hi",
+	// },
+	// {
+	// 	id: 2,
+	// 	sender: "thorbis",
+	// 	message: "Hello! How can I assist you today?",
+	// },
+	// {
+	// 	id: 3,
+	// 	sender: "user",
+	// 	message: "What are your working hours?",
+	// },
+	// {
+	// 	id: 4,
+	// 	sender: "thorbis",
+	// 	message: "Our working hours are from 9 AM to 5 PM, Monday to Friday.",
+	// },
+	// {
+	// 	id: 5,
+	// 	sender: "user",
+	// 	message: "Can you tell me a joke?",
+	// },
+	// {
+	// 	id: 6,
+	// 	sender: "thorbis",
+	// 	message: "Why don’t scientists trust atoms? Because they make up everything!",
+	// },
+	// {
+	// 	id: 7,
+	// 	sender: "user",
+	// 	message: "What services do you offer?",
+	// },
+	// {
+	// 	id: 8,
+	// 	sender: "thorbis",
+	// 	message: "We offer a variety of services including plumbing repairs, installations, and maintenance. How can we help you today?",
+	// },
 ];
 
 const suggestions = [

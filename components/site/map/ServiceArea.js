@@ -1,8 +1,12 @@
-// src/components/site/search/ServiceArea.js
 import React from "react";
 import { Source, Layer } from "react-map-gl";
+import useBusinessStore from "@/store/useBusinessStore";
 
-const ServiceArea = ({ selectedServiceArea }) => {
+const ServiceArea = () => {
+	const { selectedServiceArea } = useBusinessStore((state) => ({
+		selectedServiceArea: state.selectedServiceArea,
+	}));
+
 	if (!selectedServiceArea) return null;
 
 	return (
@@ -19,7 +23,7 @@ const ServiceArea = ({ selectedServiceArea }) => {
 				id="service-area-outline"
 				type="line"
 				paint={{
-					"line-color": "#ff0000",
+					"line-color": "#111",
 					"line-width": 2,
 				}}
 			/>
