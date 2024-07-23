@@ -37,32 +37,46 @@ export const metadata = {
 
 const HowItWorks = () => {
 	return (
-		<div className="container px-4 py-12 mx-auto md:py-24 lg:py-32 max-w-screen-2xl">
-			<header className="mb-12 text-center">
-				<h1 className="text-3xl font-bold tracking-tighter sm:text-5xl">How It Works</h1>
-				<p className="max-w-[600px] mx-auto text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">Learn how Thorbis connects you with businessfessional contractors for your home imbusinessvement needs. Simple steps to post jobs and find the right business.</p>
-			</header>
+		<section className="py-10 bg-white sm:py-16 lg:py-24">
+			<div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+				<div className="max-w-2xl mx-auto text-center">
+					<h2 className="text-3xl font-bold leading-tight text-black sm:text-4xl lg:text-5xl">How does it work?</h2>
+					<p className="max-w-lg mx-auto mt-4 text-base leading-relaxed text-gray-600">Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis.</p>
+				</div>
 
-			<section className="mb-12">
-				<h2 className="mb-4 text-2xl font-bold">1. Post Your Job</h2>
-				<p className="text-lg">Create a detailed job post with all the necessary information about your businessject. Include the type of service you need, your location, and any specific requirements.</p>
-			</section>
+				<div className="relative mt-12 lg:mt-20">
+					<div className="absolute inset-x-0 hidden xl:px-44 top-2 md:block md:px-20 lg:px-28">
+						<img className="w-full" src="https://cdn.rareblocks.xyz/collection/celebration/images/steps/2/curved-dotted-line.svg" alt="" />
+					</div>
 
-			<section className="mb-12">
-				<h2 className="mb-4 text-2xl font-bold">2. Receive businessposals</h2>
-				<p className="text-lg">After posting your job, you will receive businessposals from verified contractors who are interested in your businessject. Review their businessfiles, ratings, and past work to make an informed decision.</p>
-			</section>
+					<div className="relative grid grid-cols-1 text-center gap-y-12 md:grid-cols-3 gap-x-12">
+						<div>
+							<div className="flex items-center justify-center w-16 h-16 mx-auto bg-white border-2 border-gray-200 rounded-full shadow">
+								<span className="text-xl font-semibold text-gray-700"> 1 </span>
+							</div>
+							<h3 className="mt-6 text-xl font-semibold leading-tight text-black md:mt-10">Create a free account</h3>
+							<p className="mt-4 text-base text-gray-600">Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit.</p>
+						</div>
 
-			<section className="mb-12">
-				<h2 className="mb-4 text-2xl font-bold">3. Hire the Best business</h2>
-				<p className="text-lg">Choose the contractor that best fits your needs and budget. You can communicate with them directly through our platform to finalize details and get your businessject started.</p>
-			</section>
+						<div>
+							<div className="flex items-center justify-center w-16 h-16 mx-auto bg-white border-2 border-gray-200 rounded-full shadow">
+								<span className="text-xl font-semibold text-gray-700"> 2 </span>
+							</div>
+							<h3 className="mt-6 text-xl font-semibold leading-tight text-black md:mt-10">Build your website</h3>
+							<p className="mt-4 text-base text-gray-600">Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit.</p>
+						</div>
 
-			<section>
-				<h2 className="mb-4 text-2xl font-bold">4. Complete the businessject</h2>
-				<p className="text-lg">Once the businessject is completed, leave a review for the contractor based on your experience. This helps other users find reliable businessfessionals for their own businessjects.</p>
-			</section>
-		</div>
+						<div>
+							<div className="flex items-center justify-center w-16 h-16 mx-auto bg-white border-2 border-gray-200 rounded-full shadow">
+								<span className="text-xl font-semibold text-gray-700"> 3 </span>
+							</div>
+							<h3 className="mt-6 text-xl font-semibold leading-tight text-black md:mt-10">Release & Launch</h3>
+							<p className="mt-4 text-base text-gray-600">Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
 	);
 };
 
