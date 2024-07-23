@@ -1,15 +1,15 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import LocationDropdown from "@/components/shared/searchBox/LocationDropdown";
-import AiButton from "@/components/shared/searchBox/AiButton";
+import LocationDropdown from "@components/shared/searchBox/LocationDropdown";
+import AiButton from "@components/shared/searchBox/AiButton";
 import { ArrowRight, Search } from "react-feather";
-import { Button } from "@/components/ui/button";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import AutocompleteSuggestions from "@/components/shared/searchBox/AutocompleteSuggestions";
+import { Button } from "@components/ui/button";
+import { TooltipProvider } from "@components/ui/tooltip";
+import AutocompleteSuggestions from "@components/shared/searchBox/AutocompleteSuggestions";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
-import useSearchStore from "@/store/useSearchStore";
+import useSearchStore from "@store/useSearchStore";
 
 const SearchBarOnly = ({ showFilterButton, showSortButton, showLocationButton, showAiButton }) => {
 	const {

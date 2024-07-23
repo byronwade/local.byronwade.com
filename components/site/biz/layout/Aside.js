@@ -1,4 +1,4 @@
-import { AppointmentCard } from "@/components/site/biz/layout/AppointmentCard";
+import { AppointmentCard } from "@components/site/biz/layout/AppointmentCard";
 
 export function Aside() {
 	return (

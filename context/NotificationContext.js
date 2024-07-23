@@ -1,6 +1,6 @@
 // context/NotificationContext.js
 import React, { createContext, useState, useEffect, useContext } from "react";
-import { fakeNotifications } from "@/lib/fakeData";
+import { fakeNotifications } from "@lib/fakeData";
 
 const NotificationContext = createContext();
 

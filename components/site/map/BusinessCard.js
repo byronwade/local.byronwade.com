@@ -1,11 +1,11 @@
 import React from "react";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "@components/ui/button";
+import { Badge } from "@components/ui/badge";
 import { Circle, Clock, Info } from "react-feather";
 import { StarFilledIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
-import useBusinessStore from "@/store/useBusinessStore";
+import useBusinessStore from "@store/useBusinessStore";
 
 const BusinessCard = ({ businessId, isActive }) => {
   const { businesses, setActiveBusiness, handleMarkerClick } = useBusinessStore();

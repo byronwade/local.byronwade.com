@@ -1,17 +1,17 @@
 // components/site/biz/layout/post/PostContent.js
 "use client";
 import React from "react";
-import { usePostContext } from "@/context/posts/PostContext";
-import { useReactionsContext } from "@/context/posts/ReactionsContext";
-import Reactions from "@/components/site/biz/layout/comment/Reactions";
-import ReactionTrigger from "@/components/site/biz/layout/comment/ReactionTrigger";
-import CommentSection from "@/components/site/biz/layout/comment/CommentSection";
+import { usePostContext } from "@context/posts/PostContext";
+import { useReactionsContext } from "@context/posts/ReactionsContext";
+import Reactions from "@components/site/biz/layout/comment/Reactions";
+import ReactionTrigger from "@components/site/biz/layout/comment/ReactionTrigger";
+import CommentSection from "@components/site/biz/layout/comment/CommentSection";
 import { ThumbsUp, MessageCircle, Share2 } from "react-feather"; // Import icons
 import ReviewPost from "../comment/postTypes/ReviewPost";
 import ImagePost from "../comment/postTypes/ImagePost";
 import CommentPost from "../comment/postTypes/CommentPost";
 import VideoPost from "../comment/postTypes/VideoPost";
-import DateDisplay from "@/components/site/biz/layout/shared/DateDisplay";
+import DateDisplay from "@components/site/biz/layout/shared/DateDisplay";
 import Image from "next/image";
 
 const PostContent = () => {

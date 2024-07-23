@@ -1,7 +1,7 @@
 import React from "react";
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { Popover, PopoverTrigger, PopoverContent } from "@components/ui/popover";
 import { ThumbsUp, Heart, Smile, Frown, Meh, ThumbsDown } from "react-feather";
-import { useReactionsContext } from "@/context/posts/ReactionsContext";
+import { useReactionsContext } from "@context/posts/ReactionsContext";
 
 const reactionsIcons = {
 	thumbsUp: ThumbsUp,

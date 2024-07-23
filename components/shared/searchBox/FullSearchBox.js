@@ -1,18 +1,18 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import FilterDropdown from "@/components/shared/searchBox/FilterDropdown";
-import SortDropdown from "@/components/shared/searchBox/SortDropdown";
-import LocationDropdown from "@/components/shared/searchBox/LocationDropdown";
-import AiButton from "@/components/shared/searchBox/AiButton";
+import FilterDropdown from "@components/shared/searchBox/FilterDropdown";
+import SortDropdown from "@components/shared/searchBox/SortDropdown";
+import LocationDropdown from "@components/shared/searchBox/LocationDropdown";
+import AiButton from "@components/shared/searchBox/AiButton";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowRight, Search } from "react-feather";
-import { Button } from "@/components/ui/button";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import AutocompleteSuggestions from "@/components/shared/searchBox/AutocompleteSuggestions";
+import { Button } from "@components/ui/button";
+import { TooltipProvider } from "@components/ui/tooltip";
+import AutocompleteSuggestions from "@components/shared/searchBox/AutocompleteSuggestions";
 import { Loader2 } from "lucide-react";
-import useSearchStore from "@/store/useSearchStore";
-import useBusinessStore from "@/store/useBusinessStore";
+import useSearchStore from "@store/useSearchStore";
+import useBusinessStore from "@store/useBusinessStore";
 
 const FullSearchBox = ({ initialSearchQuery, initialZipCode, onFilterChange }) => {
     const router = useRouter();

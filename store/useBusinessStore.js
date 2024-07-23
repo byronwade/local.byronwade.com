@@ -9,19 +9,17 @@ const useBusinessStore = create((set, get) => ({
 	filteredBusinesses: [],
 	coordinates: {},
 	activeMarker: null,
-	hoveredBusiness: null,
 	selectedServiceArea: null,
-	initialFiltersApplied: false,
 	mapRef: null,
 	activeBusiness: null,
-	businessPage: 1,
 	loading: false,
-	hasMoreBusinesses: true,
+	searchQuery: "",
+	zipCode: "",
+	isPrefetching: false,
 
 	setBusinesses: (businesses) => set({ businesses, filteredBusinesses: businesses }),
 	setLoading: (loading) => set({ loading }),
 	setActiveMarker: (id) => set({ activeMarker: id }),
-	setHoveredBusiness: (business) => set({ hoveredBusiness: business }),
 	setSelectedServiceArea: (area) => set({ selectedServiceArea: area }),
 	setFilteredBusinesses: (filteredBusinesses) => set({ filteredBusinesses }),
 	setMapRef: (mapInstance) => {
@@ -33,8 +31,9 @@ const useBusinessStore = create((set, get) => ({
 			activeBusiness: business,
 			activeMarker: business ? business.id : null,
 			selectedServiceArea: business ? get().convertServiceAreaToGeoJSON(business.coordinates.lat, business.coordinates.lng, business.serviceArea.value) : null,
-			hoveredBusiness: business || null,
 		}),
+	setSearchQuery: (query) => set({ searchQuery: query }),
+	setZipCode: (zipCode) => set({ zipCode }),
 
 	fetchBusinessesByBoundingBox: async (southWestLat, southWestLng, northEastLat, northEastLng) => {
 		try {
@@ -60,75 +59,61 @@ const useBusinessStore = create((set, get) => ({
 				return;
 			}
 
+			const coordinates = {};
+			data.businesses.forEach((business) => {
+				if (business.coordinates) {
+					coordinates[business.id] = business.coordinates;
+				}
+			});
+
 			set({
 				businesses: data.businesses,
-				filteredBusinesses: data.businesses,
-				hasMoreBusinesses: data.businesses.length > get().businessesPerPage,
+				coordinates: coordinates,
 				loading: false,
 			});
+
+			get().filterAndSortBusinesses(get().searchQuery);
 		} catch (error) {
 			console.error("Error fetching businesses:", error);
 			set({ loading: false });
 		}
 	},
 
+	handleSearchInArea: () => {
+		const { mapRef, fetchBusinessesByBoundingBox } = get();
+		if (mapRef) {
+			const bounds = mapRef.getBounds();
+			const southWest = bounds.getSouthWest();
+			const northEast = bounds.getNorthEast();
+			fetchBusinessesByBoundingBox(southWest.lat, southWest.lng, northEast.lat, northEast.lng);
+		}
+	},
+
 	filterAndSortBusinesses: (searchQuery) => {
-		const { businesses, sortOption } = get();
+		const { businesses } = get();
 		console.log("filterAndSortBusinesses called with:", { searchQuery, businesses });
 
 		let filteredBusinesses = [...businesses];
 
-		// Apply search query filter
 		if (searchQuery) {
 			const query = searchQuery.toLowerCase();
 			filteredBusinesses = filteredBusinesses.filter((business) => business.name.toLowerCase().includes(query));
 		}
 		console.log("Filtered by search query:", filteredBusinesses);
 
-		// Sort businesses based on the sortOption
-		filteredBusinesses.sort((a, b) => {
-			if (sortOption === "rating") {
-				return b.rating - a.rating;
-			} else if (sortOption === "name") {
-				return a.name.localeCompare(b.name);
-			}
-			return 0;
-		});
-		console.log("Sorted businesses:", filteredBusinesses);
-
 		set({ filteredBusinesses });
 	},
 
 	handleMarkerClick: (business) => {
-		const { coordinates, setHoveredBusiness, setActiveMarker, setSelectedServiceArea, setActiveBusiness, flyToLocation } = get();
+		const { coordinates, setActiveMarker, setActiveBusiness } = get();
 		const coords = coordinates[business.id];
 		if (!coords) {
 			console.error(`No coordinates found for ${business.name}`);
 			return;
 		}
 		setActiveMarker(business.id);
-		setHoveredBusiness(business);
 		setActiveBusiness(business);
-		const businessElement = document.getElementById(`business-${business.id}`);
-		if (businessElement) {
-			businessElement.scrollIntoView({
-				behavior: "smooth",
-				block: "center",
-			});
-		}
-		flyToLocation(coords.lat, coords.lng, business.serviceArea.value);
-		const serviceArea = get().convertServiceAreaToGeoJSON(coords.lat, coords.lng, business.serviceArea.value);
-		setSelectedServiceArea(serviceArea);
-	},
-
-	handleSearchInArea: () => {
-		const { mapRef } = get();
-		if (mapRef) {
-			const bounds = mapRef.getBounds();
-			const southWest = bounds.getSouthWest();
-			const northEast = bounds.getNorthEast();
-			get().fetchBusinessesByBoundingBox(southWest.lat, southWest.lng, northEast.lat, northEast.lng);
-		}
+		// Ensure flyToLocationWithoutFetch is not being called
 	},
 
 	fetchCoordinatesForZipCode: async (zipCode) => {
@@ -146,17 +131,94 @@ const useBusinessStore = create((set, get) => ({
 		}
 	},
 
-	flyToLocation: (lat, lng, serviceAreaRadius) => {
+	prefetchBusinessesAndFly: async (lat, lng, serviceAreaRadius) => {
+		const { mapRef, fetchBusinessesByBoundingBox, setPrefetching } = get();
+		if (mapRef && typeof mapRef.flyTo === "function") {
+			console.log("prefetchBusinessesAndFly called with:", { lat, lng, mapRef });
+
+			// Set prefetching flag
+			set({ isPrefetching: true });
+
+			// Get the current bounds to determine the size of the bounding box
+			const currentBounds = mapRef.getBounds();
+			const currentSouthWest = currentBounds.getSouthWest();
+			const currentNorthEast = currentBounds.getNorthEast();
+
+			// Calculate the size of the current bounding box
+			const currentBoxWidth = currentNorthEast.lng - currentSouthWest.lng;
+			const currentBoxHeight = currentNorthEast.lat - currentSouthWest.lat;
+
+			// Create a virtual bounding box centered on the new coordinates
+			const southWestLat = lat - currentBoxHeight / 2;
+			const southWestLng = lng - currentBoxWidth / 2;
+			const northEastLat = lat + currentBoxHeight / 2;
+			const northEastLng = lng + currentBoxWidth / 2;
+
+			console.log("Virtual bounds for prefetching:", { southWestLat, southWestLng, northEastLat, northEastLng });
+
+			// Fetch businesses within the virtual bounding box
+			await fetchBusinessesByBoundingBox(southWestLat, southWestLng, northEastLat, northEastLng);
+
+			// Fly the camera to the new location
+			console.log("Flying to location:", { lat, lng });
+			mapRef.flyTo({
+				center: [lng, lat],
+				zoom: serviceAreaRadius ? Math.max(8, 14 - Math.log2(serviceAreaRadius)) : 14,
+				essential: true,
+			});
+
+			mapRef.once("moveend", async () => {
+				// Reset prefetching flag after the fly operation
+				set({ isPrefetching: false });
+
+				// Ensure the filtered businesses only show within the final camera view
+				const finalBounds = mapRef.getBounds();
+				const finalSouthWest = finalBounds.getSouthWest();
+				const finalNorthEast = finalBounds.getNorthEast();
+				console.log("Filtering businesses in final bounds:", { finalSouthWest, finalNorthEast });
+				const { businesses } = get();
+				const finalFilteredBusinesses = businesses.filter((business) => {
+					const coords = business.coordinates;
+					return coords.lat >= finalSouthWest.lat && coords.lat <= finalNorthEast.lat && coords.lng >= finalSouthWest.lng && coords.lng <= finalNorthEast.lng;
+				});
+				set({ filteredBusinesses: finalFilteredBusinesses });
+			});
+		} else {
+			console.error("prefetchBusinessesAndFly: mapRef is not set correctly or flyTo is not a function");
+		}
+	},
+
+	flyToLocation: (lat, lng, serviceAreaRadius, shouldPrefetch = true) => {
 		const { mapRef } = get();
 		if (mapRef && typeof mapRef.flyTo === "function") {
 			console.log("flyToLocation called with:", { lat, lng, mapRef });
+
+			if (shouldPrefetch) {
+				get().prefetchBusinessesAndFly(lat, lng, serviceAreaRadius);
+			} else {
+				mapRef.flyTo({
+					center: [lng, lat],
+					zoom: serviceAreaRadius ? Math.max(8, 14 - Math.log2(serviceAreaRadius)) : 14,
+					essential: true,
+				});
+			}
+		} else {
+			console.error("flyToLocation: mapRef is not set correctly or flyTo is not a function");
+		}
+	},
+
+	flyToLocationWithoutFetch: (lat, lng, serviceAreaRadius) => {
+		const { mapRef } = get();
+		if (mapRef && typeof mapRef.flyTo === "function") {
+			console.log("flyToLocationWithoutFetch called with:", { lat, lng, mapRef });
+
 			mapRef.flyTo({
 				center: [lng, lat],
 				zoom: serviceAreaRadius ? Math.max(8, 14 - Math.log2(serviceAreaRadius)) : 14,
 				essential: true,
 			});
 		} else {
-			console.error("flyToLocation: mapRef is not set correctly or flyTo is not a function");
+			console.error("flyToLocationWithoutFetch: mapRef is not set correctly or flyTo is not a function");
 		}
 	},
 

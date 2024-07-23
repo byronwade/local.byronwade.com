@@ -1,6 +1,6 @@
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@components/ui/card";
+import { Button } from "@components/ui/button";
 import { MapPin, Mail, Edit, PlusCircle, Users, MessageCircle, HelpCircle, Phone } from "lucide-react";
 import { CalendarIcon, FileTextIcon } from "@radix-ui/react-icons";
 

@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@components/ui/button";
 import { Star, Camera, Share2, Bookmark, UserPlus, MapPin, Phone } from "react-feather";
 
 export function QuickLinks() {

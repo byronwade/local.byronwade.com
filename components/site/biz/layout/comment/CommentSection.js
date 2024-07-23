@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
-import { useCommentsContext } from "@/context/posts/CommentsContext";
-import Comment from "@/components/site/biz/layout/comment/Comment";
+import { useCommentsContext } from "@context/posts/CommentsContext";
+import Comment from "@components/site/biz/layout/comment/Comment";
 
 const CommentSection = () => {
 	const { comments } = useCommentsContext();

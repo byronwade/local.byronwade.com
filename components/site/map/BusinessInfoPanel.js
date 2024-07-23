@@ -1,11 +1,12 @@
 import React, { useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import Image from "next/image";
+import { Button } from "@components/ui/button";
+import { ScrollArea } from "@components/ui/scroll-area";
 import { X, ChevronLeft, ChevronRight } from "react-feather";
-import useBusinessStore from "@/store/useBusinessStore";
+import useBusinessStore from "@store/useBusinessStore";
 
 const BusinessInfoPanel = () => {
-	const { activeBusiness: business, filteredBusinesses, setActiveBusiness, flyToLocation } = useBusinessStore();
+	const { activeBusiness: business, filteredBusinesses, setActiveBusiness, flyToLocationWithoutFetch } = useBusinessStore();
 
 	const businessIndex = business ? filteredBusinesses.findIndex((b) => b.id === business.id) : -1;
 
@@ -13,9 +14,9 @@ const BusinessInfoPanel = () => {
 		if (business && business.coordinates) {
 			const { lat, lng } = business.coordinates;
 			const serviceAreaRadius = business.serviceArea.value;
-			flyToLocation(lat, lng, serviceAreaRadius);
+			flyToLocationWithoutFetch(lat, lng, serviceAreaRadius);
 		}
-	}, [business, flyToLocation]);
+	}, [business, flyToLocationWithoutFetch]);
 
 	const handlePrev = () => {
 		if (businessIndex > 0) {
@@ -55,12 +56,12 @@ const BusinessInfoPanel = () => {
 				<ScrollArea className="flex-1 px-4 shadow-lg">
 					<div className="space-y-4">
 						<div className="grid gap-2">
-							<img alt="Product image" loading="lazy" width="300" height="300" decoding="async" className="object-cover w-full rounded-md aspect-square" style={{ color: "transparent" }} src={business.image || "/placeholder.svg"} />
+							<Image alt="Product image" loading="lazy" width={300} height={300} decoding="async" className="object-cover w-full h-auto rounded-md aspect-square" style={{ color: "transparent" }} src={business.image || "/placeholder.svg"} />
 							<div className="grid grid-cols-3 gap-2">
 								{business.images &&
 									business.images.slice(0, 2).map((src, index) => (
 										<button key={index}>
-											<img alt="Product image" loading="lazy" width="84" height="84" decoding="async" className="object-cover w-full rounded-md aspect-square" style={{ color: "transparent" }} src={src || "/placeholder.svg"} />
+											<Image alt="Product image" loading="lazy" width={84} height={84} decoding="async" className="object-cover w-full h-auto rounded-md aspect-square" style={{ color: "transparent" }} src={src || "/placeholder.svg"} />
 										</button>
 									))}
 								<button className="flex items-center justify-center w-full border border-dashed rounded-md aspect-square">

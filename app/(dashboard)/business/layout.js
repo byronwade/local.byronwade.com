@@ -1,5 +1,5 @@
 "use client";
-import Header from "@/components/business/layout/Header";
+import Header from "@components/business/layout/Header";
 
 export default function businessRootLayout({ children }) {
 	return (

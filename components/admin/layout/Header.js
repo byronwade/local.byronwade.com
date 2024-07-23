@@ -1,6 +1,6 @@
 // components/Header.js
-import NavItem from "@/components/shared/layout/NavItem";
-import { Card, CardContent } from "@/components/ui/card";
+import NavItem from "@components/shared/layout/NavItem";
+import { Card, CardContent } from "@components/ui/card";
 
 export default function Header() {
 	return (

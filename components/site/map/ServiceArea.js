@@ -1,6 +1,6 @@
 import React from "react";
 import { Source, Layer } from "react-map-gl";
-import useBusinessStore from "@/store/useBusinessStore";
+import useBusinessStore from "@store/useBusinessStore";
 
 const ServiceArea = () => {
 	const { selectedServiceArea } = useBusinessStore((state) => ({
@@ -16,7 +16,7 @@ const ServiceArea = () => {
 				type="fill"
 				paint={{
 					"fill-color": "#ff0000",
-					"fill-opacity": 0.3,
+					"fill-opacity": 0.2,
 				}}
 			/>
 			<Layer
@@ -24,7 +24,7 @@ const ServiceArea = () => {
 				type="line"
 				paint={{
 					"line-color": "#111",
-					"line-width": 2,
+					"line-width": 4,
 				}}
 			/>
 		</Source>

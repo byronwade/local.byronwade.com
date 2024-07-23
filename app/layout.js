@@ -2,11 +2,11 @@
 import "../styles/globals.css";
 import { Inter as FontSans } from "next/font/google";
 
-import { ThemeProvider } from "@/context/ThemeContext";
+import { ThemeProvider } from "@context/ThemeContext";
 
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@components/ui/toaster";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@lib/utils";
 
 const fontSans = FontSans({
 	subsets: ["latin"],

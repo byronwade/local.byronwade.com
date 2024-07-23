@@ -1,10 +1,10 @@
 // components/SortDropdown.js
 import React from "react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuLabel } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuLabel } from "@components/ui/dropdown-menu";
 import { ChevronDown, X } from "react-feather";
-import { Button } from "@/components/ui/button";
+import { Button } from "@components/ui/button";
 import { AdjustmentsHorizontalIcon } from "@heroicons/react/24/solid";
-import useSearchStore from "@/store/useSearchStore";
+import useSearchStore from "@store/useSearchStore";
 
 const SortDropdown = () => {
 	const { sortOption, handleSortChange, handleResetFilters, isSortModified } = useSearchStore((state) => ({

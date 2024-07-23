@@ -1,7 +1,8 @@
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import Header from "@/components/site/Header";
-import SearchBarOnly from "@/components/shared/searchBox/SearchBarOnly";
+import { Button } from "@components/ui/button";
+import Header from "@components/site/Header";
+import Footer from "@components/site/Footer";
+import SearchBarOnly from "@components/shared/searchBox/SearchBarOnly";
 
 const testimonials = [
 	{
@@ -193,6 +194,7 @@ export default function Home() {
 				</div>
 				<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdData) }} />
 			</main>
+			<Footer />
 		</>
 	);
 }

@@ -1,10 +1,10 @@
 "use client";
 import React from "react";
-import Post from "@/components/site/biz/layout/posts/Post";
-import { PostProvider } from "@/context/posts/PostContext";
-import { CommentsProvider } from "@/context/posts/CommentsContext";
-import { ReactionsProvider } from "@/context/posts/ReactionsContext";
-import AddPost from "@/components/site/biz/layout/posts/AddPost";
+import Post from "@components/site/biz/layout/posts/Post";
+import { PostProvider } from "@context/posts/PostContext";
+import { CommentsProvider } from "@context/posts/CommentsContext";
+import { ReactionsProvider } from "@context/posts/ReactionsContext";
+import AddPost from "@components/site/biz/layout/posts/AddPost";
 
 // Handle the submission of a new review post
 const handlePostSubmit = (postData) => {

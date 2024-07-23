@@ -2,10 +2,10 @@
 
 import React from "react";
 import { usePathname } from "next/navigation";
-import { Button } from "@/components/ui/button";
-// import SearchBar from "@/components/site/SearchBar";
+import { Button } from "@components/ui/button";
+// import SearchBar from "@components/site/SearchBar";
 import Link from "next/link";
-import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
+import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, navigationMenuTriggerStyle } from "@components/ui/navigation-menu";
 
 const components = [
 	{

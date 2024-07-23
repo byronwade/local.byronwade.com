@@ -1,5 +1,5 @@
 "use client";
-import Header from "@/components/user/layout/Header";
+import Header from "@components/user/layout/Header";
 
 export default function UserRootLayout({ children }) {
 	return (

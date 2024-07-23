@@ -1,35 +1,27 @@
-"use client";
-import React, { useRef, useEffect, useCallback } from "react";
-import Image from "next/image";
+import React, { useRef, useEffect, useCallback, useState, Suspense } from "react";
 import Link from "next/link";
 import { ChevronLeft } from "react-feather";
-import MapContainer from "@/components/site/map/MapContainer";
-import BusinessCard from "@/components/site/map/BusinessCard";
-import BusinessInfoPanel from "@/components/site/map/BusinessInfoPanel";
-import FullSearchBox from "@/components/shared/searchBox/FullSearchBox";
+import MapContainer from "@components/site/map/MapContainer";
+import BusinessCard from "@components/site/map/BusinessCard";
+import BusinessInfoPanel from "@components/site/map/BusinessInfoPanel";
+import FullSearchBox from "@components/shared/searchBox/FullSearchBox";
 import { useSearchParams } from "next/navigation";
-import useBusinessStore from "@/store/useBusinessStore";
-import useSearchStore from "@/store/useSearchStore";
-import SkeletonBusinessCard from "@/components/site/map/SkeletonBusinessCard";
+import useBusinessStore from "@store/useBusinessStore";
+import useSearchStore from "@store/useSearchStore";
+import SkeletonBusinessCard from "@components/site/map/SkeletonBusinessCard";
 import axios from "axios";
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
 const SearchContainer = () => {
-	const { filteredBusinesses, activeMarker, hoveredBusiness, selectedServiceArea, fetchBusinessesByBoundingBox, handleMarkerClick, handleSearchInArea, setMapRef, loading, setLoading, filterAndSortBusinesses } = useBusinessStore();
+	const { filteredBusinesses, activeMarker, hoveredBusiness, selectedServiceArea, fetchBusinessesByBoundingBox, handleMarkerClick, setMapRef, loading, setLoading, filterAndSortBusinesses, setBusinesses, flyToLocation } = useBusinessStore();
 	const { zipCode, searchQuery, handleFilterChange, setZipCode, setSearchQuery } = useSearchStore();
 
 	const containerRef = useRef(null);
 	const searchParams = useSearchParams();
 	const initialSearchQuery = searchParams.get("query") || "";
 	const initialZipCode = searchParams.get("zip") || "";
-
-	const handleSearch = async () => {
-		setLoading(true);
-		await handleSearchInArea();
-		setLoading(false);
-		filterAndSortBusinesses(searchQuery); // Reapply filter after fetching businesses
-	};
+	const [businessesLoaded, setBusinessesLoaded] = useState(false);
 
 	const fetchCoordinatesForZipCode = async (zip) => {
 		const response = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${zip}.json?access_token=${MAPBOX_TOKEN}`);
@@ -48,38 +40,25 @@ const SearchContainer = () => {
 				const southWest = bounds.getSouthWest();
 				const northEast = bounds.getNorthEast();
 				await fetchBusinessesByBoundingBox(southWest.lat, southWest.lng, northEast.lat, northEast.lng);
-				setLoading(false);
+				filterAndSortBusinesses(initialSearchQuery); // Apply the search query immediately after fetching
 			}
-		} else {
-			setLoading(false);
 		}
+		setLoading(false);
+		setBusinessesLoaded(true);
 	};
 
 	useEffect(() => {
 		const mapRef = useBusinessStore.getState().mapRef;
 		if (initialZipCode && mapRef) {
-			initialLoad(mapRef); // Fetch businesses centered on the zip code location and then position the map
-		} else {
-			handleSearch(); // Fetch businesses within the current bounding box initially
-		}
-	}, []);
-
-	useEffect(() => {
-		if (initialSearchQuery) {
 			setSearchQuery(initialSearchQuery);
-		}
-		if (initialZipCode) {
 			setZipCode(initialZipCode);
+			initialLoad(mapRef);
 		}
 	}, [initialSearchQuery, initialZipCode, setSearchQuery, setZipCode]);
 
-	useEffect(() => {
-		filterAndSortBusinesses(searchQuery); // Apply filtering and sorting when searchQuery or zipCode changes
-	}, [zipCode, searchQuery]);
-
 	const handleKeyDown = useCallback(
 		(event) => {
-			if (!Array.isArray(filteredBusinesses) || filteredBusinesses.length === 0) return; // No businesses to navigate through
+			if (!Array.isArray(filteredBusinesses) || filteredBusinesses.length === 0) return;
 
 			let currentIndex = filteredBusinesses.findIndex((b) => b.id === hoveredBusiness?.id);
 
@@ -103,17 +82,16 @@ const SearchContainer = () => {
 	}, [handleKeyDown]);
 
 	const handleZipCodeSearch = async (zip) => {
+		setLoading(true);
 		const coordinates = await fetchCoordinatesForZipCode(zip);
 		const mapRef = useBusinessStore.getState().mapRef;
 		if (coordinates && mapRef) {
 			const { latitude, longitude } = coordinates;
-			mapRef.flyTo({ center: [longitude, latitude], zoom: 10, essential: true });
-			const bounds = mapRef.getBounds();
-			const southWest = bounds.getSouthWest();
-			const northEast = bounds.getNorthEast();
-			await fetchBusinessesByBoundingBox(southWest.lat, southWest.lng, northEast.lat, northEast.lng);
-			filterAndSortBusinesses(searchQuery); // Reapply filter after fetching businesses
+			flyToLocation(latitude, longitude, 10, true); // Prefetch businesses and fly to the location
+			setZipCode(zip);
+			setSearchQuery(searchQuery);
 		}
+		setLoading(false);
 	};
 
 	return (
@@ -128,35 +106,40 @@ const SearchContainer = () => {
 						</Link>
 					</header>
 					<div className="w-full px-4 pt-4">
-						<FullSearchBox initialSearchQuery={initialSearchQuery} initialZipCode={initialZipCode} onFilterChange={handleFilterChange} onZipCodeSearch={handleZipCodeSearch} />
+						<Suspense fallback={<div>Loading search box...</div>}>
+							<FullSearchBox initialSearchQuery={initialSearchQuery} initialZipCode={initialZipCode} onFilterChange={handleFilterChange} onZipCodeSearch={handleZipCodeSearch} />
+						</Suspense>
 					</div>
 					<div className="w-full">
-						<div className="px-4 mb-4">
-							<h1 className="text-xl font-bold">Top 10 Best Plumbing Companies</h1>
-						</div>
 						{loading ? (
 							Array.from({ length: 4 }).map((_, index) => <SkeletonBusinessCard key={index} />)
 						) : (
 							<>
-								{Array.isArray(filteredBusinesses) && filteredBusinesses.length > 0 ? (
-									filteredBusinesses.map((business) => <BusinessCard key={business.id} businessId={business.id} isActive={activeMarker === business.id} />)
-								) : (
-									<div className="flex flex-col self-center py-4 text-center text-muted-foreground">
-										<p className="text-md">No businesses found</p>
-										<p className="text-sm">
-											If you can&apos;t find what you are looking for{" "}
-											<Link className="font-bold text-brand" href="/add-a-business">
-												add a business here
-											</Link>
-										</p>
-									</div>
-								)}
+								{Array.isArray(filteredBusinesses) && filteredBusinesses.length > 0
+									? filteredBusinesses.map((business) => (
+											<Suspense key={business.id} fallback={<SkeletonBusinessCard />}>
+												<BusinessCard key={business.id} businessId={business.id} isActive={activeMarker === business.id} />
+											</Suspense>
+									  ))
+									: businessesLoaded && (
+											<div className="flex flex-col self-center py-4 text-center text-muted-foreground">
+												<p className="text-md">No businesses found</p>
+												<p className="text-sm">
+													If you can&apos;t find what you are looking for{" "}
+													<Link className="font-bold text-brand" href="/add-a-business">
+														add a business here
+													</Link>
+												</p>
+											</div>
+									  )}
 							</>
 						)}
 					</div>
 				</div>
 				<div className="relative w-3/4">
-					<MapContainer selectedServiceArea={selectedServiceArea} />
+					<Suspense fallback={<div>Loading map...</div>}>
+						<MapContainer selectedServiceArea={selectedServiceArea} />
+					</Suspense>
 					{hoveredBusiness && <BusinessInfoPanel />}
 				</div>
 			</div>

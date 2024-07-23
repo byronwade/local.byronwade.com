@@ -1,8 +1,8 @@
 import React from "react";
-import NavItem from "@/components/shared/layout/NavItem";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import NavItem from "@components/shared/layout/NavItem";
+import { Card, CardContent } from "@components/ui/card";
+import { Button } from "@components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@components/ui/dropdown-menu";
 import { Plus } from "react-feather";
 import { User, Settings, LogOut } from "lucide-react";
 

@@ -1,4 +1,4 @@
-import UserSignupForm from "@/components/auth/UserSignupForm";
+import UserSignupForm from "@components/auth/UserSignupForm";
 
 export const metadata = {
 	title: "Sign Up - Thorbis",

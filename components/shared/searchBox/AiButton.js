@@ -1,9 +1,9 @@
 // components/AiButton.js
 import React, { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "@components/ui/button";
+import { Badge } from "@components/ui/badge";
 import { SparklesIcon } from "@heroicons/react/24/solid";
-import { Drawer, DrawerClose, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
+import { Drawer, DrawerClose, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from "@components/ui/drawer";
 import Chat from "../chatBot/Chat";
 
 const AiButton = ({ handleTextareaInput, showBeta }) => {

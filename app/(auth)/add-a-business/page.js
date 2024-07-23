@@ -1,4 +1,4 @@
-import BusinessAddForm from "@/components/auth/BusinessAddForm";
+import BusinessAddForm from "@components/auth/BusinessAddForm";
 
 // SEO metadata for the page
 export const metadata = {

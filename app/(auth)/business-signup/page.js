@@ -1,4 +1,4 @@
-import BusinessSignupForm from "@/components/auth/BusinessSignupForm";
+import BusinessSignupForm from "@components/auth/BusinessSignupForm";
 
 // SEO metadata for the page
 export const metadata = {

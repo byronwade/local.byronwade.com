@@ -11,13 +11,13 @@
 		"prefix": ""
 	},
 	"aliases": {
-		"components": "@/components",
-		"utils": "@/lib/utils",
-		"lib": "@/lib",
-		"styles": "@/styles",
-		"context": "@/context",
-		"hooks": "@/hooks",
-		"emails": "@/emails",
-		"stores": "@/stores"
+		"components": "@components",
+		"utils": "@lib/utils",
+		"lib": "@lib",
+		"styles": "@styles",
+		"context": "@context",
+		"hooks": "@hooks",
+		"emails": "@emails",
+		"stores": "@stores"
 	}
 }

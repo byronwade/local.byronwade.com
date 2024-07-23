@@ -1,6 +1,6 @@
 import { Phone, Mail, Link as LinkIcon, MapPin, Star } from "react-feather";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+import { Button } from "@components/ui/button";
+import { Separator } from "@components/ui/separator";
 import Link from "next/link";
 
 export function ContactCard() {

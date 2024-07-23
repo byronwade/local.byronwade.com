@@ -1,8 +1,8 @@
 import { useState } from "react";
-import UserBubble from "@/components/shared/chatBot/UserBubble";
-import ThorbisBubble from "@/components/shared/chatBot/ThorbisBubble";
-import ChatInput from "@/components/shared/chatBot/ChatInput";
-import ChatSuggestions from "@/components/shared/chatBot/ChatSuggestions";
+import UserBubble from "@components/shared/chatBot/UserBubble";
+import ThorbisBubble from "@components/shared/chatBot/ThorbisBubble";
+import ChatInput from "@components/shared/chatBot/ChatInput";
+import ChatSuggestions from "@components/shared/chatBot/ChatSuggestions";
 
 const initialMessages = [
 	// {

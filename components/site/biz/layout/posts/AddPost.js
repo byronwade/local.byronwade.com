@@ -2,7 +2,7 @@
 import React, { useState, useRef } from "react";
 import { Camera, Video, XCircle } from "react-feather";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
+import { Button } from "@components/ui/button";
 
 const AddPostForm = ({ onSubmit }) => {
 	const [content, setContent] = useState("");

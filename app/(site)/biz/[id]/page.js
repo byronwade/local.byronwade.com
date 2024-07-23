@@ -2,21 +2,21 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { MapPin, Clock } from "react-feather";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ContactCard } from "@/components/site/biz/layout/ContactCard";
-import { QuickLinks } from "@/components/site/biz/layout/QuickLinks";
-import { Photos } from "@/components/site/biz/layout/Photos";
-import { Aside } from "@/components/site/biz/layout/Aside";
-import { AboutUs } from "@/components/site/biz/layout/AboutUs";
-import { Services } from "@/components/site/biz/layout/Services";
-import { Blog } from "@/components/site/biz/layout/Blog";
-import { FAQs } from "@/components/site/biz/layout/FAQs";
-import { Careers } from "@/components/site/biz/layout/Careers";
-import { Partnerships } from "@/components/site/biz/layout/Partnerships";
-import PostFeed from "@/components/site/biz/layout/posts/PostFeed";
-import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
+import { ContactCard } from "@components/site/biz/layout/ContactCard";
+import { QuickLinks } from "@components/site/biz/layout/QuickLinks";
+import { Photos } from "@components/site/biz/layout/Photos";
+import { Aside } from "@components/site/biz/layout/Aside";
+import { AboutUs } from "@components/site/biz/layout/AboutUs";
+import { Services } from "@components/site/biz/layout/Services";
+import { Blog } from "@components/site/biz/layout/Blog";
+import { FAQs } from "@components/site/biz/layout/FAQs";
+import { Careers } from "@components/site/biz/layout/Careers";
+import { Partnerships } from "@components/site/biz/layout/Partnerships";
+import PostFeed from "@components/site/biz/layout/posts/PostFeed";
+import { Badge } from "@components/ui/badge";
 import postsData from "./posts.json";
-import ReviewsFeed from "@/components/site/biz/layout/ReviewsFeed";
+import ReviewsFeed from "@components/site/biz/layout/ReviewsFeed";
 
 // SEO metadata for the page
 export const metadata = {
@@ -160,19 +160,6 @@ export default function BizProfile({ params }) {
 					</main>
 					<Aside />
 				</div>
-				<footer className="py-6 bg-muted md:py-8">
-					<div className="container flex items-center justify-between px-4 md:px-6">
-						<div className="text-sm text-muted-foreground">&copy; 2024 Acme Web Design. All rights reserved.</div>
-						<nav className="flex items-center gap-4 md:gap-6">
-							<Link href="#" className="text-sm hover:underline" prefetch={false}>
-								Terms of Service
-							</Link>
-							<Link href="#" className="text-sm hover:underline" prefetch={false}>
-								Privacy Policy
-							</Link>
-						</nav>
-					</div>
-				</footer>
 			</div>
 			<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdData) }} />
 		</>

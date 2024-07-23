@@ -3,6 +3,8 @@ import { devtools } from "zustand/middleware";
 import axios from "axios";
 import { z } from "zod";
 
+const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
+
 const searchQuerySchema = z.string().min(1, "Search query cannot be empty").nonempty();
 const zipCodeSchema = z
 	.string()
@@ -78,16 +80,15 @@ const useSearchStore = create(
 		},
 		getCurrentLocation: async () => {
 			try {
-				set({ loading: true });
-				const response = await axios.post(`https://www.googleapis.com/geolocation/v1/geolocate?key=${process.env.NEXT_PUBLIC_GOOGLE_API_KEY}`);
-				const { lat, lng } = response.data.location;
-				const zip = await get().getZipCodeFromCoordinates(lat, lng);
-				set({ zipCode: zip, dropdownOpen: false });
-				get().validateZipCode(zip); // Validate zip code after setting it
+				const position = await new Promise((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject));
+				const { latitude, longitude } = position.coords;
+				const response = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?access_token=${MAPBOX_TOKEN}`);
+				const zipCode = response.data.features.find((feature) => feature.place_type.includes("postcode"))?.text;
+				set({ zipCode });
+				return { zipCode, latitude, longitude };
 			} catch (error) {
-				set({ locationError: error.response ? error.response.data.error_message : "Unable to retrieve location." });
-			} finally {
-				set({ loading: false });
+				console.error("Error getting current location:", error);
+				return null;
 			}
 		},
 		getZipCodeFromCoordinates: async (lat, lng) => {
@@ -130,9 +131,9 @@ const useSearchStore = create(
 		handleLocationSelect: (zip) => {
 			get().setZipCode(zip);
 			set({ dropdownQuery: zip, dropdownOpen: false, isZipModified: true });
-			get().validateZipCode(zip); // Validate zip code after setting it
+			get().validateZipCode(zip);
 		},
-		setFilteredLocations: (locations) => set({ filteredLocations: locations }), // Added this line
+		setFilteredLocations: (locations) => set({ filteredLocations: locations }), // Define setFilteredLocations function
 		handleSubmit: () => {
 			let isFormValid = true;
 			get().validateSearchQuery(get().searchQuery);

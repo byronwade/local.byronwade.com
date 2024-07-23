@@ -1,10 +1,10 @@
 // components/FilterDropdown.js
 import React from "react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuCheckboxItem, DropdownMenuLabel } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuCheckboxItem, DropdownMenuLabel } from "@components/ui/dropdown-menu";
 import { ChevronRight, ChevronDown, X } from "react-feather";
-import { Button } from "@/components/ui/button";
+import { Button } from "@components/ui/button";
 import { FunnelIcon } from "@heroicons/react/24/solid";
-import useSearchStore from "@/store/useSearchStore";
+import useSearchStore from "@store/useSearchStore";
 
 const FilterDropdown = () => {
 	const { filterCount, isRatingModified, isOpenModified, isPriceModified, ratingFilters, openFilters, priceFilters, handleFilterChange, handleResetFilters } = useSearchStore((state) => ({

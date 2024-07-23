@@ -1,15 +1,15 @@
 // components/site/biz/layout/comment/Comment.js
 
 import React, { useState } from "react";
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { Popover, PopoverTrigger, PopoverContent } from "@components/ui/popover";
 import { User, PlusCircle, MapPin, CheckCircle, Eye } from "react-feather";
-import { Textarea } from "@/components/ui/textarea";
+import { Textarea } from "@components/ui/textarea";
 import Link from "next/link";
 import Image from "next/image";
 import Reactions from "./Reactions";
 import ReactionTrigger from "./ReactionTrigger";
-import { useReactionsContext } from "@/context/posts/ReactionsContext";
-import DateDisplay from "@/components/site/biz/layout/shared/DateDisplay";
+import { useReactionsContext } from "@context/posts/ReactionsContext";
+import DateDisplay from "@components/site/biz/layout/shared/DateDisplay";
 
 const Comment = ({ comment, handleReplyClick, replyBox, replyText, setReplyText, handleAddReply }) => {
 	const [showReplies, setShowReplies] = useState({});

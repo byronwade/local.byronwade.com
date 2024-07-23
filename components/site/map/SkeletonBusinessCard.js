@@ -1,5 +1,5 @@
 import React from "react";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@components/ui/skeleton";
 import { Info, Circle, Clock } from "react-feather";
 import { StarFilledIcon } from "@radix-ui/react-icons";
 

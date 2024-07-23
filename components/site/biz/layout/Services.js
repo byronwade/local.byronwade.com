@@ -1,5 +1,5 @@
 import React from "react";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@components/ui/badge";
 
 const services = ["Web Development", "UI/UX Design", "SEO Optimization", "Digital Marketing", "Brand Strategy", "Content Creation", "E-commerce Solutions", "Mobile App Development", "Web Hosting", "Technical Support", "Analytics & Reporting", "Social Media Management"];
 

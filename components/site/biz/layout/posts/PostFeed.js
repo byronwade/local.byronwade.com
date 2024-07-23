@@ -1,11 +1,11 @@
 "use client";
 import React from "react";
-import Post from "@/components/site/biz/layout/posts/Post";
-import { PostProvider } from "@/context/posts/PostContext";
-import { CommentsProvider } from "@/context/posts/CommentsContext";
-import { ReactionsProvider } from "@/context/posts/ReactionsContext";
+import Post from "@components/site/biz/layout/posts/Post";
+import { PostProvider } from "@context/posts/PostContext";
+import { CommentsProvider } from "@context/posts/CommentsContext";
+import { ReactionsProvider } from "@context/posts/ReactionsContext";
 
-import AddPost from "@/components/site/biz/layout/posts/AddPost";
+import AddPost from "@components/site/biz/layout/posts/AddPost";
 
 const handlePostSubmit = (postData) => {
 	console.log("Post submitted:", postData);

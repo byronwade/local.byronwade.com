@@ -1,7 +1,7 @@
 "use client";
-import Header from "@/components/admin/layout/Header";
-import Main from "@/components/admin/layout/Main";
-import Sidebar from "@/components/admin/layout/Sidebar";
+import Header from "@components/admin/layout/Header";
+import Main from "@components/admin/layout/Main";
+import Sidebar from "@components/admin/layout/Sidebar";
 
 export default function Admin({ children }) {
 	return (
