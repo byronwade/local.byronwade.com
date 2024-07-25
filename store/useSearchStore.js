@@ -1,210 +1,175 @@
 import { create } from "zustand";
-import { devtools } from "zustand/middleware";
-import axios from "axios";
-import { z } from "zod";
 
-const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
+// Function to fetch city and state from coordinates
+const fetchCityAndStateFromCoordinates = async (latitude, longitude) => {
+	try {
+		const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.NEXT_PUBLIC_GOOGLE_API_KEY}`);
+		const data = await response.json();
 
-const searchQuerySchema = z.string().min(1, "Search query cannot be empty").nonempty();
-const zipCodeSchema = z
-	.string()
-	.regex(/^\d{5}$/, "Invalid zip code format")
-	.nonempty();
+		if (data.status === "OK" && data.results.length > 0) {
+			const addressComponents = data.results[0].address_components;
 
-const useSearchStore = create(
-	devtools((set, get) => ({
-		searchQuery: "",
-		zipCode: "",
-		dropdownQuery: "",
-		filteredLocations: [],
-		locationError: null,
-		isValidZipCode: false,
-		isValidSearchQuery: false,
-		dropdownOpen: false,
-		filterCount: 0,
-		ratingFilters: { oneStar: false, twoStars: false, threeStars: false, fourStars: false, fiveStars: false },
-		openFilters: { openNow: false, open24Hours: false },
-		priceFilters: { oneDollar: false, twoDollars: false, threeDollars: false, fourDollars: false },
-		sortOption: "rating",
-		isRatingModified: false,
-		isOpenModified: false,
-		isPriceModified: false,
-		isSortModified: false,
-		isZipModified: false,
-		loading: false,
+			let city = "";
+			let state = "";
 
-		setSearchQuery: (query) => {
-			set({ searchQuery: query });
-			get().validateSearchQuery(query);
-		},
-		setZipCode: (zip) => {
-			set({ zipCode: zip });
-			get().validateZipCode(zip);
-		},
-		setDropdownQuery: (query) => set({ dropdownQuery: query }),
-		setDropdownOpen: (open) => set({ dropdownOpen: open }),
-		setLoading: (loading) => set({ loading }),
-
-		validateSearchQuery: (query) => {
-			try {
-				searchQuerySchema.parse(query);
-				set({ isValidSearchQuery: true });
-			} catch {
-				set({ isValidSearchQuery: false });
-			}
-		},
-		validateZipCode: (zip) => {
-			try {
-				zipCodeSchema.parse(zip);
-				set({ isValidZipCode: true });
-			} catch {
-				set({ isValidZipCode: false });
-			}
-		},
-		updateUrl: () => {
-			const { searchQuery, zipCode } = get();
-			const params = new URLSearchParams();
-			params.set("query", searchQuery);
-			if (zipCode) {
-				params.set("zip", zipCode);
-			} else {
-				params.delete("zip");
-			}
-			return `/search?${params.toString()}`;
-		},
-		handleFilterChange: (onFilterChange) => {
-			const { searchQuery, zipCode, ratingFilters, openFilters, priceFilters, sortOption } = get();
-			if (typeof onFilterChange === "function") {
-				onFilterChange({ searchQuery, zipCode, ratingFilters, openFilters, priceFilters, sortOption });
-			}
-		},
-		getCurrentLocation: async () => {
-			try {
-				const position = await new Promise((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject));
-				const { latitude, longitude } = position.coords;
-				const response = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?access_token=${MAPBOX_TOKEN}`);
-				const zipCode = response.data.features.find((feature) => feature.place_type.includes("postcode"))?.text;
-				set({ zipCode });
-				return { zipCode, latitude, longitude };
-			} catch (error) {
-				console.error("Error getting current location:", error);
-				return null;
-			}
-		},
-		getZipCodeFromCoordinates: async (lat, lng) => {
-			const response = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${process.env.NEXT_PUBLIC_GOOGLE_API_KEY}`);
-			const addressComponents = response.data.results[0].address_components;
-			const zipCodeComponent = addressComponents.find((component) => component.types.includes("postal_code"));
-			return zipCodeComponent ? zipCodeComponent.long_name : null;
-		},
-		fetchLocations: async (query) => {
-			set({ loading: true });
-			try {
-				const response = await fetch(`https://api.zippopotam.us/us/${query}`);
-				if (!response.ok) {
-					set({ filteredLocations: [] });
-					return;
+			// Extract city and state from address components
+			addressComponents.forEach((component) => {
+				if (component.types.includes("locality")) {
+					city = component.long_name;
 				}
-				const data = await response.json();
-				const locations = data.places.map((place) => ({
-					name: `${place["place name"]}, ${place["state abbreviation"]}`,
-					zip: data["post code"],
-				}));
-				set({ filteredLocations: locations });
-			} finally {
-				set({ loading: false });
-			}
-		},
-		handleSearchChange: (e) => {
-			const query = e.target.value;
-			get().setSearchQuery(query);
-		},
-		handleDropdownSearchChange: (e) => {
-			const query = e.target.value;
-			set({ dropdownQuery: query });
-			if (query.length >= 3) {
-				get().fetchLocations(query);
+				if (component.types.includes("administrative_area_level_1")) {
+					state = component.short_name;
+				}
+			});
+
+			return { city, state };
+		} else {
+			throw new Error("No results found");
+		}
+	} catch (error) {
+		console.error("Error fetching city and state:", error);
+		throw error;
+	}
+};
+
+// Function to get coordinates from a ZIP code (stub, needs real implementation)
+const getCoordinatesFromZipCode = (zipCode) => {
+	// This should be replaced with a real implementation or a lookup database
+	// Example response for illustration
+	return {
+		lat: 37.7749,
+		lng: -122.4194,
+	};
+};
+
+// Function to fetch city and state based on input (coordinates or ZIP code)
+const fetchCityAndState = async (input) => {
+	let latitude, longitude;
+
+	if (typeof input === "string") {
+		// Assume input is a ZIP code
+		const coordinates = getCoordinatesFromZipCode(input);
+		if (coordinates) {
+			latitude = coordinates.lat;
+			longitude = coordinates.lng;
+		} else {
+			throw new Error("ZIP code not found in the database");
+		}
+	} else if (typeof input === "object" && input.lat && input.lng) {
+		// Assume input is an object with latitude and longitude
+		latitude = input.lat;
+		longitude = input.lng;
+	} else {
+		throw new Error("Invalid input format");
+	}
+
+	return await fetchCityAndStateFromCoordinates(latitude, longitude);
+};
+
+const useSearchStore = create((set) => ({
+	query: "",
+	location: null,
+	setQuery: (query) => set({ query }),
+	setLocation: (location) => set({ location }),
+
+	fetchCurrentLocation: (successCallback, errorCallback) => {
+		if (navigator.geolocation) {
+			// Use the browser's geolocation
+			navigator.geolocation.getCurrentPosition(
+				(position) => {
+					const { latitude, longitude } = position.coords;
+					const location = { lat: latitude, lng: longitude };
+					set({ location });
+					if (successCallback) {
+						successCallback(location);
+					}
+				},
+				(error) => {
+					console.error("Browser geolocation error:", error);
+					// Fallback to Google's Geolocation API
+					useSearchStore.getState().fetchGoogleGeolocation(successCallback, errorCallback);
+				},
+				{
+					enableHighAccuracy: true,
+					timeout: 5000,
+					maximumAge: 0,
+				}
+			);
+		} else {
+			// Geolocation not supported
+			useSearchStore.getState().fetchGoogleGeolocation(successCallback, errorCallback);
+		}
+	},
+
+	fetchCityAndState: async (input) => {
+		try {
+			const { city, state } = await fetchCityAndState(input);
+			return { city, state };
+		} catch (error) {
+			console.error("Error fetching city and state:", error);
+			throw error;
+		}
+	},
+
+	fetchAutocompleteSuggestions: async (input) => {
+		try {
+			const response = await fetch(`/api/autocomplete?input=${encodeURIComponent(input)}`);
+			const data = await response.json();
+
+			if (data.status === "OK" && data.predictions.length > 0) {
+				return data.predictions;
 			} else {
-				set({ filteredLocations: [] });
+				throw new Error("No predictions found");
 			}
-		},
-		handleLocationSelect: (zip) => {
-			get().setZipCode(zip);
-			set({ dropdownQuery: zip, dropdownOpen: false, isZipModified: true });
-			get().validateZipCode(zip);
-		},
-		setFilteredLocations: (locations) => set({ filteredLocations: locations }), // Define setFilteredLocations function
-		handleSubmit: () => {
-			let isFormValid = true;
-			get().validateSearchQuery(get().searchQuery);
-			get().validateZipCode(get().zipCode);
-			if (get().isValidSearchQuery && get().isValidZipCode) {
-				get().handleFilterChange();
-				return get().updateUrl();
+		} catch (error) {
+			console.error("Error fetching autocomplete suggestions:", error);
+			throw error;
+		}
+	},
+
+	fetchPlaceDetails: async (placeId) => {
+		try {
+			const response = await fetch(`/api/place-details?place_id=${encodeURIComponent(placeId)}`);
+			const data = await response.json();
+
+			if (data.status === "OK" && data.result) {
+				return data.result;
+			} else {
+				throw new Error("No place details found");
 			}
-			return null;
-		},
-		handleDropdownKeyDown: (e) => {
-			if (e.key === "Enter") {
-				get().handleSubmit();
-			}
-		},
-		handleFilterChangeCallback: (category, filter, value) => {
-			if (category === "rating") {
-				set((state) => ({ ratingFilters: { ...state.ratingFilters, [filter]: value }, isRatingModified: true }));
-			} else if (category === "open") {
-				set((state) => ({ openFilters: { ...state.openFilters, [filter]: value }, isOpenModified: true }));
-			} else if (category === "price") {
-				set((state) => ({ priceFilters: { ...state.priceFilters, [filter]: value }, isPriceModified: true }));
-			}
-			get().handleFilterChange();
-		},
-		handleSortChange: (value) => {
-			set({ sortOption: value, isSortModified: true });
-			get().handleFilterChange();
-		},
-		handleResetFilters: (category) => {
-			if (category === "rating") {
-				set({ ratingFilters: { oneStar: false, twoStars: false, threeStars: false, fourStars: false, fiveStars: false }, isRatingModified: false });
-			} else if (category === "open") {
-				set({ openFilters: { openNow: false, open24Hours: false }, isOpenModified: false });
-			} else if (category === "price") {
-				set({ priceFilters: { oneDollar: false, twoDollars: false, threeDollars: false, fourDollars: false }, isPriceModified: false });
-			} else if (category === "sort") {
-				set({ sortOption: "rating", isSortModified: false });
-			} else if (category === "zip") {
-				set({ zipCode: "", isZipModified: false });
-			} else if (category === "filters") {
-				set({
-					ratingFilters: { oneStar: false, twoStars: false, threeStars: false, fourStars: false, fiveStars: false },
-					openFilters: { openNow: false, open24Hours: false },
-					priceFilters: { oneDollar: false, twoDollars: false, threeDollars: false, fourDollars: false },
-					isRatingModified: false,
-					isOpenModified: false,
-					isPriceModified: false,
-				});
-			} else if (category === "all") {
-				set({
-					ratingFilters: { oneStar: false, twoStars: false, threeStars: false, fourStars: false, fiveStars: false },
-					openFilters: { openNow: false, open24Hours: false },
-					priceFilters: { oneDollar: false, twoDollars: false, threeDollars: false, fourDollars: false },
-					sortOption: "rating",
-					zipCode: "",
-					isRatingModified: false,
-					isOpenModified: false,
-					isPriceModified: false,
-					isSortModified: false,
-					isZipModified: false,
-				});
-			}
-			get().handleFilterChange();
-		},
-		handleTextareaInput: (event) => {
-			const textarea = event.target;
-			textarea.style.height = "auto";
-			textarea.style.height = `${Math.min(textarea.scrollHeight, 300)}px`;
-		},
-	}))
-);
+		} catch (error) {
+			console.error("Error fetching place details:", error);
+			throw error;
+		}
+	},
+
+	fetchGoogleGeolocation: (successCallback, errorCallback) => {
+		fetch(`https://www.googleapis.com/geolocation/v1/geolocate?key=${process.env.NEXT_PUBLIC_GOOGLE_API_KEY}`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				if (data.location) {
+					const { lat, lng } = data.location;
+					const location = { lat, lng };
+					set({ location });
+					if (successCallback) {
+						successCallback(location);
+					}
+				} else {
+					throw new Error("Google Geolocation API error: No location data");
+				}
+			})
+			.catch((error) => {
+				console.error("Google Geolocation API error:", error);
+				if (errorCallback) {
+					errorCallback(error);
+				}
+			});
+	},
+}));
 
 export default useSearchStore;

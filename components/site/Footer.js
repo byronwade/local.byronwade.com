@@ -20,7 +20,7 @@ export default function PublicHeader() {
 					<div className="flex pb-2 lg:pb-7">
 						<div className="flex">
 							<a href="/">
-								<span class="text-lg font-extrabold lg:inline-block">Thorbis</span>
+								<span className="text-lg font-extrabold lg:inline-block">Thorbis</span>
 							</a>
 						</div>
 					</div>

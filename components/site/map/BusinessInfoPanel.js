@@ -4,35 +4,37 @@ import { Button } from "@components/ui/button";
 import { ScrollArea } from "@components/ui/scroll-area";
 import { X, ChevronLeft, ChevronRight } from "react-feather";
 import useBusinessStore from "@store/useBusinessStore";
+import useMapStore from "@store/useMapStore";
 
 const BusinessInfoPanel = () => {
-	const { activeBusiness: business, filteredBusinesses, setActiveBusiness, flyToLocationWithoutFetch } = useBusinessStore();
+	const { activeBusinessId, filteredBusinesses, setActiveBusinessId } = useBusinessStore();
+	const { centerOn } = useMapStore();
 
+	const business = filteredBusinesses.find((b) => b.id === activeBusinessId);
 	const businessIndex = business ? filteredBusinesses.findIndex((b) => b.id === business.id) : -1;
 
 	useEffect(() => {
 		if (business && business.coordinates) {
 			const { lat, lng } = business.coordinates;
-			const serviceAreaRadius = business.serviceArea.value;
-			flyToLocationWithoutFetch(lat, lng, serviceAreaRadius);
+			const serviceAreaRadius = business.serviceArea?.value || null;
+			centerOn(lat, lng, serviceAreaRadius);
 		}
-	}, [business, flyToLocationWithoutFetch]);
+	}, [business, centerOn]);
 
 	const handlePrev = () => {
 		if (businessIndex > 0) {
-			setActiveBusiness(filteredBusinesses[businessIndex - 1]);
+			setActiveBusinessId(filteredBusinesses[businessIndex - 1].id);
 		}
 	};
 
 	const handleNext = () => {
 		if (businessIndex < filteredBusinesses.length - 1) {
-			setActiveBusiness(filteredBusinesses[businessIndex + 1]);
+			setActiveBusinessId(filteredBusinesses[businessIndex + 1].id);
 		}
 	};
 
 	const handleClose = () => {
-		// Clear the active business and related states
-		setActiveBusiness(null);
+		setActiveBusinessId(null);
 	};
 
 	if (!business) return null;

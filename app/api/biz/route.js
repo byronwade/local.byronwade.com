@@ -1,53 +1,46 @@
-import { NextResponse } from "next/server";
-import * as turf from "@turf/turf";
-import fs from "fs";
-import path from "path";
+import businessesData from "@lib/businesses.json";
 
-const businessesFilePath = path.join(process.cwd(), "businesses.json");
-let businesses = [];
+export async function GET(req) {
+	const url = new URL(req.url);
+	const zoom = parseInt(url.searchParams.get("zoom"), 10);
+	const north = parseFloat(url.searchParams.get("north"));
+	const south = parseFloat(url.searchParams.get("south"));
+	const east = parseFloat(url.searchParams.get("east"));
+	const west = parseFloat(url.searchParams.get("west"));
 
-try {
-	const rawData = fs.readFileSync(businessesFilePath, "utf-8");
-	const parsedData = JSON.parse(rawData);
-	businesses = parsedData.businesses || [];
-} catch (error) {
-	console.error("Error reading or parsing businesses.json:", error);
-}
+	console.log("Fetching businesses with zoom:", zoom);
+	console.log("Bounds:", { north, south, east, west });
 
-export async function GET(request) {
-	const url = new URL(request.url);
-	const southWestLat = parseFloat(url.searchParams.get("southWestLat"));
-	const southWestLng = parseFloat(url.searchParams.get("southWestLng"));
-	const northEastLat = parseFloat(url.searchParams.get("northEastLat"));
-	const northEastLng = parseFloat(url.searchParams.get("northEastLng"));
+	let businesses;
 
-	if (isNaN(southWestLat) || isNaN(southWestLng) || isNaN(northEastLat) || isNaN(northEastLng)) {
-		return NextResponse.json({ error: "Invalid bounding box coordinates" }, { status: 400 });
+	if (zoom < 5) {
+		// Return a limited set of businesses for very low zoom levels
+		businesses = businessesData.businesses.filter((business) => business.topRated);
+		console.log("Top rated businesses count:", businesses.length);
+	} else if (zoom < 8) {
+		// Return more businesses for medium zoom levels
+		businesses = businessesData.businesses.filter((business) => business.popular);
+		console.log("Popular businesses count:", businesses.length);
+	} else {
+		// Return all businesses for high zoom levels
+		businesses = businessesData.businesses;
+		console.log("All businesses count:", businesses.length);
 	}
 
-	// Create a turf bounding box from the coordinates
-	const boundingBox = turf.bboxPolygon([southWestLng, southWestLat, northEastLng, northEastLat]);
-
-	// console.log("Bounding box:", { southWestLat, southWestLng, northEastLat, northEastLng });
-	// console.log("Bounding box polygon:", boundingBox);
-
-	if (!Array.isArray(businesses)) {
-		console.error("Businesses data is not an array:", businesses);
-		return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
-	}
-
-	// Filter businesses within the bounding box
-	const filteredBusinesses = businesses.filter((business) => {
+	// Filter businesses based on map bounds
+	businesses = businesses.filter((business) => {
 		const { lat, lng } = business.coordinates;
-		const businessPoint = turf.point([lng, lat]);
-		const isInBoundingBox = turf.booleanPointInPolygon(businessPoint, boundingBox);
-		// console.log(`Business: ${business.name}, Coordinates: [${lat}, ${lng}], In bounding box: ${isInBoundingBox}`);
-		return isInBoundingBox;
+		const inBounds = lat >= south && lat <= north && lng >= west && lng <= east;
+		//console.log(`Business: ${business.name}, In Bounds: ${inBounds}`);
+		return inBounds;
 	});
 
-	return NextResponse.json({
-		businesses: filteredBusinesses,
-		total: filteredBusinesses.length,
-		hasMore: false,
+	console.log("Filtered businesses count:", businesses.length);
+
+	return new Response(JSON.stringify({ businesses }), {
+		status: 200,
+		headers: {
+			"Content-Type": "application/json",
+		},
 	});
 }

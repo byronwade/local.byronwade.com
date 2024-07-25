@@ -1,16 +1,38 @@
 import React from "react";
 import { Source, Layer } from "react-map-gl";
 import useBusinessStore from "@store/useBusinessStore";
+import { point, featureCollection, buffer } from "@turf/turf";
+
+// Function to generate GeoJSON for service areas
+const generateServiceAreaGeoJSON = (business) => {
+	const { lat, lng } = business.coordinates;
+	const radius = business.serviceArea?.value || 0; // Assuming the radius is in kilometers
+
+	// Create a point feature
+	const center = point([lng, lat]);
+
+	// Create a buffer around the point feature
+	const buffered = buffer(center, radius, { units: "kilometers" });
+
+	return featureCollection([buffered]);
+};
 
 const ServiceArea = () => {
-	const { selectedServiceArea } = useBusinessStore((state) => ({
-		selectedServiceArea: state.selectedServiceArea,
-	}));
+	const { filteredBusinesses, activeBusinessId } = useBusinessStore();
 
-	if (!selectedServiceArea) return null;
+	const activeBusiness = filteredBusinesses.find((business) => business.id === activeBusinessId);
+
+	const geojson = React.useMemo(() => {
+		if (activeBusiness) {
+			return generateServiceAreaGeoJSON(activeBusiness);
+		}
+		return null;
+	}, [activeBusiness]);
+
+	if (!geojson) return null;
 
 	return (
-		<Source id="selected-service-area" type="geojson" data={selectedServiceArea}>
+		<Source id="selected-service-area" type="geojson" data={geojson}>
 			<Layer
 				id="service-area-fill"
 				type="fill"

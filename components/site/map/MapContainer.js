@@ -1,12 +1,12 @@
-import React, { useRef, useEffect, useState, Suspense } from "react";
-import Link from "next/link";
-import { Button } from "@components/ui/button";
+import React, { useRef, useCallback, useEffect, Suspense } from "react";
 import dynamic from "next/dynamic";
-import { BuildingStorefrontIcon } from "@heroicons/react/24/solid";
+import { Button } from "@components/ui/button";
 import { Compass, Minus, Plus } from "react-feather";
-import useBusinessStore from "@store/useBusinessStore";
-import useSearchStore from "@store/useSearchStore";
+import BusinessInfoPanel from "@components/site/map/BusinessInfoPanel";
 import FullScreenMapSkeleton from "@components/site/map/FullScreenMapSkeleton";
+import useMapStore from "@store/useMapStore";
+import useBusinessStore from "@store/useBusinessStore";
+import debounce from "lodash/debounce";
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
@@ -22,121 +22,127 @@ const ServiceArea = dynamic(() => import("@components/site/map/ServiceArea"), {
 });
 
 const MapContainer = () => {
-	const { setMapRef, handleSearchInArea, setActiveBusiness, fetchCoordinatesForZipCode, fetchBusinessesByBoundingBox } = useBusinessStore((state) => ({
-		setMapRef: state.setMapRef,
-		handleSearchInArea: state.handleSearchInArea,
-		setActiveBusiness: state.setActiveBusiness,
-		fetchCoordinatesForZipCode: state.fetchCoordinatesForZipCode,
-		fetchBusinessesByBoundingBox: state.fetchBusinessesByBoundingBox,
-	}));
-
-	const { zipCode } = useSearchStore((state) => ({
-		zipCode: state.zipCode,
-	}));
-
 	const mapRef = useRef(null);
-	const [isMapReady, setIsMapReady] = useState(false);
-	const [initialCoordinates, setInitialCoordinates] = useState(null);
+	const { setMapRef, getMapCenter, getMapBounds } = useMapStore();
+	const { fetchInitialBusinesses, fetchFilteredBusinesses, initialLoad, initialCoordinates, activeBusinessId, setActiveBusinessId } = useBusinessStore();
+	const initialFetchDone = useRef(false); // Track if initial fetch is done
 
 	useEffect(() => {
-		const fetchInitialCoordinates = async () => {
-			if (zipCode) {
-				const coordinates = await fetchCoordinatesForZipCode(zipCode);
-				if (coordinates) {
-					setInitialCoordinates({
-						latitude: coordinates.latitude,
-						longitude: coordinates.longitude,
-						zoom: 10,
-					});
+		if (mapRef.current) {
+			setMapRef(mapRef.current.getMap());
+			console.log("Map ref set on load:", mapRef.current.getMap());
+		}
+	}, [setMapRef]);
+
+	const handleMapLoad = useCallback(async () => {
+		if (mapRef.current) {
+			const map = mapRef.current.getMap();
+			setMapRef(map);
+			const center = await getMapCenter();
+			if (initialLoad && center && !activeBusinessId && !initialFetchDone.current) {
+				const bounds = await getMapBounds();
+				const zoom = map.getZoom();
+				console.log("Map loaded with bounds:", bounds, "and zoom:", zoom);
+				if (bounds) {
+					console.log("Fetching initial businesses with bounds:", bounds, "and zoom:", zoom);
+					await fetchInitialBusinesses(bounds, zoom);
+					initialFetchDone.current = true; // Mark initial fetch as done
 				}
 			}
-		};
-		fetchInitialCoordinates();
-	}, [zipCode, fetchCoordinatesForZipCode]);
 
-	const onMapLoad = async () => {
+			map.on("movestart", handleMoveStart);
+			map.on("moveend", handleMapMoveEnd);
+
+			return () => {
+				map.off("movestart", handleMoveStart);
+				map.off("moveend", handleMapMoveEnd);
+			};
+		}
+	}, [initialLoad, activeBusinessId, getMapBounds, getMapCenter, setMapRef, fetchInitialBusinesses]);
+
+	const handleMapMoveEnd = useCallback(
+		debounce(async () => {
+			if (mapRef.current) {
+				setMapRef(mapRef.current.getMap());
+				const bounds = await getMapBounds();
+				const zoom = mapRef.current.getZoom();
+				console.log("Map move ended with bounds:", bounds, "and zoom:", zoom);
+				if (bounds) {
+					console.log("Fetching filtered businesses with bounds:", bounds, "and zoom:", zoom);
+					await fetchFilteredBusinesses(bounds, zoom);
+				}
+			}
+		}, 500), // Debounce time in milliseconds
+		[getMapBounds, setMapRef, fetchFilteredBusinesses]
+	);
+
+	const handleMoveStart = useCallback(
+		debounce(() => {
+			const currentActiveBusinessId = activeBusinessId;
+			if (currentActiveBusinessId !== null) {
+				const bounds = mapRef.current.getBounds();
+				const business = useBusinessStore.getState().cache.get(currentActiveBusinessId);
+				if (business && business.coordinates) {
+					const { lat, lng } = business.coordinates;
+					if (lat >= bounds.getSouth() && lat <= bounds.getNorth() && lng >= bounds.getWest() && lng <= bounds.getEast()) {
+						console.log("Active business is within bounds");
+					} else {
+						setActiveBusinessId(null);
+						console.log("Active business set to null on move start");
+					}
+				}
+			}
+		}, 500), // Debounce time in milliseconds
+		[activeBusinessId, setActiveBusinessId]
+	);
+
+	useEffect(() => {
 		if (mapRef.current) {
-			const mapInstance = mapRef.current.getMap();
-			setMapRef(mapInstance);
-			setIsMapReady(true);
-
-			// if (zipCode) {
-			// 	const coordinates = await fetchCoordinatesForZipCode(zipCode);
-			// 	if (coordinates) {
-			// 		const { latitude, longitude } = coordinates;
-			// 		//mapInstance.flyTo({ center: [longitude, latitude], zoom: 10, essential: true });
-			// 		// mapInstance.once("moveend", async () => {
-			// 		// 	const bounds = mapInstance.getBounds();
-			// 		// 	const southWest = bounds.getSouthWest();
-			// 		// 	const northEast = bounds.getNorthEast();
-			// 		// 	await fetchBusinessesByBoundingBox(southWest.lat, southWest.lng, northEast.lat, northEast.lng);
-			// 		// });
-			// 	}
-			// }
-
-			mapInstance.on("dragend", () => {
-				setActiveBusiness(null);
-			});
+			const map = mapRef.current.getMap();
+			map.on("movestart", handleMoveStart);
+			map.on("moveend", handleMapMoveEnd);
+			return () => {
+				map.off("movestart", handleMoveStart);
+				map.off("moveend", handleMapMoveEnd);
+			};
 		}
-	};
-
-	const handleSearchInAreaClick = () => {
-		if (isMapReady && mapRef.current) {
-			handleSearchInArea();
-		}
-	};
-
-	const handleZoomIn = () => {
-		if (isMapReady && mapRef.current) {
-			mapRef.current.getMap().zoomIn();
-		}
-	};
-
-	const handleZoomOut = () => {
-		if (isMapReady && mapRef.current) {
-			mapRef.current.getMap().zoomOut();
-		}
-	};
-
-	const handleRotate = () => {
-		if (isMapReady && mapRef.current) {
-			mapRef.current.getMap().rotateTo(mapRef.current.getMap().getBearing() + 90, { duration: 1000 });
-		}
-	};
-
-	if (!initialCoordinates) {
-		return <FullScreenMapSkeleton />;
-	}
+	}, [handleMoveStart, handleMapMoveEnd]);
 
 	return (
 		<div className="relative w-full h-full">
 			<Suspense fallback={<FullScreenMapSkeleton />}>
-				<Map ref={mapRef} initialViewState={initialCoordinates} mapStyle="mapbox://styles/byronwade/clywtphyo006d01r7ep5s0h8a" mapboxAccessToken={MAPBOX_TOKEN} attributionControl={false} onLoad={onMapLoad}>
+				<Map
+					ref={mapRef}
+					initialViewState={{
+						latitude: initialCoordinates.lat,
+						longitude: initialCoordinates.lng,
+						zoom: 10,
+					}}
+					mapStyle="mapbox://styles/byronwade/clywtphyo006d01r7ep5s0h8a"
+					mapboxAccessToken={MAPBOX_TOKEN}
+					attributionControl={false}
+					onLoad={handleMapLoad}
+				>
 					<ServiceArea />
 					<BusinessMarkers />
 				</Map>
 			</Suspense>
 
+			<BusinessInfoPanel />
+
 			<div className="absolute flex flex-col items-end justify-end space-y-2 top-4 right-4">
-				<Button variant="brand" onClick={handleSearchInAreaClick}>
+				<Button variant="brand" onClick={handleMapMoveEnd}>
 					Search in this area
 				</Button>
-				<Button variant="secondary" size="icon" onClick={handleZoomIn}>
-					<Plus className="w-4 h-4" />
+				<Button variant="secondary" className="flex items-center" onClick={() => mapRef.current?.zoomIn()}>
+					<Plus size={16} />
 				</Button>
-				<Button variant="secondary" size="icon" onClick={handleZoomOut}>
-					<Minus className="w-4 h-4" />
+				<Button variant="secondary" className="flex items-center" onClick={() => mapRef.current?.zoomOut()}>
+					<Minus size={16} />
 				</Button>
-				<Button variant="secondary" size="icon" onClick={handleRotate}>
-					<Compass className="w-4 h-4" />
+				<Button variant="secondary" className="flex items-center" onClick={() => mapRef.current?.flyTo({ center: [0, 0] })}>
+					<Compass size={16} />
 				</Button>
-			</div>
-			<div className="hidden absolute bottom-4 right-4 md:inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow py-2 z-50 h-[calc(theme(spacing.7)_-_1px)] gap-1 rounded-[6px] bg-black px-3 text-xs text-white hover:bg-black hover:text-white dark:bg-white dark:text-black">
-				<BuildingStorefrontIcon className="w-3 h-3 mr-2" />
-				<span>Can&apos;t find a business?</span>
-				<Link className="font-bold text-brand" href="/add-a-business">
-					Add it here
-				</Link>
 			</div>
 		</div>
 	);

@@ -7,88 +7,28 @@ import { ArrowRight, Search } from "react-feather";
 import { Button } from "@components/ui/button";
 import { TooltipProvider } from "@components/ui/tooltip";
 import AutocompleteSuggestions from "@components/shared/searchBox/AutocompleteSuggestions";
-import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
-import useSearchStore from "@store/useSearchStore";
 
-const SearchBarOnly = ({ showFilterButton, showSortButton, showLocationButton, showAiButton }) => {
-	const {
-		zipCode,
-		locationError,
-		dropdownQuery,
-		filteredLocations,
-		isValidZipCode,
-		dropdownOpen,
-		setDropdownOpen,
-		handleDropdownSearchChange,
-		handleDropdownKeyDown,
-		getCurrentLocation,
-		handleLocationSelect,
-		handleResetFilters,
-		handleFilterChange,
-		handleSortChange,
-		isSortModified,
-		sortOption,
-		isZipModified,
-		isOpenModified,
-		isRatingModified,
-		isPriceModified,
-		filterCount,
-		handleTextareaInput,
-		ratingFilters,
-		openFilters,
-		priceFilters,
-		loading,
-		setSearchQuery,
-		searchQuery,
-		isValidSearchQuery,
-		handleSubmit,
-	} = useSearchStore();
-
-	const router = useRouter();
-
+const SearchBarOnly = () => {
 	const [suggestions, setSuggestions] = useState([
 		{ text: "Find business information", icon: "Search", color: "rgb(226, 197, 65)" },
 		{ text: "Create a business content calendar", icon: "Calendar", color: "rgb(203, 139, 208)" },
 		{ text: "Organize business documents", icon: "Clipboard", color: "rgb(203, 139, 208)" },
 		{ text: "Write a business proposal", icon: "Book", color: "rgb(226, 197, 65)" },
 	]);
-	const [filteredSuggestions, setFilteredSuggestions] = useState([]);
-	const [autocompleteOpen, setAutocompleteOpen] = useState(false);
-	const [searchTouched, setSearchTouched] = useState(false);
-	const [zipTouched, setZipTouched] = useState(false);
 
-	useEffect(() => {
-		getCurrentLocation();
-	}, [getCurrentLocation]);
+	useEffect(() => {}, []);
 
-	const handleInputChange = (e) => {
-		const value = e.target.value;
-		setSearchTouched(true);
-		setSearchQuery(value);
-		const filtered = suggestions.filter((suggestion) => suggestion.text.toLowerCase().includes(value.toLowerCase()));
-		setFilteredSuggestions(filtered);
-		setAutocompleteOpen(value.length > 0);
-	};
+	const handleInputChange = (e) => {};
 
 	const handleDropdownSearchChangeTouched = (e) => {
 		setZipTouched(true);
-		handleDropdownSearchChange(e);
 	};
 
-	const handleSuggestionSelect = (text) => {
-		setSearchQuery(text);
-		setAutocompleteOpen(false);
-	};
+	const handleSuggestionSelect = () => {};
 
 	const handleFormSubmit = (e) => {
 		e.preventDefault();
-		setSearchTouched(true);
-		setZipTouched(true);
-		const url = handleSubmit();
-		if (url) {
-			router.push(url);
-		}
 	};
 
 	return (
@@ -112,23 +52,7 @@ const SearchBarOnly = ({ showFilterButton, showSortButton, showLocationButton, s
 							</div>
 						</div>
 						<div className="relative flex items-center space-x-2">
-							{showLocationButton && (
-								<LocationDropdown
-									dropdownOpen={dropdownOpen}
-									setDropdownOpen={setDropdownOpen}
-									zipCode={zipCode}
-									dropdownQuery={dropdownQuery}
-									isValidZipCode={isValidZipCode}
-									filteredLocations={filteredLocations}
-									handleDropdownSearchChange={handleDropdownSearchChangeTouched}
-									handleDropdownKeyDown={handleDropdownKeyDown}
-									handleLocationSelect={handleLocationSelect}
-									handleResetFilters={handleResetFilters}
-									getCurrentLocation={getCurrentLocation}
-									isZipModified={isZipModified}
-									loading={loading}
-								/>
-							)}
+							{showLocationButton && <LocationDropdown />}
 							{showAiButton && <AiButton handleTextareaInput={handleTextareaInput} showBeta={false} />}
 							<Button
 								size="icon"

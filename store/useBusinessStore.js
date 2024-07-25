@@ -1,231 +1,166 @@
 import { create } from "zustand";
-import axios from "axios";
-import * as turf from "@turf/turf";
-
-const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
+import useMapStore from "./useMapStore";
 
 const useBusinessStore = create((set, get) => ({
-	businesses: [],
+	allBusinesses: [],
 	filteredBusinesses: [],
-	coordinates: {},
-	activeMarker: null,
-	selectedServiceArea: null,
-	mapRef: null,
-	activeBusiness: null,
-	loading: false,
-	searchQuery: "",
-	zipCode: "",
-	isPrefetching: false,
+	activeBusinessId: null,
+	initialLoad: true,
+	initialCoordinates: { lat: 37.7749, lng: -122.4194 },
+	prevBounds: null,
+	cache: new Map(),
+	preventFetch: false,
 
-	setBusinesses: (businesses) => set({ businesses, filteredBusinesses: businesses }),
-	setLoading: (loading) => set({ loading }),
-	setActiveMarker: (id) => set({ activeMarker: id }),
-	setSelectedServiceArea: (area) => set({ selectedServiceArea: area }),
-	setFilteredBusinesses: (filteredBusinesses) => set({ filteredBusinesses }),
-	setMapRef: (mapInstance) => {
-		console.log("setMapRef called with", mapInstance);
-		set({ mapRef: mapInstance });
+	setInitialCoordinates: (lat, lng) => {
+		set({ initialCoordinates: { lat, lng } });
+		console.log("Initial coordinates set to:", { lat, lng });
 	},
-	setActiveBusiness: (business) =>
-		set({
-			activeBusiness: business,
-			activeMarker: business ? business.id : null,
-			selectedServiceArea: business ? get().convertServiceAreaToGeoJSON(business.coordinates.lat, business.coordinates.lng, business.serviceArea.value) : null,
-		}),
-	setSearchQuery: (query) => set({ searchQuery: query }),
-	setZipCode: (zipCode) => set({ zipCode }),
 
-	fetchBusinessesByBoundingBox: async (southWestLat, southWestLng, northEastLat, northEastLng) => {
+	fetchInitialBusinesses: async (bounds, zoom) => {
+		if (!bounds || !zoom) {
+			console.error("Bounds or zoom value is missing:", bounds, zoom);
+			return;
+		}
+
+		const activeBusinessId = get().activeBusinessId;
+		if (activeBusinessId || get().preventFetch) {
+			console.log("Skipping initial fetch as there is an active business or fetch is prevented:", activeBusinessId);
+			return;
+		}
+
+		console.log("Fetching initial businesses with bounds:", bounds, "and zoom:", zoom);
+
 		try {
-			set({ loading: true });
-			console.log("Fetching businesses in bounds:", { southWestLat, southWestLng, northEastLat, northEastLng });
+			const response = await fetch(`/api/biz?zoom=${zoom}&north=${bounds.north}&south=${bounds.south}&east=${bounds.east}&west=${bounds.west}`);
+			const data = await response.json();
+			const initialBusinesses = data.businesses;
+			console.log("Initial businesses fetched:", initialBusinesses);
 
-			const response = await axios.get(`/api/biz`, {
-				params: {
-					southWestLat,
-					southWestLng,
-					northEastLat,
-					northEastLng,
-				},
-			});
-
-			const data = response.data;
-
-			console.log("Fetched businesses:", data);
-
-			if (!Array.isArray(data.businesses)) {
-				console.error("Fetched data is not an array:", data.businesses);
-				set({ loading: false });
-				return;
-			}
-
-			const coordinates = {};
-			data.businesses.forEach((business) => {
-				if (business.coordinates) {
-					coordinates[business.id] = business.coordinates;
+			initialBusinesses.forEach((business) => {
+				if (!business.coordinates || business.coordinates.lat === undefined || business.coordinates.lng === undefined) {
+					console.error("Invalid business coordinates:", business.coordinates);
 				}
 			});
 
-			set({
-				businesses: data.businesses,
-				coordinates: coordinates,
-				loading: false,
+			const cache = get().cache;
+			initialBusinesses.forEach((business) => {
+				cache.set(business.id, business);
 			});
 
-			get().filterAndSortBusinesses(get().searchQuery);
+			set({ allBusinesses: Array.from(cache.values()), initialLoad: false });
+			get().filterBusinessesByBounds(bounds);
 		} catch (error) {
-			console.error("Error fetching businesses:", error);
-			set({ loading: false });
+			console.error("Failed to fetch businesses:", error);
 		}
 	},
 
-	handleSearchInArea: () => {
-		const { mapRef, fetchBusinessesByBoundingBox } = get();
-		if (mapRef) {
-			const bounds = mapRef.getBounds();
-			const southWest = bounds.getSouthWest();
-			const northEast = bounds.getNorthEast();
-			fetchBusinessesByBoundingBox(southWest.lat, southWest.lng, northEast.lat, northEast.lng);
-		}
-	},
-
-	filterAndSortBusinesses: (searchQuery) => {
-		const { businesses } = get();
-		console.log("filterAndSortBusinesses called with:", { searchQuery, businesses });
-
-		let filteredBusinesses = [...businesses];
-
-		if (searchQuery) {
-			const query = searchQuery.toLowerCase();
-			filteredBusinesses = filteredBusinesses.filter((business) => business.name.toLowerCase().includes(query));
-		}
-		console.log("Filtered by search query:", filteredBusinesses);
-
-		set({ filteredBusinesses });
-	},
-
-	handleMarkerClick: (business) => {
-		const { coordinates, setActiveMarker, setActiveBusiness } = get();
-		const coords = coordinates[business.id];
-		if (!coords) {
-			console.error(`No coordinates found for ${business.name}`);
+	fetchFilteredBusinesses: async (bounds, zoom) => {
+		if (!bounds || !zoom) {
+			console.error("Bounds or zoom value is missing:", bounds, zoom);
 			return;
 		}
-		setActiveMarker(business.id);
-		setActiveBusiness(business);
-		// Ensure flyToLocationWithoutFetch is not being called
-	},
 
-	fetchCoordinatesForZipCode: async (zipCode) => {
+		const activeBusinessId = get().activeBusinessId;
+		if (activeBusinessId || get().preventFetch) {
+			console.log("Skipping filtered fetch as there is an active business or fetch is prevented:", activeBusinessId);
+			return;
+		}
+
+		console.log("Fetching filtered businesses with bounds:", bounds, "and zoom:", zoom);
+
 		try {
-			const response = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${zipCode}.json?access_token=${MAPBOX_TOKEN}`);
-			if (response.data.features && response.data.features.length > 0) {
-				const [longitude, latitude] = response.data.features[0].center;
-				return { latitude, longitude };
-			} else {
-				throw new Error(`No coordinates found for zip code: ${zipCode}`);
-			}
+			const response = await fetch(`/api/biz?zoom=${zoom}&north=${bounds.north}&south=${bounds.south}&east=${bounds.east}&west=${bounds.west}`);
+			const data = await response.json();
+			const newBusinesses = data.businesses;
+			console.log("Filtered businesses fetched:", newBusinesses);
+
+			newBusinesses.forEach((business) => {
+				if (!business.coordinates || business.coordinates.lat === undefined || business.coordinates.lng === undefined) {
+					console.error("Invalid business coordinates:", business.coordinates);
+				}
+			});
+
+			const cache = get().cache;
+			newBusinesses.forEach((business) => {
+				cache.set(business.id, business);
+			});
+
+			set({ allBusinesses: Array.from(cache.values()) });
+			get().filterBusinessesByBounds(bounds);
 		} catch (error) {
-			console.error("Error fetching coordinates for zip code:", error);
-			return null;
+			console.error("Failed to fetch businesses:", error);
 		}
 	},
 
-	prefetchBusinessesAndFly: async (lat, lng, serviceAreaRadius) => {
-		const { mapRef, fetchBusinessesByBoundingBox, setPrefetching } = get();
-		if (mapRef && typeof mapRef.flyTo === "function") {
-			console.log("prefetchBusinessesAndFly called with:", { lat, lng, mapRef });
-
-			// Set prefetching flag
-			set({ isPrefetching: true });
-
-			// Get the current bounds to determine the size of the bounding box
-			const currentBounds = mapRef.getBounds();
-			const currentSouthWest = currentBounds.getSouthWest();
-			const currentNorthEast = currentBounds.getNorthEast();
-
-			// Calculate the size of the current bounding box
-			const currentBoxWidth = currentNorthEast.lng - currentSouthWest.lng;
-			const currentBoxHeight = currentNorthEast.lat - currentSouthWest.lat;
-
-			// Create a virtual bounding box centered on the new coordinates
-			const southWestLat = lat - currentBoxHeight / 2;
-			const southWestLng = lng - currentBoxWidth / 2;
-			const northEastLat = lat + currentBoxHeight / 2;
-			const northEastLng = lng + currentBoxWidth / 2;
-
-			console.log("Virtual bounds for prefetching:", { southWestLat, southWestLng, northEastLat, northEastLng });
-
-			// Fetch businesses within the virtual bounding box
-			await fetchBusinessesByBoundingBox(southWestLat, southWestLng, northEastLat, northEastLng);
-
-			// Fly the camera to the new location
-			console.log("Flying to location:", { lat, lng });
-			mapRef.flyTo({
-				center: [lng, lat],
-				zoom: serviceAreaRadius ? Math.max(8, 14 - Math.log2(serviceAreaRadius)) : 14,
-				essential: true,
-			});
-
-			mapRef.once("moveend", async () => {
-				// Reset prefetching flag after the fly operation
-				set({ isPrefetching: false });
-
-				// Ensure the filtered businesses only show within the final camera view
-				const finalBounds = mapRef.getBounds();
-				const finalSouthWest = finalBounds.getSouthWest();
-				const finalNorthEast = finalBounds.getNorthEast();
-				console.log("Filtering businesses in final bounds:", { finalSouthWest, finalNorthEast });
-				const { businesses } = get();
-				const finalFilteredBusinesses = businesses.filter((business) => {
-					const coords = business.coordinates;
-					return coords.lat >= finalSouthWest.lat && coords.lat <= finalNorthEast.lat && coords.lng >= finalSouthWest.lng && coords.lng <= finalNorthEast.lng;
-				});
-				set({ filteredBusinesses: finalFilteredBusinesses });
-			});
-		} else {
-			console.error("prefetchBusinessesAndFly: mapRef is not set correctly or flyTo is not a function");
+	filterBusinessesByBounds: (bounds) => {
+		const { allBusinesses, prevBounds, cache, activeBusinessId } = get();
+		if (prevBounds && JSON.stringify(prevBounds) === JSON.stringify(bounds)) {
+			console.log("Bounds have not changed significantly, skipping filtering");
+			return;
 		}
-	},
 
-	flyToLocation: (lat, lng, serviceAreaRadius, shouldPrefetch = true) => {
-		const { mapRef } = get();
-		if (mapRef && typeof mapRef.flyTo === "function") {
-			console.log("flyToLocation called with:", { lat, lng, mapRef });
+		const filteredBusinesses = allBusinesses.filter((business) => {
+			const coords = business.coordinates;
+			if (!coords) return false;
 
-			if (shouldPrefetch) {
-				get().prefetchBusinessesAndFly(lat, lng, serviceAreaRadius);
-			} else {
-				mapRef.flyTo({
-					center: [lng, lat],
-					zoom: serviceAreaRadius ? Math.max(8, 14 - Math.log2(serviceAreaRadius)) : 14,
-					essential: true,
-				});
+			const { lat, lng } = coords;
+			if (lat === undefined || lng === undefined) {
+				console.error("Missing lat or lng in business coordinates:", coords);
+				return false;
 			}
-		} else {
-			console.error("flyToLocation: mapRef is not set correctly or flyTo is not a function");
+
+			return lat >= bounds.south && lat <= bounds.north && lng >= bounds.west && lng <= bounds.east;
+		});
+
+		if (activeBusinessId) {
+			const activeBusiness = cache.get(activeBusinessId);
+			if (activeBusiness) {
+				const { lat, lng } = activeBusiness.coordinates;
+				if (!(lat >= bounds.south && lat <= bounds.north && lng >= bounds.west && lng <= bounds.east)) {
+					set({ activeBusinessId: null });
+					console.log("Active business is out of bounds, setting it to null");
+				} else {
+					console.log("Active business is within bounds");
+				}
+			}
+		}
+
+		set({
+			filteredBusinesses,
+			prevBounds: bounds,
+		});
+		console.log("Filtered businesses set:", filteredBusinesses);
+	},
+
+	setActiveBusinessId: (id) => {
+		const previousActiveBusinessId = get().activeBusinessId;
+
+		// Avoid unnecessary state changes
+		if (id === previousActiveBusinessId) {
+			console.log("Active business ID is already set to:", id);
+			return;
+		}
+
+		set({ activeBusinessId: id });
+		console.log("Active business ID set to:", id);
+
+		if ((id === null || id === "") && previousActiveBusinessId !== null) {
+			console.log("Resetting zoom without triggering fetch");
+			const map = useMapStore.getState().fetchMapRef();
+			console.log("Map ref:", map);
+			if (map) {
+				map.once("moveend", () => {
+					console.log("Zoom reset to 10");
+					set({ preventFetch: false });
+				});
+				set({ preventFetch: true });
+				map.flyTo({ zoom: 10 });
+			}
 		}
 	},
 
-	flyToLocationWithoutFetch: (lat, lng, serviceAreaRadius) => {
-		const { mapRef } = get();
-		if (mapRef && typeof mapRef.flyTo === "function") {
-			console.log("flyToLocationWithoutFetch called with:", { lat, lng, mapRef });
-
-			mapRef.flyTo({
-				center: [lng, lat],
-				zoom: serviceAreaRadius ? Math.max(8, 14 - Math.log2(serviceAreaRadius)) : 14,
-				essential: true,
-			});
-		} else {
-			console.error("flyToLocationWithoutFetch: mapRef is not set correctly or flyTo is not a function");
-		}
-	},
-
-	convertServiceAreaToGeoJSON: (lat, lng, radius) => {
-		const center = [lng, lat];
-		const options = { steps: 64, units: "miles" };
-		return turf.circle(center, radius, options);
+	setMapRef: (map) => {
+		set({ mapRef: map });
 	},
 }));
 

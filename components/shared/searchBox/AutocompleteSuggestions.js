@@ -2,9 +2,7 @@
 import React from "react";
 import * as Icons from "react-feather";
 
-export default function AutocompleteSuggestions({ suggestions, onSelect }) {
-	if (!suggestions.length) return null;
-
+export default function AutocompleteSuggestions({ suggestions }) {
 	return (
 		<div className="z-50 flex flex-col w-full h-full min-w-0">
 			{suggestions.map((suggestion, index) => {
