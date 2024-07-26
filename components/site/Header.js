@@ -27,10 +27,24 @@ const cities = [
 ];
 
 const businesses = [
-	{ title: "Joe&apos;s Pizza", href: "/business/joes-pizza", description: "Best pizza in town." },
-	{ title: "Mike&apos;s Garage", href: "/business/mikes-garage", description: "Reliable car repair services." },
+	{ title: "Joe's Pizza", href: "/business/joes-pizza", description: "Best pizza in town." },
+	{ title: "Mike's Garage", href: "/business/mikes-garage", description: "Reliable car repair services." },
 	// ... more businesses
 ];
+
+const getBackgroundColor = (element) => {
+	if (!element) return null;
+	const style = window.getComputedStyle(element);
+	return style.backgroundColor;
+};
+
+const isLightColor = (color) => {
+	const rgb = color.match(/\d+/g);
+	if (!rgb) return false;
+	const [r, g, b] = rgb.map(Number);
+	const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+	return luminance > 0.5;
+};
 
 export default function Header() {
 	const [isCategoriesOpen, setCategoriesOpen] = React.useState(false);
@@ -38,15 +52,39 @@ export default function Header() {
 	const [isBusinessesOpen, setBusinessesOpen] = React.useState(false);
 	const [isBlogOpen, setBlogOpen] = React.useState(false);
 	const [isSupportOpen, setSupportOpen] = React.useState(false);
+	const [isLightBackground, setIsLightBackground] = React.useState(false);
 	const pathname = usePathname();
+
+	React.useEffect(() => {
+		const header = document.querySelector("#header");
+
+		const checkBackgroundColor = () => {
+			const rect = header.getBoundingClientRect();
+			const elementsBelowHeader = document.elementsFromPoint(rect.left, rect.bottom);
+			const backgroundColor = getBackgroundColor(elementsBelowHeader.find((el) => el !== header));
+			if (backgroundColor) {
+				const isLight = isLightColor(backgroundColor);
+				setIsLightBackground(isLight);
+			}
+		};
+
+		window.addEventListener("scroll", checkBackgroundColor);
+		window.addEventListener("resize", checkBackgroundColor);
+		checkBackgroundColor();
+
+		return () => {
+			window.removeEventListener("scroll", checkBackgroundColor);
+			window.removeEventListener("resize", checkBackgroundColor);
+		};
+	}, []);
 
 	if (pathname.includes("/search")) {
 		return null;
 	}
 
 	return (
-		<div className="sticky top-0 z-50 w-full p-2 px-4 space-x-4 text-white bg-black">
-			<div className="flex items-center justify-start w-full align-middle lg:px-11 mx-auto max-w-[1440px] md:px-[34px] md:px-unset">
+		<div id="header" className={`transition-none sticky top-0 z-50 h-16 transition-colors bg-background/60 backdrop-blur-md border-b ${isLightBackground ? "text-black border-gray-300" : "text-white border-foreground/10"}`}>
+			<div className="container flex flex-row items-center justify-start w-full gap-6 px-4 mx-auto align-middle size-full">
 				<div className="flex flex-row items-center w-full space-x-4">
 					<Link href="/" className="flex flex-row items-center h-full space-x-4 text-xl font-bold align-middle">
 						<Image src="/ThorbisLogo.webp" alt="Thorbis" width={50} height={50} className="h-full w-[36px]" />
@@ -55,7 +93,7 @@ export default function Header() {
 					<nav className="hidden lg:inline">
 						<ul className="flex space-x-4">
 							<li className="relative" onMouseEnter={() => setCategoriesOpen(true)} onMouseLeave={() => setCategoriesOpen(false)}>
-								<Button variant="link" className="hover:no-underline hover:bg-gray-800">
+								<Button variant="link" className={`transition-none hover:no-underline hover:bg-gray-800 ${isLightBackground ? "text-black border-gray-300 hover:bg-gray-100" : "text-white"}`}>
 									Home Services <ChevronDown className="w-4 h-4 ml-2" />
 								</Button>
 								<AnimatePresence>
@@ -73,7 +111,7 @@ export default function Header() {
 								</AnimatePresence>
 							</li>
 							<li className="relative" onMouseEnter={() => setCitiesOpen(true)} onMouseLeave={() => setCitiesOpen(false)}>
-								<Button variant="link" className="hover:no-underline hover:bg-gray-800">
+								<Button variant="link" className={`transition-none hover:no-underline hover:bg-gray-800 ${isLightBackground ? "text-black border-gray-300 hover:bg-gray-100" : "text-white"}`}>
 									Cities <ChevronDown className="w-4 h-4 ml-2" />
 								</Button>
 								<AnimatePresence>
@@ -91,7 +129,7 @@ export default function Header() {
 								</AnimatePresence>
 							</li>
 							<li className="relative" onMouseEnter={() => setBusinessesOpen(true)} onMouseLeave={() => setBusinessesOpen(false)}>
-								<Button variant="link" className="hover:no-underline hover:bg-gray-800">
+								<Button variant="link" className={`transition-none hover:no-underline hover:bg-gray-800 ${isLightBackground ? "text-black border-gray-300 hover:bg-gray-100" : "text-white"}`}>
 									Businesses <ChevronDown className="w-4 h-4 ml-2" />
 								</Button>
 								<AnimatePresence>
@@ -110,7 +148,7 @@ export default function Header() {
 								</AnimatePresence>
 							</li>
 							<li className="relative" onMouseEnter={() => setBlogOpen(true)} onMouseLeave={() => setBlogOpen(false)}>
-								<Button variant="link" className="hover:no-underline hover:bg-gray-800">
+								<Button variant="link" className={`transition-none hover:no-underline hover:bg-gray-800 ${isLightBackground ? "text-black border-gray-300 hover:bg-gray-100" : "text-white"}`}>
 									Blog <ChevronDown className="w-4 h-4 ml-2" />
 								</Button>
 								<AnimatePresence>
@@ -128,7 +166,7 @@ export default function Header() {
 								</AnimatePresence>
 							</li>
 							<li className="relative" onMouseEnter={() => setSupportOpen(true)} onMouseLeave={() => setSupportOpen(false)}>
-								<Button variant="link" className="hover:no-underline hover:bg-gray-800">
+								<Button variant="link" className={`transition-none hover:no-underline hover:bg-gray-800 ${isLightBackground ? "text-black border-gray-300 hover:bg-gray-100" : "text-white"}`}>
 									Support <ChevronDown className="w-4 h-4 ml-2" />
 								</Button>
 								<AnimatePresence>
@@ -151,7 +189,7 @@ export default function Header() {
 				<div className="relative flex-row hidden space-x-4 lg:flex">
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
-							<Button variant="link" className="hover:no-underline hover:bg-gray-800">
+							<Button variant="link" className={`transition-none hover:no-underline hover:bg-gray-800 ${isLightBackground ? "text-black border-gray-300 hover:bg-gray-100" : "text-white"}`}>
 								Add a Business <ChevronDown className="w-4 h-4 ml-2" />
 							</Button>
 						</DropdownMenuTrigger>
@@ -172,10 +210,14 @@ export default function Header() {
 						</DropdownMenuContent>
 					</DropdownMenu>
 					<Link href="/login">
-						<Button variant="outline">Login</Button>
+						<Button variant="outline" className="transition-none">
+							Login
+						</Button>
 					</Link>
 					<Link href="/signup">
-						<Button variant="outline">Sign Up</Button>
+						<Button variant="outline" className="transition-none">
+							Sign Up
+						</Button>
 					</Link>
 				</div>
 				<Drawer>
