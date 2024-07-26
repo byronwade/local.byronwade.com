@@ -6,7 +6,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 /** @type {import('next').NextConfig} */
 const nextConfig = {
 	experimental: {
-		ppr: "incremental",
+		// ppr: "incremental",
 		turbo: {
 			resolveAlias: {
 				"@components": path.resolve(__dirname, "src/components"),
