@@ -38,7 +38,7 @@ const signupSchema = z.object({
 	email: z.string().email({ message: "Invalid email address" }),
 	address: addressSchema,
 	ein: einSchema,
-	serviceArea: z.number().min(1, { message: "Service area must be at least 1 mile" }).max(100, { message: "Service area can't exceed 100 miles" }),
+	serviceArea: z.number().min(1, { message: "Service area must be at least 1 mile" }).max(100, { message: "Service area can&apos;t exceed 100 miles" }),
 	proofOfOwnership: z.array(z.any()).refine((files) => files.length > 0, { message: "Proof of ownership is required" }),
 	insurance: z.array(z.any()).refine((files) => files.length > 0, { message: "Company insurance is required" }),
 });

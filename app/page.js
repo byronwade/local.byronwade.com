@@ -24,7 +24,7 @@ const testimonials = [
 		name: "Rob Hope",
 		handle: "@robhope",
 		image: "/placeholder.svg",
-		tweet: `Just replaced my full network's Google Analytics with Plausible - I can't remember when last I was this impressed by a SaaS UX + design 💯
+		tweet: `Just replaced my full network&apos;s Google Analytics with Plausible - I can&apos;t remember when last I was this impressed by a SaaS UX + design 💯
 	  Became a paying customer within 1hr of the 30-day trial.`,
 		link: "https://twitter.com/robhope/status/1351465826109558784",
 	},
@@ -39,14 +39,14 @@ const testimonials = [
 		name: "Laura Roeder",
 		handle: "@lkr",
 		image: "/placeholder.svg",
-		tweet: `I've been super happy with Plausible. All the conversion tracking we need, it has every report we use.`,
+		tweet: `I&apos;ve been super happy with Plausible. All the conversion tracking we need, it has every report we use.`,
 		link: "https://x.com/lkr/status/1792637010567385355",
 	},
 	{
-		name: "John O'Nolan",
+		name: "John O&apos;Nolan",
 		handle: "@JohnONolan",
 		image: "/placeholder.svg",
-		tweet: `Check out Plausible if you haven't yet — fantastic product, $190/mo for 5M views, or less when paid annually. We switched over everything from GA.`,
+		tweet: `Check out Plausible if you haven&apos;t yet — fantastic product, $190/mo for 5M views, or less when paid annually. We switched over everything from GA.`,
 		link: "https://twitter.com/JohnONolan/status/1488921946062569480",
 	},
 ];

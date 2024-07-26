@@ -27,8 +27,8 @@ const cities = [
 ];
 
 const businesses = [
-	{ title: "Joe's Pizza", href: "/business/joes-pizza", description: "Best pizza in town." },
-	{ title: "Mike's Garage", href: "/business/mikes-garage", description: "Reliable car repair services." },
+	{ title: "Joe&apos;s Pizza", href: "/business/joes-pizza", description: "Best pizza in town." },
+	{ title: "Mike&apos;s Garage", href: "/business/mikes-garage", description: "Reliable car repair services." },
 	// ... more businesses
 ];
 

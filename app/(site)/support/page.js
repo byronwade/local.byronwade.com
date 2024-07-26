@@ -8,7 +8,7 @@ export default function SupportPage() {
 					<h1 className="font-mono text-base tracking-widest uppercase text-brand">Support</h1>
 					<p className="h1 tracking-[-1px]">Hello, how can we help?</p>
 					<button type="button" className="w-full max-w-lg mx-auto">
-						<div className="flex items-center justify-between px-3 py-3 transition border rounded  group bg-background border-control hover:bg-surface-100">
+						<div className="flex items-center justify-between px-3 py-3 transition border rounded group bg-background border-control hover:bg-surface-100">
 							<div className="flex items-center flex-1 space-x-2">
 								<svg xmlns="http://www.w3.org/2000/svg" width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="sbui-icon text-foreground-light">
 									<circle cx={11} cy={11} r={8} />
@@ -34,7 +34,7 @@ export default function SupportPage() {
 						<div className="flex-1 mb-4 lg:mb-8">
 							<h2 className="text-lg font-medium text">Issues</h2>
 							<div className="block my-2">
-								<p className="text-foreground-light">Found a bug? We'd love to hear about it in our GitHub issues.</p>
+								<p className="text-foreground-light">Found a bug? We&apos;d love to hear about it in our GitHub issues.</p>
 							</div>
 						</div>
 						<div className="flex gap-2">
@@ -157,7 +157,7 @@ export default function SupportPage() {
 				<div className="p-6 mx-auto border bg-alternative rounded-xl lg:p-10">
 					<div className="grid justify-between grid-cols-1 gap-2 lg:grid-cols-2 xl:gap-16">
 						<div className="flex flex-col gap-2">
-							<h2 className="text-xl tracking-tight lg:text-2xl">Can't find what you're looking for?</h2>
+							<h2 className="text-xl tracking-tight lg:text-2xl">Can&apos;t find what you&apos;re looking for?</h2>
 						</div>
 						<div className="flex flex-col gap-4">
 							<div className="flex flex-col">

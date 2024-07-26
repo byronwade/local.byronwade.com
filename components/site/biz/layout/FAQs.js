@@ -5,20 +5,20 @@ import Link from "next/link";
 // FAQs data
 const faqs = [
 	{
-		question: "What's the best thing about Switzerland?",
-		answer: "I don't know, but the flag is a big plus. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas cupiditate laboriosam fugiat.",
+		question: "What&apos;s the best thing about Switzerland?",
+		answer: "I don&apos;t know, but the flag is a big plus. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas cupiditate laboriosam fugiat.",
 	},
 	{
-		question: "What's the best thing about Switzerland?",
-		answer: "I don't know, but the flag is a big plus. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas cupiditate laboriosam fugiat.",
+		question: "What&apos;s the best thing about Switzerland?",
+		answer: "I don&apos;t know, but the flag is a big plus. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas cupiditate laboriosam fugiat.",
 	},
 	{
-		question: "What's the best thing about Switzerland?",
-		answer: "I don't know, but the flag is a big plus. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas cupiditate laboriosam fugiat.",
+		question: "What&apos;s the best thing about Switzerland?",
+		answer: "I don&apos;t know, but the flag is a big plus. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas cupiditate laboriosam fugiat.",
 	},
 	{
-		question: "What's the best thing about Switzerland?",
-		answer: "I don't know, but the flag is a big plus. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas cupiditate laboriosam fugiat.",
+		question: "What&apos;s the best thing about Switzerland?",
+		answer: "I don&apos;t know, but the flag is a big plus. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas cupiditate laboriosam fugiat.",
 	},
 	// More questions...
 ];
