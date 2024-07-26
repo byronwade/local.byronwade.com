@@ -32,45 +32,74 @@ const fetchCityAndStateFromCoordinates = async (latitude, longitude) => {
 	}
 };
 
-// Function to get coordinates from a ZIP code (stub, needs real implementation)
-const getCoordinatesFromZipCode = (zipCode) => {
-	// This should be replaced with a real implementation or a lookup database
-	// Example response for illustration
-	return {
-		lat: 37.7749,
-		lng: -122.4194,
-	};
-};
+// Function to get coordinates from a city and state
+const fetchCoordinatesFromCityAndState = async (city, state) => {
+	try {
+		const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${city},${state}&key=${process.env.NEXT_PUBLIC_GOOGLE_API_KEY}`);
+		const data = await response.json();
 
-// Function to fetch city and state based on input (coordinates or ZIP code)
-const fetchCityAndState = async (input) => {
-	let latitude, longitude;
-
-	if (typeof input === "string") {
-		// Assume input is a ZIP code
-		const coordinates = getCoordinatesFromZipCode(input);
-		if (coordinates) {
-			latitude = coordinates.lat;
-			longitude = coordinates.lng;
+		if (data.status === "OK" && data.results.length > 0) {
+			const location = data.results[0].geometry.location;
+			return { lat: location.lat, lng: location.lng };
 		} else {
-			throw new Error("ZIP code not found in the database");
+			throw new Error("No results found");
 		}
-	} else if (typeof input === "object" && input.lat && input.lng) {
-		// Assume input is an object with latitude and longitude
-		latitude = input.lat;
-		longitude = input.lng;
-	} else {
-		throw new Error("Invalid input format");
+	} catch (error) {
+		console.error("Error fetching coordinates:", error);
+		throw error;
 	}
-
-	return await fetchCityAndStateFromCoordinates(latitude, longitude);
 };
 
 const useSearchStore = create((set) => ({
-	query: "",
-	location: null,
-	setQuery: (query) => set({ query }),
-	setLocation: (location) => set({ location }),
+	searchQuery: "",
+	location: {
+		lat: null,
+		lng: null,
+		value: "",
+		city: "",
+		loading: false,
+		error: null,
+		filteredSuggestions: [],
+	},
+	suggestions: [
+		{ text: "Find business information", icon: "Search", color: "rgb(226, 197, 65)" },
+		{ text: "Create a business content calendar", icon: "Calendar", color: "rgb(203, 139, 208)" },
+		{ text: "Organize business documents", icon: "Clipboard", color: "rgb(203, 139, 208)" },
+		{ text: "Write a business proposal", icon: "Book", color: "rgb(226, 197, 65)" },
+	],
+	errors: {},
+	touched: {
+		searchQuery: false,
+		location: false,
+	},
+
+	setSearchQuery: (searchQuery) =>
+		set((state) => ({
+			...state,
+			searchQuery,
+			errors: {
+				...state.errors,
+				searchQuery: "",
+			},
+		})),
+	setLocation: (location) =>
+		set((state) => ({
+			...state,
+			location: {
+				...state.location,
+				...location,
+			},
+		})),
+	setErrors: (errors) =>
+		set((state) => ({
+			...state,
+			errors,
+		})),
+	setTouched: (touched) =>
+		set((state) => ({
+			...state,
+			touched,
+		})),
 
 	fetchCurrentLocation: (successCallback, errorCallback) => {
 		if (navigator.geolocation) {
@@ -107,6 +136,16 @@ const useSearchStore = create((set) => ({
 			return { city, state };
 		} catch (error) {
 			console.error("Error fetching city and state:", error);
+			throw error;
+		}
+	},
+
+	fetchCoordinatesFromCityAndState: async (city, state) => {
+		try {
+			const { lat, lng } = await fetchCoordinatesFromCityAndState(city, state);
+			return { lat, lng };
+		} catch (error) {
+			console.error("Error fetching coordinates:", error);
 			throw error;
 		}
 	},

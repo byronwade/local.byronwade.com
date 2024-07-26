@@ -5,6 +5,7 @@ import { Compass, Minus, Plus } from "react-feather";
 import BusinessInfoPanel from "@components/site/map/BusinessInfoPanel";
 import FullScreenMapSkeleton from "@components/site/map/FullScreenMapSkeleton";
 import useMapStore from "@store/useMapStore";
+import useSearchStore from "@store/useSearchStore";
 import useBusinessStore from "@store/useBusinessStore";
 import debounce from "lodash/debounce";
 
@@ -24,8 +25,12 @@ const ServiceArea = dynamic(() => import("@components/site/map/ServiceArea"), {
 const MapContainer = () => {
 	const mapRef = useRef(null);
 	const { setMapRef, getMapCenter, getMapBounds } = useMapStore();
-	const { fetchInitialBusinesses, fetchFilteredBusinesses, initialLoad, initialCoordinates, activeBusinessId, setActiveBusinessId } = useBusinessStore();
+	const { location } = useSearchStore();
+	const { fetchInitialBusinesses, fetchFilteredBusinesses, initialLoad, activeBusinessId, setActiveBusinessId } = useBusinessStore();
 	const initialFetchDone = useRef(false); // Track if initial fetch is done
+
+	const initialCoordinates = location.lat && location.lng ? { lat: location.lat, lng: location.lng } : { lat: 37.7749, lng: -122.4194 };
+	console.log("Inital Cords", location);
 
 	useEffect(() => {
 		if (mapRef.current) {

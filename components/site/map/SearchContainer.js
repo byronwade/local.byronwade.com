@@ -1,6 +1,8 @@
 import React, { useEffect, useState, Suspense, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ChevronLeft } from "react-feather";
+import { Button } from "@components/ui/button";
 import MapContainer from "@components/site/map/MapContainer";
 import FullSearchBox from "@components/shared/searchBox/FullSearchBox";
 import BusinessCardList from "@components/site/map/BusinessCardList";
@@ -20,13 +22,16 @@ const SearchContainer = () => {
 	return (
 		<div className="flex flex-col h-screen outline-none">
 			<div className="flex flex-1 overflow-hidden">
-				<div className="flex flex-col w-1/4 space-y-4 overflow-y-auto min-w-96">
-					<div className="sticky top-0 left-0 z-[60] shadow-2xl bg-[#121212] w-full">
+				<div className="relative flex flex-col w-1/4 space-y-4 overflow-y-auto min-w-96">
+					<div className="sticky top-0 left-0 z-30 shadow-2xl bg-[#121212] w-full">
 						<header className="flex flex-row items-center px-4 pt-4">
-							<Link href="/" className="flex flex-row items-end space-x-2">
-								<ChevronLeft className="w-8 h-8 p-1 font-bold leading-none text-black bg-white rounded-full hover:bg-gray-300" />
-								<span className="text-3xl font-extrabold leading-none lg:inline-block">Thorbis</span>
-								<span className="leading-none text-md text-primary-500 lg:inline-block mb-[2px]">Business Directory</span>
+							<Link href="/" className="flex w-full space-x-2">
+								<Button variant="secondary">
+									<ChevronLeft className="w-4 h-4 mr-2" /> Thorbis
+								</Button>
+								<div className="flex flex-row items-center justify-end w-full">
+									<Image src="/ThorbisLogo.webp" alt="Thorbis" width={50} height={50} className="h-full w-[36px]" />
+								</div>
 							</Link>
 						</header>
 						<div className="w-full px-4 pt-4">
@@ -35,7 +40,7 @@ const SearchContainer = () => {
 							</Suspense>
 						</div>
 					</div>
-					<div className="w-full">
+					<div className="z-10 w-full">
 						<BusinessCardList activeBusinessId={activeBusinessId} activeCardRef={activeCardRef} />
 					</div>
 				</div>
