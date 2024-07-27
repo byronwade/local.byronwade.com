@@ -1,10 +1,6 @@
 import { create } from "zustand";
-import algoliasearch from "algoliasearch";
 import debounce from "lodash/debounce";
-
-// Initialize Algolia client
-const algoliaClient = algoliasearch(process.env.NEXT_PUBLIC_ALGOLIA_APP_ID, process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY);
-const index = algoliaClient.initIndex("businesses");
+import { algoliaIndex } from "@lib/algoliaClient";
 
 const useSearchStore = create((set) => ({
 	searchQuery: "",
@@ -54,7 +50,7 @@ const useSearchStore = create((set) => ({
 
 	fetchAutocompleteSuggestions: debounce(async (query) => {
 		try {
-			const { hits } = await index.search(query, {
+			const { hits } = await algoliaIndex.search(query, {
 				attributesToRetrieve: ["categories"],
 				hitsPerPage: 10,
 			});

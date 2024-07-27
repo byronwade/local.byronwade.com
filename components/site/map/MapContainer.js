@@ -136,11 +136,6 @@ const MapContainer = React.forwardRef((props, ref) => {
 
 	return (
 		<div className="relative w-full h-full" ref={containerRef}>
-			{/* {loading && (
-				<div className="absolute inset-0 z-10 flex items-center justify-center bg-gray-800 bg-opacity-50">
-					<span className="text-white">Loading...</span>
-				</div>
-			)} */}
 			<Suspense fallback={<FullScreenMapSkeleton />}>
 				<Map
 					ref={mapRef}

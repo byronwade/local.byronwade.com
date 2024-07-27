@@ -1,5 +1,4 @@
-// FullSearchBox.js
-
+"use client";
 import React, { useState, useEffect, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";

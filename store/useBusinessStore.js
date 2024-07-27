@@ -1,10 +1,7 @@
 import { create } from "zustand";
-import useMapStore from "./useMapStore";
 import debounce from "lodash/debounce";
-import algoliasearch from "algoliasearch/lite";
-
-const algoliaClient = algoliasearch(process.env.NEXT_PUBLIC_ALGOLIA_APP_ID, process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY);
-const index = algoliaClient.initIndex("businesses");
+import { algoliaIndex } from "@lib/algoliaClient";
+import useMapStore from "./useMapStore";
 
 const useBusinessStore = create((set, get) => ({
 	allBusinesses: [],
@@ -75,7 +72,7 @@ const useBusinessStore = create((set, get) => ({
 
 		try {
 			set({ loading: true });
-			const { hits } = await index.search(query, {
+			const { hits } = await algoliaIndex.search(query, {
 				aroundLatLngViaIP: false,
 				insideBoundingBox: `${bounds.north},${bounds.west},${bounds.south},${bounds.east}`,
 				hitsPerPage: 1000,

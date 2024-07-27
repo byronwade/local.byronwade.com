@@ -1,4 +1,3 @@
-// BusinessCardList.js
 import React, { useEffect, useRef, useCallback, memo, forwardRef, Suspense } from "react";
 import Link from "next/link";
 import { Button } from "@components/ui/button";

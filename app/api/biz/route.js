@@ -16,20 +16,16 @@ export async function GET(req) {
 	console.log("Bounds:", { north, south, east, west });
 	console.log("Query:", query);
 
+	// Fetch data from Algolia
+	let algoliaResults = [];
 	try {
 		const { hits } = await index.search(query, {
 			aroundLatLngViaIP: false,
-			insideBoundingBox: `${north},${west},${south},${east}`,
 			hitsPerPage: 1000,
-			facetFilters: [[`categories:${query}`, `name:${query}`, `display_phone:${query}`, `email:${query}`, `addresses:${query}`]],
+			facetFilters: [`categories:${query}`, `name:${query}`, `display_phone:${query}`, `email:${query}`, `addresses:${query}`],
 		});
-		console.log("Algolia results:", hits);
-		return new Response(JSON.stringify({ businesses: hits }), {
-			status: 200,
-			headers: {
-				"Content-Type": "application/json",
-			},
-		});
+		algoliaResults = hits;
+		console.log("Algolia results:", algoliaResults);
 	} catch (error) {
 		console.error("Error fetching data from Algolia:", error);
 		return new Response(JSON.stringify({ error: "Internal server error" }), {
@@ -39,4 +35,33 @@ export async function GET(req) {
 			},
 		});
 	}
+
+	// Convert Algolia results to a format similar to your JSON data
+	const algoliaBusinesses = algoliaResults.map((hit) => ({
+		id: hit.objectID,
+		name: hit.name,
+		coordinates: hit._geoloc || { lat: null, lng: null }, // Provide default values if coordinates are missing
+		...hit, // Include other relevant fields from Algolia hits
+	}));
+
+	console.log("Algolia businesses count:", algoliaBusinesses.length);
+
+	// Filter combined results based on bounding box and query
+	const filteredBusinesses = algoliaBusinesses.filter((business) => {
+		const { lat, lng } = business.coordinates;
+		if (lat === null || lng === null) {
+			return false;
+		}
+		const inBounds = lat >= south && lat <= north && lng >= west && lng <= east;
+		return inBounds;
+	});
+
+	console.log("Filtered businesses count:", filteredBusinesses.length);
+
+	return new Response(JSON.stringify({ businesses: filteredBusinesses }), {
+		status: 200,
+		headers: {
+			"Content-Type": "application/json",
+		},
+	});
 }

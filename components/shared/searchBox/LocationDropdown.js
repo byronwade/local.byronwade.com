@@ -12,8 +12,8 @@ import useMapStore from "@store/useMapStore";
 import useBusinessStore from "@store/useBusinessStore";
 import { debounce } from "lodash";
 
-const LocationDropdownContent = () => {
-    const router = useRouter();
+const LocationDropdown = () => {
+	const router = useRouter();
 	const inputRef = useRef(null);
 	const { setActiveBusinessId } = useBusinessStore();
 	const { location, setLocation, fetchCurrentLocation, fetchAutocompleteSuggestions, fetchPlaceDetails, fetchCoordinatesFromCityAndState, fetchCityAndStateFromCoordinates } = useSearchStore();
@@ -179,7 +179,7 @@ const LocationDropdownContent = () => {
 
 const LocationDropdownWithSuspense = () => (
 	<Suspense fallback={<Loader2 className="w-6 h-6 animate-spin" />}>
-		<LocationDropdownContent />
+		<LocationDropdown />
 	</Suspense>
 );
 

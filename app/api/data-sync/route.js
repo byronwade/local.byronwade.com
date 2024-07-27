@@ -4,7 +4,7 @@ import client from "@lib/apolloClient"; // Adjust the path as necessary
 import { GET_BUSINESSES } from "@queries/getBusinesses"; // Adjust the path as necessary
 import businessesData from "@lib/businesses.json";
 
-const algoliaClient = algoliasearch(process.env.ALGOLIA_APP_ID, process.env.ALGOLIA_ADMIN_API_KEY);
+const algoliaClient = algoliasearch(process.env.NEXT_PUBLIC_ALGOLIA_APP_ID, process.env.NEXT_PUBLIC_ALGOLIA_ADMIN_API_KEY);
 const index = algoliaClient.initIndex("businesses");
 
 // Function to sync businesses from local JSON data to Algolia

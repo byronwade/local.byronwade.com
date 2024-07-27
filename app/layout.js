@@ -5,7 +5,7 @@ import { ThemeProvider } from "@context/ThemeContext";
 
 import { Toaster } from "@components/ui/toaster";
 
-import { cn } from "@lib/utils";
+import { cn } from "@utils/utils";
 
 const fontSans = FontSans({
 	subsets: ["latin"],
