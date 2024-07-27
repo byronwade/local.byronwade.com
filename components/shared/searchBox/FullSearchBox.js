@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation"; // Import hooks from Next.js
 import { motion, AnimatePresence } from "framer-motion";
 import FilterDropdown from "@components/shared/searchBox/FilterDropdown";
@@ -11,9 +11,14 @@ import { TooltipProvider } from "@components/ui/tooltip";
 import AutocompleteSuggestions from "@components/shared/searchBox/AutocompleteSuggestions";
 import { Loader2 } from "lucide-react";
 import useSearchStore from "@store/useSearchStore";
+import useBusinessStore from "@store/useBusinessStore";
+import useMapStore from "@store/useMapStore";
+import debounce from "lodash/debounce";
 
 const FullSearchBox = () => {
-    const { searchQuery, setSearchQuery, location, setLocation, errors, setErrors, touched, setTouched, suggestions, loading } = useSearchStore();
+	const { searchQuery, setSearchQuery, location, setLocation, errors, setErrors, touched, setTouched, suggestions, loading } = useSearchStore();
+	const { fetchFilteredBusinesses } = useBusinessStore();
+	const { getMapBounds, getMapZoom } = useMapStore();
 	const [autocompleteOpen, setAutocompleteOpen] = useState(false);
 	const [isFormValid, setIsFormValid] = useState(false);
 
@@ -21,13 +26,12 @@ const FullSearchBox = () => {
 	const searchParams = useSearchParams();
 
 	useEffect(() => {
-		// Update searchQuery state from URL query parameter
 		const queryParam = searchParams.get("query");
 		if (queryParam) {
 			setSearchQuery(queryParam);
 			setTouched((prevTouched) => ({ ...prevTouched, searchQuery: true }));
 		}
-	}, [searchParams]);
+	}, [searchParams, setSearchQuery, setTouched]);
 
 	useEffect(() => {
 		const validationErrors = {};
@@ -45,10 +49,9 @@ const FullSearchBox = () => {
 
 		setErrors(validationErrors);
 		setIsFormValid(isValid);
-	}, [searchQuery, location]);
+	}, [searchQuery, location, setErrors]);
 
 	useEffect(() => {
-		// Update URL in real-time as searchQuery or location changes
 		const queryParams = new URLSearchParams(window.location.search);
 		if (searchQuery) {
 			queryParams.set("query", searchQuery);
@@ -63,11 +66,24 @@ const FullSearchBox = () => {
 		router.replace(`?${queryParams.toString()}`, undefined, { shallow: true });
 	}, [searchQuery, location, router]);
 
+	const debouncedFetchFilteredBusinesses = useCallback(
+		debounce(async () => {
+			const bounds = await getMapBounds();
+			console.log("Map bounds:", bounds);
+			const zoom = await getMapZoom();
+			if (bounds && zoom !== null) {
+				await fetchFilteredBusinesses(bounds, zoom, searchQuery);
+			}
+		}, 300),
+		[getMapBounds, getMapZoom, fetchFilteredBusinesses, searchQuery]
+	);
+
 	const handleInputChange = (e) => {
 		const value = e.target.value;
 		setSearchQuery(value);
 		setTouched((prevTouched) => ({ ...prevTouched, searchQuery: true }));
 		setAutocompleteOpen(true);
+		debouncedFetchFilteredBusinesses();
 	};
 
 	const handleLocationChange = (location) => {
@@ -87,6 +103,7 @@ const FullSearchBox = () => {
 		setSearchQuery(suggestion.text);
 		setAutocompleteOpen(false);
 		setTouched((prevTouched) => ({ ...prevTouched, searchQuery: true }));
+		debouncedFetchFilteredBusinesses();
 	};
 
 	const handleFormSubmit = (e) => {

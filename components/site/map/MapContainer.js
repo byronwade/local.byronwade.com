@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useEffect, Suspense } from "react";
+import React, { useRef, useEffect, useCallback, useMemo, Suspense } from "react";
 import dynamic from "next/dynamic";
 import { Button } from "@components/ui/button";
 import { Compass, Minus, Plus } from "react-feather";
@@ -7,14 +7,10 @@ import FullScreenMapSkeleton from "@components/site/map/FullScreenMapSkeleton";
 import useMapStore from "@store/useMapStore";
 import useSearchStore from "@store/useSearchStore";
 import useBusinessStore from "@store/useBusinessStore";
-import debounce from "lodash/debounce";
+import { Map } from "react-map-gl";
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
-const Map = dynamic(() => import("react-map-gl"), {
-	ssr: false,
-	loading: () => <FullScreenMapSkeleton />,
-});
 const BusinessMarkers = dynamic(() => import("@components/site/map/BusinessMarkers"), {
 	ssr: false,
 });
@@ -22,15 +18,15 @@ const ServiceArea = dynamic(() => import("@components/site/map/ServiceArea"), {
 	ssr: false,
 });
 
-const MapContainer = () => {
+const MapContainer = React.forwardRef((props, ref) => {
 	const mapRef = useRef(null);
-	const { setMapRef, getMapCenter, getMapBounds } = useMapStore();
-	const { location } = useSearchStore();
-	const { fetchInitialBusinesses, fetchFilteredBusinesses, initialLoad, activeBusinessId, setActiveBusinessId } = useBusinessStore();
-	const initialFetchDone = useRef(false); // Track if initial fetch is done
+	const containerRef = useRef(null);
+	const { setMapRef, getMapBounds, getMapZoom } = useMapStore();
+	const { searchQuery } = useSearchStore();
+	const { fetchInitialBusinesses, fetchFilteredBusinesses, initialLoad, activeBusinessId, setActiveBusinessId, clearFilteredBusinesses, loading } = useBusinessStore();
+	const initialFetchDone = useRef(false);
 
-	const initialCoordinates = location.lat && location.lng ? { lat: location.lat, lng: location.lng } : { lat: 37.7749, lng: -122.4194 };
-	console.log("Inital Cords", location);
+	const initialCoordinates = useMemo(() => ({ lat: 37.7749, lng: -122.4194 }), []);
 
 	useEffect(() => {
 		if (mapRef.current) {
@@ -39,19 +35,42 @@ const MapContainer = () => {
 		}
 	}, [setMapRef]);
 
+	useEffect(() => {
+		const handleResize = () => {
+			if (mapRef.current) {
+				mapRef.current.resize();
+			}
+		};
+
+		const resizeObserver = new ResizeObserver(handleResize);
+
+		if (containerRef.current) {
+			resizeObserver.observe(containerRef.current);
+		}
+
+		window.addEventListener("resize", handleResize);
+
+		return () => {
+			if (containerRef.current) {
+				resizeObserver.unobserve(containerRef.current);
+			}
+			window.removeEventListener("resize", handleResize);
+		};
+	}, []);
+
 	const handleMapLoad = useCallback(async () => {
 		if (mapRef.current) {
 			const map = mapRef.current.getMap();
 			setMapRef(map);
-			const center = await getMapCenter();
+			const center = await getMapBounds();
 			if (initialLoad && center && !activeBusinessId && !initialFetchDone.current) {
 				const bounds = await getMapBounds();
-				const zoom = map.getZoom();
+				const zoom = await getMapZoom();
 				console.log("Map loaded with bounds:", bounds, "and zoom:", zoom);
 				if (bounds) {
 					console.log("Fetching initial businesses with bounds:", bounds, "and zoom:", zoom);
-					await fetchInitialBusinesses(bounds, zoom);
-					initialFetchDone.current = true; // Mark initial fetch as done
+					await fetchInitialBusinesses(bounds, zoom, searchQuery);
+					initialFetchDone.current = true;
 				}
 			}
 
@@ -63,58 +82,65 @@ const MapContainer = () => {
 				map.off("moveend", handleMapMoveEnd);
 			};
 		}
-	}, [initialLoad, activeBusinessId, getMapBounds, getMapCenter, setMapRef, fetchInitialBusinesses]);
+	}, [initialLoad, activeBusinessId, getMapBounds, getMapZoom, setMapRef, fetchInitialBusinesses, searchQuery]);
 
-	const handleMapMoveEnd = useCallback(
-		debounce(async () => {
-			if (mapRef.current) {
-				setMapRef(mapRef.current.getMap());
-				const bounds = await getMapBounds();
-				const zoom = mapRef.current.getZoom();
-				console.log("Map move ended with bounds:", bounds, "and zoom:", zoom);
-				if (bounds) {
-					console.log("Fetching filtered businesses with bounds:", bounds, "and zoom:", zoom);
-					await fetchFilteredBusinesses(bounds, zoom);
+	const handleMapMoveEnd = useCallback(async () => {
+		if (mapRef.current) {
+			const bounds = await getMapBounds();
+			const zoom = await getMapZoom();
+			console.log("Map move ended with bounds:", bounds, "and zoom:", zoom);
+			if (bounds && !activeBusinessId) {
+				console.log("Fetching filtered businesses with bounds:", bounds, "and zoom:", zoom, "and query:", searchQuery);
+				await fetchFilteredBusinesses(bounds, zoom, searchQuery);
+			}
+		}
+	}, [getMapBounds, fetchFilteredBusinesses, activeBusinessId, searchQuery, getMapZoom]);
+
+	const handleMoveStart = useCallback(() => {
+		if (activeBusinessId !== null && mapRef.current) {
+			const bounds = mapRef.current.getBounds();
+			const business = useBusinessStore.getState().cache.get(activeBusinessId);
+			if (business && business.coordinates) {
+				const { lat, lng } = business.coordinates;
+				if (lat >= bounds.getSouth() && lat <= bounds.getNorth() && lng >= bounds.getWest() && lng <= bounds.getEast()) {
+					console.log("Active business is within bounds");
+				} else {
+					setActiveBusinessId(null);
+					console.log("Active business set to null on move start");
 				}
 			}
-		}, 500), // Debounce time in milliseconds
-		[getMapBounds, setMapRef, fetchFilteredBusinesses]
-	);
-
-	const handleMoveStart = useCallback(
-		debounce(() => {
-			const currentActiveBusinessId = activeBusinessId;
-			if (currentActiveBusinessId !== null) {
-				const bounds = mapRef.current.getBounds();
-				const business = useBusinessStore.getState().cache.get(currentActiveBusinessId);
-				if (business && business.coordinates) {
-					const { lat, lng } = business.coordinates;
-					if (lat >= bounds.getSouth() && lat <= bounds.getNorth() && lng >= bounds.getWest() && lng <= bounds.getEast()) {
-						console.log("Active business is within bounds");
-					} else {
-						setActiveBusinessId(null);
-						console.log("Active business set to null on move start");
-					}
-				}
-			}
-		}, 500), // Debounce time in milliseconds
-		[activeBusinessId, setActiveBusinessId]
-	);
+		}
+	}, [activeBusinessId, setActiveBusinessId]);
 
 	useEffect(() => {
 		if (mapRef.current) {
 			const map = mapRef.current.getMap();
 			map.on("movestart", handleMoveStart);
 			map.on("moveend", handleMapMoveEnd);
+			map.on("idle", () => {
+				if (mapRef.current) {
+					mapRef.current.resize();
+				}
+			});
 			return () => {
 				map.off("movestart", handleMoveStart);
 				map.off("moveend", handleMapMoveEnd);
+				map.off("idle", () => {
+					if (mapRef.current) {
+						mapRef.current.resize();
+					}
+				});
 			};
 		}
 	}, [handleMoveStart, handleMapMoveEnd]);
 
 	return (
-		<div className="relative w-full h-full">
+		<div className="relative w-full h-full" ref={containerRef}>
+			{/* {loading && (
+				<div className="absolute inset-0 z-10 flex items-center justify-center bg-gray-800 bg-opacity-50">
+					<span className="text-white">Loading...</span>
+				</div>
+			)} */}
 			<Suspense fallback={<FullScreenMapSkeleton />}>
 				<Map
 					ref={mapRef}
@@ -151,6 +177,8 @@ const MapContainer = () => {
 			</div>
 		</div>
 	);
-};
+});
+
+MapContainer.displayName = "MapContainer";
 
 export default MapContainer;

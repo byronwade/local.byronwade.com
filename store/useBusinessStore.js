@@ -1,11 +1,13 @@
 import { create } from "zustand";
 import useMapStore from "./useMapStore";
+import debounce from "lodash/debounce";
 
 const useBusinessStore = create((set, get) => ({
 	allBusinesses: [],
 	filteredBusinesses: [],
 	activeBusinessId: null,
 	initialLoad: true,
+	loading: false, // Add loading state
 	initialCoordinates: { lat: 37.7749, lng: -122.4194 },
 	prevBounds: null,
 	cache: new Map(),
@@ -16,25 +18,24 @@ const useBusinessStore = create((set, get) => ({
 		console.log("Initial coordinates set to:", { lat, lng });
 	},
 
-	fetchInitialBusinesses: async (bounds, zoom) => {
+	fetchInitialBusinesses: async (bounds, zoom, query) => {
+		const { activeBusinessId, preventFetch, cache } = get();
+
 		if (!bounds || !zoom) {
 			console.error("Bounds or zoom value is missing:", bounds, zoom);
 			return;
 		}
 
-		const activeBusinessId = get().activeBusinessId;
-		if (activeBusinessId || get().preventFetch) {
+		if (activeBusinessId || preventFetch) {
 			console.log("Skipping initial fetch as there is an active business or fetch is prevented:", activeBusinessId);
 			return;
 		}
 
-		console.log("Fetching initial businesses with bounds:", bounds, "and zoom:", zoom);
-
 		try {
-			const response = await fetch(`/api/biz?zoom=${zoom}&north=${bounds.north}&south=${bounds.south}&east=${bounds.east}&west=${bounds.west}`);
+			set({ loading: true }); // Set loading state
+			const response = await fetch(`/api/biz?zoom=${zoom}&north=${bounds.north}&south=${bounds.south}&east=${bounds.east}&west=${bounds.west}&query=${encodeURIComponent(query)}`);
 			const data = await response.json();
 			const initialBusinesses = data.businesses;
-			console.log("Initial businesses fetched:", initialBusinesses);
 
 			initialBusinesses.forEach((business) => {
 				if (!business.coordinates || business.coordinates.lat === undefined || business.coordinates.lng === undefined) {
@@ -42,34 +43,33 @@ const useBusinessStore = create((set, get) => ({
 				}
 			});
 
-			const cache = get().cache;
-			initialBusinesses.forEach((business) => {
-				cache.set(business.id, business);
-			});
-
-			set({ allBusinesses: Array.from(cache.values()), initialLoad: false });
+			cache.set(bounds, initialBusinesses);
+			set({ allBusinesses: initialBusinesses, initialLoad: false, loading: false }); // Reset loading state
 			get().filterBusinessesByBounds(bounds);
 		} catch (error) {
 			console.error("Failed to fetch businesses:", error);
+			set({ loading: false }); // Reset loading state on error
 		}
 	},
 
-	fetchFilteredBusinesses: async (bounds, zoom) => {
+	fetchFilteredBusinesses: debounce(async (bounds, zoom, query) => {
+		const { activeBusinessId, preventFetch, cache } = get();
+
 		if (!bounds || !zoom) {
 			console.error("Bounds or zoom value is missing:", bounds, zoom);
 			return;
 		}
 
-		const activeBusinessId = get().activeBusinessId;
-		if (activeBusinessId || get().preventFetch) {
+		if (activeBusinessId || preventFetch) {
 			console.log("Skipping filtered fetch as there is an active business or fetch is prevented:", activeBusinessId);
 			return;
 		}
 
-		console.log("Fetching filtered businesses with bounds:", bounds, "and zoom:", zoom);
+		console.log("Fetching filtered businesses with bounds:", bounds, "and zoom:", zoom, "and query:", query);
 
 		try {
-			const response = await fetch(`/api/biz?zoom=${zoom}&north=${bounds.north}&south=${bounds.south}&east=${bounds.east}&west=${bounds.west}`);
+			set({ loading: true }); // Set loading state
+			const response = await fetch(`/api/biz?zoom=${zoom}&north=${bounds.north}&south=${bounds.south}&east=${bounds.east}&west=${bounds.west}&query=${encodeURIComponent(query)}`);
 			const data = await response.json();
 			const newBusinesses = data.businesses;
 			console.log("Filtered businesses fetched:", newBusinesses);
@@ -80,20 +80,18 @@ const useBusinessStore = create((set, get) => ({
 				}
 			});
 
-			const cache = get().cache;
-			newBusinesses.forEach((business) => {
-				cache.set(business.id, business);
-			});
+			cache.set(bounds, newBusinesses);
 
-			set({ allBusinesses: Array.from(cache.values()) });
-			get().filterBusinessesByBounds(bounds);
+			set({ filteredBusinesses: newBusinesses, loading: false }); // Reset loading state
 		} catch (error) {
 			console.error("Failed to fetch businesses:", error);
+			set({ loading: false }); // Reset loading state on error
 		}
-	},
+	}, 300),
 
 	filterBusinessesByBounds: (bounds) => {
-		const { allBusinesses, prevBounds, cache, activeBusinessId } = get();
+		const { allBusinesses, prevBounds, activeBusinessId } = get();
+
 		if (prevBounds && JSON.stringify(prevBounds) === JSON.stringify(bounds)) {
 			console.log("Bounds have not changed significantly, skipping filtering");
 			return;
@@ -113,7 +111,7 @@ const useBusinessStore = create((set, get) => ({
 		});
 
 		if (activeBusinessId) {
-			const activeBusiness = cache.get(activeBusinessId);
+			const activeBusiness = get().cache.get(activeBusinessId);
 			if (activeBusiness) {
 				const { lat, lng } = activeBusiness.coordinates;
 				if (!(lat >= bounds.south && lat <= bounds.north && lng >= bounds.west && lng <= bounds.east)) {
@@ -135,7 +133,6 @@ const useBusinessStore = create((set, get) => ({
 	setActiveBusinessId: (id) => {
 		const previousActiveBusinessId = get().activeBusinessId;
 
-		// Avoid unnecessary state changes
 		if (id === previousActiveBusinessId) {
 			console.log("Active business ID is already set to:", id);
 			return;
@@ -162,6 +159,8 @@ const useBusinessStore = create((set, get) => ({
 	setMapRef: (map) => {
 		set({ mapRef: map });
 	},
+
+	clearFilteredBusinesses: () => set({ filteredBusinesses: [] }),
 }));
 
 export default useBusinessStore;

@@ -1,4 +1,5 @@
-import React, { useEffect, Suspense, useCallback } from "react";
+"use client";
+import React, { useEffect, Suspense, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@components/ui/dropdown-menu";
 import { X, Search, ChevronDown } from "react-feather";
@@ -8,36 +9,38 @@ import { Crosshair2Icon } from "@radix-ui/react-icons";
 import { Loader2 } from "lucide-react";
 import useSearchStore from "@store/useSearchStore";
 import useMapStore from "@store/useMapStore";
+import useBusinessStore from "@store/useBusinessStore";
+import { debounce } from "lodash";
 
 const LocationDropdownContent = () => {
 	const router = useRouter();
+	const inputRef = useRef(null);
+	const { setActiveBusinessId } = useBusinessStore();
 	const { location, setLocation, fetchCurrentLocation, fetchAutocompleteSuggestions, fetchPlaceDetails, fetchCoordinatesFromCityAndState, fetchCityAndStateFromCoordinates } = useSearchStore();
 	const { centerOn } = useMapStore();
 
-	const fetchCoordinatesAndSetLocation = useCallback(
-		async (locationValue) => {
+	useEffect(() => {
+		const fetchCoordinatesAndSetLocation = async (locationValue) => {
 			try {
 				const { lat, lng } = await fetchCoordinatesFromCityAndState(locationValue);
 				setLocation({ lat, lng, value: locationValue, city: locationValue, error: false });
+				setActiveBusinessId(null);
 				centerOn(lat, lng);
 			} catch (error) {
 				console.error("Error fetching coordinates:", error);
 				setLocation({ error: true });
 			}
-		},
-		[fetchCoordinatesFromCityAndState, setLocation, centerOn]
-	);
+		};
 
-	useEffect(() => {
 		const urlParams = new URLSearchParams(window.location.search);
 		const locationParam = urlParams.get("location");
 		if (locationParam) {
-			setLocation({ value: locationParam, city: locationParam, error: false });
 			fetchCoordinatesAndSetLocation(locationParam);
+			console.log("Location param:", locationParam);
 		} else {
 			setLocation({ error: true });
 		}
-	}, [fetchCoordinatesAndSetLocation, setLocation]);
+	}, [fetchCoordinatesFromCityAndState, setLocation, centerOn]);
 
 	const updateURL = (newParams) => {
 		const url = new URL(window.location.href);
@@ -51,11 +54,14 @@ const LocationDropdownContent = () => {
 			const location = await new Promise((resolve, reject) => {
 				fetchCurrentLocation(resolve, reject);
 			});
+			console.log("Location:", location);
 			if (location && location.lat && location.lng) {
 				const { lat, lng } = location;
 				const { city, state } = await fetchCityAndStateFromCoordinates(lat, lng);
 				const locationString = `${city}, ${state}`;
+				console.log("Location string:", locationString);
 				setLocation({ lat, lng, value: locationString, city: locationString, error: false });
+				setActiveBusinessId(null);
 				updateURL({ location: locationString });
 				centerOn(lat, lng);
 			} else {
@@ -68,18 +74,32 @@ const LocationDropdownContent = () => {
 		}
 	};
 
-	const handleInputChange = async (event) => {
-		const value = event.target.value;
-		setLocation({ value });
-		if (value) {
+	const debouncedFetchSuggestions = useCallback(
+		debounce(async (value) => {
 			try {
 				const suggestions = await fetchAutocompleteSuggestions(value);
 				setLocation({ filteredSuggestions: suggestions, error: false });
 			} catch (error) {
 				setLocation({ filteredSuggestions: [], error: true });
 			}
+		}, 300), // Adjust the debounce delay as needed
+		[fetchAutocompleteSuggestions, setLocation]
+	);
+
+	const handleInputChange = (event) => {
+		const value = event.target.value || ""; // Ensure value is always defined
+		setLocation({ value });
+		if (value) {
+			debouncedFetchSuggestions(value);
 		} else {
 			setLocation({ filteredSuggestions: [] });
+		}
+	};
+
+	const handleInputKeyDown = async (event) => {
+		if (event.key === "Enter") {
+			event.preventDefault();
+			await fetchCoordinatesAndSetLocation(location.value);
 		}
 	};
 
@@ -127,7 +147,7 @@ const LocationDropdownContent = () => {
 			<DropdownMenuContent className="mt-2 bg-black rounded-md w-80">
 				<div className="flex items-center px-2 py-1">
 					<Search className="w-4 h-4 mr-2 text-gray-400" />
-					<Input placeholder="Search by city..." className={`w-full h-6 p-0 text-white bg-transparent border-none placeholder:text-zinc-400 ${location.error ? "text-red-500 placeholder:text-red-500" : "text-white"}`} value={location.value} onChange={(e) => handleInputChange(e)} />
+					<Input ref={inputRef} placeholder="Search by city..." className={`w-full h-6 p-0 text-white bg-transparent border-none placeholder:text-zinc-400 ${location.error ? "text-red-500 placeholder:text-red-500" : "text-white"}`} value={location.value || ""} onChange={(e) => handleInputChange(e)} onKeyDown={handleInputKeyDown} />
 					<Button
 						size="icon"
 						className="flex items-center justify-center h-8 gap-2 px-2 py-2 ml-2 text-sm font-medium transition-colors bg-gray-800 rounded-md select-none shrink-0 whitespace-nowrap focus-visible:outline-none focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 focus-visible:bg-gray-800 focus-visible:ring-0 hover:bg-gray-700/70 text-white/70 focus-within:bg-gray-700 hover:text-white sm:px-3"

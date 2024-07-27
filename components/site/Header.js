@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -52,10 +52,11 @@ export default function Header() {
 	const [isBusinessesOpen, setBusinessesOpen] = React.useState(false);
 	const [isBlogOpen, setBlogOpen] = React.useState(false);
 	const [isSupportOpen, setSupportOpen] = React.useState(false);
+	const [isAddBusinessOpen, setAddBusinessOpen] = React.useState(false);
 	const [isLightBackground, setIsLightBackground] = React.useState(false);
 	const pathname = usePathname();
 
-	React.useEffect(() => {
+	useEffect(() => {
 		const header = document.querySelector("#header");
 
 		const checkBackgroundColor = () => {
@@ -79,7 +80,7 @@ export default function Header() {
 	}, []);
 
 	if (pathname.includes("/search")) {
-		return null;
+		return <div id="header"></div>;
 	}
 
 	return (
@@ -98,7 +99,7 @@ export default function Header() {
 								</Button>
 								<AnimatePresence>
 									{isCategoriesOpen && (
-										<motion.div className="absolute left-0 p-4 text-black bg-white rounded shadow-lg top-12" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+										<motion.div className="absolute left-0 p-4 text-black bg-white border border-gray-300 rounded shadow-lg top-12" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
 											<ul className="grid gap-3 md:w-[400px] lg:w-[500px] lg:grid-cols-2">
 												{categories.map((category) => (
 													<li key={category}>
@@ -116,7 +117,7 @@ export default function Header() {
 								</Button>
 								<AnimatePresence>
 									{isCitiesOpen && (
-										<motion.div className="absolute left-0 p-4 text-black bg-white rounded shadow-lg top-12" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+										<motion.div className="absolute left-0 p-4 text-black bg-white border border-gray-300 rounded shadow-lg top-12" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
 											<ul className="grid gap-3 md:w-[400px] lg:w-[500px] lg:grid-cols-2">
 												{cities.map((city) => (
 													<li key={city}>
@@ -134,7 +135,7 @@ export default function Header() {
 								</Button>
 								<AnimatePresence>
 									{isBusinessesOpen && (
-										<motion.div className="absolute left-0 p-4 text-black bg-white rounded shadow-lg top-12" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+										<motion.div className="absolute left-0 p-4 text-black bg-white border border-gray-300 rounded shadow-lg top-12" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
 											<ul className="grid gap-3 md:w-[400px] lg:w-[500px] lg:grid-cols-2">
 												{businesses.map((business) => (
 													<li key={business.title}>
@@ -153,7 +154,7 @@ export default function Header() {
 								</Button>
 								<AnimatePresence>
 									{isBlogOpen && (
-										<motion.div className="absolute left-0 p-4 text-black bg-white rounded shadow-lg top-12" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+										<motion.div className="absolute left-0 p-4 text-black bg-white border border-gray-300 rounded shadow-lg top-12" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
 											<div className="w-[300px]">
 												<h3 className="text-lg font-bold">Sponsored</h3>
 												<p>Advertise your business here.</p>
@@ -171,13 +172,63 @@ export default function Header() {
 								</Button>
 								<AnimatePresence>
 									{isSupportOpen && (
-										<motion.div className="absolute left-0 p-4 text-black bg-white rounded shadow-lg top-12" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-											<div className="w-[300px]">
-												<h3 className="text-lg font-bold">Sponsored</h3>
-												<p>Advertise your business here.</p>
-												<Link href="/ads" className="mt-2 btn">
-													Learn More
-												</Link>
+										<motion.div className="absolute left-0 p-4 text-black bg-white border border-gray-300 rounded shadow-lg top-12" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+											<div className="w-auto">
+												<div className="grid px-4 py-5 mx-auto text-sm text-gray-500 dark:text-gray-400 md:grid-cols-3 md:px-6">
+													<ul className="hidden mb-4 space-y-4 md:mb-0 md:block" aria-labelledby="mega-menu-full-image-button">
+														<li>
+															<a href="#" className="hover:underline hover:text-blue-600 dark:hover:text-blue-500">
+																Online Stores
+															</a>
+														</li>
+														<li>
+															<a href="#" className="hover:underline hover:text-blue-600 dark:hover:text-blue-500">
+																Segmentation
+															</a>
+														</li>
+														<li>
+															<a href="#" className="hover:underline hover:text-blue-600 dark:hover:text-blue-500">
+																Marketing CRM
+															</a>
+														</li>
+														<li>
+															<a href="#" className="hover:underline hover:text-blue-600 dark:hover:text-blue-500">
+																Online Stores
+															</a>
+														</li>
+													</ul>
+													<ul className="mb-4 space-y-4 md:mb-0">
+														<li>
+															<a href="#" className="hover:underline hover:text-blue-600 dark:hover:text-blue-500">
+																Our Blog
+															</a>
+														</li>
+														<li>
+															<a href="#" className="hover:underline hover:text-blue-600 dark:hover:text-blue-500">
+																Terms &amp; Conditions
+															</a>
+														</li>
+														<li>
+															<a href="#" className="hover:underline hover:text-blue-600 dark:hover:text-blue-500">
+																License
+															</a>
+														</li>
+														<li>
+															<a href="#" className="hover:underline hover:text-blue-600 dark:hover:text-blue-500">
+																Resources
+															</a>
+														</li>
+													</ul>
+													<a href="#" className="p-8 bg-local bg-gray-500 bg-center bg-no-repeat bg-cover rounded-lg bg-blend-multiply hover:bg-blend-soft-light dark:hover:bg-blend-darken" style={{ backgroundImage: "url(/docs/images/dashboard-overview.png)" }}>
+														<p className="max-w-xl mb-5 font-extrabold leading-tight tracking-tight text-white">Preview the new Flowbite dashboard navigation.</p>
+														<button type="button" className="inline-flex items-center px-2.5 py-1.5 text-xs font-medium text-center text-white border border-white rounded-lg hover:bg-white hover:text-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-700">
+															Get started
+															<svg className="w-3 h-3 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+																<path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M1 5h12m0 0L9 1m4 4L9 9" />
+															</svg>
+														</button>
+													</a>
+												</div>
 											</div>
 										</motion.div>
 									)}
@@ -187,28 +238,23 @@ export default function Header() {
 					</nav>
 				</div>
 				<div className="relative flex-row hidden space-x-4 lg:flex">
-					<DropdownMenu>
-						<DropdownMenuTrigger asChild>
-							<Button variant="link" className={`transition-none hover:no-underline hover:bg-gray-800 ${isLightBackground ? "text-black border-gray-300 hover:bg-gray-100" : "text-white"}`}>
-								Add a Business <ChevronDown className="w-4 h-4 ml-2" />
-							</Button>
-						</DropdownMenuTrigger>
-						<DropdownMenuContent className="w-56 bg-black">
-							<DropdownMenuItem asChild>
-								<Link href="/add-business">Add a Business</Link>
-							</DropdownMenuItem>
-							<DropdownMenuItem asChild>
-								<Link href="/claim-business">Claim your business</Link>
-							</DropdownMenuItem>
-							<DropdownMenuItem asChild>
-								<Link href="/login-business">Log in to Business Account</Link>
-							</DropdownMenuItem>
-							<DropdownMenuSeparator />
-							<DropdownMenuItem asChild>
-								<Link href="/explore-business">Explore Thorbis for Business</Link>
-							</DropdownMenuItem>
-						</DropdownMenuContent>
-					</DropdownMenu>
+					<div className="relative" onMouseEnter={() => setAddBusinessOpen(true)} onMouseLeave={() => setAddBusinessOpen(false)}>
+						<Button variant="link" className={`transition-none hover:no-underline hover:bg-gray-800 ${isLightBackground ? "text-black border-gray-300 hover:bg-gray-100" : "text-white"}`}>
+							Add a Business <ChevronDown className="w-4 h-4 ml-2" />
+						</Button>
+						<AnimatePresence>
+							{isAddBusinessOpen && (
+								<motion.div className="absolute left-0 p-4 text-black bg-white border border-gray-300 rounded shadow-lg top-12" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+									<div className="w-[300px]">
+										<Link href="/add-business">Add a Business</Link>
+										<Link href="/claim-business">Claim your business</Link>
+										<Link href="/login-business">Log in to Business Account</Link>
+										<Link href="/explore-business">Explore Thorbis for Business</Link>
+									</div>
+								</motion.div>
+							)}
+						</AnimatePresence>
+					</div>
 					<Link href="/login">
 						<Button variant="outline" className="transition-none">
 							Login

@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 const useMapStore = create((set, get) => ({
 	mapRef: null,
-	setMapRef: (ref) => set({ mapRef: ref }),
+	setMapRef: (mapRef) => set({ mapRef }),
 	loadingBusinessId: null,
 	setLoadingBusinessId: (id) => set({ loadingBusinessId: id }),
 
@@ -22,18 +22,24 @@ const useMapStore = create((set, get) => ({
 		return null;
 	},
 
-	getMapBounds: async () => {
+	getMapZoom: () => {
+		const map = get().mapRef;
+		if (map) {
+			return map.getZoom();
+		}
+		return null;
+	},
+
+	getMapBounds: () => {
 		const mapRef = get().mapRef;
 		if (mapRef) {
 			const bounds = mapRef.getBounds();
-			const data = {
+			return {
 				north: bounds.getNorth(),
 				south: bounds.getSouth(),
 				east: bounds.getEast(),
 				west: bounds.getWest(),
 			};
-			set({ bounds: data });
-			return data;
 		}
 		return null;
 	},
@@ -42,21 +48,16 @@ const useMapStore = create((set, get) => ({
 		const mapRef = get().mapRef;
 		if (mapRef) {
 			const map = mapRef;
-			// Default zoom level is 10
 			const defaultZoom = 10;
-			// Calculate zoom level based on radius if provided, otherwise use default
 			const zoom = radius ? Math.max(8, 14 - Math.log2(radius) + 0.5) : defaultZoom;
-			const offsetX = 500; // Adjust the offset as needed
+			const offsetX = 500;
 			const offsetLng = offsetX / (256 * Math.pow(2, zoom));
 			const newCenter = [longitude + offsetLng, latitude];
 
-			console.log("Centering on:", { latitude, longitude, newCenter, zoom });
-
-			// Use flyTo for smooth transitions
 			map.flyTo({
 				center: newCenter,
 				zoom,
-				duration: 100, // Duration in milliseconds
+				duration: 100,
 				essential: true,
 			});
 		} else {

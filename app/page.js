@@ -113,6 +113,8 @@ export default function Home() {
 			<Header />
 			<main>
 				<div className="h-screen">
+					<Image src="/ThorbisLogo.webp" alt="Thorbis" width={1000} height={1000} className="absolute top-0 bg-cover right-10 opacity-5" />
+					<h1 className="absolute bottom-10 left-10 text-[200px] text-brand font-bold opacity-5">The Yelp Killer</h1>
 					<div className="relative mb-4 flex items-center justify-center py-[26vh] pt-[18vh] text-gray-900 dark:text-gray-200 sm:pt-[26vh]">
 						<div className="relative flex flex-col items-center w-full gap-6 px-6 text-center">
 							<div className="flex w-full flex-col items-center gap-1.5">

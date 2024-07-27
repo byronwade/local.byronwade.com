@@ -10,6 +10,7 @@ import AutocompleteSuggestions from "@components/shared/searchBox/AutocompleteSu
 import { Loader2 } from "lucide-react";
 import { z } from "zod";
 import useSearchStore from "@store/useSearchStore";
+import useBusinessStore from "@store/useBusinessStore";
 
 const searchSchema = z.object({
 	searchQuery: z.string().min(1, "Search query cannot be empty"),

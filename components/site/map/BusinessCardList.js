@@ -1,7 +1,8 @@
-import React, { memo, Suspense, forwardRef, useEffect, useRef, useCallback } from "react";
+import React, { useEffect, useRef, useCallback, memo, forwardRef, Suspense } from "react";
 import Link from "next/link";
 import { Button } from "@components/ui/button";
 import { Badge } from "@components/ui/badge";
+import { ScrollArea, ScrollBar } from "@components/ui/scroll-area";
 import { Circle, Clock, Info } from "react-feather";
 import { StarFilledIcon, ReloadIcon } from "@radix-ui/react-icons";
 import useBusinessStore from "@store/useBusinessStore";
@@ -121,14 +122,18 @@ const BusinessCardList = ({ activeBusinessId, activeCardRef }) => {
 	);
 
 	useEffect(() => {
-		window.addEventListener("keydown", handleKeyDown);
+		if (listRef.current) {
+			listRef.current.addEventListener("keydown", handleKeyDown);
+		}
 		return () => {
-			window.removeEventListener("keydown", handleKeyDown);
+			if (listRef.current) {
+				listRef.current.removeEventListener("keydown", handleKeyDown);
+			}
 		};
 	}, [handleKeyDown]);
 
 	return (
-		<div ref={listRef} className="h-full overflow-y-auto">
+		<ScrollArea ref={listRef} className="h-full overflow-y-auto">
 			{loading ? (
 				Array.from({ length: 4 }).map((_, index) => <SkeletonBusinessCard key={index} />)
 			) : (
@@ -152,7 +157,7 @@ const BusinessCardList = ({ activeBusinessId, activeCardRef }) => {
 					)}
 				</>
 			)}
-		</div>
+		</ScrollArea>
 	);
 };
 
