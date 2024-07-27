@@ -1,13 +1,17 @@
 import { create } from "zustand";
 import useMapStore from "./useMapStore";
 import debounce from "lodash/debounce";
+import algoliasearch from "algoliasearch/lite";
+
+const algoliaClient = algoliasearch(process.env.NEXT_PUBLIC_ALGOLIA_APP_ID, process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY);
+const index = algoliaClient.initIndex("businesses");
 
 const useBusinessStore = create((set, get) => ({
 	allBusinesses: [],
 	filteredBusinesses: [],
 	activeBusinessId: null,
 	initialLoad: true,
-	loading: false, // Add loading state
+	loading: false,
 	initialCoordinates: { lat: 37.7749, lng: -122.4194 },
 	prevBounds: null,
 	cache: new Map(),
@@ -32,10 +36,12 @@ const useBusinessStore = create((set, get) => ({
 		}
 
 		try {
-			set({ loading: true }); // Set loading state
+			set({ loading: true });
 			const response = await fetch(`/api/biz?zoom=${zoom}&north=${bounds.north}&south=${bounds.south}&east=${bounds.east}&west=${bounds.west}&query=${encodeURIComponent(query)}`);
 			const data = await response.json();
 			const initialBusinesses = data.businesses;
+
+			console.log("Initial businesses fetched:", initialBusinesses);
 
 			initialBusinesses.forEach((business) => {
 				if (!business.coordinates || business.coordinates.lat === undefined || business.coordinates.lng === undefined) {
@@ -44,11 +50,11 @@ const useBusinessStore = create((set, get) => ({
 			});
 
 			cache.set(bounds, initialBusinesses);
-			set({ allBusinesses: initialBusinesses, initialLoad: false, loading: false }); // Reset loading state
+			set({ allBusinesses: initialBusinesses, initialLoad: false, loading: false });
 			get().filterBusinessesByBounds(bounds);
 		} catch (error) {
 			console.error("Failed to fetch businesses:", error);
-			set({ loading: false }); // Reset loading state on error
+			set({ loading: false });
 		}
 	},
 
@@ -68,10 +74,14 @@ const useBusinessStore = create((set, get) => ({
 		console.log("Fetching filtered businesses with bounds:", bounds, "and zoom:", zoom, "and query:", query);
 
 		try {
-			set({ loading: true }); // Set loading state
-			const response = await fetch(`/api/biz?zoom=${zoom}&north=${bounds.north}&south=${bounds.south}&east=${bounds.east}&west=${bounds.west}&query=${encodeURIComponent(query)}`);
-			const data = await response.json();
-			const newBusinesses = data.businesses;
+			set({ loading: true });
+			const { hits } = await index.search(query, {
+				aroundLatLngViaIP: false,
+				insideBoundingBox: `${bounds.north},${bounds.west},${bounds.south},${bounds.east}`,
+				hitsPerPage: 1000,
+				facetFilters: [[`categories:${query}`, `name:${query}`, `display_phone:${query}`, `email:${query}`, `addresses:${query}`]],
+			});
+			const newBusinesses = hits;
 			console.log("Filtered businesses fetched:", newBusinesses);
 
 			newBusinesses.forEach((business) => {
@@ -82,10 +92,10 @@ const useBusinessStore = create((set, get) => ({
 
 			cache.set(bounds, newBusinesses);
 
-			set({ filteredBusinesses: newBusinesses, loading: false }); // Reset loading state
+			set({ filteredBusinesses: newBusinesses, loading: false });
 		} catch (error) {
 			console.error("Failed to fetch businesses:", error);
-			set({ loading: false }); // Reset loading state on error
+			set({ loading: false });
 		}
 	}, 300),
 

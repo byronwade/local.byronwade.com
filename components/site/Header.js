@@ -60,7 +60,7 @@ const calculateLuminosityPercentage = (elements) => {
 
 		// Ignore fully transparent elements
 		if (backgroundColor && backgroundColor !== "rgba(0, 0, 0, 0)") {
-			console.log(`Element: ${element.tagName}, BackgroundColor: ${backgroundColor}, Area: ${area}`);
+			//console.log(`Element: ${element.tagName}, BackgroundColor: ${backgroundColor}, Area: ${area}`);
 			const isLight = isLightColor(backgroundColor);
 			if (isLight) {
 				lightArea += area;
@@ -69,11 +69,11 @@ const calculateLuminosityPercentage = (elements) => {
 		}
 	});
 
-	console.log(`Light Area: ${lightArea}, Total Area: ${totalArea}`);
+	//console.log(`Light Area: ${lightArea}, Total Area: ${totalArea}`);
 	if (totalArea === 0) return 0; // Avoid division by zero
 
 	const luminosityPercentage = (lightArea / totalArea) * 100;
-	console.log(`Luminosity Percentage: ${luminosityPercentage}`);
+	//console.log(`Luminosity Percentage: ${luminosityPercentage}`);
 	return luminosityPercentage;
 };
 

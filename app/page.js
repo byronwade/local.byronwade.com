@@ -3,6 +3,7 @@ import { Button } from "@components/ui/button";
 import Header from "@components/site/Header";
 import Footer from "@components/site/Footer";
 import SearchBarOnly from "@components/shared/searchBox/SearchBarOnly";
+import Agolia from "@components/shared/searchBox/Agolia";
 
 const testimonials = [
 	{
@@ -112,6 +113,7 @@ export default function Home() {
 		<>
 			<Header />
 			<main>
+				<Agolia />
 				<div className="h-screen pattern">
 					{/* <Image src="/ThorbisLogo.webp" alt="Thorbis" width={1000} height={1000} className="absolute top-0 bg-cover right-10 opacity-5" />
 					<h1 className="absolute bottom-10 left-10 text-[200px] text-brand font-bold opacity-5">The Yelp Killer</h1> */}

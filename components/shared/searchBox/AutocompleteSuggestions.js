@@ -1,19 +1,18 @@
-// components/shared/searchBox/AutocompleteSuggestions.js
-import React from "react";
-import * as Icons from "react-feather";
+// AutocompleteSuggestions.js
 
-export default function AutocompleteSuggestions({ suggestions }) {
+import React from "react";
+import { motion } from "framer-motion";
+
+const AutocompleteSuggestions = ({ suggestions, onSelect }) => {
 	return (
-		<div className="z-50 flex flex-col w-full h-full min-w-0">
-			{suggestions.map((suggestion, index) => {
-				const Icon = Icons[suggestion.icon];
-				return (
-					<div key={index} className="flex items-center p-2 rounded-md cursor-pointer hover:bg-gray-800" onClick={() => onSelect(suggestion.text)}>
-						<Icon className="w-5 h-5 mr-2" style={{ color: suggestion.color }} />
-						<span>{suggestion.text}</span>
-					</div>
-				);
-			})}
-		</div>
+		<motion.ul initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="z-10 w-full bg-gray-900 border border-gray-700 divide-y divide-gray-700 rounded-md shadow-lg">
+			{suggestions.map((suggestion, index) => (
+				<li key={index} onClick={() => onSelect(suggestion)} className="p-2 cursor-pointer hover:bg-gray-800">
+					{suggestion}
+				</li>
+			))}
+		</motion.ul>
 	);
-}
+};
+
+export default AutocompleteSuggestions;

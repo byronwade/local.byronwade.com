@@ -1,5 +1,7 @@
+// FullSearchBox.js
+
 import React, { useState, useEffect, useCallback } from "react";
-import { useRouter, useSearchParams } from "next/navigation"; // Import hooks from Next.js
+import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import FilterDropdown from "@components/shared/searchBox/FilterDropdown";
 import SortDropdown from "@components/shared/searchBox/SortDropdown";
@@ -16,7 +18,7 @@ import useMapStore from "@store/useMapStore";
 import debounce from "lodash/debounce";
 
 const FullSearchBox = () => {
-	const { searchQuery, setSearchQuery, location, setLocation, errors, setErrors, touched, setTouched, suggestions, loading } = useSearchStore();
+	const { searchQuery, setSearchQuery, location, setLocation, errors, setErrors, touched, setTouched, suggestions, loading, fetchAutocompleteSuggestions } = useSearchStore();
 	const { fetchFilteredBusinesses } = useBusinessStore();
 	const { getMapBounds, getMapZoom } = useMapStore();
 	const [autocompleteOpen, setAutocompleteOpen] = useState(false);
@@ -78,11 +80,16 @@ const FullSearchBox = () => {
 		[getMapBounds, getMapZoom, fetchFilteredBusinesses, searchQuery]
 	);
 
-	const handleInputChange = (e) => {
+	const handleInputChange = async (e) => {
 		const value = e.target.value;
 		setSearchQuery(value);
 		setTouched((prevTouched) => ({ ...prevTouched, searchQuery: true }));
 		setAutocompleteOpen(true);
+		if (value) {
+			await fetchAutocompleteSuggestions(value);
+		} else {
+			setAutocompleteOpen(false);
+		}
 		debouncedFetchFilteredBusinesses();
 	};
 
@@ -100,7 +107,7 @@ const FullSearchBox = () => {
 	};
 
 	const handleSuggestionSelect = (suggestion) => {
-		setSearchQuery(suggestion.text);
+		setSearchQuery(suggestion);
 		setAutocompleteOpen(false);
 		setTouched((prevTouched) => ({ ...prevTouched, searchQuery: true }));
 		debouncedFetchFilteredBusinesses();
@@ -127,7 +134,7 @@ const FullSearchBox = () => {
 									<input
 										className={`bg-transparent w-full min-h-[1.5rem] resize-none border-0 text-sm leading-relaxed shadow-none outline-none ring-0 [scroll-padding-block:0.75rem] selection:bg-teal-300 selection:text-black disabled:bg-transparent disabled:opacity-80 pl-1 ${!errors.searchQuery ? "text-white placeholder:text-zinc-400" : "text-red-500 placeholder:text-red-500"}`}
 										id="search-input"
-										placeholder="Search for a business"
+										placeholder="Search for a category"
 										rows="1"
 										spellCheck="false"
 										style={{ colorScheme: "dark", height: "23px" }}

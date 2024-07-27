@@ -9,7 +9,8 @@
 			"@context/*": ["context/*"],
 			"@hooks/*": ["hooks/*"],
 			"@emails/*": ["emails/*"],
-			"@store/*": ["store/*"]
+			"@store/*": ["store/*"],
+			"@queries/*": ["queries/*"]
 		}
   }
 }

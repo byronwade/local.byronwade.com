@@ -1,9 +1,10 @@
+// BusinessCardList.js
 import React, { useEffect, useRef, useCallback, memo, forwardRef, Suspense } from "react";
 import Link from "next/link";
 import { Button } from "@components/ui/button";
 import { Badge } from "@components/ui/badge";
-import { ScrollArea, ScrollBar } from "@components/ui/scroll-area";
-import { Bookmark, Circle, Clock, ExternalLink, Info, MoreVertical, Share2 } from "react-feather";
+import { ScrollArea } from "@components/ui/scroll-area";
+import { Bookmark, Circle, Clock, ExternalLink, Info, Share2 } from "react-feather";
 import { StarFilledIcon, ReloadIcon } from "@radix-ui/react-icons";
 import useBusinessStore from "@store/useBusinessStore";
 import useMapStore from "@store/useMapStore";
@@ -33,16 +34,10 @@ const BusinessCard = memo(
 												</Badge>
 											))}
 									</div>
-									{/* <div className="items-center hidden space-x-1 md:flex">
-										<p className="text-sm text-muted-foreground">{business.deal}</p>
-									</div> */}
 								</div>
 								<p className="mt-2 text-sm text-muted-foreground">{business.description}</p>
 							</div>
 							<div className="flex flex-col space-y-2">
-								{/* <Button variant="outline" size="icon" className="items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow py-2 z-50 h-[calc(theme(spacing.7)_-_1px)] gap-1 rounded-[6px] px-3 text-xs">
-									<MoreVertical className="w-4 h-4" />
-								</Button> */}
 								<Button variant="brand" size="icon" className="items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow py-2 z-50 h-[calc(theme(spacing.7)_-_1px)] gap-1 rounded-[6px] px-3 text-xs">
 									<Link href={`/biz/${business.id}`} passHref legacyBehavior>
 										<a target="_blank" type="button">
