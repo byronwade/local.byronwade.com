@@ -37,12 +37,12 @@ const AiButton = ({ handleTextareaInput, showBeta }) => {
 		<>
 			<Drawer open={isOpen} onOpenChange={setIsOpen}>
 				<DrawerTrigger asChild>
-					<Button className="relative flex items-center justify-center h-8 gap-2 px-2 py-2 text-sm font-medium transition-colors bg-gray-800 rounded-md select-none drawer-trigger shrink-0 whitespace-nowrap focus-visible:outline-none focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 focus-visible:bg-gray-800 focus-visible:ring-0 hover:bg-gray-700/70 text-white/70 focus-within:bg-gray-700 hover:text-white sm:px-3" type="button">
-						{showBeta && (
+					<Button className="relative flex items-center justify-center h-8 gap-2 px-2 py-2 text-sm font-medium transition-colors bg-purple-700 rounded-md select-none drawer-trigger shrink-0 whitespace-nowrap focus-visible:outline-none focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 focus-visible:bg-gray-800 focus-visible:ring-0 hover:bg-gray-700/70 text-white/70 focus-within:bg-gray-700 hover:text-white sm:px-3" type="button">
+						{/* {showBeta && (
 							<Badge variant="outline" className="absolute z-50 bg-purple-700 -top-2 -right-4 p-0 px-[4px] text-[9px]">
 								Beta
 							</Badge>
-						)}
+						)} */}
 						<SparklesIcon className="w-4 h-4 text-white" />
 					</Button>
 				</DrawerTrigger>

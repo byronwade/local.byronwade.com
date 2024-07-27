@@ -13,7 +13,7 @@ import useBusinessStore from "@store/useBusinessStore";
 import { debounce } from "lodash";
 
 const LocationDropdownContent = () => {
-	const router = useRouter();
+    const router = useRouter();
 	const inputRef = useRef(null);
 	const { setActiveBusinessId } = useBusinessStore();
 	const { location, setLocation, fetchCurrentLocation, fetchAutocompleteSuggestions, fetchPlaceDetails, fetchCoordinatesFromCityAndState, fetchCityAndStateFromCoordinates } = useSearchStore();
@@ -40,7 +40,7 @@ const LocationDropdownContent = () => {
 		} else {
 			setLocation({ error: true });
 		}
-	}, [fetchCoordinatesFromCityAndState, setLocation, centerOn]);
+	}, [fetchCoordinatesFromCityAndState, setLocation, centerOn, setActiveBusinessId]);
 
 	const updateURL = (newParams) => {
 		const url = new URL(window.location.href);
@@ -131,7 +131,7 @@ const LocationDropdownContent = () => {
 						type="button"
 					>
 						{location.loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Crosshair2Icon className="w-4 h-4" />}
-						<span className="hidden truncate max-w-24 sm:block text-ellipsis">{location.city || "Enter a location"}</span>
+						<span className="block truncate max-w-10 sm:max-w-24 text-ellipsis">{location.city || "Enter a location"}</span>
 						<ChevronDown className="w-4 h-4" />
 					</Button>
 				</DropdownMenuTrigger>

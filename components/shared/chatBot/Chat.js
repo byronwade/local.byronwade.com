@@ -1,3 +1,4 @@
+"use client";
 import { useState } from "react";
 import UserBubble from "@components/shared/chatBot/UserBubble";
 import ThorbisBubble from "@components/shared/chatBot/ThorbisBubble";
@@ -78,7 +79,7 @@ function ChatContent({ messages: initialMessages, suggestions }) {
 	};
 
 	return (
-		<div className="flex flex-col justify-between min-h-96">
+		<div className="flex flex-col justify-between h-full min-h-96">
 			<div className="flex-1 overflow-auto text-sm">{messages.length === 0 ? <ChatSuggestions suggestions={suggestions} /> : messages.map((msg) => (msg.sender === "user" ? <UserBubble key={msg.id} message={msg.message} /> : <ThorbisBubble key={msg.id} message={msg.message} />))}</div>
 			<div className="p-4">
 				<ChatInput addMessage={addMessage} />
@@ -100,7 +101,7 @@ function ChatWindow({ messages, suggestions }) {
 
 function ChatFull({ messages, suggestions }) {
 	return (
-		<div className="bg-[#212121] w-full text-white rounded-md min-h-96 flex flex-col justify-between mt-10">
+		<div className="bg-[#212121] w-full text-white rounded-md min-h-96 flex flex-col justify-between h-full">
 			<ChatContent messages={messages} suggestions={suggestions} />
 		</div>
 	);

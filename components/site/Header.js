@@ -46,6 +46,37 @@ const isLightColor = (color) => {
 	return luminance > 0.5;
 };
 
+const calculateLuminosityPercentage = (elements) => {
+	let lightArea = 0;
+	let totalArea = 0;
+
+	elements.forEach((element) => {
+		const rect = element.getBoundingClientRect();
+		const area = rect.width * rect.height;
+
+		if (area === 0) return; // Skip elements with zero area
+
+		const backgroundColor = getBackgroundColor(element);
+
+		// Ignore fully transparent elements
+		if (backgroundColor && backgroundColor !== "rgba(0, 0, 0, 0)") {
+			console.log(`Element: ${element.tagName}, BackgroundColor: ${backgroundColor}, Area: ${area}`);
+			const isLight = isLightColor(backgroundColor);
+			if (isLight) {
+				lightArea += area;
+			}
+			totalArea += area;
+		}
+	});
+
+	console.log(`Light Area: ${lightArea}, Total Area: ${totalArea}`);
+	if (totalArea === 0) return 0; // Avoid division by zero
+
+	const luminosityPercentage = (lightArea / totalArea) * 100;
+	console.log(`Luminosity Percentage: ${luminosityPercentage}`);
+	return luminosityPercentage;
+};
+
 export default function Header() {
 	const [isCategoriesOpen, setCategoriesOpen] = React.useState(false);
 	const [isCitiesOpen, setCitiesOpen] = React.useState(false);
@@ -62,11 +93,9 @@ export default function Header() {
 		const checkBackgroundColor = () => {
 			const rect = header.getBoundingClientRect();
 			const elementsBelowHeader = document.elementsFromPoint(rect.left, rect.bottom);
-			const backgroundColor = getBackgroundColor(elementsBelowHeader.find((el) => el !== header));
-			if (backgroundColor) {
-				const isLight = isLightColor(backgroundColor);
-				setIsLightBackground(isLight);
-			}
+			const filteredElements = elementsBelowHeader.filter((el) => el !== header);
+			const luminosityPercentage = calculateLuminosityPercentage(filteredElements);
+			setIsLightBackground(luminosityPercentage > 85);
 		};
 
 		window.addEventListener("scroll", checkBackgroundColor);
@@ -172,7 +201,7 @@ export default function Header() {
 								</Button>
 								<AnimatePresence>
 									{isSupportOpen && (
-										<motion.div className="absolute left-0 p-4 text-black bg-white border border-gray-300 rounded shadow-lg top-12" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+										<motion.div className="absolute w-[600px] left-0 p-4 text-black bg-white border border-gray-300 rounded shadow-lg top-12" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
 											<div className="w-auto">
 												<div className="grid px-4 py-5 mx-auto text-sm text-gray-500 dark:text-gray-400 md:grid-cols-3 md:px-6">
 													<ul className="hidden mb-4 space-y-4 md:mb-0 md:block" aria-labelledby="mega-menu-full-image-button">
@@ -272,13 +301,7 @@ export default function Header() {
 							<Menu className="w-4 h-4" />
 						</Button>
 					</DrawerTrigger>
-					<DrawerContent>
-						<DrawerHeader>
-							<DrawerClose asChild>
-								<Button className="float-right">✕</Button>
-							</DrawerClose>
-							<DrawerTitle>Menu</DrawerTitle>
-						</DrawerHeader>
+					<DrawerContent className="p-4 text-white bg-black h-5/6">
 						<nav>
 							<ul className="space-y-4">
 								<li>
@@ -321,7 +344,7 @@ export default function Header() {
 										<DropdownMenuTrigger asChild>
 											<Button variant="outline">Add a Business</Button>
 										</DropdownMenuTrigger>
-										<DropdownMenuContent className="w-56">
+										<DropdownMenuContent className="w-56 bg-black">
 											<DropdownMenuItem asChild>
 												<Link href="/add-business" onClick={() => setMobileMenuOpen(false)}>
 													Add a Business

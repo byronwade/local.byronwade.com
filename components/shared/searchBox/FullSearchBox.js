@@ -144,6 +144,7 @@ const FullSearchBox = () => {
 								</div>
 							</div>
 							<div className="relative flex items-center ml-2 space-x-1">
+								<AiButton showBeta={true} />
 								<Button
 									size="icon"
 									className={`${
@@ -169,7 +170,6 @@ const FullSearchBox = () => {
 								<FilterDropdown />
 								<SortDropdown />
 								<LocationDropdown onLocationChange={handleLocationChange} value={location.value || ""} updateLocationError={updateLocationError} />
-								<AiButton showBeta={true} />
 							</div>
 						</div>
 						{errors.location && touched.location && <p className="text-sm text-red-500">{errors.location}</p>}

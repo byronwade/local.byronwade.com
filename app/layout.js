@@ -1,4 +1,3 @@
-"use client";
 import "../styles/globals.css";
 import { Inter as FontSans } from "next/font/google";
 
@@ -26,3 +25,10 @@ export default function RootLayout({ children }) {
 		</html>
 	);
 }
+
+export const viewport = {
+	initialScale: 1,
+	width: "device-width",
+	maximumScale: 1,
+	viewportFit: "cover",
+};

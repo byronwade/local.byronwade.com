@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from "react";
 import UserBubble from "@components/shared/chatBot/UserBubble";
 import ThorbisBubble from "@components/shared/chatBot/ThorbisBubble";

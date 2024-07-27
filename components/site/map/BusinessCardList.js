@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Button } from "@components/ui/button";
 import { Badge } from "@components/ui/badge";
 import { ScrollArea, ScrollBar } from "@components/ui/scroll-area";
-import { Circle, Clock, Info } from "react-feather";
+import { Bookmark, Circle, Clock, ExternalLink, Info, MoreVertical, Share2 } from "react-feather";
 import { StarFilledIcon, ReloadIcon } from "@radix-ui/react-icons";
 import useBusinessStore from "@store/useBusinessStore";
 import useMapStore from "@store/useMapStore";
@@ -20,15 +20,10 @@ const BusinessCard = memo(
 								Sponsored <Info className="w-4 h-4 ml-2" />
 							</div>
 						)}
-						<div className="flex flex-col items-start gap-4 p-4 lg:flex-row">
-							{business.logo && <img src={business.logo} alt={`${business.name} logo`} className="object-cover w-16 h-16 rounded-md" />}
+						<div className="flex flex-row items-start gap-4 p-4">
+							<div className="flex flex-col space-y-2">{business.logo && <img src={business.logo} alt={`${business.name} logo`} className="object-cover w-16 h-16 rounded-md" />}</div>
 							<div className="flex-1">
-								<h3 className="mb-1 text-lg font-semibold leading-none tracking-tight">
-									{business.name}
-									<Button variant="outline" size="icon" className="ml-2 inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow py-2 z-50 h-[calc(theme(spacing.7)_-_1px)] gap-1 rounded-[6px] px-3 text-xs">
-										<p className="text-sm text-green-600">{business.price}</p>
-									</Button>
-								</h3>
+								<h3 className="mb-1 text-lg font-semibold leading-none tracking-tight">{business.name}</h3>
 								<div className="flex flex-wrap items-center gap-2">
 									<div className="flex space-x-1">
 										{Array.isArray(business.categories) &&
@@ -38,18 +33,37 @@ const BusinessCard = memo(
 												</Badge>
 											))}
 									</div>
-									<div className="flex items-center space-x-1">
+									{/* <div className="items-center hidden space-x-1 md:flex">
 										<p className="text-sm text-muted-foreground">{business.deal}</p>
-									</div>
+									</div> */}
 								</div>
 								<p className="mt-2 text-sm text-muted-foreground">{business.description}</p>
 							</div>
-							<div className="flex flex-col w-full space-y-2 lg:absolute lg:top-4 lg:right-4 lg:space-y-0 lg:space-x-2 lg:w-auto lg:justify-end lg:flex-row lg:flex-wrap">
-								<Link href={`/biz/${business.id}`} passHref legacyBehavior>
-									<a target="_blank" className="flex items-center justify-center h-8 gap-2 px-2 py-2 text-sm font-medium transition-colors bg-gray-800 rounded-md select-none shrink-0 whitespace-nowrap focus-visible:outline-none focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 focus-visible:bg-gray-800 focus-visible:ring-0 hover:bg-gray-700/70 text-white/70 focus-within:bg-gray-700 hover:text-white sm:px-3" type="button">
-										View Profile
-									</a>
-								</Link>
+							<div className="flex flex-col space-y-2">
+								{/* <Button variant="outline" size="icon" className="items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow py-2 z-50 h-[calc(theme(spacing.7)_-_1px)] gap-1 rounded-[6px] px-3 text-xs">
+									<MoreVertical className="w-4 h-4" />
+								</Button> */}
+								<Button variant="brand" size="icon" className="items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow py-2 z-50 h-[calc(theme(spacing.7)_-_1px)] gap-1 rounded-[6px] px-3 text-xs">
+									<Link href={`/biz/${business.id}`} passHref legacyBehavior>
+										<a target="_blank" type="button">
+											<ExternalLink className="w-4 h-4" />
+										</a>
+									</Link>
+								</Button>
+								<Button variant="outline" size="icon" className="items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow py-2 z-50 h-[calc(theme(spacing.7)_-_1px)] gap-1 rounded-[6px] px-3 text-xs">
+									<Link href={`/biz/${business.id}`} passHref legacyBehavior>
+										<a target="_blank" type="button">
+											<Share2 className="w-4 h-4" />
+										</a>
+									</Link>
+								</Button>
+								<Button variant="outline" size="icon" className="items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow py-2 z-50 h-[calc(theme(spacing.7)_-_1px)] gap-1 rounded-[6px] px-3 text-xs">
+									<Link href={`/biz/${business.id}`} passHref legacyBehavior>
+										<a target="_blank" type="button">
+											<Bookmark className="w-4 h-4" />
+										</a>
+									</Link>
+								</Button>
 							</div>
 						</div>
 						<div className="p-6 pt-0">
@@ -58,6 +72,12 @@ const BusinessCard = memo(
 									<Button variant="outline" className="inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow py-2 z-50 h-[calc(theme(spacing.7)_-_1px)] gap-1 rounded-[6px] px-3 text-xs">
 										<Circle className={`w-3 h-3 mr-1 ${business.isOpenNow ? "fill-green-400 text-green-400" : "fill-gray-400 text-gray-400"}`} />
 										{business.isOpenNow ? "Open now" : "Closed"}
+									</Button>
+								</div>
+
+								<div className="flex items-center mb-1 ml-1">
+									<Button variant="outline" size="icon" className="inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow py-2 z-50 h-[calc(theme(spacing.7)_-_1px)] gap-1 rounded-[6px] px-3 text-xs">
+										<p className="text-sm text-green-600">{business.price}</p>
 									</Button>
 								</div>
 								{business.ratings && business.ratings.overall && (
@@ -71,7 +91,7 @@ const BusinessCard = memo(
 								<div className="flex items-center mb-1 ml-1">
 									<Button variant="outline" className="inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow py-2 z-50 h-[calc(theme(spacing.7)_-_1px)] gap-1 rounded-[6px] px-3 text-xs">
 										<Clock className="w-3 h-3 mr-1" />
-										{business.statusMessage}
+										<span className="truncate text-ellipsis max-w-40">{business.statusMessage}</span>
 									</Button>
 								</div>
 								{isLoading && (
