@@ -4,6 +4,7 @@ import UserBubble from "@components/shared/chatBot/UserBubble";
 import ThorbisBubble from "@components/shared/chatBot/ThorbisBubble";
 import ChatInput from "@components/shared/chatBot/ChatInput";
 import ChatSuggestions from "@components/shared/chatBot/ChatSuggestions";
+import agent from "@lib/OpenAIClient"; // Import the OpenAI client
 
 const initialMessages = [
 	// {
@@ -74,13 +75,26 @@ const suggestions = [
 function ChatContent({ messages: initialMessages, suggestions }) {
 	const [messages, setMessages] = useState(initialMessages);
 
-	const addMessage = (message, sender) => {
-		setMessages([...messages, { id: messages.length + 1, message, sender }]);
+	const addMessage = async (message, sender) => {
+		const newMessages = [...messages, { id: messages.length + 1, message, sender }];
+		setMessages(newMessages);
+		console.log("Message added:", newMessages);
+
+		if (sender === "user") {
+			try {
+				console.log("Sending message to agent:", message);
+				const response = await agent(message);
+				console.log("AI Response:", response);
+				setMessages([...newMessages, { id: newMessages.length + 1, message: response, sender: "thorbis" }]);
+			} catch (error) {
+				console.error("Error getting AI response:", error);
+			}
+		}
 	};
 
 	return (
-		<div className="flex flex-col justify-between h-full min-h-96">
-			<div className="flex-1 overflow-auto text-sm">{messages.length === 0 ? <ChatSuggestions suggestions={suggestions} /> : messages.map((msg) => (msg.sender === "user" ? <UserBubble key={msg.id} message={msg.message} /> : <ThorbisBubble key={msg.id} message={msg.message} />))}</div>
+		<div className="flex flex-col justify-between min-h-96">
+			<div className="flex-1 overflow-auto text-sm">{messages.length === 0 ? <ChatSuggestions suggestions={suggestions} addMessage={addMessage} /> : messages.map((msg) => (msg.sender === "user" ? <UserBubble key={msg.id} message={msg.message} /> : <ThorbisBubble key={msg.id} message={msg.message} />))}</div>
 			<div className="p-4">
 				<ChatInput addMessage={addMessage} />
 			</div>

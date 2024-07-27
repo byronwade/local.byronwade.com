@@ -5,7 +5,7 @@ import * as Icons from "react-feather";
 export default function ChatSuggestions({ suggestions, addMessage }) {
 	return (
 		<div className="flex flex-col items-center justify-center h-full">
-			<Image src="/chatgpt.svg" width={41} height={41} alt="robot" className="w-[41px] h-[41px] filter invert" />
+			<Image src="/ThorbisLogo.webp" width={100} height={100} alt="robot" className="w-[41px] h-full" />
 			<div style={{ opacity: 1 }}>
 				<div className="flex flex-wrap items-stretch justify-center max-w-3xl gap-4 mx-3 mt-12 mb-6">
 					{suggestions.map((suggestion, index) => {

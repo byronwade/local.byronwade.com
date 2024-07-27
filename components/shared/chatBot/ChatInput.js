@@ -1,9 +1,10 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { ArrowUp, Paperclip } from "react-feather";
 
 export default function ChatInput({ addMessage }) {
 	const [input, setInput] = useState("");
+	const textareaRef = useRef(null);
 
 	const handleSend = (e) => {
 		e.preventDefault();
@@ -12,6 +13,19 @@ export default function ChatInput({ addMessage }) {
 			setInput("");
 		}
 	};
+
+	const handleKeyDown = (e) => {
+		if (e.key === "Enter" && !e.shiftKey) {
+			handleSend(e);
+		}
+	};
+
+	useEffect(() => {
+		if (textareaRef.current) {
+			textareaRef.current.style.height = "auto";
+			textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+		}
+	}, [input]);
 
 	return (
 		<>
@@ -31,7 +45,7 @@ export default function ChatInput({ addMessage }) {
 										<div type="button" data-state="closed"></div>
 									</div>
 									<div className="flex flex-col flex-1 min-w-0">
-										<textarea tabIndex={0} rows={1} placeholder="Message ChatGPT" value={input} onChange={(e) => setInput(e.target.value)} className="px-0 m-0 text-gray-700 bg-transparent border-0 resize-none dark:text-white focus:ring-0 focus-visible:ring-0 focus:outline-none max-h-52"></textarea>
+										<textarea tabIndex={0} rows={1} ref={textareaRef} placeholder="Message ChatGPT" value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={handleKeyDown} className="px-0 m-0 overflow-hidden text-gray-700 bg-transparent border-0 resize-none dark:text-white focus:ring-0 focus-visible:ring-0 focus:outline-none max-h-52" style={{ overflowY: "auto" }} />
 									</div>
 									<button type="submit" data-testid="send-button" className="flex items-center justify-center w-8 h-8 mb-1 mr-1 text-white transition-colors bg-black rounded-full hover:opacity-70 focus-visible:outline-none dark:bg-white dark:text-black disabled:bg-gray-400 disabled:text-gray-200 disabled:hover:opacity-100 dark:disabled:bg-gray-600 dark:disabled:text-gray-500" disabled={!input.trim()}>
 										<ArrowUp className="w-4 h-4" />

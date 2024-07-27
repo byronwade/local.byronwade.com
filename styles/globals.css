@@ -7,6 +7,26 @@
   background-color: #2f2f2f !important;
 }
 
+.cursor {
+  display: inline-block;
+  width: 1ch;
+  animation: flicker 0.5s infinite;
+  margin-bottom: 4px;
+}
+
+@keyframes flicker {
+  0% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
 @layer base {
   :root {
     --brand: 220 90% 56%;
