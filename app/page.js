@@ -3,7 +3,6 @@ import { Button } from "@components/ui/button";
 import Header from "@components/site/Header";
 import Footer from "@components/site/Footer";
 import SearchBarOnly from "@components/shared/searchBox/SearchBarOnly";
-import Agolia from "@components/shared/searchBox/Agolia";
 
 const testimonials = [
 	{
@@ -113,8 +112,8 @@ export default function Home() {
 		<>
 			<Header />
 			<main>
-				<Agolia />
-				<div className="h-screen pattern">
+				<div className="h-screen relative bg-[url(https://images.unsplash.com/photo-1604014237800-1c9102c219da?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80)] bg-cover bg-center bg-no-repeat">
+					<div class="absolute inset-0 bg-gray-900/75"></div>
 					{/* <Image src="/ThorbisLogo.webp" alt="Thorbis" width={1000} height={1000} className="absolute top-0 bg-cover right-10 opacity-5" />
 					<h1 className="absolute bottom-10 left-10 text-[200px] text-brand font-bold opacity-5">The Yelp Killer</h1> */}
 					<div className="relative mb-4 flex items-center justify-center py-[26vh] pt-[18vh] text-gray-900 dark:text-gray-200 sm:pt-[26vh]">

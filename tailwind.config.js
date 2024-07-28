@@ -13,6 +13,11 @@ module.exports = {
 		},
 		extend: {
 			colors: {
+				discord: "#5865f2",
+				twitter: "#1da1f2",
+				github: "#333",
+				producthunt: "#da552f",
+				hackernews: "#ff4000",
 				brand: {
 					DEFAULT: "hsl(var(--brand))",
 					light: "hsl(var(--brand-light))",
@@ -70,6 +75,7 @@ module.exports = {
 			animation: {
 				"accordion-down": "accordion-down 0.2s ease-out",
 				"accordion-up": "accordion-up 0.2s ease-out",
+				"spin-slow": "spin 1s linear infinite",
 			},
 		},
 	},
