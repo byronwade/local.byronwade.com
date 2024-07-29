@@ -12,7 +12,7 @@ import useMapStore from "@store/useMapStore";
 import useBusinessStore from "@store/useBusinessStore";
 import { debounce } from "lodash";
 
-const LocationDropdown = () => {
+const LocationDropdown = ({ className }) => {
 	const router = useRouter();
 	const inputRef = useRef(null);
 	const { setActiveBusinessId } = useBusinessStore();

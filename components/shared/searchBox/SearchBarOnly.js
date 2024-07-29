@@ -78,7 +78,7 @@ const SearchBarOnly = () => {
 	};
 
 	return (
-		<form className="relative z-10 flex flex-col w-full h-full min-w-0 p-3 bg-gray-900 border rounded-md shadow-lg divide-zinc-600 shadow-black/40" onSubmit={handleFormSubmit}>
+		<form className="relative z-10 flex flex-col w-full h-full min-w-0 p-2 bg-gray-900 border rounded-md shadow-lg divide-zinc-600 shadow-black/40" onSubmit={handleFormSubmit}>
 			<div className="relative flex items-center justify-between w-full align-center">
 				<div className="flex items-center justify-center flex-1">
 					<div className="relative w-full">

@@ -1,43 +1,32 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@components/ui/dropdown-menu";
-import { Drawer, DrawerClose, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from "@components/ui/drawer";
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from "@components/ui/sheet";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from "@components/ui/drawer";
 import { ChevronDown, Menu } from "react-feather";
+import SearchBarHeader from "@components/shared/searchBox/SearchBarHeader";
 
-const categories = [
-	"Restaurants",
-	"Nightlife",
-	"Home Services",
-	"Auto Repair",
-	// ... more categories
-];
-
-const cities = [
-	"San Francisco",
-	"New York",
-	"Los Angeles",
-	"Chicago",
-	// ... more cities
-];
-
+// List of categories, cities, and businesses
+const categories = ["Restaurants", "Nightlife", "Home Services", "Auto Repair"];
+const cities = ["San Francisco", "New York", "Los Angeles", "Chicago"];
 const businesses = [
 	{ title: "Joe's Pizza", href: "/business/joes-pizza", description: "Best pizza in town." },
 	{ title: "Mike's Garage", href: "/business/mikes-garage", description: "Reliable car repair services." },
-	// ... more businesses
 ];
 
+// Utility function to get background color of an element
 const getBackgroundColor = (element) => {
 	if (!element) return null;
 	const style = window.getComputedStyle(element);
 	return style.backgroundColor;
 };
 
+// Utility function to determine if a color is light
 const isLightColor = (color) => {
 	const rgb = color.match(/\d+/g);
 	if (!rgb) return false;
@@ -46,6 +35,7 @@ const isLightColor = (color) => {
 	return luminance > 0.5;
 };
 
+// Calculate luminosity percentage of elements
 const calculateLuminosityPercentage = (elements) => {
 	let lightArea = 0;
 	let totalArea = 0;
@@ -53,48 +43,32 @@ const calculateLuminosityPercentage = (elements) => {
 	elements.forEach((element) => {
 		const rect = element.getBoundingClientRect();
 		const area = rect.width * rect.height;
-
-		if (area === 0) return; // Skip elements with zero area
+		if (area === 0) return;
 
 		const backgroundColor = getBackgroundColor(element);
-
-		// Ignore fully transparent elements
 		if (backgroundColor && backgroundColor !== "rgba(0, 0, 0, 0)") {
-			//console.log(`Element: ${element.tagName}, BackgroundColor: ${backgroundColor}, Area: ${area}`);
 			const isLight = isLightColor(backgroundColor);
-			if (isLight) {
-				lightArea += area;
-			}
+			if (isLight) lightArea += area;
 			totalArea += area;
 		}
 	});
 
-	//console.log(`Light Area: ${lightArea}, Total Area: ${totalArea}`);
-	if (totalArea === 0) return 0; // Avoid division by zero
-
-	const luminosityPercentage = (lightArea / totalArea) * 100;
-	//console.log(`Luminosity Percentage: ${luminosityPercentage}`);
-	return luminosityPercentage;
+	if (totalArea === 0) return 0;
+	return (lightArea / totalArea) * 100;
 };
 
 export default function Header() {
-	const [isCategoriesOpen, setCategoriesOpen] = React.useState(false);
-	const [isCitiesOpen, setCitiesOpen] = React.useState(false);
-	const [isBusinessesOpen, setBusinessesOpen] = React.useState(false);
-	const [isBlogOpen, setBlogOpen] = React.useState(false);
-	const [isSupportOpen, setSupportOpen] = React.useState(false);
-	const [isAddBusinessOpen, setAddBusinessOpen] = React.useState(false);
-	const [isLightBackground, setIsLightBackground] = React.useState(false);
+	const [isLightBackground, setIsLightBackground] = useState(false);
 	const pathname = usePathname();
 
+	// Check background color on scroll and resize
 	useEffect(() => {
 		const header = document.querySelector("#header");
 
 		const checkBackgroundColor = () => {
 			const rect = header.getBoundingClientRect();
-			const elementsBelowHeader = document.elementsFromPoint(rect.left, rect.bottom);
-			const filteredElements = elementsBelowHeader.filter((el) => el !== header);
-			const luminosityPercentage = calculateLuminosityPercentage(filteredElements);
+			const elementsBelowHeader = document.elementsFromPoint(rect.left, rect.bottom).filter((el) => el !== header);
+			const luminosityPercentage = calculateLuminosityPercentage(elementsBelowHeader);
 			setIsLightBackground(luminosityPercentage > 85);
 		};
 
@@ -113,188 +87,62 @@ export default function Header() {
 	}
 
 	return (
-		<div id="header" className={`transition-none sticky top-0 z-50 h-16 transition-colors bg-background/60 backdrop-blur-md border-b ${isLightBackground ? "text-black border-gray-300" : "text-white border-foreground/10"}`}>
-			<div className="container flex flex-row items-center justify-start w-full gap-6 px-4 mx-auto align-middle size-full">
+		<div id="header" className={`transition-none sticky top-0 z-[60] transition-colors ${isLightBackground ? "text-black bg-white" : " text-white bg-black"}`}>
+			<div className="flex items-center justify-between w-full gap-6 p-2 px-4 mx-auto">
 				<div className="flex flex-row items-center w-full space-x-4">
-					<Link href="/" className="flex flex-row items-center h-full space-x-4 text-xl font-bold align-middle">
-						<Image src="/ThorbisLogo.webp" alt="Thorbis" width={50} height={50} className="h-full w-[36px]" />
-						<h1 className="leading-none">Thorbis</h1>
+					<Link href="/" className="flex flex-col items-center text-xl font-bold text-center">
+						<Image src="/ThorbisLogo.webp" alt="Thorbis" width={50} height={50} className="w-10 h-10" />
+						<h1 className="text-sm leading-none text-brand">Thorbis</h1>
 					</Link>
-					<nav className="hidden lg:inline">
-						<ul className="flex space-x-4">
-							<li className="relative" onMouseEnter={() => setCategoriesOpen(true)} onMouseLeave={() => setCategoriesOpen(false)}>
-								<Button variant="link" className={`transition-none hover:no-underline hover:bg-gray-800 ${isLightBackground ? "text-black border-gray-300 hover:bg-gray-100" : "text-white"}`}>
-									Home Services <ChevronDown className="w-4 h-4 ml-2" />
-								</Button>
-								<AnimatePresence>
-									{isCategoriesOpen && (
-										<motion.div className="absolute left-0 p-4 text-black bg-white border border-gray-300 rounded shadow-lg top-12" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-											<ul className="grid gap-3 md:w-[400px] lg:w-[500px] lg:grid-cols-2">
-												{categories.map((category) => (
-													<li key={category}>
-														<Link href={`/categories/${category.toLowerCase().replace(/ /g, "-")}`}>{category}</Link>
-													</li>
-												))}
-											</ul>
-										</motion.div>
-									)}
-								</AnimatePresence>
-							</li>
-							<li className="relative" onMouseEnter={() => setCitiesOpen(true)} onMouseLeave={() => setCitiesOpen(false)}>
-								<Button variant="link" className={`transition-none hover:no-underline hover:bg-gray-800 ${isLightBackground ? "text-black border-gray-300 hover:bg-gray-100" : "text-white"}`}>
-									Cities <ChevronDown className="w-4 h-4 ml-2" />
-								</Button>
-								<AnimatePresence>
-									{isCitiesOpen && (
-										<motion.div className="absolute left-0 p-4 text-black bg-white border border-gray-300 rounded shadow-lg top-12" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-											<ul className="grid gap-3 md:w-[400px] lg:w-[500px] lg:grid-cols-2">
-												{cities.map((city) => (
-													<li key={city}>
-														<Link href={`/cities/${city.toLowerCase().replace(/ /g, "-")}`}>{city}</Link>
-													</li>
-												))}
-											</ul>
-										</motion.div>
-									)}
-								</AnimatePresence>
-							</li>
-							<li className="relative" onMouseEnter={() => setBusinessesOpen(true)} onMouseLeave={() => setBusinessesOpen(false)}>
-								<Button variant="link" className={`transition-none hover:no-underline hover:bg-gray-800 ${isLightBackground ? "text-black border-gray-300 hover:bg-gray-100" : "text-white"}`}>
-									Businesses <ChevronDown className="w-4 h-4 ml-2" />
-								</Button>
-								<AnimatePresence>
-									{isBusinessesOpen && (
-										<motion.div className="absolute left-0 p-4 text-black bg-white border border-gray-300 rounded shadow-lg top-12" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-											<ul className="grid gap-3 md:w-[400px] lg:w-[500px] lg:grid-cols-2">
-												{businesses.map((business) => (
-													<li key={business.title}>
-														<Link href={business.href}>{business.title}</Link>
-														<p>{business.description}</p>
-													</li>
-												))}
-											</ul>
-										</motion.div>
-									)}
-								</AnimatePresence>
-							</li>
-							<li className="relative" onMouseEnter={() => setBlogOpen(true)} onMouseLeave={() => setBlogOpen(false)}>
-								<Button variant="link" className={`transition-none hover:no-underline hover:bg-gray-800 ${isLightBackground ? "text-black border-gray-300 hover:bg-gray-100" : "text-white"}`}>
-									Blog <ChevronDown className="w-4 h-4 ml-2" />
-								</Button>
-								<AnimatePresence>
-									{isBlogOpen && (
-										<motion.div className="absolute left-0 p-4 text-black bg-white border border-gray-300 rounded shadow-lg top-12" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-											<div className="w-[300px]">
-												<h3 className="text-lg font-bold">Sponsored</h3>
-												<p>Advertise your business here.</p>
-												<Link href="/ads" className="mt-2 btn">
-													Learn More
-												</Link>
-											</div>
-										</motion.div>
-									)}
-								</AnimatePresence>
-							</li>
-							<li className="relative" onMouseEnter={() => setSupportOpen(true)} onMouseLeave={() => setSupportOpen(false)}>
-								<Button variant="link" className={`transition-none hover:no-underline hover:bg-gray-800 ${isLightBackground ? "text-black border-gray-300 hover:bg-gray-100" : "text-white"}`}>
-									Support <ChevronDown className="w-4 h-4 ml-2" />
-								</Button>
-								<AnimatePresence>
-									{isSupportOpen && (
-										<motion.div className="absolute w-[600px] left-0 p-4 text-black bg-white border border-gray-300 rounded shadow-lg top-12" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-											<div className="w-auto">
-												<div className="grid px-4 py-5 mx-auto text-sm text-gray-500 dark:text-gray-400 md:grid-cols-3 md:px-6">
-													<ul className="hidden mb-4 space-y-4 md:mb-0 md:block" aria-labelledby="mega-menu-full-image-button">
-														<li>
-															<a href="#" className="hover:underline hover:text-blue-600 dark:hover:text-blue-500">
-																Online Stores
-															</a>
-														</li>
-														<li>
-															<a href="#" className="hover:underline hover:text-blue-600 dark:hover:text-blue-500">
-																Segmentation
-															</a>
-														</li>
-														<li>
-															<a href="#" className="hover:underline hover:text-blue-600 dark:hover:text-blue-500">
-																Marketing CRM
-															</a>
-														</li>
-														<li>
-															<a href="#" className="hover:underline hover:text-blue-600 dark:hover:text-blue-500">
-																Online Stores
-															</a>
-														</li>
-													</ul>
-													<ul className="mb-4 space-y-4 md:mb-0">
-														<li>
-															<a href="#" className="hover:underline hover:text-blue-600 dark:hover:text-blue-500">
-																Our Blog
-															</a>
-														</li>
-														<li>
-															<a href="#" className="hover:underline hover:text-blue-600 dark:hover:text-blue-500">
-																Terms &amp; Conditions
-															</a>
-														</li>
-														<li>
-															<a href="#" className="hover:underline hover:text-blue-600 dark:hover:text-blue-500">
-																License
-															</a>
-														</li>
-														<li>
-															<a href="#" className="hover:underline hover:text-blue-600 dark:hover:text-blue-500">
-																Resources
-															</a>
-														</li>
-													</ul>
-													<a href="#" className="p-8 bg-local bg-gray-500 bg-center bg-no-repeat bg-cover rounded-lg bg-blend-multiply hover:bg-blend-soft-light dark:hover:bg-blend-darken" style={{ backgroundImage: "url(/docs/images/dashboard-overview.png)" }}>
-														<p className="max-w-xl mb-5 font-extrabold leading-tight tracking-tight text-white">Preview the new Flowbite dashboard navigation.</p>
-														<button type="button" className="inline-flex items-center px-2.5 py-1.5 text-xs font-medium text-center text-white border border-white rounded-lg hover:bg-white hover:text-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-700">
-															Get started
-															<svg className="w-3 h-3 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-																<path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M1 5h12m0 0L9 1m4 4L9 9" />
-															</svg>
-														</button>
-													</a>
-												</div>
-											</div>
-										</motion.div>
-									)}
-								</AnimatePresence>
-							</li>
-						</ul>
-					</nav>
-				</div>
-				<div className="relative flex-row hidden space-x-4 lg:flex">
-					<div className="relative" onMouseEnter={() => setAddBusinessOpen(true)} onMouseLeave={() => setAddBusinessOpen(false)}>
-						<Button variant="link" className={`transition-none hover:no-underline hover:bg-gray-800 ${isLightBackground ? "text-black border-gray-300 hover:bg-gray-100" : "text-white"}`}>
-							Add a Business <ChevronDown className="w-4 h-4 ml-2" />
-						</Button>
-						<AnimatePresence>
-							{isAddBusinessOpen && (
-								<motion.div className="absolute left-0 p-4 text-black bg-white border border-gray-300 rounded shadow-lg top-12" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-									<div className="w-[300px]">
-										<Link href="/add-business">Add a Business</Link>
-										<Link href="/claim-business">Claim your business</Link>
-										<Link href="/login-business">Log in to Business Account</Link>
-										<Link href="/explore-business">Explore Thorbis for Business</Link>
-									</div>
-								</motion.div>
-							)}
-						</AnimatePresence>
+					<div className="flex items-center w-full">
+						<SearchBarHeader />
 					</div>
+				</div>
+				<div className="hidden space-x-2 lg:flex">
+					<Button variant="link" className={`transition-none hover:no-underline hover:bg-gray-800 ${isLightBackground ? "text-black border-gray-300 hover:bg-gray-100" : "text-white"}`}>
+						Post a job
+					</Button>
+					<Button variant="link" className={`transition-none hover:no-underline hover:bg-gray-800 ${isLightBackground ? "text-black border-gray-300 hover:bg-gray-100" : "text-white"}`}>
+						Write a review
+					</Button>
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<Button variant="link" className={`transition-none hover:no-underline hover:bg-gray-800 ${isLightBackground ? "text-black border-gray-300 hover:bg-gray-100" : "text-white"}`}>
+								Add a Business <ChevronDown className="w-4 h-4 ml-2" />
+							</Button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent className="w-56 bg-black z-[80]">
+							<DropdownMenuItem asChild>
+								<Link href="/add-business">Add a Business</Link>
+							</DropdownMenuItem>
+							<DropdownMenuItem asChild>
+								<Link href="/claim-business">Claim your business</Link>
+							</DropdownMenuItem>
+							<DropdownMenuItem asChild>
+								<Link href="/login-business">Log in to Business Account</Link>
+							</DropdownMenuItem>
+							<DropdownMenuSeparator />
+							<DropdownMenuItem asChild>
+								<Link href="/explore-business">Explore Thorbis for Business</Link>
+							</DropdownMenuItem>
+							<DropdownMenuSeparator />
+							<DropdownMenuItem asChild>
+								<Link href="/explore-business">Get Thorbis Certified</Link>
+							</DropdownMenuItem>
+						</DropdownMenuContent>
+					</DropdownMenu>
 					<Link href="/login">
 						<Button variant="outline" className="transition-none">
 							Login
 						</Button>
 					</Link>
 					<Link href="/signup">
-						<Button variant="outline" className="transition-none">
+						<Button variant="brand" className="transition-none">
 							Sign Up
 						</Button>
 					</Link>
 				</div>
+
 				<Drawer>
 					<DrawerTrigger asChild>
 						<Button variant="outline" size="icon" className="md:hidden">
@@ -344,7 +192,7 @@ export default function Header() {
 										<DropdownMenuTrigger asChild>
 											<Button variant="outline">Add a Business</Button>
 										</DropdownMenuTrigger>
-										<DropdownMenuContent className="w-56 bg-black">
+										<DropdownMenuContent className="w-56 bg-white">
 											<DropdownMenuItem asChild>
 												<Link href="/add-business" onClick={() => setMobileMenuOpen(false)}>
 													Add a Business
@@ -372,6 +220,58 @@ export default function Header() {
 						</nav>
 					</DrawerContent>
 				</Drawer>
+			</div>
+			<div className="flex px-2 overflow-hidden text-xs font-medium text-white bg-brand whitespace-nowrap xl:text-sm">
+				<Sheet key="left">
+					<SheetTrigger asChild>
+						<Link href="/" className="flex flex-row items-center px-2 py-2 font-bold cursor-pointer hover:text-gray-300">
+							<Menu className="w-4 h-4 mr-2" /> All
+						</Link>
+					</SheetTrigger>
+					<SheetContent side="left" className="w-[400px] sm:w-[540px] h-full bg-black z-[70]">
+						<SheetHeader>
+							<SheetTitle>All Categories</SheetTitle>
+							<SheetDescription>Select a category to explore</SheetDescription>
+						</SheetHeader>
+						{/* Add content here */}
+					</SheetContent>
+				</Sheet>
+				<Link href="/services/home-services" className="px-2 py-2 cursor-pointer hover:text-gray-300">
+					Home Services
+				</Link>
+				<Link href="/services/restaurants" className="px-2 py-2 cursor-pointer hover:text-gray-300">
+					Restaurants
+				</Link>
+				<Link href="/services/construction" className="px-2 py-2 cursor-pointer hover:text-gray-300">
+					Construction
+				</Link>
+				<Link href="/services/automotive" className="px-2 py-2 cursor-pointer hover:text-gray-300">
+					Automotive
+				</Link>
+				<Link href="/services/health-beauty" className="px-2 py-2 cursor-pointer hover:text-gray-300">
+					Health & Beauty
+				</Link>
+				<Link href="/services/technology" className="px-2 py-2 cursor-pointer hover:text-gray-300">
+					Technology
+				</Link>
+				<Link href="/services/education" className="px-2 py-2 cursor-pointer hover:text-gray-300">
+					Education
+				</Link>
+				<Link href="/services/finance" className="px-2 py-2 cursor-pointer hover:text-gray-300">
+					Finance
+				</Link>
+				<Link href="/services/real-estate" className="px-2 py-2 cursor-pointer hover:text-gray-300">
+					Real Estate
+				</Link>
+				<Link href="/services/entertainment" className="px-2 py-2 cursor-pointer hover:text-gray-300">
+					Entertainment
+				</Link>
+				<Link href="/reviews/latest" className="px-2 py-2 cursor-pointer hover:text-gray-300">
+					Latest Reviews
+				</Link>
+				<Link href="/certifications/best-companies" className="px-2 py-2 cursor-pointer hover:text-gray-300">
+					Certified Companies
+				</Link>
 			</div>
 		</div>
 	);
