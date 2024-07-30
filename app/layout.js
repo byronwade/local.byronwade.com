@@ -1,11 +1,10 @@
 import "../styles/globals.css";
 import { Inter as FontSans } from "next/font/google";
-
 import { ThemeProvider } from "@context/ThemeContext";
-
 import { Toaster } from "@components/ui/toaster";
-
 import { cn } from "@utils/utils";
+
+import { AuthProvider } from "@context/AuthContext";
 
 const fontSans = FontSans({
 	subsets: ["latin"],
@@ -18,8 +17,10 @@ export default function RootLayout({ children }) {
 			<head />
 			<body className={cn("min-h-screen bg-background font-sans antialiased", fontSans.variable)}>
 				<ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-					{children}
-					<Toaster />
+					<AuthProvider>
+						{children}
+						<Toaster />
+					</AuthProvider>
 				</ThemeProvider>
 			</body>
 		</html>

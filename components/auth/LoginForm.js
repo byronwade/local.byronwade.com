@@ -1,3 +1,4 @@
+// pages/login.js
 "use client";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -7,6 +8,9 @@ import Link from "next/link";
 import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
 import { Label } from "@components/ui/label";
+import useAuthStore from "@store/useAuthStore";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 const loginSchema = z.object({
 	email: z.string().email({ message: "Invalid email address" }),
@@ -24,8 +28,35 @@ export default function LoginPage() {
 		formState: { errors, isValid, touchedFields },
 	} = form;
 
-	const onSubmit = (data) => {
-		console.log("Login data:", data);
+	const login = useAuthStore((state) => state.login);
+	const initializeAuth = useAuthStore((state) => state.initializeAuth);
+	const user = useAuthStore((state) => state.user);
+	const userRoles = useAuthStore((state) => state.userRoles);
+	const router = useRouter();
+
+	useEffect(() => {
+		initializeAuth();
+	}, [initializeAuth]);
+
+	useEffect(() => {
+		if (user) {
+			if (userRoles.includes("admin")) {
+				router.push("/admin");
+			} else if (userRoles.includes("business_owner")) {
+				router.push("/business");
+			} else {
+				router.push("/user");
+			}
+		}
+	}, [user, userRoles, router]);
+
+	const onSubmit = async (data) => {
+		try {
+			await login(data.email, data.password);
+			console.log("Login successful");
+		} catch (error) {
+			console.error("Login failed:", error);
+		}
 	};
 
 	const getValidationClass = (fieldName) => {

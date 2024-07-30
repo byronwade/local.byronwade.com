@@ -1,11 +1,14 @@
 "use client";
 import Header from "@components/user/layout/Header";
+import ProtectedRoute from "@components/auth/ProtectedRoute";
 
 export default function UserRootLayout({ children }) {
 	return (
-		<div className="flex flex-col min-h-screen m-auto max-w-screen-2xl">
-			<Header />
-			<div className="flex flex-1">{children}</div>
-		</div>
+		<ProtectedRoute allowedRoles={["admin", "business_owner", "user"]}>
+			<div className="flex flex-col min-h-screen m-auto max-w-screen-2xl">
+				<Header />
+				<div className="flex flex-1">{children}</div>
+			</div>
+		</ProtectedRoute>
 	);
 }

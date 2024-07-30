@@ -10,14 +10,7 @@ import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescri
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from "@components/ui/drawer";
 import { ChevronDown, Menu } from "react-feather";
 import SearchBarHeader from "@components/shared/searchBox/SearchBarHeader";
-
-// List of categories, cities, and businesses
-const categories = ["Restaurants", "Nightlife", "Home Services", "Auto Repair"];
-const cities = ["San Francisco", "New York", "Los Angeles", "Chicago"];
-const businesses = [
-	{ title: "Joe's Pizza", href: "/business/joes-pizza", description: "Best pizza in town." },
-	{ title: "Mike's Garage", href: "/business/mikes-garage", description: "Reliable car repair services." },
-];
+import useAuthStore from "@store/useAuthStore";
 
 // Utility function to get background color of an element
 const getBackgroundColor = (element) => {
@@ -60,6 +53,13 @@ const calculateLuminosityPercentage = (elements) => {
 export default function Header() {
 	const [isLightBackground, setIsLightBackground] = useState(false);
 	const pathname = usePathname();
+	const { user, userRoles, logout } = useAuthStore((state) => ({
+		user: state.user,
+		userRoles: state.userRoles,
+		logout: state.logout,
+	}));
+
+	console.log(userRoles);
 
 	// Check background color on scroll and resize
 	useEffect(() => {
@@ -81,6 +81,17 @@ export default function Header() {
 			window.removeEventListener("resize", checkBackgroundColor);
 		};
 	}, []);
+
+	const handleLogout = async () => {
+		try {
+			await logout();
+			console.log("Logout successful");
+			// Redirect or perform other actions upon successful logout
+		} catch (error) {
+			console.error("Logout failed:", error);
+			// Show error message to the user
+		}
+	};
 
 	if (pathname.includes("/search")) {
 		return <div id="header"></div>;
@@ -113,13 +124,10 @@ export default function Header() {
 						</DropdownMenuTrigger>
 						<DropdownMenuContent className="w-56 bg-black z-[80]">
 							<DropdownMenuItem asChild>
-								<Link href="/add-business">Add a Business</Link>
+								<Link href="/add-a-business">Add a Business</Link>
 							</DropdownMenuItem>
 							<DropdownMenuItem asChild>
 								<Link href="/claim-business">Claim your business</Link>
-							</DropdownMenuItem>
-							<DropdownMenuItem asChild>
-								<Link href="/login-business">Log in to Business Account</Link>
 							</DropdownMenuItem>
 							<DropdownMenuSeparator />
 							<DropdownMenuItem asChild>
@@ -131,16 +139,33 @@ export default function Header() {
 							</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>
-					<Link href="/login">
-						<Button variant="outline" className="transition-none">
-							Login
-						</Button>
-					</Link>
-					<Link href="/signup">
-						<Button variant="brand" className="transition-none">
-							Sign Up
-						</Button>
-					</Link>
+					{user ? (
+						<>
+							<Link href="/user">
+								<Button variant="outline" className="transition-none" onClick={handleLogout}>
+									Logout
+								</Button>
+							</Link>
+							<Link href="/user">
+								<Button variant="brand" className="transition-none">
+									Dashboard
+								</Button>
+							</Link>
+						</>
+					) : (
+						<>
+							<Link href="/login">
+								<Button variant="outline" className="transition-none">
+									Login
+								</Button>
+							</Link>
+							<Link href="/signup">
+								<Button variant="brand" className="transition-none">
+									Sign Up
+								</Button>
+							</Link>
+						</>
+					)}
 				</div>
 
 				<Drawer>
