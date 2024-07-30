@@ -1,3 +1,4 @@
+import SignupPage from "@components/auth/SignupPage";
 import UserSignupForm from "@components/auth/UserSignupForm";
 
 export const metadata = {
@@ -60,7 +61,7 @@ export default function Signup() {
 	return (
 		<>
 			<main>
-				<UserSignupForm />
+				<SignupPage />
 				<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdData) }} />
 			</main>
 		</>
