@@ -21,7 +21,7 @@ const steps = [
 	{ component: Report, name: "Report" },
 ];
 
-const AddBuisness = () => {
+const AddBusiness = () => {
 	const { currentStep, setCurrentStep } = useFormStore();
 	const { user, loading, setUser, setLoading, setUserRoles, initializeAuth } = useAuthStore();
 	const router = useRouter();
@@ -36,6 +36,13 @@ const AddBuisness = () => {
 					if (session) {
 						setUser(session.user);
 						await useAuthStore.getState().fetchUserRoles(session.user.id);
+
+						// Check if the account is active
+						const { data: userData, error } = await supabase.from("users").select("active").eq("id", session.user.id).single();
+
+						if (error || !userData.active) {
+							router.push("/email-verified");
+						}
 					} else {
 						setUser(null);
 					}
@@ -52,7 +59,7 @@ const AddBuisness = () => {
 		};
 
 		initialize();
-	}, [initializeAuth, setLoading, setUser, setUserRoles]);
+	}, [initializeAuth, setLoading, setUser, setUserRoles, router]);
 
 	useEffect(() => {
 		if (!loading && !user) {
@@ -85,7 +92,7 @@ const AddBuisness = () => {
 	return (
 		<>
 			<CurrentComponent />
-			{currentStep !== steps.findIndex((step) => step.name === "Business Submitted") && (
+			{currentStep !== steps.findIndex((step) => step.name === "Report") && (
 				<div className="flex justify-between mt-10">
 					{currentStep !== steps.findIndex((step) => step.name === "Active User") && (
 						<Button variant="outline" type="button" onClick={prevStep} className="mt-2 border-gray-300 dark:border-neutral-800">
@@ -110,4 +117,4 @@ const AddBuisness = () => {
 	);
 };
 
-export default AddBuisness;
+export default AddBusiness;

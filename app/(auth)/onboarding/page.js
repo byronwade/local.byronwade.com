@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import UserInfo from "@components/auth/onboarding/userInfo";
 import UserAddress from "@components/auth/onboarding/userAddress";
 import UserProfile from "@components/auth/onboarding/userProfile";
@@ -87,12 +88,16 @@ const OnboardingComponent = () => {
 								If you own a company you can alternitivly add it here, please note that you will have to <b>prove ownership</b> to claim otherwise you can add one anonymously.
 							</p>
 							<div className="flex flex-col mt-4 space-y-4">
-								<Button variant="brand" className="w-full" onClick={handleSuccessNext}>
-									Claim a business <ArrowRight className="w-4 h-4 ml-2" />
-								</Button>
-								<Button variant="outline" className="w-full" onClick={nextStep}>
-									Submit Business Anonymously <ArrowRight className="w-4 h-4 ml-2" />
-								</Button>
+								<Link href="/claim-a-business" passHref legacyBehavior>
+									<Button variant="brand" className="w-full">
+										Claim a business <ArrowRight className="w-4 h-4 ml-2" />
+									</Button>
+								</Link>
+								<Link href="/add-a-business" passHref legacyBehavior>
+									<Button variant="outline" className="w-full">
+										Submit Business Anonymously <ArrowRight className="w-4 h-4 ml-2" />
+									</Button>
+								</Link>
 							</div>
 						</div>
 					)}
@@ -103,9 +108,11 @@ const OnboardingComponent = () => {
 								<Button variant="brand" className="w-full" onClick={handleBusinessSkipVerify}>
 									Verify Ownership <ArrowRight className="w-4 h-4 ml-2" />
 								</Button>
-								<Button variant="outline" className="w-full" onClick={handleBusinessSkipVerify}>
-									Submit Business Anonymously <ArrowRight className="w-4 h-4 ml-2" />
-								</Button>
+								<Link href="/add-a-business" passHref legacyBehavior>
+									<Button variant="outline" className="w-full">
+										Submit Business Anonymously <ArrowRight className="w-4 h-4 ml-2" />
+									</Button>
+								</Link>
 							</div>
 						</div>
 					)}

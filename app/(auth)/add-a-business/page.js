@@ -19,9 +19,9 @@ const steps = [
 	{ component: BusinessSuccess, name: "Business Submitted" },
 ];
 
-const AddBuisness = () => {
+const AddBusiness = () => {
 	const { currentStep, setCurrentStep } = useFormStore();
-	const { user, loading, setUser, setLoading, setUserRoles, initializeAuth } = useAuthStore();
+	const { user, loading, setUser, setLoading, setUserRoles, initializeAuth, verificationStatus } = useAuthStore();
 	const router = useRouter();
 
 	useEffect(() => {
@@ -34,6 +34,10 @@ const AddBuisness = () => {
 					if (session) {
 						setUser(session.user);
 						await useAuthStore.getState().fetchUserRoles(session.user.id);
+
+						if (verificationStatus === null) {
+							router.push("/email-verified");
+						}
 					} else {
 						setUser(null);
 					}
@@ -50,7 +54,7 @@ const AddBuisness = () => {
 		};
 
 		initialize();
-	}, [initializeAuth, setLoading, setUser, setUserRoles]);
+	}, [initializeAuth, setLoading, setUser, setUserRoles, router]);
 
 	useEffect(() => {
 		if (!loading && !user) {
@@ -108,4 +112,4 @@ const AddBuisness = () => {
 	);
 };
 
-export default AddBuisness;
+export default AddBusiness;

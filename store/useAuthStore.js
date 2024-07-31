@@ -27,47 +27,34 @@ const FETCH_USER_ROLES_QUERY = gql`
 
 const useAuthStore = create((set) => ({
 	user: null,
-	userRoles: [],
 	loading: true,
+	verificationStatus: null,
+	resendLoading: false,
+	resendSuccess: false,
+	resendError: null,
 
 	setUser: (user) => set({ user }),
 	setLoading: (loading) => set({ loading }),
-	setUserRoles: (roles) => set({ userRoles: roles }),
+	setVerificationStatus: (status) => set({ verificationStatus: status }),
+	setResendLoading: (loading) => set({ resendLoading: loading }),
+	setResendSuccess: (success) => set({ resendSuccess: success }),
+	setResendError: (error) => set({ resendError: error }),
 
 	initializeAuth: async () => {
 		try {
-			const {
-				data: { session },
-			} = await supabase.auth.getSession();
-			console.log("Session data:", session);
-
+			const session = await useAuthStore.getState().getSession();
 			if (session) {
-				const { error: setSessionError } = await supabase.auth.setSession({
-					access_token: session.access_token,
-					refresh_token: session.refresh_token,
-				});
-
-				if (setSessionError) {
-					console.error("Error setting session:", setSessionError);
-					set({ loading: false });
-					return;
-				}
-
-				set({ user: session.user });
-				await useAuthStore.getState().fetchUserRoles(session.user.id);
+				await useAuthStore.getState().fetchUserRolesAndSetUser(session.user.id);
 			} else {
 				set({ user: null });
 			}
-
 			set({ loading: false });
 
 			supabase.auth.onAuthStateChange(async (event, session) => {
-				console.log("Auth state change event:", event);
 				if (session) {
-					set({ user: session.user });
-					await useAuthStore.getState().fetchUserRoles(session.user.id);
+					await useAuthStore.getState().fetchUserRolesAndSetUser(session.user.id);
 				} else {
-					set({ user: null, userRoles: [] });
+					set({ user: null });
 				}
 			});
 		} catch (error) {
@@ -76,13 +63,39 @@ const useAuthStore = create((set) => ({
 		}
 	},
 
+	getSession: async () => {
+		try {
+			const {
+				data: { session },
+				error,
+			} = await supabase.auth.getSession();
+			if (error) throw error;
+			return session;
+		} catch (error) {
+			console.error("Error getting session:", error);
+			return null;
+		}
+	},
+
+	getUser: async () => {
+		try {
+			const {
+				data: { user },
+				error,
+			} = await supabase.auth.getUser();
+			if (error) throw error;
+			return user;
+		} catch (error) {
+			console.error("Error getting user:", error);
+			return null;
+		}
+	},
+
 	login: async (email, password) => {
 		try {
-			console.log("Logging in with:", email);
 			const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 			if (error) throw error;
-			set({ user: data.user });
-			await useAuthStore.getState().fetchUserRoles(data.user.id);
+			await useAuthStore.getState().fetchUserRolesAndSetUser(data.user.id);
 		} catch (error) {
 			console.error("Error logging in:", error);
 			throw error;
@@ -90,38 +103,59 @@ const useAuthStore = create((set) => ({
 	},
 
 	logout: async () => {
-		await supabase.auth.signOut();
-		set({ user: null, userRoles: [] });
+		try {
+			const { error } = await supabase.auth.signOut();
+			if (error) throw error;
+			set({ user: null });
+		} catch (error) {
+			console.error("Error logging out:", error);
+		}
 	},
 
-	fetchUserRoles: async (userId) => {
-		console.log("Fetching user roles for userId:", userId);
+	fetchUserRolesAndSetUser: async (userId) => {
 		try {
 			const { data } = await apolloClient.query({
 				query: FETCH_USER_ROLES_QUERY,
 				variables: { userId },
 			});
-			const user = data?.usersCollection?.edges?.[0]?.node;
-			console.log("FetchUserRoles: ", user);
-			if (user) {
-				const roles = user.user_rolesCollection.edges.map((edge) => edge.node.roles.name);
-				set({ userRoles: roles });
+			const user = await useAuthStore.getState().getUser();
+			if (data?.usersCollection?.edges?.length > 0) {
+				const roles = data.usersCollection.edges[0].node.user_rolesCollection.edges.map((edge) => edge.node.roles.name);
+				set({
+					user: {
+						...user,
+						userRoles: roles,
+					},
+				});
 			} else {
-				console.error("User roles data is missing");
-				set({ userRoles: [] });
+				set({
+					user: {
+						...user,
+						userRoles: [],
+					},
+				});
 			}
 		} catch (error) {
 			console.error("Error fetching user roles:", error);
-			set({ userRoles: [] });
+			set({
+				user: {
+					...(await useAuthStore.getState().getUser()),
+					userRoles: [],
+				},
+			});
 		}
 	},
 
 	resetPassword: async (email) => {
-		console.log("Resetting password for email:", email);
-		const { error } = await supabase.auth.resetPasswordForEmail(email, {
-			redirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/update-password`,
-		});
-		if (error) throw error;
+		try {
+			const { error } = await supabase.auth.resetPasswordForEmail(email, {
+				redirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/update-password`,
+			});
+			if (error) throw error;
+		} catch (error) {
+			console.error("Error resetting password:", error);
+			throw error;
+		}
 	},
 
 	claimBusiness: async (businessId, userId) => {
@@ -137,8 +171,6 @@ const useAuthStore = create((set) => ({
 	signup: async (values) => {
 		const { email, password, address, ...metadata } = values;
 
-		console.log("Signing up with values:", values);
-
 		const userData = {
 			email,
 			password,
@@ -151,25 +183,55 @@ const useAuthStore = create((set) => ({
 			},
 		};
 
-		console.log("Formatted user data for signup:", userData);
-
 		try {
 			const { data, error } = await supabase.auth.signUp(userData);
-
-			console.log("Signup response data:", data);
-
 			if (error) {
 				if (error.message.includes("User already registered")) {
 					throw new Error("User already exists");
 				}
-				console.error("Signup error:", error);
 				throw error;
 			}
-
-			console.log("Signup data:", data);
 		} catch (error) {
-			console.error("Signup error:", error);
 			throw error;
+		}
+	},
+
+	isEmailVerified: () => {
+		const user = useAuthStore.getState().user;
+		return user?.email_confirmed_at ? true : false;
+	},
+
+	handleResendVerificationEmail: async (email) => {
+		set({ resendLoading: true, resendSuccess: false, resendError: null });
+
+		try {
+			const { data: user, error: userError } = await supabase.auth.getUser();
+			if (userError) {
+				set({ resendError: "Error fetching user data.", resendLoading: false });
+				return;
+			}
+
+			if (user?.email_confirmed_at) {
+				set({ resendError: "Your email is already verified.", resendLoading: false });
+				return;
+			}
+
+			const { error } = await supabase.auth.resend({
+				type: "signup",
+				email: email,
+				options: {
+					emailRedirectTo: `${window.location.origin}/email-verified`,
+				},
+			});
+
+			if (error) {
+				set({ resendError: "Error resending verification email.", resendLoading: false });
+			} else {
+				set({ resendSuccess: true, resendLoading: false });
+			}
+		} catch (error) {
+			console.error("Error resending verification email:", error);
+			set({ resendError: "Error resending verification email.", resendLoading: false });
 		}
 	},
 }));

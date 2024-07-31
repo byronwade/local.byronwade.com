@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from "@components/ui/sheet";
@@ -11,6 +11,7 @@ import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from 
 import { ChevronDown, Menu } from "react-feather";
 import SearchBarHeader from "@components/shared/searchBox/SearchBarHeader";
 import useAuthStore from "@store/useAuthStore";
+import { supabase } from "@lib/supabaseClient";
 
 // Utility function to get background color of an element
 const getBackgroundColor = (element) => {
@@ -53,13 +54,47 @@ const calculateLuminosityPercentage = (elements) => {
 export default function Header() {
 	const [isLightBackground, setIsLightBackground] = useState(false);
 	const pathname = usePathname();
-	const { user, userRoles, logout } = useAuthStore((state) => ({
+	const router = useRouter();
+	const { user, userRoles, logout, setUser, setUserRoles } = useAuthStore((state) => ({
 		user: state.user,
 		userRoles: state.userRoles,
 		logout: state.logout,
+		setUser: state.setUser,
+		setUserRoles: state.setUserRoles,
 	}));
 
 	console.log(userRoles);
+
+	useEffect(() => {
+		const initializeAuth = async () => {
+			const { data } = supabase.auth.onAuthStateChange(async (event, session) => {
+				if (event === "INITIAL_SESSION" || event === "SIGNED_IN") {
+					if (session) {
+						const { data: user, error } = await supabase.auth.getUser();
+						if (error) {
+							console.error("Error fetching user:", error);
+							setUser(null);
+							return;
+						}
+
+						setUser(user);
+						await useAuthStore.getState().fetchUserRoles(user.id);
+					} else {
+						setUser(null);
+					}
+				} else if (event === "SIGNED_OUT") {
+					setUser(null);
+					setUserRoles([]);
+				}
+			});
+
+			return () => {
+				data.subscription.unsubscribe();
+			};
+		};
+
+		initializeAuth();
+	}, [router, setUser, setUserRoles]);
 
 	// Check background color on scroll and resize
 	useEffect(() => {
@@ -200,16 +235,33 @@ export default function Header() {
 										Ads
 									</Link>
 								</li>
-								<li>
-									<Link href="/login" onClick={() => setMobileMenuOpen(false)}>
-										Login
-									</Link>
-								</li>
-								<li>
-									<Link href="/onboarding" onClick={() => setMobileMenuOpen(false)}>
-										Sign Up
-									</Link>
-								</li>
+								{user ? (
+									<>
+										<li>
+											<Link href="/user" onClick={() => setMobileMenuOpen(false)}>
+												Dashboard
+											</Link>
+										</li>
+										<li>
+											<Button variant="outline" onClick={handleLogout}>
+												Logout
+											</Button>
+										</li>
+									</>
+								) : (
+									<>
+										<li>
+											<Link href="/login" onClick={() => setMobileMenuOpen(false)}>
+												Login
+											</Link>
+										</li>
+										<li>
+											<Link href="/onboarding" onClick={() => setMobileMenuOpen(false)}>
+												Sign Up
+											</Link>
+										</li>
+									</>
+								)}
 								<li>
 									<DropdownMenu>
 										<DropdownMenuTrigger asChild>

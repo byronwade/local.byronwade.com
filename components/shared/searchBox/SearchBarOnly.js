@@ -78,7 +78,7 @@ const SearchBarOnly = () => {
 	};
 
 	return (
-		<form className="relative z-10 flex flex-col w-full h-full min-w-0 p-2 bg-gray-900 border rounded-md shadow-lg divide-zinc-600 shadow-black/40" onSubmit={handleFormSubmit}>
+		<form className="relative z-10 flex flex-col w-full h-full min-w-0 p-2 bg-white border border-gray-300 rounded-md dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand" onSubmit={handleFormSubmit}>
 			<div className="relative flex items-center justify-between w-full align-center">
 				<div className="flex items-center justify-center flex-1">
 					<div className="relative w-full">
@@ -100,14 +100,7 @@ const SearchBarOnly = () => {
 				<div className="relative flex items-center space-x-2">
 					<LocationDropdown onLocationChange={handleLocationChange} value={location.value || ""} updateLocationError={updateLocationError} />
 					<AiButton showBeta={false} />
-					<Button
-						size="icon"
-						className={`${
-							isFormValid ? "bg-brand" : "bg-gray-800"
-						} flex items-center justify-center h-8 gap-2 px-2 py-2 text-sm font-medium transition-colors rounded-md select-none ring-offset-background focus-visible:ring-offset-2 shrink-0 whitespace-nowrap focus-visible:outline-none focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 focus-visible:bg-gray-800 focus-visible:ring-0 hover:bg-gray-700/70 text-white/70 focus-within:bg-gray-700 hover:text-white sm:px-3`}
-						type="submit"
-						disabled={!isFormValid || loading}
-					>
+					<Button size="icon" className={`${isFormValid ? "bg-brand !border-brand-dark" : ""} flex items-center justify-center h-6 gap-2 px-2 py-2 text-sm font-medium transition-colors rounded-md select-none ring-offset-background focus-visible:ring-offset-2 shrink-0 whitespace-nowrap focus-visible:outline-none focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 sm:px-3`} type="submit" disabled={!isFormValid || loading}>
 						{loading ? <Loader2 className="w-4 h-4 animate-spin" /> : isFormValid ? <ArrowRight className="w-4 h-4" /> : <Search className="w-4 h-4" />}
 					</Button>
 				</div>

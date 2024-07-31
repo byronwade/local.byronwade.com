@@ -3,7 +3,7 @@ import React, { useEffect, useState, Suspense, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import dynamic from "next/dynamic";
-import { ChevronLeft } from "react-feather";
+import { ArrowLeft, ChevronLeft } from "react-feather";
 import { Button } from "@components/ui/button";
 
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@components/ui/resizable";
@@ -36,14 +36,14 @@ const SearchContainer = () => {
 						<header className="flex flex-row items-center px-4 pt-4">
 							<div className="flex flex-row justify-between w-full space-x-2">
 								<Link href="/">
-									<Button variant="secondary">
-										<ChevronLeft className="w-4 h-4 mr-2" /> Thorbis
+									<Button variant="brand">
+										<ArrowLeft className="w-4 h-4 mr-2" /> Thorbis
 									</Button>
 								</Link>
 								<Link href="/">
 									<Image src="/ThorbisLogo.webp" alt="Thorbis" width={50} height={50} className="h-full w-[36px]" />
 								</Link>
-								<Link href="/">
+								<Link href="/add-a-business">
 									<Button variant="outline">Add a business</Button>
 								</Link>
 							</div>

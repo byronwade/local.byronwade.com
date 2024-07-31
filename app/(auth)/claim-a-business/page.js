@@ -38,6 +38,13 @@ const ClaimBusiness = () => {
 					if (session) {
 						setUser(session.user);
 						await useAuthStore.getState().fetchUserRoles(session.user.id);
+
+						// Check if the account is active
+						const { data: userData, error } = await supabase.from("users").select("active").eq("id", session.user.id).single();
+
+						if (error || !userData.active) {
+							router.push("/email-verified");
+						}
 					} else {
 						setUser(null);
 					}
@@ -54,7 +61,7 @@ const ClaimBusiness = () => {
 		};
 
 		initialize();
-	}, [initializeAuth, setLoading, setUser, setUserRoles]);
+	}, [initializeAuth, setLoading, setUser, setUserRoles, router]);
 
 	useEffect(() => {
 		if (!loading && !user) {

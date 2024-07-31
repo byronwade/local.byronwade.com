@@ -19,7 +19,7 @@ const steps = [
 	{ component: BusinessCertification, name: "Business Certification" },
 ];
 
-const ClaimBusiness = () => {
+const BusinessCertificationPage = () => {
 	const { currentStep, setCurrentStep } = useFormStore();
 	const { user, loading, setUser, setLoading, setUserRoles, initializeAuth } = useAuthStore();
 	const router = useRouter();
@@ -34,6 +34,13 @@ const ClaimBusiness = () => {
 					if (session) {
 						setUser(session.user);
 						await useAuthStore.getState().fetchUserRoles(session.user.id);
+
+						// Check if the account is active
+						const { data: userData, error } = await supabase.from("users").select("active").eq("id", session.user.id).single();
+
+						if (error || !userData.active) {
+							router.push("/email-verified");
+						}
 					} else {
 						setUser(null);
 					}
@@ -50,7 +57,7 @@ const ClaimBusiness = () => {
 		};
 
 		initialize();
-	}, [initializeAuth, setLoading, setUser, setUserRoles]);
+	}, [initializeAuth, setLoading, setUser, setUserRoles, router]);
 
 	useEffect(() => {
 		if (!loading && !user) {
@@ -83,14 +90,14 @@ const ClaimBusiness = () => {
 	return (
 		<>
 			<CurrentComponent />
-			{currentStep !== steps.findIndex((step) => step.name === "Business Submitted") && (
+			{currentStep !== steps.findIndex((step) => step.name === "Business Certification") && (
 				<div className="flex justify-between mt-10">
-					{currentStep !== steps.findIndex((step) => step.name === "Active User") && currentStep !== steps.findIndex((step) => step.name === "Business Verification") && (
+					{currentStep !== steps.findIndex((step) => step.name === "Active User") && currentStep !== steps.findIndex((step) => step.name === "Business Search") && (
 						<Button variant="outline" type="button" onClick={prevStep} className="mt-2 border-gray-300 dark:border-neutral-800">
 							<ArrowLeft className="w-4 h-4 mr-2" /> Back
 						</Button>
 					)}
-					{currentStep !== steps.findIndex((step) => step.name === "Active User") && currentStep !== steps.findIndex((step) => step.name === "Business Verification") && (
+					{currentStep !== steps.findIndex((step) => step.name === "Active User") && currentStep !== steps.findIndex((step) => step.name === "Business Search") && (
 						<Button variant="brand" type="button" onClick={nextStep} className="mt-2">
 							Next <ArrowRight className="w-4 h-4 ml-2" />
 						</Button>
@@ -102,7 +109,7 @@ const ClaimBusiness = () => {
 							</Button>
 						</div>
 					)}
-					{currentStep === steps.findIndex((step) => step.name === "Business Verification") && (
+					{currentStep === steps.findIndex((step) => step.name === "Business Search") && (
 						<div className="flex justify-between w-full space-x-4">
 							<Button variant="outline" type="button" onClick={prevStep} className="mt-2">
 								<ArrowLeft className="w-4 h-4 mr-2" /> Back
@@ -118,4 +125,4 @@ const ClaimBusiness = () => {
 	);
 };
 
-export default ClaimBusiness;
+export default BusinessCertificationPage;
