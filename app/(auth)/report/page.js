@@ -1,22 +1,24 @@
 "use client";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import ActiveUser from "@components/auth/onboarding/ActiveUser";
-import BusinessInfo from "@components/auth/onboarding/businessInfo";
-import BusinessAddress from "@components/auth/onboarding/businessAddress";
-import BusinessSuccess from "@components/auth/onboarding/businessSuccess";
+import ActiveBusiness from "@components/auth/shared/activeBusiness";
+import BuissnessSearch from "@components/auth/shared/buissness-search";
+import Report from "@components/auth/report/report";
 import { Button } from "@components/ui/button";
 import { ArrowRight, ArrowLeft } from "react-feather";
 import useFormStore from "@store/useFormStore";
 import useAuthStore from "@store/useAuthStore";
 import { supabase } from "@lib/supabaseClient"; // Adjust the import as necessary
+import WhatAreYouReporting from "@components/auth/report/what-are-you-reporting";
 
 const steps = [
 	{ component: ActiveUser, name: "Active User" },
-	{ component: BusinessInfo, name: "Business Information" },
-	{ component: BusinessAddress, name: "Business Address" },
-	{ component: BusinessSuccess, name: "Business Submitted" },
+	{ component: WhatAreYouReporting, name: "What Are You Reporting" },
+	{ component: ActiveBusiness, name: "Active Business" },
+	{ component: BuissnessSearch, name: "Business Search" },
+	{ component: Report, name: "Report" },
 ];
 
 const AddBuisness = () => {
@@ -98,7 +100,7 @@ const AddBuisness = () => {
 					{currentStep === steps.findIndex((step) => step.name === "Active User") && (
 						<div className="flex flex-row justify-between w-full mt-4">
 							<Button variant="brand" type="submit" onClick={nextStep}>
-								Confirm & Add Business <ArrowRight className="w-4 h-4 ml-2" />
+								Continue <ArrowRight className="w-4 h-4 ml-2" />
 							</Button>
 						</div>
 					)}

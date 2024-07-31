@@ -1,4 +1,4 @@
-import LoginPage from "@components/auth/LoginForm";
+import LoginPage from "@components/auth/login";
 
 export const metadata = {
 	title: "Login - Thorbis",
@@ -59,10 +59,8 @@ const jsonLdData = {
 export default function Login() {
 	return (
 		<>
-			<main>
-				<LoginPage />
-				<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdData) }} />
-			</main>
+			<LoginPage />
+			<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdData) }} />
 		</>
 	);
 }

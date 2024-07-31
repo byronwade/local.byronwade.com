@@ -12,6 +12,9 @@ module.exports = {
 			},
 		},
 		extend: {
+			ringWidth: {
+				0: "0px",
+			},
 			colors: {
 				discord: "#5865f2",
 				twitter: "#1da1f2",
@@ -19,9 +22,21 @@ module.exports = {
 				producthunt: "#da552f",
 				hackernews: "#ff4000",
 				brand: {
-					DEFAULT: "hsl(var(--brand))",
-					light: "hsl(var(--brand-light))",
-					dark: "hsl(var(--brand-dark))",
+					DEFAULT: "#0066cc", // Brand
+					light: "#3399ff", // Brand Light
+					dark: "#003399", // Brand Dark
+				},
+				dark: {
+					100: "#f5f5f5",
+					200: "#e5e5e5",
+					300: "#d4d4d4",
+					400: "#a3a3a3",
+					500: "#737373",
+					600: "#525252",
+					700: "#404040",
+					800: "#262626",
+					900: "#171717",
+					950: "#111111",
 				},
 				border: "hsl(var(--border))",
 				input: "hsl(var(--input))",
@@ -71,13 +86,47 @@ module.exports = {
 					from: { height: "var(--radix-accordion-content-height)" },
 					to: { height: "0" },
 				},
+				breathe: {
+					"0%, 100%": { transform: "scale(1)" },
+					"50%": { transform: "scale(1.20)" },
+				},
 			},
 			animation: {
 				"accordion-down": "accordion-down 0.2s ease-out",
 				"accordion-up": "accordion-up 0.2s ease-out",
 				"spin-slow": "spin 1s linear infinite",
+				breathe: "breathe 1s ease-in-out infinite",
 			},
 		},
 	},
-	plugins: [require("@tailwindcss/typography"), require("tailwindcss-animate")],
+
+	variants: {
+		extend: {
+			ringWidth: ["focus-visible"],
+			ringColor: ["focus-visible"],
+			ringOffsetWidth: ["focus-visible"],
+		},
+	},
+	plugins: [
+		require("@tailwindcss/typography"),
+		require("tailwindcss-animate"),
+		require("@tailwindcss/forms"),
+		function ({ addBase, config }) {
+			addBase({
+				"input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill": {
+					"-webkit-box-shadow": `0 0 0px 1000px ${config("theme.colors.white")} inset`,
+					boxShadow: `0 0 0px 1000px ${config("theme.colors.white")} inset`,
+					"-webkit-text-fill-color": config("theme.colors.black"),
+					transition: "background-color 5000s ease-in-out 0s",
+				},
+				"@media (prefers-color-scheme: dark)": {
+					"input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill": {
+						"-webkit-box-shadow": `0 0 0px 1000px ${config("theme.colors.gray.900")} inset`,
+						boxShadow: `0 0 0px 1000px ${config("theme.colors.gray.900")} inset`,
+						"-webkit-text-fill-color": config("theme.colors.white"),
+					},
+				},
+			});
+		},
+	],
 };

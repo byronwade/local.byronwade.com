@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import useAuthStore from "@store/useAuthStore";
@@ -60,7 +61,11 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
 	}, [isInitialized, user, loading, userRoles, router, allowedRoles]);
 
 	if (!isInitialized || loading) {
-		return <div>Loading...</div>;
+		return (
+			<div className="flex justify-center w-full">
+				<Image src="/ThorbisLogo.webp" alt="Thorbis Logo" width={200} height={100} className="w-[60px] h-[60px] animate-breathe" />
+			</div>
+		);
 	}
 
 	if (!user || !allowedRoles.some((role) => userRoles.includes(role))) {

@@ -141,11 +141,9 @@ export default function Header() {
 					</DropdownMenu>
 					{user ? (
 						<>
-							<Link href="/user">
-								<Button variant="outline" className="transition-none" onClick={handleLogout}>
-									Logout
-								</Button>
-							</Link>
+							<Button variant="outline" className="transition-none" onClick={handleLogout}>
+								Logout
+							</Button>
 							<Link href="/user">
 								<Button variant="brand" className="transition-none">
 									Dashboard
@@ -159,7 +157,7 @@ export default function Header() {
 									Login
 								</Button>
 							</Link>
-							<Link href="/signup">
+							<Link href="/onboarding">
 								<Button variant="brand" className="transition-none">
 									Sign Up
 								</Button>
@@ -208,7 +206,7 @@ export default function Header() {
 									</Link>
 								</li>
 								<li>
-									<Link href="/signup" onClick={() => setMobileMenuOpen(false)}>
+									<Link href="/onboarding" onClick={() => setMobileMenuOpen(false)}>
 										Sign Up
 									</Link>
 								</li>
@@ -219,18 +217,13 @@ export default function Header() {
 										</DropdownMenuTrigger>
 										<DropdownMenuContent className="w-56 bg-white">
 											<DropdownMenuItem asChild>
-												<Link href="/add-business" onClick={() => setMobileMenuOpen(false)}>
+												<Link href="/add-a-business" onClick={() => setMobileMenuOpen(false)}>
 													Add a Business
 												</Link>
 											</DropdownMenuItem>
 											<DropdownMenuItem asChild>
-												<Link href="/claim-business" onClick={() => setMobileMenuOpen(false)}>
+												<Link href="/claim-a-business" onClick={() => setMobileMenuOpen(false)}>
 													Claim your business
-												</Link>
-											</DropdownMenuItem>
-											<DropdownMenuItem asChild>
-												<Link href="/login-business" onClick={() => setMobileMenuOpen(false)}>
-													Log in to Business Account
 												</Link>
 											</DropdownMenuItem>
 											<DropdownMenuItem asChild>

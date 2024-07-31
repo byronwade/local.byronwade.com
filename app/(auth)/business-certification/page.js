@@ -3,23 +3,23 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import ActiveUser from "@components/auth/onboarding/ActiveUser";
-import BusinessInfo from "@components/auth/onboarding/businessInfo";
-import BusinessAddress from "@components/auth/onboarding/businessAddress";
-import BusinessSuccess from "@components/auth/onboarding/businessSuccess";
+import BusinessCertification from "@components/auth/certification/business-certification";
+import ActiveBusiness from "@components/auth/shared/activeBusiness";
 import { Button } from "@components/ui/button";
 import { ArrowRight, ArrowLeft } from "react-feather";
 import useFormStore from "@store/useFormStore";
 import useAuthStore from "@store/useAuthStore";
 import { supabase } from "@lib/supabaseClient"; // Adjust the import as necessary
+import BuissnessSearch from "@components/auth/shared/buissness-search";
 
 const steps = [
 	{ component: ActiveUser, name: "Active User" },
-	{ component: BusinessInfo, name: "Business Information" },
-	{ component: BusinessAddress, name: "Business Address" },
-	{ component: BusinessSuccess, name: "Business Submitted" },
+	{ component: ActiveBusiness, name: "Active Business" },
+	{ component: BuissnessSearch, name: "Business Search" },
+	{ component: BusinessCertification, name: "Business Certification" },
 ];
 
-const AddBuisness = () => {
+const ClaimBusiness = () => {
 	const { currentStep, setCurrentStep } = useFormStore();
 	const { user, loading, setUser, setLoading, setUserRoles, initializeAuth } = useAuthStore();
 	const router = useRouter();
@@ -85,12 +85,12 @@ const AddBuisness = () => {
 			<CurrentComponent />
 			{currentStep !== steps.findIndex((step) => step.name === "Business Submitted") && (
 				<div className="flex justify-between mt-10">
-					{currentStep !== steps.findIndex((step) => step.name === "Active User") && (
+					{currentStep !== steps.findIndex((step) => step.name === "Active User") && currentStep !== steps.findIndex((step) => step.name === "Business Verification") && (
 						<Button variant="outline" type="button" onClick={prevStep} className="mt-2 border-gray-300 dark:border-neutral-800">
 							<ArrowLeft className="w-4 h-4 mr-2" /> Back
 						</Button>
 					)}
-					{currentStep !== steps.findIndex((step) => step.name === "Active User") && (
+					{currentStep !== steps.findIndex((step) => step.name === "Active User") && currentStep !== steps.findIndex((step) => step.name === "Business Verification") && (
 						<Button variant="brand" type="button" onClick={nextStep} className="mt-2">
 							Next <ArrowRight className="w-4 h-4 ml-2" />
 						</Button>
@@ -102,10 +102,20 @@ const AddBuisness = () => {
 							</Button>
 						</div>
 					)}
+					{currentStep === steps.findIndex((step) => step.name === "Business Verification") && (
+						<div className="flex justify-between w-full space-x-4">
+							<Button variant="outline" type="button" onClick={prevStep} className="mt-2">
+								<ArrowLeft className="w-4 h-4 mr-2" /> Back
+							</Button>
+							<Button variant="brand" type="button" onClick={nextStep} className="mt-2">
+								Next <ArrowRight className="w-4 h-4 ml-2" />
+							</Button>
+						</div>
+					)}
 				</div>
 			)}
 		</>
 	);
 };
 
-export default AddBuisness;
+export default ClaimBusiness;
