@@ -1,17 +1,15 @@
-// pages/login.js
 "use client";
+
 import { useForm, FormProvider } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
-import { Label } from "@components/ui/label";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@components/ui/form";
+import { useRouter } from "next/navigation";
 import useAuthStore from "@store/useAuthStore";
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 
 const loginSchema = z.object({
 	email: z.string().email({ message: "Invalid email address" }),
@@ -29,7 +27,6 @@ export default function LoginPage() {
 
 	const {
 		handleSubmit,
-		register,
 		formState: { errors, isValid, touchedFields },
 	} = formMethods;
 

@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { supabase } from "@lib/supabaseClient";
-import apolloClient from "@lib/apolloClient";
+import { login, logout } from "@actions/auth";
+import client from "@lib/apolloClient";
 import { gql } from "@apollo/client";
 
 const FETCH_USER_ROLES_QUERY = gql`
@@ -8,8 +9,6 @@ const FETCH_USER_ROLES_QUERY = gql`
 		usersCollection(filter: { id: { eq: $userId } }) {
 			edges {
 				node {
-					id
-					username
 					user_rolesCollection {
 						edges {
 							node {
@@ -25,214 +24,101 @@ const FETCH_USER_ROLES_QUERY = gql`
 	}
 `;
 
-const useAuthStore = create((set) => ({
-	user: null,
-	loading: true,
-	verificationStatus: null,
-	resendLoading: false,
-	resendSuccess: false,
-	resendError: null,
+const fetchUserRolesClient = async (userId) => {
+	try {
+		const { data, errors } = await client.query({
+			query: FETCH_USER_ROLES_QUERY,
+			variables: { userId },
+		});
 
-	setUser: (user) => set({ user }),
+		if (errors) {
+			console.error("GraphQL errors:", errors);
+			throw new Error("Failed to fetch user roles");
+		}
+
+		const roles = data.usersCollection.edges[0].node.user_rolesCollection.edges.map((edge) => edge.node.roles.name);
+		return roles;
+	} catch (error) {
+		console.error("Fetch user roles error:", error);
+		throw error;
+	}
+};
+
+const useAuthStore = create((set, get) => ({
+	user: null,
+	isAuthenticated: false,
+	userRoles: [],
+	loading: true,
+	isInitialized: false,
+	setUser: (user) => set({ user, isAuthenticated: !!user, loading: false }),
+	setUserRoles: (roles) => set({ userRoles: roles }),
 	setLoading: (loading) => set({ loading }),
-	setVerificationStatus: (status) => set({ verificationStatus: status }),
-	setResendLoading: (loading) => set({ resendLoading: loading }),
-	setResendSuccess: (success) => set({ resendSuccess: success }),
-	setResendError: (error) => set({ resendError: error }),
+	setIsInitialized: (isInitialized) => set({ isInitialized }),
 
 	initializeAuth: async () => {
-		try {
-			const session = await useAuthStore.getState().getSession();
-			if (session) {
-				await useAuthStore.getState().fetchUserRolesAndSetUser(session.user.id);
-			} else {
-				set({ user: null });
-			}
-			set({ loading: false });
+		if (get().isInitialized) return;
 
-			supabase.auth.onAuthStateChange(async (event, session) => {
-				if (session) {
-					await useAuthStore.getState().fetchUserRolesAndSetUser(session.user.id);
-				} else {
-					set({ user: null });
-				}
-			});
-		} catch (error) {
-			console.error("Error initializing auth:", error);
-			set({ loading: false });
-		}
-	},
-
-	getSession: async () => {
+		set({ loading: true });
 		try {
 			const {
 				data: { session },
-				error,
 			} = await supabase.auth.getSession();
-			if (error) throw error;
-			return session;
+			console.log("initializeAuth - Session:", session);
+			if (session) {
+				const user = session.user;
+				console.log("User is authenticated", user);
+				const roles = await fetchUserRolesClient(user.id);
+				console.log("Fetched roles", roles);
+				set({ user, isAuthenticated: true, userRoles: roles });
+			} else {
+				set({ user: null, isAuthenticated: false, userRoles: [] });
+			}
 		} catch (error) {
-			console.error("Error getting session:", error);
-			return null;
-		}
-	},
-
-	getUser: async () => {
-		try {
-			const {
-				data: { user },
-				error,
-			} = await supabase.auth.getUser();
-			if (error) throw error;
-			return user;
-		} catch (error) {
-			console.error("Error getting user:", error);
-			return null;
+			console.error("Error initializing auth:", error);
+		} finally {
+			set({ loading: false, isInitialized: true });
 		}
 	},
 
 	login: async (email, password) => {
+		set({ loading: true });
 		try {
-			const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-			if (error) throw error;
-			await useAuthStore.getState().fetchUserRolesAndSetUser(data.user.id);
+			const { user } = await login(email, password);
+			console.log("Login successful", user);
+			const roles = await fetchUserRolesClient(user.id);
+			set({ user, isAuthenticated: true, userRoles: roles, loading: false });
 		} catch (error) {
-			console.error("Error logging in:", error);
-			throw error;
+			console.error("Login error:", error);
+			set({ loading: false });
 		}
 	},
 
 	logout: async () => {
+		set({ loading: true });
 		try {
-			const { error } = await supabase.auth.signOut();
-			if (error) throw error;
-			set({ user: null });
+			await logout();
+			set({ user: null, isAuthenticated: false, userRoles: [], loading: false });
+			console.log("Logout successful");
 		} catch (error) {
-			console.error("Error logging out:", error);
+			console.error("Logout error:", error);
+			set({ loading: false });
 		}
 	},
 
-	fetchUserRolesAndSetUser: async (userId) => {
-		try {
-			const { data } = await apolloClient.query({
-				query: FETCH_USER_ROLES_QUERY,
-				variables: { userId },
-			});
-			const user = await useAuthStore.getState().getUser();
-			if (data?.usersCollection?.edges?.length > 0) {
-				const roles = data.usersCollection.edges[0].node.user_rolesCollection.edges.map((edge) => edge.node.roles.name);
-				set({
-					user: {
-						...user,
-						userRoles: roles,
-					},
-				});
+	onAuthStateChange: () => {
+		supabase.auth.onAuthStateChange(async (event, session) => {
+			console.log("Auth state change - Event:", event, "Session:", session);
+			if (session) {
+				const user = session.user;
+				console.log("Auth state change - User signed in or token refreshed", user);
+				const roles = await fetchUserRolesClient(user.id);
+				console.log("Auth state change - Fetched roles", roles);
+				set({ user, isAuthenticated: true, userRoles: roles, loading: false });
 			} else {
-				set({
-					user: {
-						...user,
-						userRoles: [],
-					},
-				});
+				console.log("Auth state change - User signed out or session is null");
+				set({ user: null, isAuthenticated: false, userRoles: [], loading: false });
 			}
-		} catch (error) {
-			console.error("Error fetching user roles:", error);
-			set({
-				user: {
-					...(await useAuthStore.getState().getUser()),
-					userRoles: [],
-				},
-			});
-		}
-	},
-
-	resetPassword: async (email) => {
-		try {
-			const { error } = await supabase.auth.resetPasswordForEmail(email, {
-				redirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/update-password`,
-			});
-			if (error) throw error;
-		} catch (error) {
-			console.error("Error resetting password:", error);
-			throw error;
-		}
-	},
-
-	claimBusiness: async (businessId, userId) => {
-		console.log("Claiming business with ID:", businessId, "for user ID:", userId);
-		// Implement logic to claim a business
-	},
-
-	addBusiness: async (businessDetails) => {
-		console.log("Adding new business with details:", businessDetails);
-		// Implement logic to add a new business
-	},
-
-	signup: async (values) => {
-		const { email, password, address, ...metadata } = values;
-
-		const userData = {
-			email,
-			password,
-			options: {
-				data: {
-					...metadata,
-					...address,
-					roles: ["7cc96f08-d77a-411f-9946-93c5894a13f5"], // Default to user role
-				},
-			},
-		};
-
-		try {
-			const { data, error } = await supabase.auth.signUp(userData);
-			if (error) {
-				if (error.message.includes("User already registered")) {
-					throw new Error("User already exists");
-				}
-				throw error;
-			}
-		} catch (error) {
-			throw error;
-		}
-	},
-
-	isEmailVerified: () => {
-		const user = useAuthStore.getState().user;
-		return user?.email_confirmed_at ? true : false;
-	},
-
-	handleResendVerificationEmail: async (email) => {
-		set({ resendLoading: true, resendSuccess: false, resendError: null });
-
-		try {
-			const { data: user, error: userError } = await supabase.auth.getUser();
-			if (userError) {
-				set({ resendError: "Error fetching user data.", resendLoading: false });
-				return;
-			}
-
-			if (user?.email_confirmed_at) {
-				set({ resendError: "Your email is already verified.", resendLoading: false });
-				return;
-			}
-
-			const { error } = await supabase.auth.resend({
-				type: "signup",
-				email: email,
-				options: {
-					emailRedirectTo: `${window.location.origin}/email-verified`,
-				},
-			});
-
-			if (error) {
-				set({ resendError: "Error resending verification email.", resendLoading: false });
-			} else {
-				set({ resendSuccess: true, resendLoading: false });
-			}
-		} catch (error) {
-			console.error("Error resending verification email:", error);
-			set({ resendError: "Error resending verification email.", resendLoading: false });
-		}
+		});
 	},
 }));
 

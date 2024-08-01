@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import UserInfo from "@components/auth/onboarding/userInfo";
@@ -30,8 +30,13 @@ const steps = [
 ];
 
 const OnboardingComponent = () => {
-	const { currentStep, setCurrentStep } = useFormStore();
+	const [currentStep, setCurrentStep] = useState(0);
 	const [loading, setLoading] = useState(false);
+
+	useEffect(() => {
+		// Reset to the first step when the component mounts
+		setCurrentStep(0);
+	}, []);
 
 	const nextStep = () => {
 		if (currentStep < steps.length - 1) {
@@ -70,7 +75,7 @@ const OnboardingComponent = () => {
 			<CurrentComponent />
 			{currentStep !== steps.findIndex((step) => step.name === "Business Submitted") && (
 				<div className="flex justify-between mt-10">
-					{currentStep !== steps.findIndex((step) => step.name === "User Success") && currentStep !== steps.findIndex((step) => step.name === "Business Skip Verify") && currentStep !== steps.findIndex((step) => step.name === "Business Verification") && (
+					{currentStep > 0 && currentStep !== steps.findIndex((step) => step.name === "User Success") && currentStep !== steps.findIndex((step) => step.name === "Business Skip Verify") && currentStep !== steps.findIndex((step) => step.name === "Business Verification") && (
 						<Button variant="outline" type="button" onClick={prevStep} className="mt-2">
 							<ArrowLeft className="w-4 h-4 mr-2" /> Back
 						</Button>
@@ -85,7 +90,7 @@ const OnboardingComponent = () => {
 							<div className="w-full my-20 border rounded-full dark:border-dark-800 border-dark-300"></div>
 							<h2 className="mb-1 text-2xl font-bold leading-9 text-left text-gray-900 dark:text-gray-200">Now add a business</h2>
 							<p className="text-sm leading-6 text-left text-gray-600 dark:text-gray-300">
-								If you own a company you can alternitivly add it here, please note that you will have to <b>prove ownership</b> to claim otherwise you can add one anonymously.
+								If you own a company you can alternatively add it here, please note that you will have to <b>prove ownership</b> to claim otherwise you can add one anonymously.
 							</p>
 							<div className="flex flex-col mt-4 space-y-4">
 								<Link href="/claim-a-business" passHref legacyBehavior>

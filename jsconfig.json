@@ -10,7 +10,8 @@
 			"@hooks/*": ["hooks/*"],
 			"@emails/*": ["emails/*"],
 			"@store/*": ["store/*"],
-			"@queries/*": ["queries/*"]
+			"@queries/*": ["queries/*"],
+			"@actions/*": ["actions/*"]
 		}
   }
 }

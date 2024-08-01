@@ -1,130 +1,42 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from "@components/ui/sheet";
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from "@components/ui/drawer";
+import { Drawer, DrawerContent, DrawerTrigger } from "@components/ui/drawer";
 import { ChevronDown, Menu } from "react-feather";
 import SearchBarHeader from "@components/shared/searchBox/SearchBarHeader";
 import useAuthStore from "@store/useAuthStore";
-import { supabase } from "@lib/supabaseClient";
-
-// Utility function to get background color of an element
-const getBackgroundColor = (element) => {
-	if (!element) return null;
-	const style = window.getComputedStyle(element);
-	return style.backgroundColor;
-};
-
-// Utility function to determine if a color is light
-const isLightColor = (color) => {
-	const rgb = color.match(/\d+/g);
-	if (!rgb) return false;
-	const [r, g, b] = rgb.map(Number);
-	const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-	return luminance > 0.5;
-};
-
-// Calculate luminosity percentage of elements
-const calculateLuminosityPercentage = (elements) => {
-	let lightArea = 0;
-	let totalArea = 0;
-
-	elements.forEach((element) => {
-		const rect = element.getBoundingClientRect();
-		const area = rect.width * rect.height;
-		if (area === 0) return;
-
-		const backgroundColor = getBackgroundColor(element);
-		if (backgroundColor && backgroundColor !== "rgba(0, 0, 0, 0)") {
-			const isLight = isLightColor(backgroundColor);
-			if (isLight) lightArea += area;
-			totalArea += area;
-		}
-	});
-
-	if (totalArea === 0) return 0;
-	return (lightArea / totalArea) * 100;
-};
 
 export default function Header() {
-	const [isLightBackground, setIsLightBackground] = useState(false);
 	const pathname = usePathname();
 	const router = useRouter();
-	const { user, userRoles, logout, setUser, setUserRoles } = useAuthStore((state) => ({
+	const { user, userRoles, logout, setUser, setUserRoles, initializeAuth } = useAuthStore((state) => ({
 		user: state.user,
 		userRoles: state.userRoles,
 		logout: state.logout,
 		setUser: state.setUser,
 		setUserRoles: state.setUserRoles,
+		initializeAuth: state.initializeAuth,
 	}));
 
 	console.log(userRoles);
 
 	useEffect(() => {
-		const initializeAuth = async () => {
-			const { data } = supabase.auth.onAuthStateChange(async (event, session) => {
-				if (event === "INITIAL_SESSION" || event === "SIGNED_IN") {
-					if (session) {
-						const { data: user, error } = await supabase.auth.getUser();
-						if (error) {
-							console.error("Error fetching user:", error);
-							setUser(null);
-							return;
-						}
-
-						setUser(user);
-						await useAuthStore.getState().fetchUserRoles(user.id);
-					} else {
-						setUser(null);
-					}
-				} else if (event === "SIGNED_OUT") {
-					setUser(null);
-					setUserRoles([]);
-				}
-			});
-
-			return () => {
-				data.subscription.unsubscribe();
-			};
-		};
-
 		initializeAuth();
-	}, [router, setUser, setUserRoles]);
-
-	// Check background color on scroll and resize
-	useEffect(() => {
-		const header = document.querySelector("#header");
-
-		const checkBackgroundColor = () => {
-			const rect = header.getBoundingClientRect();
-			const elementsBelowHeader = document.elementsFromPoint(rect.left, rect.bottom).filter((el) => el !== header);
-			const luminosityPercentage = calculateLuminosityPercentage(elementsBelowHeader);
-			setIsLightBackground(luminosityPercentage > 85);
-		};
-
-		window.addEventListener("scroll", checkBackgroundColor);
-		window.addEventListener("resize", checkBackgroundColor);
-		checkBackgroundColor();
-
-		return () => {
-			window.removeEventListener("scroll", checkBackgroundColor);
-			window.removeEventListener("resize", checkBackgroundColor);
-		};
-	}, []);
+	}, [router, setUser, setUserRoles, initializeAuth]);
 
 	const handleLogout = async () => {
 		try {
 			await logout();
 			console.log("Logout successful");
-			// Redirect or perform other actions upon successful logout
+			router.push("/"); // Redirect after logout
 		} catch (error) {
 			console.error("Logout failed:", error);
-			// Show error message to the user
 		}
 	};
 
@@ -133,7 +45,7 @@ export default function Header() {
 	}
 
 	return (
-		<div id="header" className={`transition-none sticky top-0 z-[60] transition-colors ${isLightBackground ? "text-black bg-white" : " text-white bg-black"}`}>
+		<div id="header" className="transition-none sticky top-0 z-[60] transition-colors">
 			<div className="flex items-center justify-between w-full gap-6 p-2 px-4 mx-auto">
 				<div className="flex flex-row items-center w-full space-x-4">
 					<Link href="/" className="flex flex-col items-center text-xl font-bold text-center">
@@ -145,15 +57,15 @@ export default function Header() {
 					</div>
 				</div>
 				<div className="hidden space-x-2 lg:flex">
-					<Button variant="link" className={`transition-none hover:no-underline hover:bg-gray-800 ${isLightBackground ? "text-black border-gray-300 hover:bg-gray-100" : "text-white"}`}>
+					<Button variant="link" className="transition-none hover:no-underline hover:bg-gray-800">
 						Post a job
 					</Button>
-					<Button variant="link" className={`transition-none hover:no-underline hover:bg-gray-800 ${isLightBackground ? "text-black border-gray-300 hover:bg-gray-100" : "text-white"}`}>
+					<Button variant="link" className="transition-none hover:no-underline hover:bg-gray-800">
 						Write a review
 					</Button>
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
-							<Button variant="link" className={`transition-none hover:no-underline hover:bg-gray-800 ${isLightBackground ? "text-black border-gray-300 hover:bg-gray-100" : "text-white"}`}>
+							<Button variant="link" className="transition-none hover:no-underline hover:bg-gray-800">
 								Add a Business <ChevronDown className="w-4 h-4 ml-2" />
 							</Button>
 						</DropdownMenuTrigger>
@@ -162,7 +74,7 @@ export default function Header() {
 								<Link href="/add-a-business">Add a Business</Link>
 							</DropdownMenuItem>
 							<DropdownMenuItem asChild>
-								<Link href="/claim-business">Claim your business</Link>
+								<Link href="/claim-a-business">Claim your business</Link>
 							</DropdownMenuItem>
 							<DropdownMenuSeparator />
 							<DropdownMenuItem asChild>
@@ -170,7 +82,7 @@ export default function Header() {
 							</DropdownMenuItem>
 							<DropdownMenuSeparator />
 							<DropdownMenuItem asChild>
-								<Link href="/explore-business">Get Thorbis Certified</Link>
+								<Link href="/buisiness-certification">Get Thorbis Certified</Link>
 							</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>

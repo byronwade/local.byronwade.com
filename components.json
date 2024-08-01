@@ -19,6 +19,7 @@
 		"hooks": "@hooks",
 		"emails": "@emails",
 		"stores": "@stores",
-		"queries": "@queries"
+		"queries": "@queries",
+		"actions": "@actions"
 	}
 }

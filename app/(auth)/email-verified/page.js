@@ -6,12 +6,11 @@ import Link from "next/link";
 import { useForm, FormProvider } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter, useParams } from "next/navigation";
 import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@components/ui/form";
 import { ArrowRight } from "react-feather";
-import useAuthStore from "@store/useAuthStore";
+import useAuth from "@hooks/useAuth";
 import { supabase } from "@lib/supabaseClient";
 
 const resendSchema = z.object({
@@ -19,21 +18,11 @@ const resendSchema = z.object({
 });
 
 const EmailVerified = () => {
-	const [loading, setLoading] = useState(true);
-	const params = useParams();
-
-	console.log("params", params);
-
-	const { user, isEmailVerified, initializeAuth, resendLoading, resendSuccess, resendError, handleResendVerificationEmail, fetchUserRoles } = useAuthStore((state) => ({
-		user: state.user,
-		isEmailVerified: state.isEmailVerified,
-		initializeAuth: state.initializeAuth,
-		resendLoading: state.resendLoading,
-		resendSuccess: state.resendSuccess,
-		resendError: state.resendError,
-		handleResendVerificationEmail: state.handleResendVerificationEmail,
-		fetchUserRoles: state.fetchUserRoles,
-	}));
+	const { isInitialized, user, userRoles, loading } = useAuth();
+	const [resendLoading, setResendLoading] = useState(false);
+	const [resendSuccess, setResendSuccess] = useState(false);
+	const [resendError, setResendError] = useState("");
+	console.log(user, userRoles);
 
 	const formMethods = useForm({
 		resolver: zodResolver(resendSchema),
@@ -42,38 +31,31 @@ const EmailVerified = () => {
 		},
 	});
 
-	const onSubmit = (data) => {
-		handleResendVerificationEmail(data.email);
-	};
+	const onSubmit = async (data) => {
+		setResendLoading(true);
+		setResendSuccess(false);
+		setResendError("");
 
-	useEffect(() => {
-		const verifyEmailAndLogin = async () => {
-			if (token && type === "email") {
-				const { error } = await supabase.auth.verifyOtp({
-					type: "email",
-					token,
-				});
+		try {
+			const { error } = await supabase.auth.resend({
+				type: "signup",
+				email: data.email,
+				options: {
+					emailRedirectTo: `${window.location.origin}/verify-email`,
+				},
+			});
 
-				if (error) {
-					console.error("Error verifying token:", error);
-				} else {
-					// After successful verification, fetch the session and user details
-					const { data: sessionError } = await supabase.auth.getSession();
-					const user = sessionError?.session?.user;
-					if (user) {
-						await fetchUserRoles(user.id);
-					}
-				}
+			if (error) {
+				throw error;
 			}
-			setLoading(false);
-		};
 
-		if (token && type) {
-			verifyEmailAndLogin();
-		} else {
-			setLoading(false);
+			setResendSuccess(true);
+		} catch (error) {
+			setResendError(error.message);
+		} finally {
+			setResendLoading(false);
 		}
-	}, [token, type, fetchUserRoles]);
+	};
 
 	if (loading) {
 		return (
@@ -83,29 +65,9 @@ const EmailVerified = () => {
 		);
 	}
 
-	if (!user) {
-		return (
-			<div className="flex items-center justify-center h-screen">
-				<div className="text-center">
-					<h2 className="mb-4 text-2xl font-bold text-gray-900 dark:text-gray-200">You are not logged in</h2>
-					<Link href="/login">
-						<Button variant="brand" className="w-full mb-4">
-							Login
-						</Button>
-					</Link>
-					<Link href="/signup">
-						<Button variant="outline" className="w-full">
-							Sign Up
-						</Button>
-					</Link>
-				</div>
-			</div>
-		);
-	}
-
 	return (
 		<>
-			{isEmailVerified() ? (
+			{user?.email_confirmed_at ? (
 				<>
 					<h2 className="mb-1 text-2xl font-bold leading-9 text-left text-green-700 dark:text-green-500">Email has been Verified</h2>
 					<p className="text-sm leading-6 text-left text-gray-600 dark:text-gray-300">Your email has been verified and you now have access to your account.</p>
@@ -126,14 +88,14 @@ const EmailVerified = () => {
 							<Button variant="outline" className="w-full">
 								Search for a company <ArrowRight className="w-4 h-4 ml-2" />
 							</Button>
-							{user?.userRoles?.includes("business_user") && (
+							{userRoles?.includes("business_user") && (
 								<Button variant="brand" className="w-full">
 									Go to business dashboard <ArrowRight className="w-4 h-4 ml-2" />
 								</Button>
 							)}
 						</div>
 					</div>
-					{!user?.userRoles?.includes("business_user") && (
+					{!userRoles?.includes("business_user") && (
 						<div className="flex flex-col mt-10">
 							<div className="w-full my-20 border rounded-full dark:border-dark-800 border-dark-300"></div>
 							<h2 className="mb-1 text-2xl font-bold leading-9 text-left text-gray-900 dark:text-gray-200">Now add a business</h2>
@@ -141,12 +103,16 @@ const EmailVerified = () => {
 								If you own a company you can alternatively add it here, please note that you will have to <b>prove ownership</b> to claim otherwise you can add one anonymously.
 							</p>
 							<div className="flex flex-col mt-4 space-y-4">
-								<Button variant="brand" className="w-full">
-									Claim a business <ArrowRight className="w-4 h-4 ml-2" />
-								</Button>
-								<Button variant="outline" className="w-full">
-									Submit Business Anonymously <ArrowRight className="w-4 h-4 ml-2" />
-								</Button>
+								<Link href="/claim-a-business" passHref legacyBehavior>
+									<Button variant="brand" className="w-full">
+										Claim a business <ArrowRight className="w-4 h-4 ml-2" />
+									</Button>
+								</Link>
+								<Link href="/add-a-business" passHref legacyBehavior>
+									<Button variant="outline" className="w-full">
+										Submit Business Anonymously <ArrowRight className="w-4 h-4 ml-2" />
+									</Button>
+								</Link>
 							</div>
 						</div>
 					)}

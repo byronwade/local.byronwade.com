@@ -2,10 +2,11 @@
 import Image from "next/image";
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import ActiveUser from "@components/auth/onboarding/ActiveUser";
+import ActiveUser from "@components/auth/shared/ActiveUser";
 import ActiveBusiness from "@components/auth/shared/activeBusiness";
 import BuissnessSearch from "@components/auth/shared/buissness-search";
 import Report from "@components/auth/report/report";
+import LoginPage from "@components/auth/login";
 import { Button } from "@components/ui/button";
 import { ArrowRight, ArrowLeft } from "react-feather";
 import useFormStore from "@store/useFormStore";
@@ -61,12 +62,6 @@ const AddBusiness = () => {
 		initialize();
 	}, [initializeAuth, setLoading, setUser, setUserRoles, router]);
 
-	useEffect(() => {
-		if (!loading && !user) {
-			router.push("/onboarding");
-		}
-	}, [user, loading, router]);
-
 	const nextStep = () => {
 		if (currentStep < steps.length - 1) {
 			setCurrentStep(currentStep + 1);
@@ -87,6 +82,11 @@ const AddBusiness = () => {
 				<Image src="/ThorbisLogo.webp" alt="Thorbis Logo" width={200} height={100} className="w-[60px] h-[60px] animate-breathe" />
 			</div>
 		);
+	}
+
+	console.log(user);
+	if (!user) {
+		return <LoginPage />;
 	}
 
 	return (
