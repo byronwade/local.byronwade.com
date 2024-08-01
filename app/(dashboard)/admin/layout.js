@@ -4,35 +4,29 @@ import Header from "@components/admin/layout/Header";
 import Main from "@components/admin/layout/Main";
 import Sidebar from "@components/admin/layout/Sidebar";
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 import useAuthStore from "@store/useAuthStore";
 
 export default function AdminLayout({ children }) {
-	const { user, userRoles, loading, initializeAuth } = useAuthStore((state) => state);
-	const router = useRouter();
+	const { user, userRoles, loading } = useAuthStore((state) => state);
 
 	useEffect(() => {
-		initializeAuth();
-	}, [initializeAuth]);
-
-	useEffect(() => {
+		if (!loading && !user) {
+			redirect("/login");
+		}
 		console.log("User:", user);
 		console.log("User Roles:", userRoles);
-		if (!loading && user && (!Array.isArray(userRoles) || !userRoles.includes("admin"))) {
-			router.push("/unauthorized");
+		if (!loading && user && (!Array.isArray(userRoles) || !userRoles.some((role) => ["admin"].includes(role)))) {
+			redirect("/unauthorized");
 		}
-	}, [user, userRoles, loading, router]);
+	}, [user, userRoles, loading]);
 
 	if (loading) {
 		return (
-			<div className="flex justify-center w-full">
+			<div className="flex items-center justify-center w-full h-screen align-middle">
 				<Image src="/ThorbisLogo.webp" alt="Thorbis Logo" width={200} height={100} className="w-[60px] h-[60px] animate-breathe" />
 			</div>
 		);
-	}
-
-	if (!user || !Array.isArray(userRoles) || !userRoles.includes("admin")) {
-		return null;
 	}
 
 	return (

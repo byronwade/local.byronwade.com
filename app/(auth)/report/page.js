@@ -1,17 +1,16 @@
 "use client";
 import Image from "next/image";
-import React, { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import ActiveUser from "@components/auth/shared/ActiveUser";
-import ActiveBusiness from "@components/auth/shared/activeBusiness";
+import React, { useEffect, useState } from "react";
+import VerifyAccount from "@components/auth/shared/verify-account";
+import ActiveUser from "@components/auth/shared/active-user";
+import ActiveBusiness from "@components/auth/shared/active-business";
 import BuissnessSearch from "@components/auth/shared/buissness-search";
 import Report from "@components/auth/report/report";
 import LoginPage from "@components/auth/login";
 import { Button } from "@components/ui/button";
 import { ArrowRight, ArrowLeft } from "react-feather";
 import useFormStore from "@store/useFormStore";
-import useAuthStore from "@store/useAuthStore";
-import { supabase } from "@lib/supabaseClient"; // Adjust the import as necessary
+import useAuth from "@hooks/useAuth";
 import WhatAreYouReporting from "@components/auth/report/what-are-you-reporting";
 
 const steps = [
@@ -22,45 +21,14 @@ const steps = [
 	{ component: Report, name: "Report" },
 ];
 
-const AddBusiness = () => {
-	const { currentStep, setCurrentStep } = useFormStore();
-	const { user, loading, setUser, setLoading, setUserRoles, initializeAuth } = useAuthStore();
-	const router = useRouter();
+const ReportPage = () => {
+	const [currentStep, setCurrentStep] = useState(0);
+	const { isInitialized, user, loading } = useAuth();
 
 	useEffect(() => {
-		const initialize = async () => {
-			setLoading(true);
-			await initializeAuth();
-
-			const { data } = supabase.auth.onAuthStateChange(async (event, session) => {
-				if (event === "INITIAL_SESSION" || event === "SIGNED_IN") {
-					if (session) {
-						setUser(session.user);
-						await useAuthStore.getState().fetchUserRoles(session.user.id);
-
-						// Check if the account is active
-						const { data: userData, error } = await supabase.from("users").select("active").eq("id", session.user.id).single();
-
-						if (error || !userData.active) {
-							router.push("/email-verified");
-						}
-					} else {
-						setUser(null);
-					}
-				} else if (event === "SIGNED_OUT") {
-					setUser(null);
-					setUserRoles([]);
-				}
-				setLoading(false);
-			});
-
-			return () => {
-				data.subscription.unsubscribe();
-			};
-		};
-
-		initialize();
-	}, [initializeAuth, setLoading, setUser, setUserRoles, router]);
+		// Reset to the first step when the component mounts
+		setCurrentStep(0);
+	}, []);
 
 	const nextStep = () => {
 		if (currentStep < steps.length - 1) {
@@ -76,7 +44,7 @@ const AddBusiness = () => {
 
 	const CurrentComponent = steps[currentStep].component;
 
-	if (loading) {
+	if (loading || !isInitialized) {
 		return (
 			<div className="flex justify-center w-full">
 				<Image src="/ThorbisLogo.webp" alt="Thorbis Logo" width={200} height={100} className="w-[60px] h-[60px] animate-breathe" />
@@ -84,10 +52,15 @@ const AddBusiness = () => {
 		);
 	}
 
-	console.log(user);
 	if (!user) {
 		return <LoginPage />;
 	}
+
+	if (user.email_confirmed_at === "") {
+		return <VerifyAccount />;
+	}
+
+	console.log(user);
 
 	return (
 		<>
@@ -117,4 +90,4 @@ const AddBusiness = () => {
 	);
 };
 
-export default AddBusiness;
+export default ReportPage;

@@ -1,10 +1,9 @@
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 import useAuthStore from "@store/useAuthStore";
 
 const useAuth = (redirectTo = null) => {
 	const { user, userRoles, initializeAuth, loading, isInitialized, onAuthStateChange } = useAuthStore();
-	const router = useRouter();
 
 	useEffect(() => {
 		const init = async () => {
@@ -19,9 +18,9 @@ const useAuth = (redirectTo = null) => {
 	useEffect(() => {
 		console.log("useAuth - isInitialized:", isInitialized, "loading:", loading, "user:", user, "userRoles:", userRoles);
 		if (isInitialized && !loading && !user && redirectTo) {
-			router.push(redirectTo);
+			redirect(redirectTo);
 		}
-	}, [isInitialized, loading, user, redirectTo, router]);
+	}, [isInitialized, loading, user, redirectTo]);
 
 	return { isInitialized, user, userRoles, loading };
 };

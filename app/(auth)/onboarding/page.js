@@ -1,91 +1,155 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import Image from "next/image";
+import React, { useState } from "react";
 import Link from "next/link";
-import UserInfo from "@components/auth/onboarding/userInfo";
-import UserAddress from "@components/auth/onboarding/userAddress";
-import UserProfile from "@components/auth/onboarding/userProfile";
-import UserSuccess from "@components/auth/onboarding/userSuccess";
-import BusinessInfo from "@components/auth/onboarding/businessInfo";
-import BusinessAddress from "@components/auth/onboarding/businessAddress";
-import BusinessProfile from "@components/auth/onboarding/businessProfile";
-import BusinessSkipVerify from "@components/auth/onboarding/businessSkipVerify";
-import BusinessVerification from "@components/auth/onboarding/businessVerification";
-import BusinessSuccess from "@components/auth/onboarding/businessSuccess";
-import { Button } from "@components/ui/button";
+import { useForm, FormProvider } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { ArrowRight, ArrowLeft } from "react-feather";
-import useFormStore from "@store/useFormStore"; // adjust this path accordingly
+import { Button } from "@components/ui/button";
+
+import UserInfo from "@components/auth/onboarding/user-info";
+import UserAddress from "@components/auth/onboarding/user-address";
+import UserProfile from "@components/auth/onboarding/user-profile";
+import UserSuccess from "@components/auth/onboarding/user-success";
+
+// Define schema for user steps only
+const userSchema = z.object({
+	userInfo: z.object({
+		firstName: z.string().nonempty({ message: "First name is required" }),
+		lastName: z.string().nonempty({ message: "Last name is required" }),
+		phoneNumber: z.string().nonempty({ message: "Phone number is required" }),
+		email: z.string().email({ message: "Invalid email address" }).nonempty({ message: "Email is required" }),
+		howFound: z.string().nonempty({ message: "Please select an option" }),
+	}),
+	userAddress: z.object({
+		street: z.string().nonempty({ message: "Street is required" }),
+		city: z.string().nonempty({ message: "City is required" }),
+		state: z.string().nonempty({ message: "State is required" }),
+		zip: z.string().regex(/^\d{5}$/, { message: "Invalid ZIP code. Must be 5 digits." }),
+		poBox: z.string().optional(),
+		additionalAddresses: z
+			.array(
+				z.object({
+					street: z.string().nonempty({ message: "Street is required" }),
+					city: z.string().nonempty({ message: "City is required" }),
+					state: z.string().nonempty({ message: "State is required" }),
+					zip: z.string().regex(/^\d{5}$/, { message: "Invalid ZIP code. Must be 5 digits." }),
+				})
+			)
+			.max(1, "You can only add 1 additional address")
+			.optional(),
+	}),
+	userProfile: z.object({
+		image: z.any().optional(),
+		username: z.string().nonempty({ message: "Username is required" }),
+	}),
+});
 
 const steps = [
-	{ component: UserInfo, name: "User Information" },
-	{ component: UserAddress, name: "User Address" },
-	{ component: UserProfile, name: "User Profile" },
-	{ component: UserSuccess, name: "User Success" },
-	{ component: BusinessInfo, name: "Business Information" },
-	{ component: BusinessAddress, name: "Business Address" },
-	{ component: BusinessProfile, name: "Business Profile" },
-	{ component: BusinessSkipVerify, name: "Business Skip Verify" },
-	{ component: BusinessVerification, name: "Business Verification" },
-	{ component: BusinessSuccess, name: "Business Submitted" },
+	{ component: UserInfo, name: "userInfo" },
+	{ component: UserAddress, name: "userAddress" },
+	{ component: UserProfile, name: "userProfile" },
+	{ component: UserSuccess, name: "userSuccess" },
 ];
 
 const OnboardingComponent = () => {
 	const [currentStep, setCurrentStep] = useState(0);
 	const [loading, setLoading] = useState(false);
 
-	useEffect(() => {
-		// Reset to the first step when the component mounts
-		setCurrentStep(0);
-	}, []);
+	const formMethods = useForm({
+		resolver: zodResolver(userSchema),
+		defaultValues: {
+			userInfo: {
+				firstName: "",
+				lastName: "",
+				phoneNumber: "",
+				email: "",
+				howFound: "",
+			},
+			userAddress: {
+				street: "",
+				city: "",
+				state: "",
+				zip: "",
+				poBox: "",
+				additionalAddresses: [],
+			},
+			userProfile: {
+				username: "",
+				image: null,
+			},
+		},
+	});
 
-	const nextStep = () => {
-		if (currentStep < steps.length - 1) {
-			setCurrentStep(currentStep + 1);
+	const nextStep = async () => {
+		setLoading(true);
+		const isStepValid = await formMethods.trigger(steps[currentStep].name);
+		console.log("Next Step Triggered:", isStepValid, formMethods.getValues());
+		if (!isStepValid) {
+			console.log("Validation Errors:", formMethods.formState.errors);
+		}
+		setLoading(false);
+		if (isStepValid) {
+			setCurrentStep((prev) => prev + 1);
 		}
 	};
 
 	const prevStep = () => {
 		if (currentStep > 0) {
-			setCurrentStep(currentStep - 1);
+			setCurrentStep((prev) => prev - 1);
+		}
+	};
+
+	const onSubmitUser = async (data) => {
+		console.log("User Data:", data);
+		setLoading(true);
+		await new Promise((resolve) => setTimeout(resolve, 1000));
+		setLoading(false);
+		nextStep();
+	};
+
+	const handleSubmit = async () => {
+		const isValid = await formMethods.trigger();
+		console.log("Form Submission Triggered:", isValid, formMethods.getValues());
+		if (!isValid) {
+			console.log("Validation Errors:", formMethods.formState.errors);
+		}
+		if (isValid) {
+			const data = formMethods.getValues();
+			console.log("Form Submitted:", data);
+			await onSubmitUser(data);
+		} else {
+			console.log("Validation failed");
 		}
 	};
 
 	const CurrentComponent = steps[currentStep].component;
 
-	const handleSuccessNext = () => {
-		if (currentStep === steps.findIndex((step) => step.name === "User Success")) {
-			nextStep();
-		}
-	};
-
-	const handleBusinessSkipVerify = () => {
-		nextStep();
-	};
-
-	if (loading) {
-		return (
-			<div className="flex justify-center w-full">
-				<Image src="/ThorbisLogo.webp" alt="Thorbis Logo" width={100} height={100} className="w-[60px] h-[60px] animate-breathe" />
-			</div>
-		);
-	}
-
 	return (
 		<>
-			<CurrentComponent />
-			{currentStep !== steps.findIndex((step) => step.name === "Business Submitted") && (
-				<div className="flex justify-between mt-10">
-					{currentStep > 0 && currentStep !== steps.findIndex((step) => step.name === "User Success") && currentStep !== steps.findIndex((step) => step.name === "Business Skip Verify") && currentStep !== steps.findIndex((step) => step.name === "Business Verification") && (
-						<Button variant="outline" type="button" onClick={prevStep} className="mt-2">
-							<ArrowLeft className="w-4 h-4 mr-2" /> Back
-						</Button>
+			<FormProvider {...formMethods}>
+				<form>
+					<CurrentComponent />
+					{currentStep !== steps.findIndex((step) => step.name === "userSuccess") && (
+						<div className="flex justify-between mt-10">
+							{currentStep > 0 && (
+								<Button variant="outline" type="button" onClick={prevStep} className="mt-2">
+									<ArrowLeft className="w-4 h-4 mr-2" /> Back
+								</Button>
+							)}
+							{currentStep < steps.length - 1 && currentStep !== steps.findIndex((step) => step.name === "userProfile") && (
+								<Button variant="brand" type="button" onClick={nextStep} className="mt-2">
+									Next <ArrowRight className="w-4 h-4 ml-2" />
+								</Button>
+							)}
+							{currentStep === steps.findIndex((step) => step.name === "userProfile") && (
+								<Button variant="brand" type="button" onClick={handleSubmit} className="mt-2">
+									Submit
+								</Button>
+							)}
+						</div>
 					)}
-					{currentStep !== steps.findIndex((step) => step.name === "User Success") && currentStep !== steps.findIndex((step) => step.name === "Business Skip Verify") && currentStep !== steps.findIndex((step) => step.name === "Business Verification") && (
-						<Button variant="brand" type="button" onClick={nextStep} className="mt-2">
-							Next <ArrowRight className="w-4 h-4 ml-2" />
-						</Button>
-					)}
-					{currentStep === steps.findIndex((step) => step.name === "User Success") && (
+					{currentStep === steps.findIndex((step) => step.name === "userSuccess") && (
 						<div className="flex flex-col w-full">
 							<div className="w-full my-20 border rounded-full dark:border-dark-800 border-dark-300"></div>
 							<h2 className="mb-1 text-2xl font-bold leading-9 text-left text-gray-900 dark:text-gray-200">Now add a business</h2>
@@ -106,33 +170,8 @@ const OnboardingComponent = () => {
 							</div>
 						</div>
 					)}
-					{currentStep === steps.findIndex((step) => step.name === "Business Skip Verify") && (
-						<div className="flex flex-col w-full">
-							<p className="text-sm leading-6 text-left text-gray-600 dark:text-gray-300">If you do not own the company but want to claim it, please proceed with the verification process. Otherwise, you can skip this step.</p>
-							<div className="flex flex-col mt-4 space-y-4">
-								<Button variant="brand" className="w-full" onClick={handleBusinessSkipVerify}>
-									Verify Ownership <ArrowRight className="w-4 h-4 ml-2" />
-								</Button>
-								<Link href="/add-a-business" passHref legacyBehavior>
-									<Button variant="outline" className="w-full">
-										Submit Business Anonymously <ArrowRight className="w-4 h-4 ml-2" />
-									</Button>
-								</Link>
-							</div>
-						</div>
-					)}
-					{currentStep === steps.findIndex((step) => step.name === "Business Verification") && (
-						<div className="flex justify-between w-full space-x-4">
-							<Button variant="outline" type="button" onClick={prevStep} className="mt-2">
-								<ArrowLeft className="w-4 h-4 mr-2" /> Back
-							</Button>
-							<Button variant="brand" type="button" onClick={nextStep} className="mt-2">
-								Next <ArrowRight className="w-4 h-4 ml-2" />
-							</Button>
-						</div>
-					)}
-				</div>
-			)}
+				</form>
+			</FormProvider>
 		</>
 	);
 };

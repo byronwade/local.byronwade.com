@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, redirect } from "next/navigation";
 import { Button } from "@components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from "@components/ui/sheet";
@@ -14,7 +14,6 @@ import useAuthStore from "@store/useAuthStore";
 
 export default function Header() {
 	const pathname = usePathname();
-	const router = useRouter();
 	const { user, userRoles, logout, setUser, setUserRoles, initializeAuth } = useAuthStore((state) => ({
 		user: state.user,
 		userRoles: state.userRoles,
@@ -28,13 +27,25 @@ export default function Header() {
 
 	useEffect(() => {
 		initializeAuth();
-	}, [router, setUser, setUserRoles, initializeAuth]);
+	}, [setUser, setUserRoles, initializeAuth]);
+
+	// useEffect(() => {
+	// 	if (user) {
+	// 		if (userRoles.includes("admin")) {
+	// 			redirect("/admin");
+	// 		} else if (userRoles.includes("business_owner")) {
+	// 			redirect("/business");
+	// 		} else {
+	// 			redirect("/user");
+	// 		}
+	// 	}
+	// }, [user, userRoles]);
 
 	const handleLogout = async () => {
 		try {
 			await logout();
 			console.log("Logout successful");
-			router.push("/"); // Redirect after logout
+			redirect("/"); // Redirect after logout
 		} catch (error) {
 			console.error("Logout failed:", error);
 		}
@@ -45,7 +56,7 @@ export default function Header() {
 	}
 
 	return (
-		<div id="header" className="transition-none sticky top-0 z-[60] transition-colors">
+		<div id="header" className="transition-none sticky top-0 z-[60] bg-white border-gray-300 dark:border-neutral-800 dark:bg-neutral-900">
 			<div className="flex items-center justify-between w-full gap-6 p-2 px-4 mx-auto">
 				<div className="flex flex-row items-center w-full space-x-4">
 					<Link href="/" className="flex flex-col items-center text-xl font-bold text-center">
@@ -57,19 +68,15 @@ export default function Header() {
 					</div>
 				</div>
 				<div className="hidden space-x-2 lg:flex">
-					<Button variant="link" className="transition-none hover:no-underline hover:bg-gray-800">
-						Post a job
-					</Button>
-					<Button variant="link" className="transition-none hover:no-underline hover:bg-gray-800">
-						Write a review
-					</Button>
+					<Button variant="ghost">Post a job</Button>
+					<Button variant="ghost">Write a review</Button>
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
-							<Button variant="link" className="transition-none hover:no-underline hover:bg-gray-800">
+							<Button variant="ghost">
 								Add a Business <ChevronDown className="w-4 h-4 ml-2" />
 							</Button>
 						</DropdownMenuTrigger>
-						<DropdownMenuContent className="w-56 bg-black z-[80]">
+						<DropdownMenuContent className="w-56 bg-white border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 z-[80]">
 							<DropdownMenuItem asChild>
 								<Link href="/add-a-business">Add a Business</Link>
 							</DropdownMenuItem>

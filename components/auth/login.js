@@ -7,7 +7,7 @@ import Link from "next/link";
 import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@components/ui/form";
-import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 import useAuthStore from "@store/useAuthStore";
 import { useEffect } from "react";
 
@@ -34,7 +34,6 @@ export default function LoginPage() {
 	const initializeAuth = useAuthStore((state) => state.initializeAuth);
 	const user = useAuthStore((state) => state.user);
 	const userRoles = useAuthStore((state) => state.userRoles);
-	const router = useRouter();
 
 	useEffect(() => {
 		initializeAuth();
@@ -43,14 +42,14 @@ export default function LoginPage() {
 	useEffect(() => {
 		if (user) {
 			if (userRoles.includes("admin")) {
-				router.push("/admin");
+				redirect("/admin");
 			} else if (userRoles.includes("business_owner")) {
-				router.push("/business");
+				redirect("/business");
 			} else {
-				router.push("/user");
+				redirect("/user");
 			}
 		}
-	}, [user, userRoles, router]);
+	}, [user, userRoles]);
 
 	const onSubmit = async (data) => {
 		try {

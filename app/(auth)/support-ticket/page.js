@@ -3,23 +3,19 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import VerifyAccount from "@components/auth/shared/verify-account";
 import ActiveUser from "@components/auth/shared/active-user";
-import BusinessCertification from "@components/auth/certification/business-certification";
-import ActiveBusiness from "@components/auth/shared/active-business";
+import LoginPage from "@components/auth/login";
 import { Button } from "@components/ui/button";
 import { ArrowRight, ArrowLeft } from "react-feather";
 import useFormStore from "@store/useFormStore";
 import useAuth from "@hooks/useAuth";
-import BuissnessSearch from "@components/auth/shared/buissness-search";
-import LoginPage from "@components/auth/login";
+import SupportInfo from "@components/auth/support/support-info";
 
 const steps = [
 	{ component: ActiveUser, name: "Active User" },
-	{ component: ActiveBusiness, name: "Active Business" },
-	{ component: BuissnessSearch, name: "Business Search" },
-	{ component: BusinessCertification, name: "Business Certification" },
+	{ component: SupportInfo, name: "Support Info" },
 ];
 
-const BusinessCertificationPage = () => {
+const AddBusiness = () => {
 	const [currentStep, setCurrentStep] = useState(0);
 	const { isInitialized, user, loading } = useAuth();
 
@@ -27,6 +23,7 @@ const BusinessCertificationPage = () => {
 		// Reset to the first step when the component mounts
 		setCurrentStep(0);
 	}, []);
+
 	const nextStep = () => {
 		if (currentStep < steps.length - 1) {
 			setCurrentStep(currentStep + 1);
@@ -62,14 +59,14 @@ const BusinessCertificationPage = () => {
 	return (
 		<>
 			<CurrentComponent />
-			{currentStep !== steps.findIndex((step) => step.name === "Business Certification") && (
+			{currentStep !== steps.findIndex((step) => step.name === "Business Submitted") && (
 				<div className="flex justify-between mt-10">
-					{currentStep !== steps.findIndex((step) => step.name === "Active User") && currentStep !== steps.findIndex((step) => step.name === "Business Search") && (
+					{currentStep !== steps.findIndex((step) => step.name === "Active User") && (
 						<Button variant="outline" type="button" onClick={prevStep} className="mt-2 border-gray-300 dark:border-neutral-800">
 							<ArrowLeft className="w-4 h-4 mr-2" /> Back
 						</Button>
 					)}
-					{currentStep !== steps.findIndex((step) => step.name === "Active User") && currentStep !== steps.findIndex((step) => step.name === "Business Search") && (
+					{currentStep !== steps.findIndex((step) => step.name === "Active User") && (
 						<Button variant="brand" type="button" onClick={nextStep} className="mt-2">
 							Next <ArrowRight className="w-4 h-4 ml-2" />
 						</Button>
@@ -81,20 +78,10 @@ const BusinessCertificationPage = () => {
 							</Button>
 						</div>
 					)}
-					{currentStep === steps.findIndex((step) => step.name === "Business Search") && (
-						<div className="flex justify-between w-full space-x-4">
-							<Button variant="outline" type="button" onClick={prevStep} className="mt-2">
-								<ArrowLeft className="w-4 h-4 mr-2" /> Back
-							</Button>
-							<Button variant="brand" type="button" onClick={nextStep} className="mt-2">
-								Next <ArrowRight className="w-4 h-4 ml-2" />
-							</Button>
-						</div>
-					)}
 				</div>
 			)}
 		</>
 	);
 };
 
-export default BusinessCertificationPage;
+export default AddBusiness;
