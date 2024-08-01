@@ -194,7 +194,7 @@ export default function Home({ itemsPerPage = 4 }) {
 								<Button variant="outline">Post a company</Button>
 							</div>
 							<p className="mt-6 text-sm text-gray-400">Search for a welder out of 3000 companies</p>
-							<p className="w-full text-gray-200 md:max-w-[70%] lg:max-w-[50%] xl:max-w-[35%] mt-1">After the Queen of Hearts incites a coup on Auradon, her rebellious daughter Red and Cinderella's perfectionist daughter Chloe join forces and travel ...</p>
+							<p className="w-full text-gray-200 md:max-w-[70%] lg:max-w-[50%] xl:max-w-[35%] mt-1">After the Queen of Hearts incites a coup on Auradon, her rebellious daughter Red and Cinderella&apos;s perfectionist daughter Chloe join forces and travel ...</p>
 						</div>
 						<div className="w-full py-24 pl-8">
 							<ScrollArea className="relative w-full group">
@@ -406,7 +406,7 @@ export default function Home({ itemsPerPage = 4 }) {
 								<Button variant="outline">Post a company</Button>
 							</div>
 							<p className="mt-6 text-sm text-gray-400">Search for a welder out of 3000 companies</p>
-							<p className="w-full text-gray-200 md:max-w-[70%] lg:max-w-[50%] xl:max-w-[35%] mt-1">After the Queen of Hearts incites a coup on Auradon, her rebellious daughter Red and Cinderella's perfectionist daughter Chloe join forces and travel ...</p>
+							<p className="w-full text-gray-200 md:max-w-[70%] lg:max-w-[50%] xl:max-w-[35%] mt-1">After the Queen of Hearts incites a coup on Auradon, her rebellious daughter Red and Cinderella&apos;s perfectionist daughter Chloe join forces and travel ...</p>
 						</div>
 						<div className="w-full py-24 pl-8">
 							<ScrollArea className="relative w-full group">
@@ -646,7 +646,7 @@ export default function Home({ itemsPerPage = 4 }) {
 								<Button variant="outline">Post a company</Button>
 							</div>
 							<p className="mt-6 text-sm text-gray-400">Search for a welder out of 3000 companies</p>
-							<p className="w-full text-gray-200 md:max-w-[70%] lg:max-w-[50%] xl:max-w-[35%] mt-1">After the Queen of Hearts incites a coup on Auradon, her rebellious daughter Red and Cinderella's perfectionist daughter Chloe join forces and travel ...</p>
+							<p className="w-full text-gray-200 md:max-w-[70%] lg:max-w-[50%] xl:max-w-[35%] mt-1">After the Queen of Hearts incites a coup on Auradon, her rebellious daughter Red and Cinderella&apos;s perfectionist daughter Chloe join forces and travel ...</p>
 						</div>
 					</div>
 				</div>

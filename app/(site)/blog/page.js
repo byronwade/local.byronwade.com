@@ -163,7 +163,7 @@ export default function Blog() {
 								</span>
 							</div>
 							<h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white hover:underline">
-								<a href="/blog/e-commerce-ui-has-been-launched/">We have launched over 80+ components in E-commerce UI and there's more to come!</a>
+								<a href="/blog/e-commerce-ui-has-been-launched/">We have launched over 80+ components in E-commerce UI and there&apos;s more to come!</a>
 							</h2>
 							<p className="mb-5 text-gray-500 dark:text-gray-400">I am thrilled to share the latest updates from Flowbite! Since our last communication, our team has been hard at work, and we are excited to announce the launch of over 85 new E-commerce UI components and blocks.</p>
 							<div className="flex items-center justify-between">
@@ -193,7 +193,7 @@ export default function Blog() {
 							<h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white hover:underline">
 								<a href="/blog/state-of-flowbite-2022/">State of Flowbite: learn more about our results from 2022 and what we plan to build this year</a>
 							</h2>
-							<p className="mb-5 text-gray-500 dark:text-gray-400">Learn more about the results, achievements and plans for the future by reading the "State of Flowbite 2022" including the open-source development of the Flowbite Library, the release of new UI components, features, and more.</p>
+							<p className="mb-5 text-gray-500 dark:text-gray-400">Learn more about the results, achievements and plans for the future by reading the &quot;State of Flowbite 2022&quot; including the open-source development of the Flowbite Library, the release of new UI components, features, and more.</p>
 							<div className="flex items-center justify-between">
 								<a className="flex items-center space-x-2" href="/blog/author/zoltan/">
 									<img className="rounded-full w-7 h-7" src="https://www.gravatar.com/avatar/be85a3bc61ad70c85c9b3411dc07cb2d?s=250&r=x&d=mp" alt="Zoltán Szőgyényi profile picture" />
@@ -227,7 +227,7 @@ export default function Blog() {
 							<h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white hover:underline">
 								<a href="/blog/how-to-use-flowbite-ui-components-with-laravel-and-alpine-js/">How to use Flowbite UI components with Laravel and Alpine.js to build an admin dashboard</a>
 							</h2>
-							<p className="mb-5 text-gray-500 dark:text-gray-400">In this tutorial, we're going to create a simple admin dashboard using free Flowbite UI components, Laravel, and a bit of Alpine.js for interactivity.</p>
+							<p className="mb-5 text-gray-500 dark:text-gray-400">In this tutorial, we&apos;re going to create a simple admin dashboard using free Flowbite UI components, Laravel, and a bit of Alpine.js for interactivity.</p>
 							<div className="flex items-center justify-between">
 								<a className="flex items-center space-x-2" href="/blog/author/rich/">
 									<img className="rounded-full w-7 h-7" src="https://publisher.flowbite.com/content/images/2023/01/1605304654466.jpg" alt="Rich Klein profile picture" />

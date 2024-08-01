@@ -41,7 +41,7 @@ export default function Article() {
 							You can check out the <a href="https://flowbite.com/docs/getting-started/quickstart/">quickstart guide</a> to explore the elements by including the CDN files into your project. But if you want to build a project with Flowbite I recommend you to follow the build tools steps so that you can purge and minify the generated CSS.
 						</p>
 						<p>
-							You'll also receive a lot of useful application UI, marketing UI, and e-commerce pages that can help you get started with your projects even faster. You can check out this <a href="https://flowbite.com/docs/components/tables/">comparison table</a> to better understand the differences between the open-source and pro version of Flowbite.
+							You&APOS;ll also receive a lot of useful application UI, marketing UI, and e-commerce pages that can help you get started with your projects even faster. You can check out this <a href="https://flowbite.com/docs/components/tables/">comparison table</a> to better understand the differences between the open-source and pro version of Flowbite.
 						</p>
 						<h2>When does design come in handy?</h2>
 						<p>While it might seem like extra work at a first glance, here are some key moments in which prototyping will come in handy:</p>
@@ -62,7 +62,7 @@ export default function Article() {
 						<h3>Laying the groundwork for best design</h3>
 						<p>Before going digital, you might benefit from scribbling down some ideas in a sketchbook. This way, you can think things through before committing to an actual design project.</p>
 						<p>
-							Let's start by including the CSS file inside the <code>head</code> tag of your HTML.
+							Let&APOS;s start by including the CSS file inside the <code>head</code> tag of your HTML.
 						</p>
 						<h3>Understanding typography</h3>
 						<h4>Type properties</h4>
@@ -94,8 +94,8 @@ export default function Article() {
 						<h4>Code example</h4>
 						<p>A serif is a small shape or projection that appears at the beginning or end of a stroke on a letter. Typefaces with serifs are called serif typefaces. Serif fonts are classified as one of the following:</p>
 						<pre>
-							<code className="language-html">
-								&lt;dl class="grid grid-cols-2 gap-8 max-w-screen-md text-gray-900 sm:grid-cols-3 dark:text-white"&gt;{"\n"}&lt;div class="flex flex-col justify-center items-center"&gt;{"\n"}
+							{/* <code className="language-html">
+								&lt;dl class=&quot;grid grid-cols-2 gap-8 max-w-screen-md text-gray-900 sm:grid-cols-3 dark:text-white"&gt;{"\n"}&lt;div class="flex flex-col justify-center items-center"&gt;{"\n"}
 								{"  "}&lt;dt class="mb-2 text-3xl font-extrabold"&gt;73M+&lt;/dt&gt;
 								{"\n"}
 								{"  "}&lt;dd class="text-lg font-normal text-gray-500 dark:text-gray-400"&gt;developers&lt;/dd&gt;{"\n"}&lt;/div&gt;{"\n"}
@@ -109,7 +109,7 @@ export default function Article() {
 								{"\n"}
 								{"  "}&lt;dd class="text-lg font-normal text-gray-500 dark:text-gray-400"&gt;organizations&lt;/dd&gt;{"\n"}&lt;/div&gt;
 								{"\n"}&lt;/dl&gt;{"\n"}
-							</code>
+							</code> */}
 						</pre>
 						<h4>Table example</h4>
 						<p>A serif is a small shape or projection that appears at the beginning or end of a stroke on a letter.</p>

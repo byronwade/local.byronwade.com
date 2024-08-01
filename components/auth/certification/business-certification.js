@@ -12,7 +12,7 @@ import Image from "next/image";
 const reportBusinessSchema = z.object({
 	customerDetails: z.string().nonempty({ message: "Customer details are required" }),
 	generalLiabilityInsurance: z.string().nonempty({ message: "General Liability Insurance details are required" }),
-	workersComp: z.string().nonempty({ message: "Workers' Compensation Insurance details are required" }),
+	workersComp: z.string().nonempty({ message: "Workers&apos; Compensation Insurance details are required" }),
 });
 
 export default function BusinessCertification() {
@@ -89,8 +89,8 @@ export default function BusinessCertification() {
 								name="workersComp"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Workers' Compensation Insurance</FormLabel>
-										<FormDescription>Upload your Workers' Compensation Insurance document to ensure compliance.</FormDescription>
+										<FormLabel>Workers&apos; Compensation Insurance</FormLabel>
+										<FormDescription>Upload your Workers&apos; Compensation Insurance document to ensure compliance.</FormDescription>
 										<FormControl>
 											<Input {...field} type="file" className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand" />
 										</FormControl>
