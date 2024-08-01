@@ -134,7 +134,7 @@ const AddBusiness = () => {
 
 	return (
 		<FormProvider {...formMethods}>
-			<form className="space-y-10">
+			<form>
 				<CurrentComponent />
 				{currentStep !== steps.findIndex((step) => step.name === "businessSuccess") && (
 					<div className="flex justify-between mt-10">
