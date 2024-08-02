@@ -28,9 +28,9 @@ export default function BusinessRootLayout({ children }) {
 	}
 
 	return (
-		<div className="flex flex-col min-h-screen m-auto max-w-screen-2xl">
+		<div>
 			<Header />
-			<div className="flex flex-1">{children}</div>
+			<div className="bg-gray-100 dark:md:border-gray-950 dark:bg-dark-950">{children}</div>
 		</div>
 	);
 }
