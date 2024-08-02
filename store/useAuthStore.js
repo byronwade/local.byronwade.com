@@ -3,6 +3,7 @@ import { supabase } from "@lib/supabaseClient";
 import { login, logout } from "@actions/auth";
 import client from "@lib/apolloClient";
 import { gql } from "@apollo/client";
+import { redirect } from "next/navigation";
 
 const FETCH_USER_ROLES_QUERY = gql`
 	query GetUserRoles($userId: uuid!) {
@@ -98,6 +99,7 @@ const useAuthStore = create((set, get) => ({
 		try {
 			await logout();
 			set({ user: null, isAuthenticated: false, userRoles: [], loading: false });
+			redirect("/");
 			console.log("Logout successful");
 		} catch (error) {
 			console.error("Logout error:", error);

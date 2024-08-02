@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Bell, Plus } from "react-feather";
 import { RxSlash } from "react-icons/rx";
 import { Button } from "@components/ui/button";
@@ -12,27 +12,46 @@ import { LuChevronsUpDown } from "react-icons/lu";
 import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
 import { RiComputerFill } from "react-icons/ri";
 import { useTheme } from "next-themes";
+import { useRouter } from "next/navigation";
+import useAuthStore from "@store/useAuthStore";
 
 export default function Header() {
 	const [activeIndex, setActiveIndex] = useState(0);
+	const [underlineStyle, setUnderlineStyle] = useState({});
+	const containerRef = useRef(null);
 	const { setTheme } = useTheme();
+	const router = useRouter();
+	const { user, userRoles, logout } = useAuthStore();
 
 	const menuItems = [
 		{ label: "Overview", href: "/user", segment: "(overview)" },
 		{ label: "Jobs", href: "/user/jobs", segment: "/user/jobs" },
-		{ label: "Activity", href: "/byron-wade/~/activity", segment: "~/activity" },
-		{ label: "Domains", href: "/byron-wade/~/domains", segment: "~/domains" },
-		{ label: "Usage", href: "/byron-wade/~/usage", segment: "~/usage" },
-		{ label: "Monitoring", href: "/byron-wade/~/monitoring", segment: "~/monitoring" },
-		{ label: "Storage", href: "/byron-wade/~/stores", segment: "~/stores" },
-		{ label: "AI", href: "/byron-wade/~/ai", segment: "~/ai" },
-		{ label: "Support", href: "/byron-wade/~/support/cases", segment: "~/support" },
-		{ label: "Settings", href: "/byron-wade/~/settings", segment: "~/settings" },
+		{ label: "Activity", href: "/user/activity", segment: "/user/activity" },
+		{ label: "Boosts", href: "/user/boosts", segment: "/user/boosts" },
+		{ label: "Referral", href: "/user/referral", segment: "/user/referral" },
+		{ label: "Pro", href: "/user/pro", segment: "/user/pro" },
+		{ label: "Settings", href: "/user/settings", segment: "/user/settings" },
 	];
 
 	useEffect(() => {
-		setActiveIndex(0);
-	}, []);
+		const path = router.pathname;
+		const currentIndex = menuItems.findIndex((item) => item.href === path);
+		if (currentIndex !== -1) {
+			setActiveIndex(currentIndex);
+		}
+	}, [router.pathname]);
+
+	useEffect(() => {
+		const container = containerRef.current;
+		const activeButton = container.querySelector(`button:nth-child(${activeIndex + 1})`);
+		if (activeButton) {
+			const { offsetLeft, offsetWidth } = activeButton;
+			setUnderlineStyle({
+				left: offsetLeft,
+				width: offsetWidth,
+			});
+		}
+	}, [activeIndex]);
 
 	return (
 		<header className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900">
@@ -52,7 +71,9 @@ export default function Header() {
 										<AvatarImage src="https://vercel.com/api/www/avatar?u=bcw1995&s=64" alt="@shadcn" />
 										<AvatarFallback>BW</AvatarFallback>
 									</Avatar>
-									<p className="text-sm font-medium text-gray-900 truncate dark:text-gray-100">Byron Wade</p>
+									<p className="text-sm font-medium text-gray-900 truncate dark:text-gray-100">
+										{user?.user_metadata.first_name} {user?.user_metadata.last_name}
+									</p>
 									<Badge className="text-white bg-brand hover:bg-brand-dark">Pro</Badge>
 								</Button>
 							</li>
@@ -67,7 +88,7 @@ export default function Header() {
 											</span>
 										</Button>
 									</DropdownMenuTrigger>
-									<DropdownMenuContent align="start" className="w-56 bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900">
+									<DropdownMenuContent align="start" className="w-56 bg-white border border-gray-300 rounded-md shadow-md dark:border-neutral-800 dark:bg-neutral-900">
 										<DropdownMenuLabel>My Account</DropdownMenuLabel>
 										<DropdownMenuSeparator />
 										<DropdownMenuGroup>
@@ -136,7 +157,7 @@ export default function Header() {
 									</Avatar>
 								</Button>
 							</DropdownMenuTrigger>
-							<DropdownMenuContent align="end" className="w-56 bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900">
+							<DropdownMenuContent align="end" className="w-56 bg-white border border-gray-300 rounded-md shadow-md dark:border-neutral-800 dark:bg-neutral-900">
 								<DropdownMenuLabel>My Account</DropdownMenuLabel>
 								<DropdownMenuSeparator />
 								<DropdownMenuGroup>
@@ -157,7 +178,7 @@ export default function Header() {
 									<DropdownMenuSub>
 										<DropdownMenuSubTrigger>Invite users</DropdownMenuSubTrigger>
 										<DropdownMenuPortal>
-											<DropdownMenuSubContent>
+											<DropdownMenuSubContent className="bg-white border border-gray-300 rounded-md shadow-md dark:border-neutral-800 dark:bg-neutral-900">
 												<DropdownMenuItem>Email</DropdownMenuItem>
 												<DropdownMenuItem>Message</DropdownMenuItem>
 												<DropdownMenuSeparator />
@@ -181,7 +202,7 @@ export default function Header() {
 									System
 								</DropdownMenuItem>
 								<DropdownMenuSeparator />
-								<DropdownMenuItem>Log out</DropdownMenuItem>
+								<DropdownMenuItem onClick={logout}>Log out</DropdownMenuItem>
 							</DropdownMenuContent>
 						</DropdownMenu>
 						<button aria-label="Open menu" className="p-2 text-gray-500 md:hidden hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-400">
@@ -191,25 +212,23 @@ export default function Header() {
 					</div>
 				</div>
 			</div>
-			<div className="flex items-center">
-				<div className="relative flex items-center w-full px-4 py-2">
+			<nav className="relative flex justify-center border-gray-300 dark:border-neutral-800">
+				<div className="flex" ref={containerRef}>
 					{menuItems.map((item, index) => (
-						<Link key={item.segment} href={item.href} passHref>
-							<Button variant={index === activeIndex ? "link" : "ghost"} size="sm" className={`text-sm font-normal ${index === activeIndex ? "!font-bold !no-underline" : ""}`}>
-								{item.label}
-							</Button>
-						</Link>
+						<button
+							key={index}
+							className={`relative py-2 px-4 text-sm font-medium ${activeIndex === index ? "text-brand" : "text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-400"}`}
+							onClick={() => {
+								setActiveIndex(index);
+								router.push(item.href);
+							}}
+						>
+							{item.label}
+						</button>
 					))}
-					<div
-						className="absolute bottom-0 h-0.5 bg-brand transition-all duration-300 ease-in-out"
-						style={{
-							left: `${activeIndex * 100}%`,
-							width: "85px",
-							transform: "translateX(16px) scaleX(0.85)",
-						}}
-					/>
+					<span className="absolute bottom-0 h-[2px] bg-brand transition-all duration-300 ease-in-out" style={underlineStyle} />
 				</div>
-			</div>
+			</nav>
 		</header>
 	);
 }

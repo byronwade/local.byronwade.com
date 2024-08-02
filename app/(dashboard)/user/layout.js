@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
 import Header from "@components/user/layout/Header";
+import Footer from "@components/user/layout/Footer";
 import { useEffect } from "react";
 import { redirect } from "next/navigation";
 import useAuthStore from "@store/useAuthStore";
@@ -30,7 +31,8 @@ export default function UserRootLayout({ children }) {
 	return (
 		<div>
 			<Header />
-			<div className="bg-gray-100 dark:md:border-gray-950 dark:bg-dark-950">{children}</div>
+			<main className="flex flex-col min-h-screen pb-16 m-auto max-w-screen-2xl">{children}</main>
+			<Footer />
 		</div>
 	);
 }
