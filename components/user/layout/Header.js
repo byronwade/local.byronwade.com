@@ -5,7 +5,7 @@ import { useEffect, useState, useRef } from "react";
 import { Bell, Plus } from "react-feather";
 import { RxSlash } from "react-icons/rx";
 import { Button } from "@components/ui/button";
-import { Badge } from "@components/ui/Badge";
+import { Badge } from "@components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger } from "@components/ui/dropdown-menu";
 import { LuChevronsUpDown } from "react-icons/lu";
