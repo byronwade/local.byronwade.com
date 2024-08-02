@@ -179,9 +179,9 @@ export default function Referral() {
 					<div className="mt-8">
 						<h2 className="text-2xl font-bold">Referral Program Details</h2>
 						<div className="mt-6 space-y-4">
-							<p>Our referral program allows you to earn rewards for sharing our product with your friends and colleagues. For every successful referral, you'll receive a $25 credit towards your account.</p>
-							<p>To refer someone, simply share your unique referral link or use the social media buttons above. Once your friend signs up and makes a purchase, you'll automatically receive your reward.</p>
-							<p>The more people you refer, the more you can earn. Check the leaderboard to see how you're doing compared to other top referrers.</p>
+							<p>Our referral program allows you to earn rewards for sharing our product with your friends and colleagues. For every successful referral, you&APOS;ll receive a $25 credit towards your account.</p>
+							<p>To refer someone, simply share your unique referral link or use the social media buttons above. Once your friend signs up and makes a purchase, you&APOS;ll automatically receive your reward.</p>
+							<p>The more people you refer, the more you can earn. Check the leaderboard to see how you&APOS;re doing compared to other top referrers.</p>
 						</div>
 					</div>
 				</div>
