@@ -127,10 +127,10 @@ export default function Dashboard() {
 		<main className="flex flex-col min-h-screen m-auto max-w-screen-2xl">
 			<div className="w-full mx-auto my-16 space-y-16">
 				<div className="flex items-center justify-between space-x-6">
-					<h1 className="text-3xl">Hi Byron</h1>
+					<h1 className="text-4xl">Hi Byron</h1>
 					<div className="flex items-center gap-x-3">
 						<Button variant="outline" size="sm">
-							<Plus className="w-4 h-4 mr-2" /> Add a job
+							Add new... <ChevronDown className="w-4 h-4 ml-2" />
 						</Button>
 					</div>
 				</div>

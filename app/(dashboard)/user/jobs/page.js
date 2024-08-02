@@ -12,48 +12,29 @@ export default function Jobs() {
 	return (
 		<Tabs defaultValue="grid">
 			<div className="flex flex-col min-h-screen m-auto max-w-screen-2xl">
-				<div className="py-10">
-					<div className="flex items-stretch justify-start flex-1">
-						<div className="flex flex-row justify-start w-full">
-							<div className="flex flex-col w-full min-w-0 gap-4">
-								<p className="text-4xl font-semibold leading-tight tracking-tight text-gray-1000">Jobs</p>
-							</div>
-							<div className="flex flex-row gap-4">
-								<div className="block md:hidden">
-									<div className="flex flex-row gap-3">
-										<a role="link" tabIndex="0" href="https://emailmework-com.vercel.app" target="_blank" rel="noopener" className="btn-base min-w-[70px] max-w-[70px] text-white bg-blue-500 hover:bg-blue-600">
-											<span>Visit</span>
-										</a>
-										<a role="link" tabIndex="0" href="/byron-wade/emailmework-com/settings/git" className="btn-base min-w-[70px] max-w-[70px] text-white bg-gray-500 hover:bg-gray-600">
-											<span>Connect Git</span>
-										</a>
-										<button type="button" aria-haspopup="true" aria-expanded="false" aria-controls="menu-:r1c1:" aria-label="Menu" id="menu-button-:r1c2:" className="btn-base min-w-[70px] max-w-[70px] text-white bg-gray-500 hover:bg-gray-600 flex items-center justify-center">
-											<span className="flex items-center justify-center">
-												<svg className="w-6 h-6" fill="none" height="24" shapeRendering="geometricPrecision" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="24">
-													<circle cx="12" cy="12" r="1" fill="currentColor"></circle>
-													<circle cx="19" cy="12" r="1" fill="currentColor"></circle>
-													<circle cx="5" cy="12" r="1" fill="currentColor"></circle>
-												</svg>
-											</span>
-										</button>
-									</div>
-								</div>
-								<div className="flex-row hidden gap-4 md:flex">
-									<Button variant="outline">Visit</Button>
-									<Button variant="outline">Domains</Button>
-									<Button variant="outline">Usage</Button>
-									<Button variant="outline">Connect Git</Button>
-									<TabsList className="h-10 p-0 bg-transparent">
-										<TabsTrigger value="grid" className="h-10 data-[state=active]:bg-gray-200 !border-r-0 !rounded-e-[0px] rounded-md data-[state=active]:dark:bg-dark-800 bg-transperant border border-gray-300 dark:border-neutral-800">
-											<Grid className="w-4 h-4 text-black dark:text-white" />
-										</TabsTrigger>
-										<TabsTrigger value="list" className="h-10 data-[state=active]:bg-gray-200 !rounded-s-[0px] !border-l-0 rounded-md data-[state=active]:dark:bg-dark-800 bg-transperant border border-gray-300 dark:border-neutral-800">
-											<List className="w-4 h-4 text-black dark:text-white" />
-										</TabsTrigger>
-									</TabsList>
-								</div>
-							</div>
-						</div>
+				<div className="flex flex-row justify-between py-16">
+					<h1 className="text-4xl">Jobs</h1>
+					<div className="flex items-center gap-x-3">
+						<Button variant="outline" size="sm">
+							Visit
+						</Button>
+						<Button variant="outline" size="sm">
+							Domains
+						</Button>
+						<Button variant="outline" size="sm">
+							Usage
+						</Button>
+						<Button variant="outline" size="sm">
+							Connect Git
+						</Button>
+						<TabsList className="p-0 bg-transparent h-9">
+							<TabsTrigger value="grid" className="h-9 data-[state=active]:bg-gray-200 !border-r-0 !rounded-e-[0px] rounded-md data-[state=active]:dark:bg-dark-800 bg-transperant border border-gray-300 dark:border-neutral-800">
+								<Grid className="w-4 h-4 text-black dark:text-white" />
+							</TabsTrigger>
+							<TabsTrigger value="list" className="h-9 data-[state=active]:bg-gray-200 !rounded-s-[0px] !border-l-0 rounded-md data-[state=active]:dark:bg-dark-800 bg-transperant border border-gray-300 dark:border-neutral-800">
+								<List className="w-4 h-4 text-black dark:text-white" />
+							</TabsTrigger>
+						</TabsList>
 					</div>
 				</div>
 
@@ -185,7 +166,7 @@ export default function Jobs() {
 									</div>
 								</div>
 							</TabsContent>
-							<TabsContent value="list">
+							<TabsContent value="list" className="grid grid-cols-1 gap-4 mt-0">
 								<div className="p-4 bg-white border border-gray-300 rounded-md dark:border-neutral-800 dark:bg-neutral-900">
 									<div className="flex flex-row items-center">
 										<div className="w-32 rounded-md">
