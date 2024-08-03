@@ -126,7 +126,7 @@
       
       .theme-blue {
         --primary: 197 100% 47%;
-        --primary-foreground: 207 100% 98%;
+        --primary-foreground: 0, 0%, 7%;
       }
       
       .theme-red {

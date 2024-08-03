@@ -86,7 +86,7 @@ export default function Header() {
 									<p className="text-sm font-medium truncate">
 										{user?.user_metadata.first_name} {user?.user_metadata.last_name}
 									</p>
-									<Badge className="text-white bg-primary hover:bg-primary-dark">Pro</Badge>
+									<Badge className="bg-primary hover:bg-primary-dark">Pro</Badge>
 								</Card>
 							</li>
 							<li className="flex items-center space-x-2">
