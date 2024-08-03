@@ -6,7 +6,7 @@ export default function YelpAlternitive() {
 			<article className="max-w-5xl px-8 py-16 mx-auto sm:px-16 xl:px-20">
 				<div className="max-w-5xl mb-16 space-y-8 text-white">
 					<div className="space-y-4">
-						<p className="text-center text-brand">Alternative</p>
+						<p className="text-center text-primary">Alternative</p>
 						<h1 className="text-center h1">Supabase vs Firebase</h1>
 						<div className="flex justify-center space-x-3 text-sm text-muted-foreground">
 							<p>2022-05-26</p>
@@ -153,7 +153,7 @@ export default function YelpAlternitive() {
 						</p>
 					</div>
 					<div className="py-16">
-						<div className="text-sm text-foreground-lighter">Share this article</div>
+						<div className="text-sm  text-muted-foregrounder">Share this article</div>
 						<div className="flex items-center mt-4 space-x-4">
 							<a target="_blank" className="text-muted hover:text-foreground" href="https://twitter.com/share?text=Supabase vs Firebase&url=https://supabase.com/blog/supabase-vs-firebase">
 								<svg height={26} width={26} viewBox="-89 -46.8 644 446.8" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
@@ -204,7 +204,7 @@ export default function YelpAlternitive() {
 						<button
 							data-size="medium"
 							type="button"
-							className="relative justify-center cursor-pointer inline-flex items-center space-x-2 text-center font-regular ease-out duration-200 rounded-md outline-none transition-all outline-0 focus-visible:outline-4 focus-visible:outline-offset-1 border bg-brand-400 dark:bg-brand-500 hover:bg-brand/80 dark:hover:bg-brand/50 border-brand-500/75 dark:border-brand/30 hover:border-brand-600 dark:hover:border-brand focus-visible:outline-brand-600 data-[state=open]:bg-brand-400/80 dark:data-[state=open]:bg-brand-500/80 data-[state=open]:outline-brand-600 text-sm px-4 py-2 h-[38px] text-white"
+							className="relative justify-center cursor-pointer inline-flex items-center space-x-2 text-center font-regular ease-out duration-200 rounded-md outline-none transition-all outline-0 focus-visible:outline-4 focus-visible:outline-offset-1 border bg-primary-400 dark:bg-primary-500 hover:bg-primary/80 dark:hover:bg-primary/50 border-primary-500/75 dark:border-primary/30 hover:border-primary-600 dark:hover:border-primary focus-visible:outline-primary-600 data-[state=open]:bg-primary-400/80 dark:data-[state=open]:bg-primary-500/80 data-[state=open]:outline-primary-600 text-sm px-4 py-2 h-[38px] text-white"
 						>
 							{" "}
 							<span className="truncate">Start your project</span>{" "}

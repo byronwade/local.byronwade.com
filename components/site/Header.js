@@ -56,12 +56,12 @@ export default function Header() {
 	}
 
 	return (
-		<div id="header" className="transition-none sticky top-0 z-[60] bg-white border-gray-300 dark:border-neutral-800 dark:bg-neutral-900">
+		<div id="header" className="transition-none sticky top-0 z-[60]">
 			<div className="flex items-center justify-between w-full gap-6 p-2 px-4 mx-auto">
 				<div className="flex flex-row items-center w-full space-x-4">
 					<Link href="/" className="flex flex-col items-center text-xl font-bold text-center">
 						<Image src="/ThorbisLogo.webp" alt="Thorbis" width={50} height={50} className="w-10 h-10" />
-						<h1 className="text-sm leading-none text-brand">Thorbis</h1>
+						<h1 className="text-sm leading-none text-primary">Thorbis</h1>
 					</Link>
 					<div className="flex items-center w-full">
 						<SearchBarHeader />
@@ -76,7 +76,7 @@ export default function Header() {
 								Add a Business <ChevronDown className="w-4 h-4 ml-2" />
 							</Button>
 						</DropdownMenuTrigger>
-						<DropdownMenuContent className="w-56 bg-white border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 z-[80]">
+						<DropdownMenuContent className="w-56 z-[80]">
 							<DropdownMenuItem asChild>
 								<Link href="/add-a-business">Add a Business</Link>
 							</DropdownMenuItem>
@@ -99,9 +99,7 @@ export default function Header() {
 								Logout
 							</Button>
 							<Link href="/user">
-								<Button variant="brand" className="transition-none">
-									Dashboard
-								</Button>
+								<Button className="transition-none">Dashboard</Button>
 							</Link>
 						</>
 					) : (
@@ -112,9 +110,7 @@ export default function Header() {
 								</Button>
 							</Link>
 							<Link href="/onboarding">
-								<Button variant="brand" className="transition-none">
-									Sign Up
-								</Button>
+								<Button className="transition-none">Sign Up</Button>
 							</Link>
 						</>
 					)}
@@ -210,7 +206,7 @@ export default function Header() {
 					</DrawerContent>
 				</Drawer>
 			</div>
-			<div className="flex px-2 overflow-hidden text-xs font-medium text-white bg-brand whitespace-nowrap xl:text-sm">
+			<div className="flex px-2 overflow-hidden text-xs font-medium text-white bg-primary whitespace-nowrap xl:text-sm">
 				<Sheet key="left">
 					<SheetTrigger asChild>
 						<Link href="/" className="flex flex-row items-center px-2 py-2 font-bold cursor-pointer hover:text-gray-300">

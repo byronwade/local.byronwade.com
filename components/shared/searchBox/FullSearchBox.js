@@ -123,7 +123,7 @@ const FullSearchBox = () => {
 	};
 
 	return (
-		<div className="relative z-10 flex flex-col w-full h-full min-w-0 p-3 bg-white border border-gray-300 rounded-md dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand">
+		<div className="relative z-10 flex flex-col w-full h-full min-w-0 p-3 bg-white border border-gray-300 rounded-md dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-primary focus:border-primary dark:focus:border-primary dark:focus-within:border-primary">
 			<div className="relative flex flex-col items-center flex-1 w-full transition-all duration-300">
 				<div className="relative flex items-center justify-between w-full pb-2 mb-2 border-b align-center">
 					<div className="flex items-center justify-center flex-1">
@@ -149,7 +149,7 @@ const FullSearchBox = () => {
 					</div>
 					<div className="relative flex items-center ml-2 space-x-1">
 						<AiButton showBeta={true} />
-						<Button size="icon" variant="outline" className={`${isFormValid ? "bg-brand !border-brand-dark" : ""} flex items-center justify-center h-8 gap-2 px-2 py-2 text-sm font-medium transition-colors rounded-md select-none ring-offset-background focus-visible:ring-offset-2 shrink-0 whitespace-nowrap focus-visible:outline-none focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 sm:px-3`} type="submit" disabled={!isFormValid} onClick={handleFormSubmit}>
+						<Button size="icon" variant="outline" className={`${isFormValid ? "bg-primary !border-primary-dark" : ""} flex items-center justify-center h-8 gap-2 px-2 py-2 text-sm font-medium transition-colors rounded-md select-none ring-offset-background focus-visible:ring-offset-2 shrink-0 whitespace-nowrap focus-visible:outline-none focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 sm:px-3`} type="submit" disabled={!isFormValid} onClick={handleFormSubmit}>
 							{loading ? <Loader2 className="w-4 h-4 animate-spin" /> : isFormValid ? <ArrowRight className="w-4 h-4" /> : <Search className="w-4 h-4" />}
 						</Button>
 					</div>

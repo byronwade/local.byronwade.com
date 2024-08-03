@@ -138,12 +138,12 @@ const OnboardingComponent = () => {
 								</Button>
 							)}
 							{currentStep < steps.length - 1 && currentStep !== steps.findIndex((step) => step.name === "userProfile") && (
-								<Button variant="brand" type="button" onClick={nextStep} className="mt-2">
+								<Button type="button" onClick={nextStep} className="mt-2">
 									Next <ArrowRight className="w-4 h-4 ml-2" />
 								</Button>
 							)}
 							{currentStep === steps.findIndex((step) => step.name === "userProfile") && (
-								<Button variant="brand" type="button" onClick={handleSubmit} className="mt-2">
+								<Button type="button" onClick={handleSubmit} className="mt-2">
 									Submit
 								</Button>
 							)}
@@ -152,13 +152,13 @@ const OnboardingComponent = () => {
 					{currentStep === steps.findIndex((step) => step.name === "userSuccess") && (
 						<div className="flex flex-col w-full">
 							<div className="w-full my-20 border rounded-full dark:border-dark-800 border-dark-300"></div>
-							<h2 className="mb-1 text-2xl font-bold leading-9 text-left text-gray-900 dark:text-gray-200">Now add a business</h2>
-							<p className="text-sm leading-6 text-left text-gray-600 dark:text-gray-300">
+							<h2 className="mb-1 text-2xl font-bold leading-9 text-left">Now add a business</h2>
+							<p className="text-sm leading-6 text-left text-muted-foreground">
 								If you own a company you can alternatively add it here, please note that you will have to <b>prove ownership</b> to claim otherwise you can add one anonymously.
 							</p>
 							<div className="flex flex-col mt-4 space-y-4">
 								<Link href="/claim-a-business" passHref legacyBehavior>
-									<Button variant="brand" className="w-full">
+									<Button className="w-full">
 										Claim a business <ArrowRight className="w-4 h-4 ml-2" />
 									</Button>
 								</Link>

@@ -8,6 +8,8 @@ import { Card, CardHeader, CardDescription, CardTitle } from "@components/ui/car
 import { Label } from "@components/ui/label";
 import { Input } from "@components/ui/input";
 
+import { Copy } from "react-feather";
+
 export default function Referral() {
 	const [referralLink, setReferralLink] = useState("https://thorbis.com/referral-code-1234");
 
@@ -22,56 +24,23 @@ export default function Referral() {
 		<>
 			<div className="w-full mx-auto my-16 space-y-16">
 				<div className="flex items-center justify-between space-x-6">
-					<h1 className="text-4xl">Hi Byron</h1>
-					<div className="flex items-center gap-x-3">
-						<DropdownMenu>
-							<DropdownMenuTrigger>
-								<Button variant="outline" size="sm">
-									Add new... <ChevronDown className="w-4 h-4 ml-2" />
-								</Button>
-							</DropdownMenuTrigger>
-							<DropdownMenuContent align="end" className="bg-white border border-gray-300 rounded-md dark:border-neutral-800 dark:bg-neutral-900">
-								<DropdownMenuLabel>My Account</DropdownMenuLabel>
-								<DropdownMenuSeparator />
-								<DropdownMenuItem>Profile</DropdownMenuItem>
-								<DropdownMenuItem>Billing</DropdownMenuItem>
-								<DropdownMenuItem>Team</DropdownMenuItem>
-								<DropdownMenuItem>Subscription</DropdownMenuItem>
-							</DropdownMenuContent>
-						</DropdownMenu>
-					</div>
-				</div>
-			</div>
-
-			<div className="flex flex-row justify-between py-4">
-				<div className="flex items-center gap-x-3">
-					<DropdownMenu>
-						<DropdownMenuTrigger>
-							<Button variant="outline" size="sm">
-								24 hours <ChevronDown className="w-4 h-4 ml-2" />
-							</Button>
-						</DropdownMenuTrigger>
-						<DropdownMenuContent align="start" className="bg-white border border-gray-300 rounded-md dark:border-neutral-800 dark:bg-neutral-900">
-							<DropdownMenuLabel>My Account</DropdownMenuLabel>
-							<DropdownMenuSeparator />
-							<DropdownMenuItem>Profile</DropdownMenuItem>
-							<DropdownMenuItem>Billing</DropdownMenuItem>
-							<DropdownMenuItem>Team</DropdownMenuItem>
-							<DropdownMenuItem>Subscription</DropdownMenuItem>
-						</DropdownMenuContent>
-					</DropdownMenu>
-					<span className="text-xs text-foreground-light">Statistics for past 24 hours</span>
+					<h1 className="text-4xl">Referrals</h1>
 				</div>
 			</div>
 
 			<div className="space-y-6">
 				<div>
 					<h2 className="mb-4 text-xl font-bold">Share Your Referral Link</h2>
-					<div className="flex items-center gap-4">
-						<Input type="text" value={referralLink} readOnly className="flex-1" />
-						<Button variant="outline" size="sm" onClick={copyToClipboard}>
-							Copy
-						</Button>
+					<div className="col-span-12">
+						<div className="relative">
+							<Input value={referralLink} readOnly />
+							<div className="absolute inset-y-0 right-0 flex items-center pl-3 pr-1 space-x-1">
+								<Button variant="secondary" size="xs" onClick={copyToClipboard}>
+									<Copy className="w-4 h-4 mr-2 text-muted-foreground" />
+									<span className="truncate text-muted-foreground">Copy</span>
+								</Button>
+							</div>
+						</div>
 					</div>
 					<div className="flex items-center gap-4 mt-4">
 						<Button variant="ghost" size="sm">
@@ -97,12 +66,12 @@ export default function Referral() {
 						<span class="font-semibold" data-pc-el-id="span-44-44">
 							Referrals
 						</span>
-						<span class="text-2xl font-bold text-brand" data-pc-el-id="span-45-45">
+						<span class="text-2xl font-bold text-primary" data-pc-el-id="span-45-45">
 							3
 						</span>
 					</div>
 					<div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700" data-pc-el-id="div-47-56">
-						<div class="bg-brand h-2.5 rounded-full w-[30%]" role="progressbar" aria-valuenow="3" aria-valuemin="0" aria-valuemax="10" data-pc-el-id="div-48-55"></div>
+						<div class="bg-primary h-2.5 rounded-full w-[30%]" role="progressbar" aria-valuenow="3" aria-valuemin="0" aria-valuemax="10" data-pc-el-id="div-48-55"></div>
 					</div>
 					<p class="text-sm dark:text-gray-500 text-gray-500 mt-1" data-pc-el-id="p-57-57">
 						3 out of 10 referrals

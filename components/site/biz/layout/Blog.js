@@ -82,7 +82,7 @@ export function Blog() {
 								<time dateTime={post.datetime} className="text-gray-500 dark:text-gray-300">
 									{post.date}
 								</time>
-								<Link href={post.category.href} className="relative z-10 rounded-full bg-brand px-3 py-1.5 font-medium text-white hover:bg-brand-light">
+								<Link href={post.category.href} className="relative z-10 rounded-full bg-primary px-3 py-1.5 font-medium text-white hover:bg-primary-light">
 									{post.category.title}
 								</Link>
 							</div>
@@ -93,7 +93,7 @@ export function Blog() {
 										{post.title}
 									</Link>
 								</h3>
-								<p className="mt-5 text-sm leading-6 text-gray-600 dark:text-gray-300">{post.description}</p>
+								<p className="mt-5 text-sm leading-6  text-muted-foreground">{post.description}</p>
 							</div>
 							<div className="flex pt-6">
 								<div className="relative flex items-center gap-x-4">
@@ -105,7 +105,7 @@ export function Blog() {
 												{post.author.name}
 											</Link>
 										</p>
-										<p className="text-gray-600 dark:text-gray-300">{post.author.role}</p>
+										<p className=" text-muted-foreground">{post.author.role}</p>
 									</div>
 								</div>
 							</div>

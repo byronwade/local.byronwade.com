@@ -126,7 +126,7 @@ const Comment = ({ comment, handleReplyClick, replyBox, replyText, setReplyText,
 			</div>
 
 			{comment.replies && comment.replies.length > 0 && (
-				<div className="w-full pl-4 border-l-2 border-brand">
+				<div className="w-full pl-4 border-l-2 border-primary">
 					{!showReplies[comment.id] && (
 						<div className="flex items-center w-full space-x-4 cursor-pointer hover:underline" onClick={() => toggleReplies(comment.id)}>
 							<Image width={100} height={100} src={comment.replies[0].user.avatar} alt="" className="object-fill w-6 h-6 rounded-full" />

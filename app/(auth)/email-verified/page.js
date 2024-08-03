@@ -70,7 +70,7 @@ const EmailVerified = () => {
 			{user?.email_confirmed_at ? (
 				<>
 					<h2 className="mb-1 text-2xl font-bold leading-9 text-left text-green-700 dark:text-green-500">Email has been Verified</h2>
-					<p className="text-sm leading-6 text-left text-gray-600 dark:text-gray-300">Your email has been verified and you now have access to your account.</p>
+					<p className="text-sm leading-6 text-left text-muted-foreground">Your email has been verified and you now have access to your account.</p>
 					<div className="flex flex-col mt-6">
 						<div className="flex flex-col w-full space-y-4">
 							<div className="flex flex-row w-full space-x-4">
@@ -89,7 +89,7 @@ const EmailVerified = () => {
 								Search for a company <ArrowRight className="w-4 h-4 ml-2" />
 							</Button>
 							{userRoles?.includes("business_user") && (
-								<Button variant="brand" className="w-full">
+								<Button className="w-full">
 									Go to business dashboard <ArrowRight className="w-4 h-4 ml-2" />
 								</Button>
 							)}
@@ -98,13 +98,13 @@ const EmailVerified = () => {
 					{!userRoles?.includes("business_user") && (
 						<div className="flex flex-col mt-10">
 							<div className="w-full my-20 border rounded-full dark:border-dark-800 border-dark-300"></div>
-							<h2 className="mb-1 text-2xl font-bold leading-9 text-left text-gray-900 dark:text-gray-200">Now add a business</h2>
-							<p className="text-sm leading-6 text-left text-gray-600 dark:text-gray-300">
+							<h2 className="mb-1 text-2xl font-bold leading-9 text-left ">Now add a business</h2>
+							<p className="text-sm leading-6 text-left text-muted-foreground">
 								If you own a company you can alternatively add it here, please note that you will have to <b>prove ownership</b> to claim otherwise you can add one anonymously.
 							</p>
 							<div className="flex flex-col mt-4 space-y-4">
 								<Link href="/claim-a-business" passHref legacyBehavior>
-									<Button variant="brand" className="w-full">
+									<Button className="w-full">
 										Claim a business <ArrowRight className="w-4 h-4 ml-2" />
 									</Button>
 								</Link>
@@ -119,8 +119,8 @@ const EmailVerified = () => {
 				</>
 			) : (
 				<>
-					<h2 className="mb-1 text-2xl font-bold leading-9 text-left text-gray-900 dark:text-red-500">Unable to Verify</h2>
-					<p className="text-sm leading-6 text-left text-gray-600 dark:text-gray-300">We were unable to verify your account</p>
+					<h2 className="mb-1 text-2xl font-bold leading-9 text-left text-red-500">Unable to Verify</h2>
+					<p className="text-sm leading-6 text-left text-muted-foreground">We were unable to verify your account</p>
 					<div className="flex flex-col mt-6">
 						<FormProvider {...formMethods}>
 							<Form {...formMethods}>
@@ -150,8 +150,8 @@ const EmailVerified = () => {
 
 					<div className="flex flex-col mt-10">
 						<div className="w-full my-20 border rounded-full dark:border-dark-800 border-dark-300"></div>
-						<h2 className="mb-1 text-2xl font-bold leading-9 text-left text-gray-900 dark:text-gray-200">Now add a business</h2>
-						<p className="text-sm leading-6 text-left text-gray-600 dark:text-gray-300">You can still add a company anonymously if you wish.</p>
+						<h2 className="mb-1 text-2xl font-bold leading-9 text-left ">Now add a business</h2>
+						<p className="text-sm leading-6 text-left text-muted-foreground">You can still add a company anonymously if you wish.</p>
 						<div className="flex flex-col mt-4 space-y-4">
 							<Button variant="outline" className="w-full">
 								Submit Business Anonymously <ArrowRight className="w-4 h-4 ml-2" />

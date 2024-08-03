@@ -13,8 +13,8 @@ export default function UserAddress() {
 
 	return (
 		<>
-			<h2 className="mb-1 text-2xl font-bold leading-9 text-left text-gray-900 dark:text-gray-200">User Address Information</h2>
-			<p className="text-sm leading-6 text-left text-gray-600 dark:text-gray-400">Complete the form below to provide your address information.</p>
+			<h2 className="mb-1 text-2xl font-bold leading-9 text-left">User Address Information</h2>
+			<p className="text-sm leading-6 text-left text-muted-foreground">Complete the form below to provide your address information.</p>
 			<div className="flex flex-col mt-6 space-y-6">
 				<FormField
 					control={control}
@@ -25,7 +25,7 @@ export default function UserAddress() {
 								Street <span className="text-red-500">*</span>
 							</FormLabel>
 							<FormControl>
-								<Input {...field} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand" />
+								<Input {...field} />
 							</FormControl>
 							<FormMessage>{fieldState.error?.message}</FormMessage>
 						</FormItem>
@@ -40,7 +40,7 @@ export default function UserAddress() {
 								City <span className="text-red-500">*</span>
 							</FormLabel>
 							<FormControl>
-								<Input {...field} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand" />
+								<Input {...field} />
 							</FormControl>
 							<FormMessage>{fieldState.error?.message}</FormMessage>
 						</FormItem>
@@ -56,7 +56,7 @@ export default function UserAddress() {
 									State <span className="text-red-500">*</span>
 								</FormLabel>
 								<FormControl>
-									<Input {...field} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand" />
+									<Input {...field} />
 								</FormControl>
 								<FormMessage>{fieldState.error?.message}</FormMessage>
 							</FormItem>
@@ -71,7 +71,7 @@ export default function UserAddress() {
 									ZIP Code <span className="text-red-500">*</span>
 								</FormLabel>
 								<FormControl>
-									<Input {...field} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand" />
+									<Input {...field} />
 								</FormControl>
 								<FormMessage>{fieldState.error?.message}</FormMessage>
 							</FormItem>
@@ -80,7 +80,7 @@ export default function UserAddress() {
 				</div>
 				{fields.map((item, index) => (
 					<div key={item.id} className="space-y-6">
-						<h3 className="text-lg font-medium text-gray-900 dark:text-gray-200">Additional Address {index + 1}</h3>
+						<h3 className="text-lg font-medium">Additional Address {index + 1}</h3>
 						<FormField
 							control={control}
 							name={`userAddress.additionalAddresses.${index}.street`}
@@ -90,7 +90,7 @@ export default function UserAddress() {
 										Street <span className="text-red-500">*</span>
 									</FormLabel>
 									<FormControl>
-										<Input {...field} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand" />
+										<Input {...field} />
 									</FormControl>
 									<FormMessage>{fieldState.error?.message}</FormMessage>
 								</FormItem>
@@ -105,7 +105,7 @@ export default function UserAddress() {
 										City <span className="text-red-500">*</span>
 									</FormLabel>
 									<FormControl>
-										<Input {...field} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus-border-brand dark:focus-within:border-brand" />
+										<Input {...field} />
 									</FormControl>
 									<FormMessage>{fieldState.error?.message}</FormMessage>
 								</FormItem>
@@ -121,7 +121,7 @@ export default function UserAddress() {
 											State <span className="text-red-500">*</span>
 										</FormLabel>
 										<FormControl>
-											<Input {...field} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus-border-brand dark:focus-within:border-brand" />
+											<Input {...field} />
 										</FormControl>
 										<FormMessage>{fieldState.error?.message}</FormMessage>
 									</FormItem>
@@ -136,7 +136,7 @@ export default function UserAddress() {
 											ZIP Code <span className="text-red-500">*</span>
 										</FormLabel>
 										<FormControl>
-											<Input {...field} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus-border-brand dark:focus-within:border-brand" />
+											<Input {...field} />
 										</FormControl>
 										<FormMessage>{fieldState.error?.message}</FormMessage>
 									</FormItem>

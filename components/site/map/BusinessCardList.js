@@ -37,7 +37,7 @@ const BusinessCard = memo(
 								<p className="mt-2 text-sm text-muted-foreground">{business.description}</p>
 							</div>
 							<div className="flex flex-col space-y-2">
-								<Button variant="brand" size="icon" className="items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow py-2 z-50 h-[calc(theme(spacing.7)_-_1px)] gap-1 rounded-[6px] px-3 text-xs">
+								<Button size="icon" className="items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow py-2 z-50 h-[calc(theme(spacing.7)_-_1px)] gap-1 rounded-[6px] px-3 text-xs">
 									<Link href={`/biz/${business.id}`} passHref legacyBehavior>
 										<a target="_blank" type="button">
 											<ExternalLink className="w-4 h-4" />
@@ -163,7 +163,7 @@ const BusinessCardList = ({ activeBusinessId, activeCardRef }) => {
 							<p className="text-md">No businesses found</p>
 							<p className="text-sm">
 								If you can&apos;t find what you are looking for{" "}
-								<Link className="font-bold text-brand" href="/add-a-business">
+								<Link className="font-bold text-primary" href="/add-a-business">
 									add a business here
 								</Link>
 							</p>

@@ -168,7 +168,7 @@ export default function Article() {
 						</table>
 						<h3>Best practices for setting up your prototype</h3>
 						<p>
-							<strong>Low fidelity or high fidelity?</strong> Fidelity refers to how close a prototype will be to the real deal. If you’re simply preparing a quick visual aid for a presentation, a low-fidelity prototype — like a wireframe with placeholder images and some basic text — would be more than enough. But if you’re going for more intricate usability testing, a high-fidelity prototype — with on-brand colors, fonts and imagery — could help get more pointed results.
+							<strong>Low fidelity or high fidelity?</strong> Fidelity refers to how close a prototype will be to the real deal. If you’re simply preparing a quick visual aid for a presentation, a low-fidelity prototype — like a wireframe with placeholder images and some basic text — would be more than enough. But if you’re going for more intricate usability testing, a high-fidelity prototype — with on-primary colors, fonts and imagery — could help get more pointed results.
 						</p>
 						<p>
 							<strong>Consider your user</strong>. To create an intuitive user flow, try to think as your user would when interacting with your product. While you can fine-tune this during beta testing, considering your user’s needs and habits early on will save you time by setting you on the right path.

@@ -16,16 +16,6 @@ module.exports = {
 				0: "0px",
 			},
 			colors: {
-				discord: "#5865f2",
-				twitter: "#1da1f2",
-				github: "#333",
-				producthunt: "#da552f",
-				hackernews: "#ff4000",
-				brand: {
-					DEFAULT: "#0066cc", // Brand
-					light: "#3399ff", // Brand Light
-					dark: "#003399", // Brand Dark
-				},
 				dark: {
 					100: "#f5f5f5",
 					200: "#e5e5e5",
@@ -130,3 +120,4 @@ module.exports = {
 		},
 	],
 };
+  

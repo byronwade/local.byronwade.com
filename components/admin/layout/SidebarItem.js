@@ -7,7 +7,7 @@ export default function SidebarItem({ href, text, className }) {
 	const isActive = pathname.startsWith(href);
 
 	return (
-		<Link href={href} className={`block py-1 px-2 text-sm text-right rounded-md ${isActive ? "bg-blue-200 text-brand" : "text-gray-600"} ${className}`}>
+		<Link href={href} className={`block py-1 px-2 text-sm text-right rounded-md ${isActive ? "bg-blue-200 text-primary" : "text-gray-600"} ${className}`}>
 			{text}
 		</Link>
 	);

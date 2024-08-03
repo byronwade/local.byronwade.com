@@ -1,14 +1,34 @@
 "use client";
 
 import * as React from "react";
+import { useState, useEffect } from "react";
 import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
 import { useTheme } from "next-themes";
-
 import { Button } from "@components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuItem } from "@components/ui/dropdown-menu";
 
-export default function ModeToggle() {
-	const { setTheme } = useTheme();
+export default function ThemeToggle() {
+	const { theme, setTheme, resolvedTheme } = useTheme();
+	const [mounted, setMounted] = useState(false);
+	const [primaryColor, setPrimaryColor] = useState("theme-default");
+
+	useEffect(() => {
+		setMounted(true);
+	}, []);
+
+	if (!mounted) {
+		return null;
+	}
+
+	const handleModeChange = (mode) => {
+		setTheme(mode);
+		document.documentElement.className = `${mode} ${primaryColor}`;
+	};
+
+	const handlePrimaryColorChange = (color) => {
+		setPrimaryColor(color);
+		document.documentElement.className = `${resolvedTheme} ${color}`;
+	};
 
 	return (
 		<DropdownMenu>
@@ -20,9 +40,20 @@ export default function ModeToggle() {
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align="end" className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900">
-				<DropdownMenuItem onClick={() => setTheme("light")}>Light</DropdownMenuItem>
-				<DropdownMenuItem onClick={() => setTheme("dark")}>Dark</DropdownMenuItem>
-				<DropdownMenuItem onClick={() => setTheme("system")}>System</DropdownMenuItem>
+				<DropdownMenuLabel>Theme Mode</DropdownMenuLabel>
+				<DropdownMenuSeparator />
+				<DropdownMenuItem onClick={() => handleModeChange("light")}>Light</DropdownMenuItem>
+				<DropdownMenuItem onClick={() => handleModeChange("dark")}>Dark</DropdownMenuItem>
+				<DropdownMenuItem onClick={() => handleModeChange("system")}>System</DropdownMenuItem>
+				<DropdownMenuSeparator />
+				<DropdownMenuLabel>Primary Color</DropdownMenuLabel>
+				<DropdownMenuSeparator />
+				<DropdownMenuRadioGroup value={primaryColor} onValueChange={handlePrimaryColorChange}>
+					<DropdownMenuRadioItem value="theme-default">Default</DropdownMenuRadioItem>
+					<DropdownMenuRadioItem value="theme-green">Green</DropdownMenuRadioItem>
+					<DropdownMenuRadioItem value="theme-blue">Blue</DropdownMenuRadioItem>
+					<DropdownMenuRadioItem value="theme-red">Red</DropdownMenuRadioItem>
+				</DropdownMenuRadioGroup>
 			</DropdownMenuContent>
 		</DropdownMenu>
 	);

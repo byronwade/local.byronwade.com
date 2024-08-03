@@ -8,8 +8,8 @@ export default function BusinessAddress() {
 
 	return (
 		<>
-			<h2 className="mb-1 text-2xl font-bold leading-9 text-left text-gray-900 dark:text-gray-200">Business Address</h2>
-			<p className="text-sm leading-6 text-left text-gray-600 dark:text-gray-400">Complete the form below to provide your business address.</p>
+			<h2 className="mb-1 text-2xl font-bold leading-9 text-left">Business Address</h2>
+			<p className="text-sm leading-6 text-left text-muted-foreground">Complete the form below to provide your business address.</p>
 			<div className="flex flex-col mt-6 space-y-6">
 				<FormField
 					control={control}
@@ -20,7 +20,7 @@ export default function BusinessAddress() {
 								Street <span className="text-red-500">*</span>
 							</FormLabel>
 							<FormControl>
-								<Input {...field} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus-border-brand dark:focus-within:border-brand" />
+								<Input {...field} />
 							</FormControl>
 							<FormMessage>{fieldState.error?.message}</FormMessage>
 						</FormItem>
@@ -35,7 +35,7 @@ export default function BusinessAddress() {
 								City <span className="text-red-500">*</span>
 							</FormLabel>
 							<FormControl>
-								<Input {...field} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus-border-brand dark:focus-within:border-brand" />
+								<Input {...field} />
 							</FormControl>
 							<FormMessage>{fieldState.error?.message}</FormMessage>
 						</FormItem>
@@ -51,7 +51,7 @@ export default function BusinessAddress() {
 									State <span className="text-red-500">*</span>
 								</FormLabel>
 								<FormControl>
-									<Input {...field} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus-border-brand dark:focus-within:border-brand" />
+									<Input {...field} />
 								</FormControl>
 								<FormMessage>{fieldState.error?.message}</FormMessage>
 							</FormItem>
@@ -66,7 +66,7 @@ export default function BusinessAddress() {
 									ZIP Code <span className="text-red-500">*</span>
 								</FormLabel>
 								<FormControl>
-									<Input {...field} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus-border-brand dark:focus-within:border-brand" />
+									<Input {...field} />
 								</FormControl>
 								<FormMessage>{fieldState.error?.message}</FormMessage>
 							</FormItem>

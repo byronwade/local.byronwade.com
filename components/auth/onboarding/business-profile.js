@@ -44,8 +44,8 @@ export default function BusinessProfile() {
 
 	return (
 		<>
-			<h2 className="mb-1 text-2xl font-bold leading-9 text-left text-gray-900 dark:text-gray-200">Business Profile</h2>
-			<p className="text-sm leading-6 text-left text-gray-600 dark:text-gray-400">Complete the form below to provide your business information.</p>
+			<h2 className="mb-1 text-2xl font-bold leading-9 text-left">Business Profile</h2>
+			<p className="text-sm leading-6 text-left text-muted-foreground">Complete the form below to provide your business information.</p>
 			<div className="flex flex-col mt-6 space-y-6">
 				<FormField
 					control={control}
@@ -57,11 +57,11 @@ export default function BusinessProfile() {
 							</FormLabel>
 							<FormControl>
 								<div className="flex items-center space-x-4">
-									<Avatar className="w-16 h-16 bg-white border border-gray-300 rounded-md cursor-pointer dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand">
+									<Avatar className="w-16 h-16 bg-white border border-gray-300 rounded-md cursor-pointer dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-primary focus:border-primary dark:focus:border-primary dark:focus-within:border-primary">
 										<AvatarImage src={logoUrl || "https://github.com/shadcn.png"} alt="Business Logo" />
 										<AvatarFallback className="rounded-md">Logo</AvatarFallback>
 									</Avatar>
-									<label htmlFor="logo-upload" className="p-2 text-sm bg-white border border-gray-300 rounded-md cursor-pointer dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand">
+									<label htmlFor="logo-upload" className="p-2 text-sm bg-white border border-gray-300 rounded-md cursor-pointer dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-primary focus:border-primary dark:focus:border-primary dark:focus-within:border-primary">
 										<span className="text-blue-500">Click here to add image</span>
 										<input id="logo-upload" type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
 									</label>
@@ -82,10 +82,10 @@ export default function BusinessProfile() {
 							<FormDescription>Select the services your business offers.</FormDescription>
 							<FormControl>
 								<Select onValueChange={field.onChange}>
-									<SelectTrigger className="w-full bg-white border border-gray-300 rounded-md cursor-pointer dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand">
+									<SelectTrigger>
 										<SelectValue placeholder="Select service..." />
 									</SelectTrigger>
-									<SelectContent className="bg-white border border-gray-300 rounded-md cursor-pointer dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand">
+									<SelectContent>
 										<SelectGroup>
 											<SelectLabel>Services</SelectLabel>
 											{servicesOptions.map((service) => (

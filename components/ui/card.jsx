@@ -1,50 +1,39 @@
-import * as React from "react"
-
+import * as React from "react";
+import { cva } from "class-variance-authority";
 import { cn } from "@utils/utils";
 
-const Card = React.forwardRef(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn("rounded-lg border bg-card text-card-foreground shadow-sm", className)}
-    {...props} />
-))
-Card.displayName = "Card"
+const cardVariants = cva("rounded-lg", {
+	variants: {
+		variant: {
+			default: "bg-card text-card-foreground border-border border",
+			primary: "bg-primary text-primary-foreground shadow border",
+			destructive: "bg-destructive/50 text-destructive-foreground shadow-sm border-destructive/80",
+			outline: "border border-border bg-background shadow-sm",
+			secondary: "bg-secondary text-secondary-foreground shadow-sm",
+			ghost: "",
+		},
+	},
+	defaultVariants: {
+		variant: "default",
+	},
+});
 
-const CardHeader = React.forwardRef(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn("flex flex-col space-y-1.5 p-6", className)}
-    {...props} />
-))
-CardHeader.displayName = "CardHeader"
+const Card = React.forwardRef(({ className, variant, ...props }, ref) => <div ref={ref} className={cn(cardVariants({ variant, className }))} {...props} />);
+Card.displayName = "Card";
 
-const CardTitle = React.forwardRef(({ className, ...props }, ref) => (
-  <h3
-    ref={ref}
-    className={cn("text-2xl font-semibold leading-none tracking-tight", className)}
-    {...props} />
-))
-CardTitle.displayName = "CardTitle"
+const CardHeader = React.forwardRef(({ className, ...props }, ref) => <div ref={ref} className={cn("flex flex-col space-y-1.5 p-6", className)} {...props} />);
+CardHeader.displayName = "CardHeader";
 
-const CardDescription = React.forwardRef(({ className, ...props }, ref) => (
-  <p
-    ref={ref}
-    className={cn("text-sm text-muted-foreground", className)}
-    {...props} />
-))
-CardDescription.displayName = "CardDescription"
+const CardTitle = React.forwardRef(({ className, ...props }, ref) => <h3 ref={ref} className={cn("text-2xl font-semibold leading-none tracking-tight", className)} {...props} />);
+CardTitle.displayName = "CardTitle";
 
-const CardContent = React.forwardRef(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("p-6 pt-0", className)} {...props} />
-))
-CardContent.displayName = "CardContent"
+const CardDescription = React.forwardRef(({ className, ...props }, ref) => <p ref={ref} className={cn("text-sm text-muted-foreground", className)} {...props} />);
+CardDescription.displayName = "CardDescription";
 
-const CardFooter = React.forwardRef(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn("flex items-center p-6 pt-0", className)}
-    {...props} />
-))
-CardFooter.displayName = "CardFooter"
+const CardContent = React.forwardRef(({ className, ...props }, ref) => <div ref={ref} className={cn("p-6 pt-0", className)} {...props} />);
+CardContent.displayName = "CardContent";
 
-export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
+const CardFooter = React.forwardRef(({ className, ...props }, ref) => <div ref={ref} className={cn("flex items-center p-6 pt-0", className)} {...props} />);
+CardFooter.displayName = "CardFooter";
+
+export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent, cardVariants };

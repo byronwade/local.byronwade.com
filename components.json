@@ -7,19 +7,19 @@
 		"config": "tailwind.config.js",
 		"css": "styles/globals.css",
 		"baseColor": "gray",
-		"cssVariables": false,
+		"cssVariables": true,
 		"prefix": ""
 	},
 	"aliases": {
-		"components": "@components",
-		"utils": "@lib/utils",
-		"lib": "@lib",
-		"styles": "@styles",
-		"context": "@context",
-		"hooks": "@hooks",
-		"emails": "@emails",
-		"stores": "@stores",
-		"queries": "@queries",
-		"actions": "@actions"
+		"components": "components",
+		"utils": "lib/utils",
+		"lib": "lib",
+		"styles": "styles",
+		"context": "context",
+		"hooks": "hooks",
+		"emails": "emails",
+		"stores": "stores",
+		"queries": "queries",
+		"actions": "actions"
 	}
 }

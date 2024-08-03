@@ -157,9 +157,7 @@ const MapContainer = React.forwardRef((props, ref) => {
 			<BusinessInfoPanel />
 
 			<div className="absolute flex flex-col items-end justify-end space-y-2 top-4 right-4">
-				<Button variant="brand" onClick={handleMapMoveEnd}>
-					Search in this area
-				</Button>
+				<Button onClick={handleMapMoveEnd}>Search in this area</Button>
 				<Button variant="secondary" className="flex items-center" onClick={() => mapRef.current?.zoomIn()}>
 					<Plus size={16} />
 				</Button>

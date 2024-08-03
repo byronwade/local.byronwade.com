@@ -15,8 +15,8 @@ export default function RootLayout({ children }) {
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<head />
-			<body className={cn("min-h-screen font-sans antialiased bg-white dark:bg-neutral-900", fontSans.variable)}>
-				<ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+			<body className={cn("min-h-screen font-sans antialiased", fontSans.variable)}>
+				<ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
 					<AuthProvider>
 						{children}
 						<Toaster />

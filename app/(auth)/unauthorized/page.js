@@ -30,13 +30,11 @@ const UnauthorizedNotification = () => {
 	return (
 		<>
 			<h2 className="mb-1 text-2xl font-bold leading-9 text-left text-red-700 dark:text-red-500">Unauthorized</h2>
-			<p className="text-sm leading-6 text-left text-gray-600 dark:text-gray-300"> You are not authorized to view this page. If you believe this is an error, please submit a request to our support page.</p>
+			<p className="text-sm leading-6 text-left  text-muted-foreground"> You are not authorized to view this page. If you believe this is an error, please submit a request to our support page.</p>
 			<div className="flex flex-col mt-6">
 				<div className="flex flex-col w-full space-y-4">
 					<Link href="/support" passHref legacyBehavior>
-						<Button variant="brand" className="w-full">
-							Contact Support
-						</Button>
+						<Button className="w-full">Contact Support</Button>
 					</Link>
 					<Link href="/" passHref legacyBehavior>
 						<Button variant="outline" className="w-full">

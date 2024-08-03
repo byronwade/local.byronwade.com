@@ -42,8 +42,8 @@ export default function SupportTicket() {
 
 	return (
 		<>
-			<h2 className="mb-1 text-2xl font-bold leading-9 text-left text-gray-900 dark:text-gray-200">Submit a Support Ticket</h2>
-			<p className="text-sm leading-6 text-left text-gray-600 dark:text-gray-400">Complete the form below to submit your support request.</p>
+			<h2 className="mb-1 text-2xl font-bold leading-9 text-left ">Submit a Support Ticket</h2>
+			<p className="text-sm leading-6 text-left text-muted-foreground">Complete the form below to submit your support request.</p>
 			<div className="flex flex-col mt-6">
 				<FormProvider {...formMethods}>
 					<Form {...formMethods}>
@@ -59,10 +59,10 @@ export default function SupportTicket() {
 										<FormDescription>Select the category that best describes your issue.</FormDescription>
 										<FormControl>
 											<Select {...field}>
-												<SelectTrigger className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand">
+												<SelectTrigger>
 													<SelectValue placeholder="Select a category" />
 												</SelectTrigger>
-												<SelectContent className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900">
+												<SelectContent>
 													<SelectItem value="technical">Technical Issue</SelectItem>
 													<SelectItem value="billing">Billing Issue</SelectItem>
 													<SelectItem value="general">General Inquiry</SelectItem>
@@ -83,7 +83,7 @@ export default function SupportTicket() {
 										</FormLabel>
 										<FormDescription>Provide details about your issue or inquiry.</FormDescription>
 										<FormControl>
-											<Textarea {...field} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand" />
+											<Textarea {...field} />
 										</FormControl>
 										<FormMessage />
 									</FormItem>

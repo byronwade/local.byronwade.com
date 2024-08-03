@@ -270,7 +270,7 @@ export default function PublicHeader() {
 					<div className="flex flex-col items-center justify-center space-y-2 text-white">
 						<p className="text-sm">© 2004–2024 Thorbis Inc. Thorbis, Thorbis logo, and related marks are registered trademarks of Thorbis.</p>
 						<a href="https://byronwade.com" target="_blank" className="text-xs">
-							Designed and Developed by <span className="font-bold text-brand">Byron Wade</span>
+							Designed and Developed by <span className="font-bold text-primary">Byron Wade</span>
 						</a>
 					</div>
 				</div>

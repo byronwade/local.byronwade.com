@@ -39,7 +39,7 @@ export default function Header() {
 			<div className="flex items-center justify-between px-4 py-2">
 				<div className="flex items-center">
 					<Link href="/" passHref legacyBehavior>
-						<Button variant="outline" size="icon" className="hidden md:block hover:!border-brand mr-2">
+						<Button variant="outline" size="icon" className="hidden md:block hover:!border-primary mr-2">
 							<Image src="/ThorbisLogo.webp" alt="Byron Wade" width={24} height={24} className="object-cover w-full h-full p-1" />
 						</Button>
 					</Link>
@@ -53,14 +53,14 @@ export default function Header() {
 										<AvatarFallback>BW</AvatarFallback>
 									</Avatar>
 									<p className="text-sm font-medium text-gray-900 truncate dark:text-gray-100">Byron Wade</p>
-									<Badge className="text-white bg-brand hover:bg-brand-dark">Pro</Badge>
+									<Badge className="text-white bg-primary hover:bg-primary-dark">Pro</Badge>
 								</Button>
 							</li>
 							<li className="flex items-center space-x-2">
 								<RxSlash className="w-6 h-6 text-gray-300" />
 								<DropdownMenu>
 									<DropdownMenuTrigger asChild>
-										<Button variant="outline" className="flex items-center space-x-2 hover:!border-brand">
+										<Button variant="outline" className="flex items-center space-x-2 hover:!border-primary">
 											<p className="w-24 text-sm font-medium text-gray-900 truncate dark:text-gray-100 overflow-ellipsis">Im looking for a professional webdesigner</p>
 											<span>
 												<LuChevronsUpDown className="w-4 h-4" />
@@ -107,7 +107,7 @@ export default function Header() {
 				<div className="flex items-center space-x-7">
 					<ul className="items-center hidden space-x-4 md:flex">
 						<li>
-							<Button variant="outline" size="sm" className="font-normal hover:!border-brand">
+							<Button variant="outline" size="sm" className="font-normal hover:!border-primary">
 								Feedback
 							</Button>
 						</li>
@@ -129,7 +129,7 @@ export default function Header() {
 						</Button>
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
-								<Button variant="outline" size="icon" aria-label="Menu" className="hidden rounded-full md:block hover:!border-brand">
+								<Button variant="outline" size="icon" aria-label="Menu" className="hidden rounded-full md:block hover:!border-primary">
 									<Avatar className="w-8 h-8 mx-auto">
 										<AvatarImage src="https://vercel.com/api/www/avatar?u=bcw1995&s=64" alt="@shadcn" />
 										<AvatarFallback>BW</AvatarFallback>
@@ -201,7 +201,7 @@ export default function Header() {
 						</Link>
 					))}
 					<div
-						className="absolute bottom-0 h-0.5 bg-brand transition-all duration-300 ease-in-out"
+						className="absolute bottom-0 h-0.5 bg-primary transition-all duration-300 ease-in-out"
 						style={{
 							left: `${activeIndex * 100}%`,
 							width: "85px",

@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Gauge } from "@components/ui/gauge";
 import { Button } from "@components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
+import { Card } from "@components/ui/card";
 import { ArrowRight, GitHub, Grid, List } from "react-feather";
 
 const menuItems = [{ label: "Dashboard" }, { label: "Kanban", badge: "Pro" }, { label: "Inbox", badge: "3" }, { label: "Users" }, { label: "Products" }, { label: "Sign In" }, { label: "Sign Up" }];
@@ -46,7 +47,7 @@ export default function Jobs() {
 
 				<div className="flex flex-row w-full">
 					<aside className="mr-4 min-w-60">
-						<div className="h-full p-2 overflow-y-auto bg-white border border-gray-300 rounded-md dark:border-neutral-800 dark:bg-neutral-900">
+						<Card className="h-full p-2 overflow-y-auto">
 							<ul className="space-y-2">
 								{menuItems.map((item, index) => (
 									<li key={index}>
@@ -57,13 +58,13 @@ export default function Jobs() {
 									</li>
 								))}
 							</ul>
-						</div>
+						</Card>
 					</aside>
 
 					<div className="w-full">
 						<div className="flex flex-col space-y-6">
 							<TabsContent value="grid" className="grid grid-cols-2 gap-4 mt-0">
-								<div className="flex flex-row bg-white border border-gray-300 rounded-md dark:border-neutral-800 dark:bg-neutral-900">
+								<Card className="flex flex-row ">
 									<div className="flex flex-col justify-between w-full gap-3 p-4 space-y-4">
 										<div className="flex flex-row w-full">
 											<div className="w-32 rounded-md">
@@ -116,8 +117,8 @@ export default function Jobs() {
 
 										<ArrowRight className="w-4 h-4 place-self-center" />
 									</div>
-								</div>
-								<div className="flex flex-row bg-white border border-gray-300 rounded-md dark:border-neutral-800 dark:bg-neutral-900">
+								</Card>
+								<Card className="flex flex-row">
 									<div className="flex flex-col justify-between w-full gap-3 p-4 space-y-4">
 										<div className="flex flex-row w-full">
 											<div className="w-32 rounded-md">
@@ -170,10 +171,10 @@ export default function Jobs() {
 
 										<ArrowRight className="w-4 h-4 place-self-center" />
 									</div>
-								</div>
+								</Card>
 							</TabsContent>
 							<TabsContent value="list" className="grid grid-cols-1 gap-4 mt-0">
-								<div className="p-4 bg-white border border-gray-300 rounded-md dark:border-neutral-800 dark:bg-neutral-900">
+								<Card className="p-4">
 									<div className="flex flex-row items-center">
 										<div className="w-32 rounded-md">
 											<picture className="block object-cover w-full h-auto max-w-full max-h-full p-0 m-0 align-middle aspect-screenshot">
@@ -221,7 +222,7 @@ export default function Jobs() {
 											<ArrowRight className="w-4 h-4" />
 										</div>
 									</div>
-								</div>
+								</Card>
 							</TabsContent>
 						</div>
 					</div>

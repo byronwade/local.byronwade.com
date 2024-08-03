@@ -8,8 +8,8 @@ export default function BusinessInfo() {
 
 	return (
 		<>
-			<h2 className="mb-1 text-2xl font-bold leading-9 text-left text-gray-900 dark:text-gray-200">Business Information</h2>
-			<p className="text-sm leading-6 text-left text-gray-600 dark:text-gray-400">Complete the form below to provide your business information.</p>
+			<h2 className="mb-1 text-2xl font-bold leading-9 text-left">Business Information</h2>
+			<p className="text-sm leading-6 text-left text-muted-foreground">Complete the form below to provide your business information.</p>
 			<div className="flex flex-col mt-6 space-y-6">
 				<FormField
 					control={control}
@@ -21,7 +21,7 @@ export default function BusinessInfo() {
 							</FormLabel>
 							<FormDescription>Please provide the company display name not legal entity name.</FormDescription>
 							<FormControl>
-								<Input {...field} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand" />
+								<Input {...field} />
 							</FormControl>
 							<FormMessage>{fieldState.error?.message}</FormMessage>
 						</FormItem>
@@ -37,7 +37,7 @@ export default function BusinessInfo() {
 							</FormLabel>
 							<FormDescription>This will be the number that users on the website will call.</FormDescription>
 							<FormControl>
-								<Input {...field} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand" />
+								<Input {...field} />
 							</FormControl>
 							<FormMessage>{fieldState.error?.message}</FormMessage>
 						</FormItem>
@@ -53,7 +53,7 @@ export default function BusinessInfo() {
 							</FormLabel>
 							<FormDescription>We don&apos;t use your email for marketing.</FormDescription>
 							<FormControl>
-								<Input {...field} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus-border-brand dark:focus-within:border-brand" />
+								<Input {...field} />
 							</FormControl>
 							<FormMessage>{fieldState.error?.message}</FormMessage>
 						</FormItem>

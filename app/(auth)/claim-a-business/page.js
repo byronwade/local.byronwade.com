@@ -120,12 +120,12 @@ const ClaimBusiness = () => {
 							</Button>
 						)}
 						{currentStep < steps.length - 1 && currentStep !== steps.findIndex((step) => step.name === "businessVerification") && (
-							<Button variant="brand" type="button" onClick={nextStep} className="mt-2">
+							<Button type="button" onClick={nextStep} className="mt-2">
 								Next <ArrowRight className="w-4 h-4 ml-2" />
 							</Button>
 						)}
 						{currentStep === steps.findIndex((step) => step.name === "businessVerification") && (
-							<Button variant="brand" type="button" onClick={handleSubmit} className="mt-2">
+							<Button type="button" onClick={handleSubmit} className="mt-2">
 								Submit <ArrowRight className="w-4 h-4 ml-2" />
 							</Button>
 						)}

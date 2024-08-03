@@ -220,7 +220,7 @@ export default function Home({ itemsPerPage = 4 }) {
 														<p className="mt-2 text-sm text-muted-foreground">{business.description}</p>
 													</div>
 													<div className="flex flex-col space-y-2">
-														<Button className="inline-flex ring-offset-background focus-visible:ring-offset-2 bg-brand text-white hover:bg-brand-light w-10 items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow py-2 z-50 h-[calc(theme(spacing.7)_-_1px)] gap-1 rounded-[6px] px-3 text-xs">
+														<Button className="inline-flex ring-offset-background focus-visible:ring-offset-2 bg-primary text-white hover:bg-primary-light w-10 items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow py-2 z-50 h-[calc(theme(spacing.7)_-_1px)] gap-1 rounded-[6px] px-3 text-xs">
 															<a target="_blank" type="button" href={`/biz/${business.id}`}>
 																<svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
 																	<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
@@ -325,7 +325,7 @@ export default function Home({ itemsPerPage = 4 }) {
 														<p className="mt-2 text-sm text-muted-foreground">{business.description}</p>
 													</div>
 													<div className="flex flex-col space-y-2">
-														<Button className="inline-flex ring-offset-background focus-visible:ring-offset-2 bg-brand text-white hover:bg-brand-light w-10 items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow py-2 z-50 h-[calc(theme(spacing.7)_-_1px)] gap-1 rounded-[6px] px-3 text-xs">
+														<Button className="inline-flex ring-offset-background focus-visible:ring-offset-2 bg-primary text-white hover:bg-primary-light w-10 items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow py-2 z-50 h-[calc(theme(spacing.7)_-_1px)] gap-1 rounded-[6px] px-3 text-xs">
 															<a target="_blank" type="button" href={`/biz/${business.id}`}>
 																<svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
 																	<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
@@ -432,7 +432,7 @@ export default function Home({ itemsPerPage = 4 }) {
 														<p className="mt-2 text-sm text-muted-foreground">{business.description}</p>
 													</div>
 													<div className="flex flex-col space-y-2">
-														<Button className="inline-flex ring-offset-background focus-visible:ring-offset-2 bg-brand text-white hover:bg-brand-light w-10 items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow py-2 z-50 h-[calc(theme(spacing.7)_-_1px)] gap-1 rounded-[6px] px-3 text-xs">
+														<Button className="inline-flex ring-offset-background focus-visible:ring-offset-2 bg-primary text-white hover:bg-primary-light w-10 items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow py-2 z-50 h-[calc(theme(spacing.7)_-_1px)] gap-1 rounded-[6px] px-3 text-xs">
 															<a target="_blank" type="button" href={`/biz/${business.id}`}>
 																<svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
 																	<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
@@ -565,7 +565,7 @@ export default function Home({ itemsPerPage = 4 }) {
 														<p className="mt-2 text-sm text-muted-foreground">{business.description}</p>
 													</div>
 													<div className="flex flex-col space-y-2">
-														<Button className="inline-flex ring-offset-background focus-visible:ring-offset-2 bg-brand text-white hover:bg-brand-light w-10 items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow py-2 z-50 h-[calc(theme(spacing.7)_-_1px)] gap-1 rounded-[6px] px-3 text-xs">
+														<Button className="inline-flex ring-offset-background focus-visible:ring-offset-2 bg-primary text-white hover:bg-primary-light w-10 items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow py-2 z-50 h-[calc(theme(spacing.7)_-_1px)] gap-1 rounded-[6px] px-3 text-xs">
 															<a target="_blank" type="button" href={`/biz/${business.id}`}>
 																<svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
 																	<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
@@ -686,7 +686,7 @@ export default function Home({ itemsPerPage = 4 }) {
 														<p className="mt-2 text-sm text-muted-foreground">{business.description}</p>
 													</div>
 													<div className="flex flex-col space-y-2">
-														<Button className="inline-flex ring-offset-background focus-visible:ring-offset-2 bg-brand text-white hover:bg-brand-light w-10 items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow py-2 z-50 h-[calc(theme(spacing.7)_-_1px)] gap-1 rounded-[6px] px-3 text-xs">
+														<Button className="inline-flex ring-offset-background focus-visible:ring-offset-2 bg-primary text-white hover:bg-primary-light w-10 items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow py-2 z-50 h-[calc(theme(spacing.7)_-_1px)] gap-1 rounded-[6px] px-3 text-xs">
 															<a target="_blank" type="button" href={`/biz/${business.id}`}>
 																<svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
 																	<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />

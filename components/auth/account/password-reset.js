@@ -30,8 +30,8 @@ export default function PasswordReset() {
 	};
 	return (
 		<>
-			<h2 className="mb-1 text-2xl font-bold leading-9 text-left text-gray-900 dark:text-gray-200">Password Reset</h2>
-			<p className="text-sm leading-6 text-left text-gray-600 dark:text-gray-400">Enter your new password and confirm it.</p>
+			<h2 className="mb-1 text-2xl font-bold leading-9 text-left ">Password Reset</h2>
+			<p className="text-sm leading-6 text-left text-muted-foreground">Enter your new password and confirm it.</p>
 			<div className="flex flex-col mt-6">
 				<FormProvider {...formMethods}>
 					<Form {...formMethods}>
@@ -43,7 +43,7 @@ export default function PasswordReset() {
 									<FormItem>
 										<FormLabel>New Password</FormLabel>
 										<FormControl>
-											<Input {...field} type="password" className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand" />
+											<Input {...field} type="password" />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
@@ -56,15 +56,13 @@ export default function PasswordReset() {
 									<FormItem>
 										<FormLabel>Confirm New Password</FormLabel>
 										<FormControl>
-											<Input {...field} type="password" className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand" />
+											<Input {...field} type="password" />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
 								)}
 							/>
-							<Button variant="brand" type="submit">
-								Reset Password
-							</Button>
+							<Button type="submit">Reset Password</Button>
 						</form>
 					</Form>
 				</FormProvider>

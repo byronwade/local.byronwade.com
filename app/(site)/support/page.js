@@ -5,19 +5,19 @@ export default function SupportPage() {
 	return (
 		// <main className="relative min-h-screen space-y-4">
 		// 	<div className="container relative py-16 mx-auto space-y-2 text-center">
-		// 		<h1 className="text-lg text-brand">Support</h1>
+		// 		<h1 className="text-lg text-primary">Support</h1>
 		// 		<p className="">Hello, how can we help?</p>
 		// 		<button type="button" className="w-full max-w-lg mx-auto">
 		// 			<div className="flex items-center justify-between px-3 py-3 transition border rounded group bg-background border-control hover:bg-surface-100">
 		// 				<div className="flex items-center flex-1 space-x-2">
-		// 					<svg xmlns="http://www.w3.org/2000/svg" width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="sbui-icon text-foreground-light">
+		// 					<svg xmlns="http://www.w3.org/2000/svg" width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="sbui-icon  text-muted-foreground">
 		// 						<circle cx={11} cy={11} r={8} />
 		// 						<line x1={21} y1={21} x2="16.65" y2="16.65" />
 		// 					</svg>
-		// 					<p className="text-sm transition text-foreground-lighter group-hover:text-foreground-light">How do I connect</p>
+		// 					<p className="text-sm transition  text-muted-foregrounder group-hover: text-muted-foreground">How do I connect</p>
 		// 				</div>
 		// 				<div className="flex items-center h-full space-x-1">
-		// 					<div className="items-center justify-center hidden w-10 h-5 gap-1 border rounded text-foreground-lighter md:flex bg-surface-300 border-foreground-lighter/30">
+		// 					<div className="items-center justify-center hidden w-10 h-5 gap-1 border rounded  text-muted-foregrounder md:flex bg-surface-300 border-foreground-lighter/30">
 		// 						<svg xmlns="http://www.w3.org/2000/svg" width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="sbui-icon">
 		// 							<path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z" />
 		// 						</svg>
@@ -29,11 +29,11 @@ export default function SupportPage() {
 		// 	</div>
 		// 	<div className="container relative grid gap-5 mx-auto md:grid-cols-2 xl:grid-cols-3">
 		// 		<div className="relative flex items-center justify-center transition-all bg-black border rounded-md shadow-md">
-		// 			<div className="relative z-10 flex flex-col w-full h-full p-5 overflow-hidden rounded-xl bg-surface-100 text-foreground-light">
+		// 			<div className="relative z-10 flex flex-col w-full h-full p-5 overflow-hidden rounded-xl bg-surface-100  text-muted-foreground">
 		// 				<div className="flex-1 mb-4 lg:mb-8">
 		// 					<h2 className="text-lg font-medium text">Issues</h2>
 		// 					<div className="block my-2">
-		// 						<p className="text-foreground-light">Found a bug? We&apos;d love to hear about it in our GitHub issues.</p>
+		// 						<p className=" text-muted-foreground">Found a bug? We&apos;d love to hear about it in our GitHub issues.</p>
 		// 					</div>
 		// 				</div>
 		// 				<div className="flex gap-2">
@@ -41,7 +41,7 @@ export default function SupportPage() {
 		// 						target="_blank"
 		// 						data-size="small"
 		// 						type="button"
-		// 						className="relative justify-center cursor-pointer inline-flex items-center space-x-2 text-center font-regular ease-out duration-200 rounded-md outline-none transition-all outline-0 focus-visible:outline-4 focus-visible:outline-offset-1 border text-foreground bg-alternative dark:bg-muted hover:bg-selection border-strong hover:border-stronger focus-visible:outline-brand-600 data-[state=open]:bg-selection data-[state=open]:outline-brand-600 data-[state=open]:border-button-hover text-sm leading-4 px-3 py-2 h-[34px]"
+		// 						className="relative justify-center cursor-pointer inline-flex items-center space-x-2 text-center font-regular ease-out duration-200 rounded-md outline-none transition-all outline-0 focus-visible:outline-4 focus-visible:outline-offset-1 border text-foreground bg-alternative dark:bg-muted hover:bg-selection border-strong hover:border-stronger focus-visible:outline-primary-600 data-[state=open]:bg-selection data-[state=open]:outline-primary-600 data-[state=open]:border-button-hover text-sm leading-4 px-3 py-2 h-[34px]"
 		// 						href="https://github.com/supabase/supabase/issues"
 		// 					>
 		// 						<span className="truncate">Open GitHub Issue</span>
@@ -67,7 +67,7 @@ export default function SupportPage() {
 		// 				<div className="flex-1 mb-4 lg:mb-8">
 		// 					<h2 className="text-lg font-medium">Feature requests</h2>
 		// 					<div className="block my-2">
-		// 						<p className="text-foreground-light">Want to suggest a new feature? Share it with us and the community.</p>
+		// 						<p className=" text-muted-foreground">Want to suggest a new feature? Share it with us and the community.</p>
 		// 					</div>
 		// 				</div>
 		// 				<div className="flex gap-2">
@@ -75,7 +75,7 @@ export default function SupportPage() {
 		// 						target="_blank"
 		// 						data-size="small"
 		// 						type="button"
-		// 						className="relative justify-center cursor-pointer inline-flex items-center space-x-2 text-center font-regular ease-out duration-200 rounded-md outline-none transition-all outline-0 focus-visible:outline-4 focus-visible:outline-offset-1 border text-foreground bg-alternative dark:bg-muted hover:bg-selection border-strong hover:border-stronger focus-visible:outline-brand-600 data-[state=open]:bg-selection data-[state=open]:outline-brand-600 data-[state=open]:border-button-hover text-sm leading-4 px-3 py-2 h-[34px]"
+		// 						className="relative justify-center cursor-pointer inline-flex items-center space-x-2 text-center font-regular ease-out duration-200 rounded-md outline-none transition-all outline-0 focus-visible:outline-4 focus-visible:outline-offset-1 border text-foreground bg-alternative dark:bg-muted hover:bg-selection border-strong hover:border-stronger focus-visible:outline-primary-600 data-[state=open]:bg-selection data-[state=open]:outline-primary-600 data-[state=open]:border-button-hover text-sm leading-4 px-3 py-2 h-[34px]"
 		// 						href="https://github.com/orgs/supabase/discussions/categories/feature-requests"
 		// 					>
 		// 						<span className="truncate">Request feature</span>
@@ -97,11 +97,11 @@ export default function SupportPage() {
 		// 			</div>
 		// 		</div>
 		// 		<div className="relative flex items-center justify-center transition-all bg-black border rounded-md shadow-md">
-		// 			<div className="relative z-10 flex flex-col w-full h-full p-5 overflow-hidden rounded-md text-foreground-light">
+		// 			<div className="relative z-10 flex flex-col w-full h-full p-5 overflow-hidden rounded-md  text-muted-foreground">
 		// 				<div className="flex-1 mb-4 lg:mb-8">
 		// 					<h2 className="text-lg font-medium text">Ask the Community</h2>
 		// 					<div className="block my-2">
-		// 						<p className="text-foreground-light">Join our GitHub discussions or our Discord server to browse for help and best practices.</p>
+		// 						<p className=" text-muted-foreground">Join our GitHub discussions or our Discord server to browse for help and best practices.</p>
 		// 					</div>
 		// 				</div>
 		// 				<div className="flex gap-2">
@@ -109,7 +109,7 @@ export default function SupportPage() {
 		// 						target="_blank"
 		// 						data-size="small"
 		// 						type="button"
-		// 						className="relative justify-center cursor-pointer inline-flex items-center space-x-2 text-center font-regular ease-out duration-200 rounded-md outline-none transition-all outline-0 focus-visible:outline-4 focus-visible:outline-offset-1 border text-foreground bg-alternative dark:bg-muted hover:bg-selection border-strong hover:border-stronger focus-visible:outline-brand-600 data-[state=open]:bg-selection data-[state=open]:outline-brand-600 data-[state=open]:border-button-hover text-sm leading-4 px-3 py-2 h-[34px]"
+		// 						className="relative justify-center cursor-pointer inline-flex items-center space-x-2 text-center font-regular ease-out duration-200 rounded-md outline-none transition-all outline-0 focus-visible:outline-4 focus-visible:outline-offset-1 border text-foreground bg-alternative dark:bg-muted hover:bg-selection border-strong hover:border-stronger focus-visible:outline-primary-600 data-[state=open]:bg-selection data-[state=open]:outline-primary-600 data-[state=open]:border-button-hover text-sm leading-4 px-3 py-2 h-[34px]"
 		// 						href="https://github.com/supabase/supabase/discussions"
 		// 					>
 		// 						<span className="truncate">Ask a question</span>
@@ -160,13 +160,13 @@ export default function SupportPage() {
 		// 				</div>
 		// 				<div className="flex flex-col gap-4">
 		// 					<div className="flex flex-col">
-		// 						<p className="text-foreground-light">The Supabase Support Team is ready to help.</p>
-		// 						<p className="text-sm text-foreground-lighter">Response time for support tickets will vary depending on plan type and severity of the issue.</p>
+		// 						<p className=" text-muted-foreground">The Supabase Support Team is ready to help.</p>
+		// 						<p className="text-sm  text-muted-foregrounder">Response time for support tickets will vary depending on plan type and severity of the issue.</p>
 		// 					</div>
 		// 					<div className="flex gap-2">
 		// 						<a
 		// 							target="_blank"
-		// 							className="relative justify-center cursor-pointer inline-flex items-center space-x-2 text-center font-regular ease-out duration-200 rounded-md outline-none transition-all outline-0 focus-visible:outline-4 focus-visible:outline-offset-1 border text-foreground bg-alternative dark:bg-muted hover:bg-selection border-strong hover:border-stronger focus-visible:outline-brand-600 data-[state=open]:bg-selection data-[state=open]:outline-brand-600 data-[state=open]:border-button-hover text-xs px-2.5 py-1 h-[26px]"
+		// 							className="relative justify-center cursor-pointer inline-flex items-center space-x-2 text-center font-regular ease-out duration-200 rounded-md outline-none transition-all outline-0 focus-visible:outline-4 focus-visible:outline-offset-1 border text-foreground bg-alternative dark:bg-muted hover:bg-selection border-strong hover:border-stronger focus-visible:outline-primary-600 data-[state=open]:bg-selection data-[state=open]:outline-primary-600 data-[state=open]:border-button-hover text-xs px-2.5 py-1 h-[26px]"
 		// 							data-size="tiny"
 		// 							type="button"
 		// 							href="https://forms.supabase.com/enterprise"
@@ -175,7 +175,7 @@ export default function SupportPage() {
 		// 						</a>
 		// 						<a
 		// 							target="_blank"
-		// 							className="relative justify-center cursor-pointer inline-flex items-center space-x-2 text-center font-regular ease-out duration-200 rounded-md outline-none transition-all outline-0 focus-visible:outline-4 focus-visible:outline-offset-1 border text-foreground hover:bg-surface-300 shadow-none focus-visible:outline-border-strong data-[state=open]:bg-surface-300 data-[state=open]:outline-border-strong border-transparent text-xs px-2.5 py-1 h-[26px] !text-foreground-light hover:!text-foreground"
+		// 							className="relative justify-center cursor-pointer inline-flex items-center space-x-2 text-center font-regular ease-out duration-200 rounded-md outline-none transition-all outline-0 focus-visible:outline-4 focus-visible:outline-offset-1 border text-foreground hover:bg-surface-300 shadow-none focus-visible:outline-border-strong data-[state=open]:bg-surface-300 data-[state=open]:outline-border-strong border-transparent text-xs px-2.5 py-1 h-[26px] ! text-muted-foreground hover:!text-foreground"
 		// 							data-size="tiny"
 		// 							type="button"
 		// 							href="https://supabase.com/dashboard/support/new"

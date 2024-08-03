@@ -31,8 +31,8 @@ export default function Report() {
 
 	return (
 		<>
-			<h2 className="mb-1 text-2xl font-bold leading-9 text-left text-gray-900 dark:text-gray-200">Report a Business</h2>
-			<p className="text-sm leading-6 text-left text-gray-600 dark:text-gray-400">Please provide the details of the business you want to report.</p>
+			<h2 className="mb-1 text-2xl font-bold leading-9 text-left ">Report a Business</h2>
+			<p className="text-sm leading-6 text-left text-muted-foreground">Please provide the details of the business you want to report.</p>
 			<div className="flex flex-col mt-6">
 				<FormProvider {...formMethods}>
 					<Form {...formMethods}>
@@ -44,7 +44,7 @@ export default function Report() {
 									<FormItem>
 										<FormLabel>Subject</FormLabel>
 										<FormControl>
-											<Input {...field} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand" />
+											<Input {...field} />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
@@ -57,7 +57,7 @@ export default function Report() {
 									<FormItem>
 										<FormLabel>Message</FormLabel>
 										<FormControl>
-											<Textarea {...field} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand" />
+											<Textarea {...field} />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
@@ -70,7 +70,7 @@ export default function Report() {
 									<FormItem>
 										<FormLabel>Name</FormLabel>
 										<FormControl>
-											<Input {...field} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand" />
+											<Input {...field} />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
@@ -83,7 +83,7 @@ export default function Report() {
 									<FormItem>
 										<FormLabel>Email</FormLabel>
 										<FormControl>
-											<Input {...field} type="email" className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand" />
+											<Input {...field} type="email" />
 										</FormControl>
 										<FormMessage />
 									</FormItem>

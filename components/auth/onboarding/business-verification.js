@@ -8,8 +8,8 @@ export default function BusinessVerification() {
 
 	return (
 		<>
-			<h2 className="mb-1 text-2xl font-bold leading-9 text-left text-gray-900 dark:text-gray-200">Business Verification</h2>
-			<p className="text-sm leading-6 text-left text-gray-600 dark:text-gray-400">Complete the form below to provide verification documents for your business.</p>
+			<h2 className="mb-1 text-2xl font-bold leading-9 text-left">Business Verification</h2>
+			<p className="text-sm leading-6 text-left text-muted-foreground">Complete the form below to provide verification documents for your business.</p>
 			<div className="flex flex-col mt-6 space-y-6">
 				<FormField
 					control={control}
@@ -20,7 +20,7 @@ export default function BusinessVerification() {
 								EIN <span className="text-red-500">*</span>
 							</FormLabel>
 							<FormControl>
-								<Input {...field} placeholder="XX-XXXXXXX" className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand" />
+								<Input {...field} placeholder="XX-XXXXXXX" />
 							</FormControl>
 							<FormMessage>{fieldState.error?.message}</FormMessage>
 						</FormItem>
@@ -42,7 +42,7 @@ export default function BusinessVerification() {
 								</a>
 							</FormDescription>
 							<FormControl>
-								<Input type="file" onChange={(e) => field.onChange(Array.from(e.target.files))} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand" />
+								<Input type="file" onChange={(e) => field.onChange(Array.from(e.target.files))} />
 							</FormControl>
 							<FormMessage>{fieldState.error?.message}</FormMessage>
 						</FormItem>
@@ -64,7 +64,7 @@ export default function BusinessVerification() {
 								</a>
 							</FormDescription>
 							<FormControl>
-								<Input type="file" onChange={(e) => field.onChange(Array.from(e.target.files))} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand" />
+								<Input type="file" onChange={(e) => field.onChange(Array.from(e.target.files))} />
 							</FormControl>
 							<FormMessage>{fieldState.error?.message}</FormMessage>
 						</FormItem>
@@ -86,7 +86,7 @@ export default function BusinessVerification() {
 								</a>
 							</FormDescription>
 							<FormControl>
-								<Input type="file" onChange={(e) => field.onChange(Array.from(e.target.files))} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus-border-brand dark:focus-within:border-brand" />
+								<Input type="file" onChange={(e) => field.onChange(Array.from(e.target.files))} />
 							</FormControl>
 							<FormMessage>{fieldState.error?.message}</FormMessage>
 						</FormItem>
@@ -108,7 +108,7 @@ export default function BusinessVerification() {
 								</a>
 							</FormDescription>
 							<FormControl>
-								<Input type="file" onChange={(e) => field.onChange(Array.from(e.target.files))} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus-border-brand dark:focus-within:border-brand" />
+								<Input type="file" onChange={(e) => field.onChange(Array.from(e.target.files))} />
 							</FormControl>
 							<FormMessage>{fieldState.error?.message}</FormMessage>
 						</FormItem>

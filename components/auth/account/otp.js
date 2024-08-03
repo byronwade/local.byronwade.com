@@ -33,8 +33,8 @@ export default function AccountOTP() {
 	};
 	return (
 		<>
-			<h2 className="mb-1 text-2xl font-bold leading-9 text-left text-gray-900 dark:text-gray-200">Verify your code</h2>
-			<p className="text-sm leading-6 text-left text-gray-600 dark:text-gray-400">Please input your code from your email or text message.</p>
+			<h2 className="mb-1 text-2xl font-bold leading-9 text-left ">Verify your code</h2>
+			<p className="text-sm leading-6 text-left text-muted-foreground">Please input your code from your email or text message.</p>
 			<div className="flex flex-col mt-6">
 				<FormProvider {...formMethods}>
 					<Form {...formMethods}>
@@ -47,15 +47,15 @@ export default function AccountOTP() {
 										<FormControl>
 											<InputOTP maxLength={6}>
 												<InputOTPGroup>
-													<InputOTPSlot index={0} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand" />
-													<InputOTPSlot index={1} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand" />
-													<InputOTPSlot index={2} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand" />
+													<InputOTPSlot index={0} />
+													<InputOTPSlot index={1} />
+													<InputOTPSlot index={2} />
 												</InputOTPGroup>
 												<InputOTPSeparator />
 												<InputOTPGroup>
-													<InputOTPSlot index={3} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand" />
-													<InputOTPSlot index={4} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand" />
-													<InputOTPSlot index={5} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand" />
+													<InputOTPSlot index={3} />
+													<InputOTPSlot index={4} />
+													<InputOTPSlot index={5} />
 												</InputOTPGroup>
 											</InputOTP>
 										</FormControl>
@@ -63,9 +63,7 @@ export default function AccountOTP() {
 									</FormItem>
 								)}
 							/>
-							<Button variant="brand" type="submit">
-								Confirm
-							</Button>
+							<Button type="submit">Confirm</Button>
 						</form>
 					</Form>
 				</FormProvider>

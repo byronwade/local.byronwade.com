@@ -73,13 +73,13 @@ const ReportPage = () => {
 						</Button>
 					)}
 					{currentStep !== steps.findIndex((step) => step.name === "Active User") && (
-						<Button variant="brand" type="button" onClick={nextStep} className="mt-2">
+						<Button type="button" onClick={nextStep} className="mt-2">
 							Next <ArrowRight className="w-4 h-4 ml-2" />
 						</Button>
 					)}
 					{currentStep === steps.findIndex((step) => step.name === "Active User") && (
 						<div className="flex flex-row justify-between w-full mt-4">
-							<Button variant="brand" type="submit" onClick={nextStep}>
+							<Button type="submit" onClick={nextStep}>
 								Continue <ArrowRight className="w-4 h-4 ml-2" />
 							</Button>
 						</div>

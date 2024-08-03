@@ -9,8 +9,8 @@ export default function UserInfo() {
 
 	return (
 		<>
-			<h2 className="mb-1 text-2xl font-bold leading-9 text-left text-gray-900 dark:text-gray-200">User Signup</h2>
-			<p className="text-sm leading-6 text-left text-gray-600 dark:text-gray-400">Complete the form below to create your user account.</p>
+			<h2 className="mb-1 text-2xl font-bold leading-9 text-left">User Signup</h2>
+			<p className="text-sm leading-6 text-left text-muted-foreground">Complete the form below to create your user account.</p>
 			<div className="flex flex-col mt-6 space-y-6">
 				<FormField
 					control={control}
@@ -21,7 +21,7 @@ export default function UserInfo() {
 								First name <span className="text-red-500">*</span>
 							</FormLabel>
 							<FormControl>
-								<Input {...field} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand" />
+								<Input {...field} />
 							</FormControl>
 							<FormMessage>{fieldState.error?.message}</FormMessage>
 						</FormItem>
@@ -36,7 +36,7 @@ export default function UserInfo() {
 								Last name <span className="text-red-500">*</span>
 							</FormLabel>
 							<FormControl>
-								<Input {...field} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand" />
+								<Input {...field} />
 							</FormControl>
 							<FormMessage>{fieldState.error?.message}</FormMessage>
 						</FormItem>
@@ -52,7 +52,7 @@ export default function UserInfo() {
 							</FormLabel>
 							<FormDescription>We use your phone number for account authentication</FormDescription>
 							<FormControl>
-								<Input {...field} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand" />
+								<Input {...field} />
 							</FormControl>
 							<FormMessage>{fieldState.error?.message}</FormMessage>
 						</FormItem>
@@ -68,7 +68,7 @@ export default function UserInfo() {
 							</FormLabel>
 							<FormDescription>We don&apos;t use your email for marketing</FormDescription>
 							<FormControl>
-								<Input {...field} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand" />
+								<Input {...field} />
 							</FormControl>
 							<FormMessage>{fieldState.error?.message}</FormMessage>
 						</FormItem>
@@ -83,10 +83,10 @@ export default function UserInfo() {
 							<FormDescription>Select an option that best describes how you found us.</FormDescription>
 							<FormControl>
 								<Select onValueChange={field.onChange} defaultValue="nosay">
-									<SelectTrigger className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand">
+									<SelectTrigger>
 										<SelectValue placeholder="Select an option" />
 									</SelectTrigger>
-									<SelectContent className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900">
+									<SelectContent>
 										<SelectItem value="nosay">Prefer not to say</SelectItem>
 										<SelectItem value="google">Google</SelectItem>
 										<SelectItem value="friend">Friend</SelectItem>

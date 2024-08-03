@@ -11,7 +11,7 @@ export default function DashboardRootLayout({ children }) {
 			<div className="grid w-screen h-screen grid-cols-1 bg-white dark:bg-neutral-900 md:grid-cols-2">
 				{/* <div className="absolute top-5 left-5">
 					<Link href="/">
-						<Button variant="brand">
+						<Button>
 							<ArrowLeft className="w-4 h-4 mr-2" /> Thorbis
 						</Button>
 					</Link>
@@ -27,12 +27,12 @@ export default function DashboardRootLayout({ children }) {
 									<Image src="/ThorbisLogo.webp" alt="Thorbis Logo" width={200} height={100} className="w-[60px] h-[60px]" />
 								</Link>
 								<div>
-									<div className="text-[22px] font-bold leading-[34px] text-gray-900 dark:text-gray-200">
+									<div className="text-[22px] font-bold leading-[34px] ">
 										Let&apos;s get to know each other{" "}
 										<span role="img" aria-label="wave">
 											👋
 										</span>
-										<p className="text-sm leading-6 text-left text-gray-600 dark:text-gray-400">Answer a few quick questions to help us set up your account.</p>
+										<p className="text-sm leading-6 text-left text-muted-foreground">Answer a few quick questions to help us set up your account.</p>
 									</div>
 								</div>
 							</div>

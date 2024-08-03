@@ -70,13 +70,13 @@ const BusinessCertificationPage = () => {
 						</Button>
 					)}
 					{currentStep !== steps.findIndex((step) => step.name === "Active User") && currentStep !== steps.findIndex((step) => step.name === "Business Search") && (
-						<Button variant="brand" type="button" onClick={nextStep} className="mt-2">
+						<Button type="button" onClick={nextStep} className="mt-2">
 							Next <ArrowRight className="w-4 h-4 ml-2" />
 						</Button>
 					)}
 					{currentStep === steps.findIndex((step) => step.name === "Active User") && (
 						<div className="flex flex-row justify-between w-full mt-4">
-							<Button variant="brand" type="submit" onClick={nextStep}>
+							<Button type="submit" onClick={nextStep}>
 								Confirm & Add Business <ArrowRight className="w-4 h-4 ml-2" />
 							</Button>
 						</div>
@@ -86,7 +86,7 @@ const BusinessCertificationPage = () => {
 							<Button variant="outline" type="button" onClick={prevStep} className="mt-2">
 								<ArrowLeft className="w-4 h-4 mr-2" /> Back
 							</Button>
-							<Button variant="brand" type="button" onClick={nextStep} className="mt-2">
+							<Button type="button" onClick={nextStep} className="mt-2">
 								Next <ArrowRight className="w-4 h-4 ml-2" />
 							</Button>
 						</div>

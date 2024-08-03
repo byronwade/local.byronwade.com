@@ -62,8 +62,8 @@ export default function LoginPage() {
 
 	return (
 		<>
-			<h2 className="mb-1 text-2xl font-bold leading-9 text-left text-gray-900 dark:text-gray-200">Login</h2>
-			<p className="text-sm leading-6 text-left text-gray-600 dark:text-gray-400">Enter your email below to login to your account</p>
+			<h2 className="mb-1 text-2xl font-bold leading-9 text-left ">Login</h2>
+			<p className="text-sm leading-6 text-left text-muted-foreground">Enter your email below to login to your account</p>
 			<div className="flex flex-col mt-6">
 				<FormProvider {...formMethods}>
 					<Form {...formMethods}>
@@ -75,7 +75,7 @@ export default function LoginPage() {
 									<FormItem>
 										<FormLabel>Email</FormLabel>
 										<FormControl>
-											<Input {...field} id="email" type="email" placeholder="m@example.com" className={`bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand ${errors.email ? "border-red-500" : touchedFields.email ? "border-green-500" : ""}`} required />
+											<Input {...field} id="email" type="email" placeholder="m@example.com" className={` ${errors.email ? "border-red-500" : touchedFields.email ? "border-green-500" : ""}`} required />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
@@ -93,7 +93,7 @@ export default function LoginPage() {
 											</Link>
 										</div>
 										<FormControl>
-											<Input {...field} id="password" type="password" className={`bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand ${errors.password ? "border-red-500" : touchedFields.password ? "border-green-500" : ""}`} required />
+											<Input {...field} id="password" type="password" className={` ${errors.password ? "border-red-500" : touchedFields.password ? "border-green-500" : ""}`} required />
 										</FormControl>
 										<FormMessage />
 									</FormItem>

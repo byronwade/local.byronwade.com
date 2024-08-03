@@ -30,7 +30,7 @@ export function FAQs() {
 				<h2 className="mb-2 text-3xl font-bold md:text-4xl">Frequently Asked Questions</h2>
 				<p className="text-lg text-muted-foreground">
 					Can’t find the answer you’re looking for? Reach out to our{" "}
-					<Link href="/support" className="font-bold hover:underline text-brand">
+					<Link href="/support" className="font-bold hover:underline text-primary">
 						customer support
 					</Link>{" "}
 					team.

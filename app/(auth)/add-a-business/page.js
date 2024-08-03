@@ -139,17 +139,17 @@ const AddBusiness = () => {
 				{currentStep !== steps.findIndex((step) => step.name === "businessSuccess") && (
 					<div className="flex justify-between mt-10">
 						{currentStep > 0 && currentStep !== steps.findIndex((step) => step.name === "activeUser") && (
-							<Button variant="outline" type="button" onClick={prevStep} className="mt-2 border-gray-300 dark:border-neutral-800">
+							<Button variant="outline" type="button" onClick={prevStep} className="mt-2">
 								<ArrowLeft className="w-4 h-4 mr-2" /> Back
 							</Button>
 						)}
 						{currentStep < steps.length - 1 && currentStep !== steps.findIndex((step) => step.name === "businessProfile") && (
-							<Button variant="brand" type="button" onClick={nextStep} className="mt-2">
+							<Button type="button" onClick={nextStep} className="mt-2">
 								Next <ArrowRight className="w-4 h-4 ml-2" />
 							</Button>
 						)}
 						{currentStep === steps.findIndex((step) => step.name === "businessProfile") && (
-							<Button variant="brand" type="button" onClick={handleSubmit} className="mt-2">
+							<Button type="button" onClick={handleSubmit} className="mt-2">
 								Submit <ArrowRight className="w-4 h-4 ml-2" />
 							</Button>
 						)}

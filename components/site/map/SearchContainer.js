@@ -36,7 +36,7 @@ const SearchContainer = () => {
 						<header className="flex flex-row items-center px-4 pt-4">
 							<div className="flex flex-row justify-between w-full space-x-2">
 								<Link href="/">
-									<Button variant="brand">
+									<Button>
 										<ArrowLeft className="w-4 h-4 mr-2" /> Thorbis
 									</Button>
 								</Link>

@@ -49,8 +49,8 @@ export default function ContactUsForm() {
 
 	return (
 		<>
-			<h2 className="mb-1 text-2xl font-bold leading-9 text-left text-gray-900 dark:text-gray-200">Contact Us</h2>
-			<p className="text-sm leading-6 text-left text-gray-600 dark:text-gray-400">Complete the form below to get in touch with us.</p>
+			<h2 className="mb-1 text-2xl font-bold leading-9 text-left ">Contact Us</h2>
+			<p className="text-sm leading-6 text-left text-muted-foreground">Complete the form below to get in touch with us.</p>
 			<div className="flex flex-col mt-6">
 				<FormProvider {...formMethods}>
 					<Form {...formMethods}>
@@ -64,7 +64,7 @@ export default function ContactUsForm() {
 											Name <span className="text-red-500">*</span>
 										</FormLabel>
 										<FormControl>
-											<Input {...field} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand" />
+											<Input {...field} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-primary focus:border-primary dark:focus:border-primary dark:focus-within:border-primary" />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
@@ -79,7 +79,7 @@ export default function ContactUsForm() {
 											Email <span className="text-red-500">*</span>
 										</FormLabel>
 										<FormControl>
-											<Input {...field} type="email" className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand" />
+											<Input {...field} type="email" className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-primary focus:border-primary dark:focus:border-primary dark:focus-within:border-primary" />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
@@ -94,7 +94,7 @@ export default function ContactUsForm() {
 											Phone Number <span className="text-red-500">*</span>
 										</FormLabel>
 										<FormControl>
-											<Input {...field} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand" />
+											<Input {...field} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-primary focus:border-primary dark:focus:border-primary dark:focus-within:border-primary" />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
@@ -109,7 +109,7 @@ export default function ContactUsForm() {
 											Subject <span className="text-red-500">*</span>
 										</FormLabel>
 										<FormControl>
-											<Input {...field} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand" />
+											<Input {...field} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-primary focus:border-primary dark:focus:border-primary dark:focus-within:border-primary" />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
@@ -124,13 +124,13 @@ export default function ContactUsForm() {
 											Message <span className="text-red-500">*</span>
 										</FormLabel>
 										<FormControl>
-											<Textarea {...field} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand" />
+											<Textarea {...field} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-primary focus:border-primary dark:focus:border-primary dark:focus-within:border-primary" />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
 								)}
 							/>
-							<Button type="submit" variant="brand" disabled={loading}>
+							<Button type="submit"-primary disabled={loading}>
 								{loading ? "Submitting..." : "Submit"} <ArrowRight className="w-4 h-4 ml-2" />
 							</Button>
 							{success && <p className="mt-2 text-sm leading-6 text-left text-green-500">Your message has been sent successfully.</p>}

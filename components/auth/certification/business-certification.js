@@ -44,8 +44,8 @@ export default function BusinessCertification() {
 
 	return (
 		<>
-			<h2 className="mb-1 text-2xl font-bold leading-9 text-left text-gray-900 dark:text-gray-200">Business Certification</h2>
-			<p className="text-sm leading-6 text-left text-gray-600 dark:text-gray-400">Please fill out the form below to submit your business for Diamond Certified evaluation.</p>
+			<h2 className="mb-1 text-2xl font-bold leading-9 text-left ">Business Certification</h2>
+			<p className="text-sm leading-6 text-left text-muted-foreground">Please fill out the form below to submit your business for Diamond Certified evaluation.</p>
 			<div className="flex flex-col mt-6">
 				<FormProvider {...formMethods}>
 					<Form {...formMethods}>
@@ -64,7 +64,7 @@ export default function BusinessCertification() {
 											.
 										</FormDescription>
 										<FormControl>
-											<Input {...field} type="file" className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand" />
+											<Input {...field} type="file" />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
@@ -78,7 +78,7 @@ export default function BusinessCertification() {
 										<FormLabel>General Liability Insurance</FormLabel>
 										<FormDescription>Upload your General Liability Insurance document to verify coverage.</FormDescription>
 										<FormControl>
-											<Input {...field} type="file" className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand" />
+											<Input {...field} type="file" />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
@@ -92,7 +92,7 @@ export default function BusinessCertification() {
 										<FormLabel>Workers&apos; Compensation Insurance</FormLabel>
 										<FormDescription>Upload your Workers&apos; Compensation Insurance document to ensure compliance.</FormDescription>
 										<FormControl>
-											<Input {...field} type="file" className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-brand focus:border-brand dark:focus:border-brand dark:focus-within:border-brand" />
+											<Input {...field} type="file" />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
