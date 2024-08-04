@@ -17,7 +17,7 @@ export default function BusinessCard({ business, disabled }) {
 			<div className="flex flex-col items-start justify-between w-full mt-2">
 				<div className="flex items-center justify-between w-full">
 					<h3 className={`text-lg font-semibold ${disabled ? "text-gray-400" : "text-white"}`}>{business.name}</h3>
-					<div className="flex flex-row space-x-1">
+					<div className="flex-row hidden space-x-1 md:flex">
 						<div className="flex items-center px-2 py-1 rounded-md bg-secondary">
 							<Star className={`w-4 h-4 ${disabled ? "text-gray-400" : "text-yellow-400"}`} />
 							<span className={`ml-1 text-sm ${disabled ? "text-gray-400" : "text-white"}`}>{business.rating}</span>
@@ -25,7 +25,7 @@ export default function BusinessCard({ business, disabled }) {
 						<div className={`text-sm font-bold px-2 py-1 rounded-md bg-secondary ${disabled ? "text-gray-400" : "text-green-500"}`}>{business.price}</div>
 					</div>
 				</div>
-				<div className="flex items-center justify-between w-full mt-1">
+				<div className="items-center justify-between hidden w-full mt-1 md:flex">
 					<div className="flex items-center px-2 py-1 rounded-md bg-secondary">
 						<RiCircleFill className={`w-3 h-3 ${business.status === "Open" ? "text-green-400" : "text-red-400"}`} />
 						<span className={`ml-1 text-sm ${disabled ? "text-gray-400" : "text-white"}`}>{business.status}</span>

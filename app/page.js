@@ -228,12 +228,12 @@ export default function Home() {
 
 				<div className="relative">
 					<div className="bg-card">
-						<div className="relative z-10 py-12 pb-32 space-y-32">
+						<div className="relative z-10 py-12 pb-24 space-y-24 md:pb-32 md:space-y-32">
 							<ScrollSection title="Plumbers in San Francisco, CA" link="/" businesses={businesses} />
 							<ScrollSection title="Plumbers in San Francisco, CA" link="/" businesses={businesses} />
 						</div>
 
-						<div className="relative py-32">
+						<div className="relative py-24 md:py-32">
 							<div className="py-4 pl-8 sm:px-12 lg:px-24">
 								<div className="relative px-6 pt-16 overflow-hidden bg-gray-900 shadow-2xl isolate sm:rounded-3xl sm:px-16 md:pt-24 lg:flex lg:gap-x-20 lg:px-24 lg:pt-0">
 									<svg viewBox="0 0 1024 1024" aria-hidden="true" className="absolute left-1/2 top-1/2 -z-10 h-[64rem] w-[64rem] -translate-y-1/2 [mask-image:radial-gradient(closest-side,white,transparent)] sm:left-full sm:-ml-80 lg:left-1/2 lg:ml-0 lg:-translate-x-1/2 lg:translate-y-0">
@@ -262,7 +262,7 @@ export default function Home() {
 							</div>
 						</div>
 
-						<div className="relative py-32 space-y-32">
+						<div className="relative pb-24 space-y-24 md:pb-32 md:space-y-32">
 							<ScrollSection title="Plumbers in San Francisco, CA" link="/" businesses={businesses} />
 							<ScrollSection title="Plumbers in San Francisco, CA" link="/" businesses={businesses} />
 						</div>
@@ -283,7 +283,7 @@ export default function Home() {
 							</div>
 						</div>
 
-						<div className="py-32 space-y-32">
+						<div className="pb-24 space-y-24 md:pb-32 md:space-y-32">
 							<ScrollSection title="Plumbers in San Francisco, CA" link="/" businesses={businesses} />
 							<ScrollSection title="Plumbers in San Francisco, CA" link="/" businesses={businesses} />
 						</div>
