@@ -16,7 +16,7 @@ export default function BusinessCard({ business, disabled }) {
 			</div>
 			<div className="flex flex-col items-start justify-between w-full mt-2">
 				<div className="flex items-center justify-between w-full">
-					<h3 className={`text-lg font-bold ${disabled ? "text-gray-400" : "text-white"}`}>{business.name}</h3>
+					<h3 className={`text-lg font-bold text-ellipsis truncate w-72 ${disabled ? "text-gray-400" : "text-white"}`}>{business.name}</h3>
 				</div>
 				<div className="items-center justify-between hidden w-full mt-1 md:flex">
 					<div className="flex items-center px-2 py-1 rounded-md bg-secondary">
