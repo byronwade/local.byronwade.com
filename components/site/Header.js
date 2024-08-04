@@ -68,8 +68,12 @@ export default function Header() {
 					</div>
 				</div>
 				<div className="hidden space-x-2 lg:flex">
-					<Button variant="ghost">Post a job</Button>
-					<Button variant="ghost">Write a review</Button>
+					<Link href="/user" passHref legacyBehavior>
+						<Button variant="ghost">Post a job</Button>
+					</Link>
+					<Link href="/user" passHref legacyBehavior>
+						<Button variant="ghost">Write a review</Button>
+					</Link>
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<Button variant="ghost">
@@ -221,40 +225,40 @@ export default function Header() {
 						{/* Add content here */}
 					</SheetContent>
 				</Sheet>
-				<Link href="/services/home-services" className="px-2 py-2 cursor-pointer hover:text-gray-300">
+				<Link href="/categories" className="px-2 py-2 cursor-pointer hover:text-gray-300">
 					Home Services
 				</Link>
-				<Link href="/services/restaurants" className="px-2 py-2 cursor-pointer hover:text-gray-300">
+				<Link href="/categories" className="px-2 py-2 cursor-pointer hover:text-gray-300">
 					Restaurants
 				</Link>
-				<Link href="/services/construction" className="px-2 py-2 cursor-pointer hover:text-gray-300">
+				<Link href="/categories" className="px-2 py-2 cursor-pointer hover:text-gray-300">
 					Construction
 				</Link>
-				<Link href="/services/automotive" className="px-2 py-2 cursor-pointer hover:text-gray-300">
+				<Link href="/categories" className="px-2 py-2 cursor-pointer hover:text-gray-300">
 					Automotive
 				</Link>
-				<Link href="/services/health-beauty" className="px-2 py-2 cursor-pointer hover:text-gray-300">
+				<Link href="/categories" className="px-2 py-2 cursor-pointer hover:text-gray-300">
 					Health & Beauty
 				</Link>
-				<Link href="/services/technology" className="px-2 py-2 cursor-pointer hover:text-gray-300">
+				<Link href="/categories" className="px-2 py-2 cursor-pointer hover:text-gray-300">
 					Technology
 				</Link>
-				<Link href="/services/education" className="px-2 py-2 cursor-pointer hover:text-gray-300">
+				<Link href="/categories" className="px-2 py-2 cursor-pointer hover:text-gray-300">
 					Education
 				</Link>
-				<Link href="/services/finance" className="px-2 py-2 cursor-pointer hover:text-gray-300">
+				<Link href="/categories" className="px-2 py-2 cursor-pointer hover:text-gray-300">
 					Finance
 				</Link>
-				<Link href="/services/real-estate" className="px-2 py-2 cursor-pointer hover:text-gray-300">
+				<Link href="/categories" className="px-2 py-2 cursor-pointer hover:text-gray-300">
 					Real Estate
 				</Link>
-				<Link href="/services/entertainment" className="px-2 py-2 cursor-pointer hover:text-gray-300">
+				<Link href="/categories" className="px-2 py-2 cursor-pointer hover:text-gray-300">
 					Entertainment
 				</Link>
-				<Link href="/reviews/latest" className="px-2 py-2 cursor-pointer hover:text-gray-300">
+				<Link href="/categories" className="px-2 py-2 cursor-pointer hover:text-gray-300">
 					Latest Reviews
 				</Link>
-				<Link href="/certifications/best-companies" className="px-2 py-2 cursor-pointer hover:text-gray-300">
+				<Link href="/certifications" className="px-2 py-2 cursor-pointer hover:text-gray-300">
 					Certified Companies
 				</Link>
 			</div>

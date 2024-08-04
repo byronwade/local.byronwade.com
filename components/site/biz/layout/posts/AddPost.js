@@ -4,6 +4,8 @@ import { Camera, Video, XCircle } from "react-feather";
 import Image from "next/image";
 import { Button } from "@components/ui/button";
 
+import { Card } from "@components/ui/card";
+
 const AddPostForm = ({ onSubmit }) => {
 	const [content, setContent] = useState("");
 	const [images, setImages] = useState([]);
@@ -56,7 +58,7 @@ const AddPostForm = ({ onSubmit }) => {
 	};
 
 	return (
-		<div className="w-full p-4 bg-white rounded-lg shadow-md dark:bg-gray-800">
+		<Card className="w-full p-4">
 			<form onSubmit={handleSubmit}>
 				<div className="flex items-start">
 					<Image width={100} height={100} className="w-12 h-12 mr-3 rounded-full" src="/placeholder.svg" alt="User avatar" />
@@ -104,7 +106,7 @@ const AddPostForm = ({ onSubmit }) => {
 					</div>
 				)}
 			</form>
-		</div>
+		</Card>
 	);
 };
 

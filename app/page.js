@@ -4,6 +4,7 @@ import Footer from "@components/site/Footer";
 import { ChevronRight } from "react-feather";
 import ScrollSection from "@components/site/home/ScrollSection";
 import HeroSection from "@components/site/home/HeroSection";
+import BusinessCard from "@components/site/home/BusinessCard";
 
 const businesses = [
 	{
@@ -227,10 +228,18 @@ export default function Home() {
 				/>
 
 				<div className="relative">
-					<div className="bg-card">
+					<div className="bg-background">
 						<div className="relative z-10 py-12 pb-24 space-y-24 md:pb-32 md:space-y-32">
-							<ScrollSection title="Plumbers in San Francisco, CA" link="/" businesses={businesses} />
-							<ScrollSection title="Plumbers in San Francisco, CA" link="/" businesses={businesses} />
+							<ScrollSection title="Plumbers in San Francisco, CA" link="/">
+								{businesses.map((business) => (
+									<BusinessCard key={business.id} business={business} />
+								))}
+							</ScrollSection>
+							<ScrollSection title="Plumbers in San Francisco, CA" link="/">
+								{businesses.map((business) => (
+									<BusinessCard key={business.id} business={business} />
+								))}
+							</ScrollSection>
 						</div>
 
 						<div className="relative py-24 md:py-32">
@@ -263,8 +272,16 @@ export default function Home() {
 						</div>
 
 						<div className="relative pb-24 space-y-24 md:pb-32 md:space-y-32">
-							<ScrollSection title="Plumbers in San Francisco, CA" link="/" businesses={businesses} />
-							<ScrollSection title="Plumbers in San Francisco, CA" link="/" businesses={businesses} />
+							<ScrollSection title="Plumbers in San Francisco, CA" link="/">
+								{businesses.map((business) => (
+									<BusinessCard key={business.id} business={business} />
+								))}
+							</ScrollSection>
+							<ScrollSection title="Plumbers in San Francisco, CA" link="/">
+								{businesses.map((business) => (
+									<BusinessCard key={business.id} business={business} />
+								))}
+							</ScrollSection>
 						</div>
 
 						<div className="relative w-full h-[30em]">
@@ -284,8 +301,16 @@ export default function Home() {
 						</div>
 
 						<div className="pb-24 space-y-24 md:pb-32 md:space-y-32">
-							<ScrollSection title="Plumbers in San Francisco, CA" link="/" businesses={businesses} />
-							<ScrollSection title="Plumbers in San Francisco, CA" link="/" businesses={businesses} />
+							<ScrollSection title="Plumbers in San Francisco, CA" link="/">
+								{businesses.map((business) => (
+									<BusinessCard key={business.id} business={business} />
+								))}
+							</ScrollSection>
+							<ScrollSection title="Plumbers in San Francisco, CA" link="/">
+								{businesses.map((business) => (
+									<BusinessCard key={business.id} business={business} />
+								))}
+							</ScrollSection>
 						</div>
 					</div>
 				</div>

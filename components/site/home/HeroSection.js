@@ -23,7 +23,8 @@ export default function HeroSection({ title, description, mediaSrc, link }) {
 
 	return (
 		<div className="relative h-[60vh]">
-			<div className="absolute inset-0 z-10 bg-gradient-to-t from-card to-transparent"></div>
+			<div className="absolute inset-0 z-10 bg-gradient-to-t from-background to-transparent"></div>
+			<div className="absolute inset-0 z-10 bg-gradient-to-r from-background to-transparent"></div>
 			<div className="absolute inset-0">
 				{isYouTubeUrl(mediaSrc) ? (
 					<iframe src={getYouTubeEmbedUrl(mediaSrc)} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen className="absolute top-0 left-0 object-cover w-full h-full"></iframe>

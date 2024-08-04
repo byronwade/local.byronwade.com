@@ -32,7 +32,7 @@ const SearchContainer = () => {
 		<div className="flex flex-col h-screen outline-none">
 			<ResizablePanelGroup direction="horizontal" className="flex flex-1 overflow-hidden">
 				<ResizablePanel defaultSize={25} className="relative flex flex-col w-1/4 space-y-4 overflow-y-auto min-w-96">
-					<div className="sticky top-0 left-0 z-30 shadow-2xl bg-[#121212] w-full">
+					<div className="sticky top-0 left-0 z-30 w-full shadow-2xl bg-background">
 						<header className="flex flex-row items-center px-4 pt-4">
 							<div className="flex flex-row justify-between w-full space-x-2">
 								<Link href="/">

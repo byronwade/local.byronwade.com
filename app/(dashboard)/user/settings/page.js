@@ -205,20 +205,20 @@ export default function Settings() {
 						</div>
 					</div>
 
-					<Card variant="destructive">
-						<div className="relative flex items-start px-6 py-4 space-x-4">
-							<div className="text-red-300">
-								<AlertOctagon className="w-6 h-6" />
-							</div>
-							<div className="flex items-center justify-between flex-1">
-								<div>
-									<h3 className="block mb-1 text-sm font-normal text-red-1200">Deleting this project will also remove your database.</h3>
-									<div>
-										<p className="block mb-4 text-sm">Make sure you have made a backup if you want to keep your data.</p>
-										<Button variant="secondary" size="xs">
-											<span className="truncate">Delete project</span>
-										</Button>
+					<Card className="mb-8 overflow-hidden" variant="destructive">
+						<div className="px-6 py-4">
+							<div className="flex items-center justify-between gap-8">
+								<div className="flex space-x-4">
+									<AlertOctagon className="w-6 h-6" />
+									<div className="space-y-1 xl:max-w-lg">
+										<p className="text-sm">Deleting this project will also remove your database.</p>
+										<p className="text-sm text-muted-foreground">Make sure you have made a backup if you want to keep your data.</p>
 									</div>
+								</div>
+								<div>
+									<Button variant="secondary" size="xs">
+										<span className="truncate">Delete project</span>
+									</Button>
 								</div>
 							</div>
 						</div>

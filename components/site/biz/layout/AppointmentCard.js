@@ -46,7 +46,7 @@ export function AppointmentCard() {
 	}
 
 	return (
-		<Card className="w-full bg-black">
+		<Card className="w-full">
 			<CardHeader>
 				<CardTitle>Book an Appointment</CardTitle>
 			</CardHeader>

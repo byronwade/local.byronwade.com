@@ -13,7 +13,7 @@ const BusinessCard = memo(
 	forwardRef(({ business, isActive, handleClick, isLoading }, ref) => {
 		return (
 			<div className="px-4" onClick={handleClick} ref={ref}>
-				<div id={`business-${business.id}`} className={`relative flex items-center justify-center w-full mb-4 cursor-pointer ${isActive ? "bg-gray-900" : ""} transition-colors duration-200 ease-in-out`}>
+				<div id={`business-${business.id}`} className={`relative flex items-center justify-center w-full mb-4 cursor-pointer ${isActive ? "bg-background" : ""} transition-colors duration-200 ease-in-out`}>
 					<div className="relative w-full overflow-hidden border rounded-md shadow bg-card text-card-foreground">
 						{business.isSponsored && (
 							<div className="flex flex-row items-center pt-4 pl-4 text-sm">

@@ -2,10 +2,11 @@ import { Phone, Mail, Link as LinkIcon, MapPin, Star } from "react-feather";
 import { Button } from "@components/ui/button";
 import { Separator } from "@components/ui/separator";
 import Link from "next/link";
+import { Card } from "@components/ui/card";
 
 export function ContactCard() {
 	return (
-		<div className="p-4 rounded-lg bg-primary-foreground/10 md:p-6">
+		<Card className="p-4 rounded-lg md:p-6">
 			<h2 className="mb-2 text-lg font-semibold">Contact</h2>
 			<div className="space-y-2">
 				<div className="flex items-center gap-2">
@@ -36,6 +37,6 @@ export function ContactCard() {
 				</div>
 				<Button className="w-full">Leave a Review</Button>
 			</div>
-		</div>
+		</Card>
 	);
 }

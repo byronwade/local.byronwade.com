@@ -13,6 +13,7 @@ import CommentPost from "../comment/postTypes/CommentPost";
 import VideoPost from "../comment/postTypes/VideoPost";
 import DateDisplay from "@components/site/biz/layout/shared/DateDisplay";
 import Image from "next/image";
+import { Card } from "@components/ui/card";
 
 const PostContent = () => {
 	const { post, showComments, setShowComments } = usePostContext();
@@ -43,7 +44,7 @@ const PostContent = () => {
 
 	return (
 		<div className="w-full">
-			<div className={`bg-white rounded-lg shadow dark:bg-gray-800 ${showComments ? "rounded-b-[0px]" : "rounded-b-lg"}`}>
+			<Card className={`${showComments ? "rounded-b-[0px]" : "rounded-b-lg"}`}>
 				<div className="flex p-4">
 					<Image width={100} height={100} className="w-12 h-12 rounded-full" src={avatar} alt={name} />
 					<div className="ml-2 mt-0.5">
@@ -83,7 +84,7 @@ const PostContent = () => {
 						</button>
 					)}
 				</div>
-			</div>
+			</Card>
 			{showComments && <CommentSection />}
 		</div>
 	);
