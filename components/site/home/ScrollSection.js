@@ -29,7 +29,7 @@ export default function ScrollSection({ title, link, businesses }) {
 		}
 	};
 
-	const checkPartialVisibility = (key, atStart, atEnd) => {
+	const checkPartialVisibility = (key) => {
 		const scrollContainer = scrollContainerRefs.current[key];
 		if (scrollContainer) {
 			const containerRect = scrollContainer.getBoundingClientRect();
@@ -70,7 +70,7 @@ export default function ScrollSection({ title, link, businesses }) {
 					</a>
 				</div>
 				<div className="relative">
-					<div ref={(el) => (scrollContainerRefs.current[title] = el)} onScroll={() => handleScroll(title)} className="flex flex-row gap-4 px-6 py-8 overflow-x-hidden sm:px-12 lg:px-24 scrollbar-hide scroll-smooth" style={{ scrollBehavior: "smooth" }}>
+					<div ref={(el) => (scrollContainerRefs.current[title] = el)} onScroll={() => handleScroll(title)} className="flex flex-row gap-4 px-6 py-8 overflow-x-auto sm:px-12 lg:px-24 scrollbar-hide scroll-smooth" style={{ scrollBehavior: "smooth" }}>
 						{businesses.map((business, idx) => (
 							<div
 								key={business.id}
