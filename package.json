@@ -3,7 +3,7 @@
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
-		"dev": "next dev",
+		"dev": "next dev -p 3001",
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint"
@@ -55,7 +55,7 @@
 		"clsx": "^2.1.1",
 		"cmdk": "^1.0.0",
 		"date-fns": "^3.6.0",
-		"embla-carousel-autoplay": "^8.1.6",
+		"embla-carousel-autoplay": "^8.1.8",
 		"embla-carousel-react": "^8.1.6",
 		"fast-levenshtein": "^3.0.0",
 		"formik": "^2.4.6",

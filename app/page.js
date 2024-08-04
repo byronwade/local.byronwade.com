@@ -221,15 +221,32 @@ export default function Home() {
 			<Header />
 			<main className="relative">
 				<HeroSection
-					title="https://occ-0-8236-37.1.nflxso.net/dnm/api/v6/LmEnxtiAuzezXBjYXPuDgfZ4zZQ/AAAABc0_iOW9_pz4E5jfQmWKZ9cts2uIUGij8BVHURQzwa3Lt43j_q4mhGLT1VZaiMp-NXSBdOkpRd07ewgbkRkMcE-OdCMPeo0wxAgXFGgjldp4JRAE75RzpMFu_QxacsPXL-HgXtlr_rHVF9Qn3HtUbr86E1fXJo0sA1oYNgnpYT6WYVsHcbcuFQ.webp?r=771"
-					description="Renowned comedian and podcast host Joe Rogan delivers a live stand-up set at the Majestic Theatre in San Antonio, Texas, for his third Netflix special."
-					mediaSrc="/welding.mp4"
-					link="/watch/81771853?trackId=254015180"
+					carouselItems={[
+						{
+							title: "https://occ-0-8236-37.1.nflxso.net/dnm/api/v6/LmEnxtiAuzezXBjYXPuDgfZ4zZQ/AAAABc0_iOW9_pz4E5jfQmWKZ9cts2uIUGij8BVHURQzwa3Lt43j_q4mhGLT1VZaiMp-NXSBdOkpRd07ewgbkRkMcE-OdCMPeo0wxAgXFGgjldp4JRAE75RzpMFu_QxacsPXL-HgXtlr_rHVF9Qn3HtUbr86E1fXJo0sA1oYNgnpYT6WYVsHcbcuFQ.webp?r=771",
+							description: "Renowned comedian and podcast host Joe Rogan delivers a live stand-up set at the Majestic Theatre in San Antonio, Texas, for his third Netflix special.",
+							mediaSrc: "/welding.mp4",
+							link: "/watch/81771853?trackId=254015180",
+						},
+						{
+							title: "https://occ-0-8236-37.1.nflxso.net/dnm/api/v6/LmEnxtiAuzezXBjYXPuDgfZ4zZQ/AAAABc0_iOW9_pz4E5jfQmWKZ9cts2uIUGij8BVHURQzwa3Lt43j_q4mhGLT1VZaiMp-NXSBdOkpRd07ewgbkRkMcE-OdCMPeo0wxAgXFGgjldp4JRAE75RzpMFu_QxacsPXL-HgXtlr_rHVF9Qn3HtUbr86E1fXJo0sA1oYNgnpYT6WYVsHcbcuFQ.webp?r=771",
+							description: "Renowned comedian and podcast host Joe Rogan delivers a live stand-up set at the Majestic Theatre in San Antonio, Texas, for his third Netflix special.",
+							mediaSrc: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=3320&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+							link: "/watch/81771853?trackId=254015180",
+						},
+						{
+							title: "https://occ-0-8236-37.1.nflxso.net/dnm/api/v6/LmEnxtiAuzezXBjYXPuDgfZ4zZQ/AAAABc0_iOW9_pz4E5jfQmWKZ9cts2uIUGij8BVHURQzwa3Lt43j_q4mhGLT1VZaiMp-NXSBdOkpRd07ewgbkRkMcE-OdCMPeo0wxAgXFGgjldp4JRAE75RzpMFu_QxacsPXL-HgXtlr_rHVF9Qn3HtUbr86E1fXJo0sA1oYNgnpYT6WYVsHcbcuFQ.webp?r=771",
+							description: "Renowned comedian and podcast host Joe Rogan delivers a live stand-up set at the Majestic Theatre in San Antonio, Texas, for his third Netflix special.",
+							mediaSrc: "https://www.youtube.com/embed/nBwMnDK4wNs?si=zFeD4WYUwKtmWml7",
+							link: "/watch/81771853?trackId=254015180",
+						},
+						// Add more items as needed
+					]}
 				/>
 
 				<div className="relative">
 					<div className="bg-background">
-						<div className="relative z-10 py-12 pb-24 space-y-24 md:pb-32 md:space-y-32">
+						<div className="relative py-16 space-y-16">
 							<ScrollSection title="Plumbers in San Francisco, CA" link="/">
 								{businesses.map((business) => (
 									<BusinessCard key={business.id} business={business} />
@@ -242,7 +259,7 @@ export default function Home() {
 							</ScrollSection>
 						</div>
 
-						<div className="relative py-24 md:py-32">
+						<div className="relative py-16 space-y-16">
 							<div className="py-4 pl-8 sm:px-12 lg:px-24">
 								<div className="relative px-6 pt-16 overflow-hidden bg-gray-900 shadow-2xl isolate sm:rounded-3xl sm:px-16 md:pt-24 lg:flex lg:gap-x-20 lg:px-24 lg:pt-0">
 									<svg viewBox="0 0 1024 1024" aria-hidden="true" className="absolute left-1/2 top-1/2 -z-10 h-[64rem] w-[64rem] -translate-y-1/2 [mask-image:radial-gradient(closest-side,white,transparent)] sm:left-full sm:-ml-80 lg:left-1/2 lg:ml-0 lg:-translate-x-1/2 lg:translate-y-0">
@@ -271,7 +288,7 @@ export default function Home() {
 							</div>
 						</div>
 
-						<div className="relative pb-24 space-y-24 md:pb-32 md:space-y-32">
+						<div className="relative py-16 space-y-16">
 							<ScrollSection title="Plumbers in San Francisco, CA" link="/">
 								{businesses.map((business) => (
 									<BusinessCard key={business.id} business={business} />
@@ -284,10 +301,12 @@ export default function Home() {
 							</ScrollSection>
 						</div>
 
-						<div className="relative w-full h-[30em]">
-							<div className="absolute top-0 left-0 w-1/2 h-full bg-gradient-to-r from-black via-black/80 to-transparent" />
+						<div className="relative h-full md:h-[30em] w-full">
+							<div className="absolute inset-0 z-10 bg-gradient-to-b from-background via-transparent to-transparent"></div>
+							<div className="absolute inset-0 z-10 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+							<div className="absolute inset-0 z-10 bg-gradient-to-r from-background via-transparent to-transparent"></div>
 							<img className="object-cover object-center w-full h-full" src="https://images.unsplash.com/photo-1708094018348-2f3853af61fb?q=80&w=3090&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Descendants: The Rise of Red" />
-							<div className="absolute top-[20%] w-full">
+							<div className="absolute top-[20%] z-20 w-full">
 								<div className="py-4 pl-8 sm:px-12 lg:px-24">
 									<h1 className="mb-4 text-3xl font-bold md:text-5xl">Find a welder</h1>
 									<div className="space-x-4">
@@ -300,7 +319,7 @@ export default function Home() {
 							</div>
 						</div>
 
-						<div className="pb-24 space-y-24 md:pb-32 md:space-y-32">
+						<div className="relative py-16 space-y-16">
 							<ScrollSection title="Plumbers in San Francisco, CA" link="/">
 								{businesses.map((business) => (
 									<BusinessCard key={business.id} business={business} />

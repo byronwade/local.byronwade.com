@@ -1,18 +1,20 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, redirect } from "next/navigation";
 import { Button } from "@components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from "@components/ui/sheet";
+import { Command, CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator, CommandShortcut } from "@components/ui/command";
 import { Drawer, DrawerContent, DrawerTrigger } from "@components/ui/drawer";
-import { ChevronDown, Menu } from "react-feather";
+import { ChevronDown, Menu, Search } from "react-feather";
 import SearchBarHeader from "@components/shared/searchBox/SearchBarHeader";
 import useAuthStore from "@store/useAuthStore";
 
 export default function Header() {
+	const [open, setOpen] = useState(false);
 	const pathname = usePathname();
 	const { user, userRoles, logout, setUser, setUserRoles, initializeAuth } = useAuthStore((state) => ({
 		user: state.user,
@@ -28,6 +30,17 @@ export default function Header() {
 	useEffect(() => {
 		initializeAuth();
 	}, [setUser, setUserRoles, initializeAuth]);
+
+	useEffect(() => {
+		const down = (e) => {
+			if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
+				e.preventDefault();
+				setOpen((open) => !open);
+			}
+		};
+		document.addEventListener("keydown", down);
+		return () => document.removeEventListener("keydown", down);
+	}, []);
 
 	// useEffect(() => {
 	// 	if (user) {
@@ -57,13 +70,13 @@ export default function Header() {
 
 	return (
 		<div id="header" className="transition-none sticky top-0 z-[60] bg-card">
-			<div className="flex items-center justify-between w-full gap-6 p-2 px-4 py-4 pl-8 mx-auto sm:px-12 lg:px-24">
+			<div className="flex items-center justify-between w-full gap-6 p-2 mx-auto shadow-md lg:px-24">
 				<div className="flex flex-row items-center w-full space-x-4">
 					<Link href="/" className="flex flex-col items-center text-xl font-bold text-center">
 						<Image src="/ThorbisLogo.webp" alt="Thorbis" width={50} height={50} className="w-10 h-10" />
-						<h1 className="text-sm leading-none text-primary">Thorbis</h1>
+						{/* <h1 className="hidden text-sm leading-none text-primary md:block">Thorbis</h1> */}
 					</Link>
-					<div className="flex items-center w-full">
+					<div className="items-center hidden w-full md:flex">
 						<SearchBarHeader />
 					</div>
 				</div>
@@ -120,9 +133,27 @@ export default function Header() {
 					)}
 				</div>
 
+				<div className="flex md:hidden">
+					<Button variant="outline" size="icon">
+						<Search className="w-4 h-4" />
+					</Button>
+				</div>
+
+				<CommandDialog open={open} onOpenChange={setOpen}>
+					<CommandInput placeholder="Type a command or search..." />
+					<CommandList>
+						<CommandEmpty>No results found.</CommandEmpty>
+						<CommandGroup heading="Suggestions">
+							<CommandItem>Calendar</CommandItem>
+							<CommandItem>Search Emoji</CommandItem>
+							<CommandItem>Calculator</CommandItem>
+						</CommandGroup>
+					</CommandList>
+				</CommandDialog>
+
 				<Drawer>
 					<DrawerTrigger asChild>
-						<Button variant="outline" size="icon" className="md:hidden">
+						<Button variant="outline" size="icon" className="flex md:hidden">
 							<Menu className="w-4 h-4" />
 						</Button>
 					</DrawerTrigger>
@@ -209,58 +240,6 @@ export default function Header() {
 						</nav>
 					</DrawerContent>
 				</Drawer>
-			</div>
-			<div className="flex px-2 pl-8 overflow-hidden text-xs font-medium text-white bg-primary whitespace-nowrap xl:text-sm sm:px-12 lg:px-24">
-				<Sheet key="left">
-					<SheetTrigger asChild>
-						<Link href="/" className="flex flex-row items-center px-2 py-2 font-bold cursor-pointer hover:text-gray-300">
-							<Menu className="w-4 h-4 mr-2" /> All
-						</Link>
-					</SheetTrigger>
-					<SheetContent side="left" className="w-[400px] sm:w-[540px] h-full bg-black z-[70]">
-						<SheetHeader>
-							<SheetTitle>All Categories</SheetTitle>
-							<SheetDescription>Select a category to explore</SheetDescription>
-						</SheetHeader>
-						{/* Add content here */}
-					</SheetContent>
-				</Sheet>
-				<Link href="/categories" className="px-2 py-2 cursor-pointer hover:text-gray-300">
-					Home Services
-				</Link>
-				<Link href="/categories" className="px-2 py-2 cursor-pointer hover:text-gray-300">
-					Restaurants
-				</Link>
-				<Link href="/categories" className="px-2 py-2 cursor-pointer hover:text-gray-300">
-					Construction
-				</Link>
-				<Link href="/categories" className="px-2 py-2 cursor-pointer hover:text-gray-300">
-					Automotive
-				</Link>
-				<Link href="/categories" className="px-2 py-2 cursor-pointer hover:text-gray-300">
-					Health & Beauty
-				</Link>
-				<Link href="/categories" className="px-2 py-2 cursor-pointer hover:text-gray-300">
-					Technology
-				</Link>
-				<Link href="/categories" className="px-2 py-2 cursor-pointer hover:text-gray-300">
-					Education
-				</Link>
-				<Link href="/categories" className="px-2 py-2 cursor-pointer hover:text-gray-300">
-					Finance
-				</Link>
-				<Link href="/categories" className="px-2 py-2 cursor-pointer hover:text-gray-300">
-					Real Estate
-				</Link>
-				<Link href="/categories" className="px-2 py-2 cursor-pointer hover:text-gray-300">
-					Entertainment
-				</Link>
-				<Link href="/categories" className="px-2 py-2 cursor-pointer hover:text-gray-300">
-					Latest Reviews
-				</Link>
-				<Link href="/certifications" className="px-2 py-2 cursor-pointer hover:text-gray-300">
-					Certified Companies
-				</Link>
 			</div>
 		</div>
 	);

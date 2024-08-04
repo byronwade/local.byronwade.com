@@ -63,8 +63,8 @@ export default function ScrollSection({ title, link, children }) {
 		<div className="w-full">
 			<div className="relative w-full overflow-hidden group">
 				{(title || link) && (
-					<div className="flex items-center w-full px-6 py-4 -mb-8 sm:px-12 lg:px-24">
-						{title && <h2 className="text-xl font-bold text-white sm:tracking-tight">{title}</h2>}
+					<div className="flex items-center justify-between w-full px-6 py-4 -mb-8 md:justify-start sm:px-12 lg:px-24">
+						{title && <h2 className="text-sm font-bold text-white md:text-xl sm:tracking-tight">{title}</h2>}
 						{link && (
 							<a href={link} className="inline-block ml-8">
 								<Button variant="secondary" size="xs">

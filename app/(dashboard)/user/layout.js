@@ -31,7 +31,7 @@ export default function UserRootLayout({ children }) {
 	return (
 		<div>
 			<Header />
-			<main className="flex flex-col min-h-screen m-auto mb-16 max-w-screen-2xl">{children}</main>
+			<main className="flex flex-col min-h-screen p-4 m-auto mb-16 overflow-hidden max-w-screen-2xl md:p-8">{children}</main>
 			<Footer />
 		</div>
 	);

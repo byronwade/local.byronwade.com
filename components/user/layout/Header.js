@@ -43,17 +43,57 @@ export default function Header() {
 		}
 	}, [router.pathname]);
 
-	useEffect(() => {
+    useEffect(() => {
+		const handleScroll = () => {
+			const container = containerRef.current;
+			if (container) {
+				const activeButton = container.children[activeIndex];
+				if (activeButton) {
+					const { offsetLeft, offsetWidth } = activeButton;
+					setUnderlineStyle({
+						left: offsetLeft - container.scrollLeft,
+						width: offsetWidth,
+					});
+				}
+			}
+		};
+
 		const container = containerRef.current;
-		const activeButton = container.querySelector(`button:nth-child(${activeIndex + 1})`);
-		if (activeButton) {
-			const { offsetLeft, offsetWidth } = activeButton;
-			setUnderlineStyle({
-				left: offsetLeft,
-				width: offsetWidth,
-			});
+		if (container) {
+			handleScroll(); // Initial call to set the underline position
+			container.addEventListener("scroll", handleScroll);
 		}
+
+		return () => {
+			if (container) {
+				container.removeEventListener("scroll", handleScroll);
+			}
+		};
 	}, [activeIndex]);
+
+	useEffect(() => {
+		const handleRouteChange = () => {
+			const container = containerRef.current;
+			if (container) {
+				const activeButton = container.children[activeIndex];
+				if (activeButton) {
+					const { offsetLeft, offsetWidth } = activeButton;
+					setUnderlineStyle({
+						left: offsetLeft - container.scrollLeft,
+						width: offsetWidth,
+					});
+				}
+			}
+		};
+
+		// Trigger handleRouteChange on initial render
+		handleRouteChange();
+
+		router.events.on("routeChangeComplete", handleRouteChange);
+		return () => {
+			router.events.off("routeChangeComplete", handleRouteChange);
+		};
+	}, [activeIndex, router.events]);
 
 	const handleModeChange = (mode) => {
 		setTheme(mode);
@@ -67,7 +107,7 @@ export default function Header() {
 
 	return (
 		<header className="sticky top-0 z-50 border-b bg-card border-border">
-			<div className="flex items-center justify-between px-4 py-2 pl-8 sm:px-12 lg:px-24">
+			<div className="flex items-center justify-between px-4 py-2 md:pl-8 sm:px-12 lg:px-24">
 				<div className="flex items-center">
 					<Link href="/" passHref legacyBehavior>
 						<Button variant="outline" size="icon" className="hidden md:block hover:!border-primary mr-2">
@@ -77,16 +117,16 @@ export default function Header() {
 					<nav className="flex items-center space-x-6">
 						<ul className="flex items-center space-x-2 md:space-x-4">
 							<li className="flex items-center space-x-2">
-								<RxSlash className="w-6 h-6 text-muted-foreground" />
+								<RxSlash className="hidden w-6 h-6 md:block text-muted-foreground" />
 								<Card variant="outline" className="flex items-center h-10 p-2 space-x-2 cursor-default">
 									<Avatar className="w-6 h-6">
 										<AvatarImage src="https://vercel.com/api/www/avatar?u=bcw1995&s=64" alt="@shadcn" />
 										<AvatarFallback>BW</AvatarFallback>
 									</Avatar>
-									<p className="text-sm font-medium truncate">
+									<p className="hidden text-sm font-medium truncate md:block">
 										{user?.user_metadata.first_name} {user?.user_metadata.last_name}
 									</p>
-									<Badge className="bg-primary hover:bg-primary-dark">Pro</Badge>
+									<Badge className="hidden md:block bg-primary hover:bg-primary-dark">Pro</Badge>
 								</Card>
 							</li>
 							<li className="flex items-center space-x-2">
@@ -246,7 +286,7 @@ export default function Header() {
 						</DropdownMenu>
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
-								<Button variant="outline" size="icon" aria-label="Menu" className="hidden rounded-full md:block hover:!border-primary">
+								<Button variant="outline" size="icon" aria-label="Menu" className="rounded-full block hover:!border-primary">
 									<Avatar className="w-8 h-8 mx-auto">
 										<AvatarImage src="https://vercel.com/api/www/avatar?u=bcw1995&s=64" alt="@shadcn" />
 										<AvatarFallback>BW</AvatarFallback>
@@ -318,7 +358,7 @@ export default function Header() {
 				</div>
 			</div>
 			<nav className="relative flex justify-center">
-				<div className="flex" ref={containerRef}>
+				<div className="flex overflow-x-scroll no-scrollbar" ref={containerRef}>
 					{menuItems.map((item, index) => (
 						<button
 							key={index}
