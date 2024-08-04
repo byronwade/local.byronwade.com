@@ -17,7 +17,7 @@ export default function PublicHeader() {
 
 	return (
 		<>
-			<footer className="relative w-full h-full px-4 py-10 mx-auto bg-primary-700 text-gray-50">
+			<footer className="relative w-full h-full px-4 py-20 pl-8 mx-auto bg-primary-700 text-gray-50 sm:px-12 lg:px-24">
 				<div className="flex flex-col pr-2 my-4 text-sm">
 					<div className="flex pb-2 lg:pb-7">
 						<div className="flex">

@@ -147,3 +147,7 @@ select {
     @apply bg-background text-foreground;
   }
 }
+
+.last-card {
+  margin-right: calc(-100vw / 10);
+}

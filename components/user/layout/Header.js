@@ -67,7 +67,7 @@ export default function Header() {
 
 	return (
 		<header className="sticky top-0 z-50 border-b bg-card border-border">
-			<div className="flex items-center justify-between px-4 py-2">
+			<div className="flex items-center justify-between px-4 py-2 pl-8 sm:px-12 lg:px-24">
 				<div className="flex items-center">
 					<Link href="/" passHref legacyBehavior>
 						<Button variant="outline" size="icon" className="hidden md:block hover:!border-primary mr-2">

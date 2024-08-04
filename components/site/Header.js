@@ -56,8 +56,8 @@ export default function Header() {
 	}
 
 	return (
-		<div id="header" className="transition-none sticky top-0 z-[60]">
-			<div className="flex items-center justify-between w-full gap-6 p-2 px-4 mx-auto">
+		<div id="header" className="transition-none sticky top-0 z-[60] bg-card">
+			<div className="flex items-center justify-between w-full gap-6 p-2 px-4 py-4 pl-8 mx-auto sm:px-12 lg:px-24">
 				<div className="flex flex-row items-center w-full space-x-4">
 					<Link href="/" className="flex flex-col items-center text-xl font-bold text-center">
 						<Image src="/ThorbisLogo.webp" alt="Thorbis" width={50} height={50} className="w-10 h-10" />
@@ -206,7 +206,7 @@ export default function Header() {
 					</DrawerContent>
 				</Drawer>
 			</div>
-			<div className="flex px-2 overflow-hidden text-xs font-medium text-white bg-primary whitespace-nowrap xl:text-sm">
+			<div className="flex px-2 pl-8 overflow-hidden text-xs font-medium text-white bg-primary whitespace-nowrap xl:text-sm sm:px-12 lg:px-24">
 				<Sheet key="left">
 					<SheetTrigger asChild>
 						<Link href="/" className="flex flex-row items-center px-2 py-2 font-bold cursor-pointer hover:text-gray-300">

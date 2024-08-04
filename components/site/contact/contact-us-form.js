@@ -130,7 +130,7 @@ export default function ContactUsForm() {
 									</FormItem>
 								)}
 							/>
-							<Button type="submit"-primary disabled={loading}>
+							<Button type="submit" disabled={loading}>
 								{loading ? "Submitting..." : "Submit"} <ArrowRight className="w-4 h-4 ml-2" />
 							</Button>
 							{success && <p className="mt-2 text-sm leading-6 text-left text-green-500">Your message has been sent successfully.</p>}
