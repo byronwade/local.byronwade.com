@@ -48,6 +48,24 @@ const nextConfig = {
 			},
 			{
 				protocol: "https",
+				hostname: "img.cdn4dd.com",
+				port: "",
+				pathname: "**",
+			},
+			{
+				protocol: "https",
+				hostname: "occ-0-8236-37.1.nflxso.net",
+				port: "",
+				pathname: "**",
+			},
+			{
+				protocol: "https",
+				hostname: "images.pexels.com",
+				port: "",
+				pathname: "**",
+			},
+			{
+				protocol: "https",
 				hostname: "flowbite.s3.amazonaws.com",
 				port: "",
 				pathname: "**",

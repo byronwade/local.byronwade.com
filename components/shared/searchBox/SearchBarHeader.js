@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import LocationDropdown from "@components/shared/searchBox/LocationDropdown";
 import AiButton from "@components/shared/searchBox/AiButton";
-import { ArrowRight, Search } from "react-feather";
+import { ArrowRight, ChevronDown, Search } from "react-feather";
 import { Button } from "@components/ui/button";
 import AutocompleteSuggestions from "@components/shared/searchBox/AutocompleteSuggestions";
 import { Loader2 } from "lucide-react";
@@ -74,16 +74,19 @@ const SearchBarOnly = () => {
 
 	return (
 		<>
-			<div className="px-4 align-middle">
-				<div className="text-xs">Search in</div>
-				<div className="text-sm font-bold whitespace-nowrap">San Fransisco, CA</div>
-			</div>
-			<form className="relative z-10 flex flex-col w-full h-full min-w-0 p-2 bg-white border border-gray-300 rounded-md dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-primary focus:border-primary dark:focus:border-primary dark:focus-within:border-primary" onSubmit={handleFormSubmit}>
+			{/* <Button variant="ghost" className="flex flex-row items-center h-10 ml-6 mr-6 text-left align-center">
+				<div className="flex flex-col text-left align-baseline">
+					<div className="text-xs">Search in</div>
+					<div className="text-sm font-bold whitespace-nowrap">San Fransisco, CA</div>
+				</div>
+			</Button> */}
+
+			<form className="relative z-10 flex flex-col w-full h-full min-w-0 p-2 ml-6 bg-white border border-gray-300 rounded-md dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-primary focus:border-primary dark:focus:border-primary dark:focus-within:border-primary" onSubmit={handleFormSubmit}>
 				<div className="relative flex items-center justify-between w-full align-center">
 					<div className="flex items-center justify-center flex-1">
 						<div className="relative w-full">
 							<input
-								className={`!bg-transparent w-full min-h-[1.5rem] resize-none border-0 text-sm leading-relaxed shadow-none outline-none ring-0 [scroll-padding-block:0.75rem] disabled:bg-transparent disabled:opacity-80 pl-1 ${!errors.searchQuery ? "" : "text-red-500 placeholder:text-red-500"}`}
+								className={`!bg-transparent w-full min-h-[1.5rem] resize-none !border-0 text-sm leading-relaxed shadow-none !outline-none !ring-0 [scroll-padding-block:0.75rem] disabled:bg-transparent disabled:opacity-80 pl-1 ${!errors.searchQuery ? "" : "text-red-500 placeholder:text-red-500"}`}
 								id="search-input"
 								placeholder="Search for a business"
 								rows="1"
