@@ -85,13 +85,13 @@ export default function ScrollSection({ title, link, businesses }) {
 						))}
 					</div>
 					{canScrollLeft[title] && (
-						<div className="absolute inset-y-0 left-0 flex items-center justify-center px-12 transition-all cursor-pointer text-muted-foreground hover:text-white group-hover:opacity-100" style={{ paddingLeft: "3em", paddingRight: "3em" }} onClick={() => scrollBy(title, -getScrollDistance())}>
-							<ChevronLeft className="w-16 h-16" />
+						<div className="absolute inset-y-0 left-0 flex items-center justify-center px-6 transition-all cursor-pointer md:px-12 text-muted-foreground hover:text-white group-hover:opacity-100" onClick={() => scrollBy(title, -getScrollDistance())}>
+							<ChevronLeft className="w-6 h-6 md:w-16 md:h-16" />
 						</div>
 					)}
 					{canScrollRight[title] && (
-						<div className="absolute inset-y-0 right-0 flex items-center justify-center px-12 transition-all cursor-pointer text-muted-foreground hover:text-white group-hover:opacity-100" style={{ paddingLeft: "3em", paddingRight: "3em" }} onClick={() => scrollBy(title, getScrollDistance())}>
-							<ChevronRight className="w-16 h-16" />
+						<div className="absolute inset-y-0 right-0 flex items-center justify-center px-6 transition-all cursor-pointer md:px-12 text-muted-foreground hover:text-white group-hover:opacity-100" onClick={() => scrollBy(title, getScrollDistance())}>
+							<ChevronRight className="w-6 h-6 md:w-16 md:h-16" />
 						</div>
 					)}
 				</div>
