@@ -1,8 +1,8 @@
 "use client";
 import Image from "next/image";
-import Header from "@components/admin/layout/Header";
-import Main from "@components/admin/layout/Main";
-import Sidebar from "@components/admin/layout/Sidebar";
+import Header from "@components/admin/header";
+import Main from "@components/admin/main";
+import Sidebar from "@components/admin/sidebar";
 import { useEffect } from "react";
 import { redirect } from "next/navigation";
 import useAuthStore from "@store/useAuthStore";

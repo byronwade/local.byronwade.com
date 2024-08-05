@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import Header from "@components/business/layout/Header";
+import Header from "@components/business/header";
 import { useEffect } from "react";
 import { redirect } from "next/navigation";
 import useAuthStore from "@store/useAuthStore";

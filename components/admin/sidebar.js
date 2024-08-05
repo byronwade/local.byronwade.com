@@ -1,7 +1,7 @@
 // components/Sidebar.js
 import { usePathname } from "next/navigation";
-import SidebarSection from "./SidebarSection";
-import SidebarItem from "./SidebarItem";
+import SidebarSection from "./sidebar-section";
+import SidebarItem from "./sidebar-item";
 
 const sidebarLinks = {
 	"/admin": [
