@@ -123,11 +123,11 @@ export default function HeroSection({ carouselItems }) {
 					{carouselItems.map((item, index) => (
 						<CarouselItem key={index} className="w-full h-[60vh]">
 							<div className="relative w-full h-[60vh]">
-								<div className="absolute inset-0 z-10 bg-gradient-to-t from-background to-transparent"></div>
-								<div className="absolute inset-0 z-10 bg-gradient-to-r from-background to-transparent"></div>
+								<div className="absolute inset-0 z-10 bg-gradient-to-t from-background to-transparent" />
+								<div className="absolute inset-0 z-10 bg-gradient-to-r from-background to-transparent" />
 								<div className="absolute inset-0">
 									{isYouTubeUrl(item.mediaSrc) ? (
-										<div ref={(el) => (playerRefs.current[index] = el)} className="absolute top-0 left-0 z-0 object-cover w-full h-full" data-src={getYouTubeEmbedUrl(item.mediaSrc)}></div>
+										<div ref={(el) => (playerRefs.current[index] = el)} className="absolute top-0 left-0 z-0 object-cover w-full h-full" data-src={getYouTubeEmbedUrl(item.mediaSrc)} />
 									) : isVideoUrl(item.mediaSrc) ? (
 										<video autoPlay muted loop className="absolute top-0 left-0 object-cover w-full h-full" playsInline>
 											<source src={item.mediaSrc} type="video/mp4" />

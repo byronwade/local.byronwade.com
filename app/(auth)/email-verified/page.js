@@ -97,7 +97,7 @@ const EmailVerified = () => {
 					</div>
 					{!userRoles?.includes("business_user") && (
 						<div className="flex flex-col mt-10">
-							<div className="w-full my-20 border rounded-full dark:border-dark-800 border-dark-300"></div>
+							<div className="w-full my-20 border rounded-full dark:border-dark-800 border-dark-300" />
 							<h2 className="mb-1 text-2xl font-bold leading-9 text-left ">Now add a business</h2>
 							<p className="text-sm leading-6 text-left text-muted-foreground">
 								If you own a company you can alternatively add it here, please note that you will have to <b>prove ownership</b> to claim otherwise you can add one anonymously.
@@ -149,7 +149,7 @@ const EmailVerified = () => {
 					{resendError && <p className="mt-2 text-sm leading-6 text-left text-red-500">{resendError}</p>}
 
 					<div className="flex flex-col mt-10">
-						<div className="w-full my-20 border rounded-full dark:border-dark-800 border-dark-300"></div>
+						<div className="w-full my-20 border rounded-full dark:border-dark-800 border-dark-300" />
 						<h2 className="mb-1 text-2xl font-bold leading-9 text-left ">Now add a business</h2>
 						<p className="text-sm leading-6 text-left text-muted-foreground">You can still add a company anonymously if you wish.</p>
 						<div className="flex flex-col mt-4 space-y-4">

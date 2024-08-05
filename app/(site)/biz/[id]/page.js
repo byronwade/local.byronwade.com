@@ -59,8 +59,8 @@ export default function BizProfile({ params }) {
 	return (
 		<>
 			<header className="relative h-[60vh] text-primary-foreground">
-				<div className="absolute inset-0 z-10 bg-gradient-to-t from-background to-transparent"></div>
-				<div className="absolute inset-0 z-10 bg-gradient-to-r from-background to-transparent"></div>
+				<div className="absolute inset-0 z-10 bg-gradient-to-t from-background to-transparent" />
+				<div className="absolute inset-0 z-10 bg-gradient-to-r from-background to-transparent" />
 				<Image src="https://img.cdn4dd.com/cdn-cgi/image/fit=cover,width=1000,height=300,format=auto,quality=80/https://doordash-static.s3.amazonaws.com/media/store/header/2783f5d2-7982-4b45-a0dd-ad3c8ca2d512.jpg" alt="Background Image" width={1920} height={1020} className="absolute inset-0 object-cover w-full h-full -z-10" />
 				<div className="relative z-20 flex flex-row items-center justify-between h-full px-6 space-y-4 sm:px-12 lg:px-24">
 					<div className="max-w-lg">

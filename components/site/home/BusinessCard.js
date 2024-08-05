@@ -10,7 +10,7 @@ export default function BusinessCard({ business, disabled }) {
 				<div className="absolute top-0 left-0 w-full h-full overflow-visible">
 					<div className={`relative w-full h-full overflow-hidden rounded-md shadow-md hover:outline hover:outline-4 hover:outline-primary`}>
 						<img className={`absolute top-0 left-0 z-0 object-cover object-center w-full h-full`} src={business.image} alt={business.name} />
-						{disabled && <div className="absolute inset-0 bg-black opacity-50"></div>}
+						{disabled && <div className="absolute inset-0 bg-black opacity-50" />}
 					</div>
 				</div>
 			</div>

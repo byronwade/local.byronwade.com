@@ -117,7 +117,7 @@ const VideoList = () => {
 		setPlayingVideo(videos.length ? videos[0].id : null);
 	}, []);
 
-	return <div className="container p-4 mx-auto">{videos.length ? <div className="grid gap-4 place-items-center">{playingVideo && videos.map((video) => <VideoComponent key={video.id} video={video} mute={mute} setMute={setMute} isPlaying={video.id === playingVideo} playingVideo={playingVideo} setPlayingVideo={setPlayingVideo} />)}</div> : <span className="loader"></span>}</div>;
+	return <div className="container p-4 mx-auto">{videos.length ? <div className="grid gap-4 place-items-center">{playingVideo && videos.map((video) => <VideoComponent key={video.id} video={video} mute={mute} setMute={setMute} isPlaying={video.id === playingVideo} playingVideo={playingVideo} setPlayingVideo={setPlayingVideo} />)}</div> : <span className="loader" />}</div>;
 };
 
 export default VideoList;

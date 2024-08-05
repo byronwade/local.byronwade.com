@@ -151,7 +151,7 @@ const OnboardingComponent = () => {
 					)}
 					{currentStep === steps.findIndex((step) => step.name === "userSuccess") && (
 						<div className="flex flex-col w-full">
-							<div className="w-full my-20 border rounded-full dark:border-dark-800 border-dark-300"></div>
+							<div className="w-full my-20 border rounded-full dark:border-dark-800 border-dark-300" />
 							<h2 className="mb-1 text-2xl font-bold leading-9 text-left">Now add a business</h2>
 							<p className="text-sm leading-6 text-left text-muted-foreground">
 								If you own a company you can alternatively add it here, please note that you will have to <b>prove ownership</b> to claim otherwise you can add one anonymously.
