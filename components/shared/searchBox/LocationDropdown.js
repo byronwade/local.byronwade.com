@@ -55,7 +55,7 @@ const LocationDropdown = ({ className }) => {
 				fetchCurrentLocation(resolve, reject);
 			});
 			console.log("Location:", location);
-			if (location && location.lat && location.lng) {
+			if (location?.lat && location.lng) {
 				const { lat, lng } = location;
 				const { city, state } = await fetchCityAndStateFromCoordinates(lat, lng);
 				const locationString = `${city}, ${state}`;

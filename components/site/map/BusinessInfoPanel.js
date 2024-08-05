@@ -14,7 +14,7 @@ const BusinessInfoPanel = () => {
 	const businessIndex = business ? filteredBusinesses.findIndex((b) => b.id === business.id) : -1;
 
 	useEffect(() => {
-		if (business && business.coordinates) {
+		if (business?.coordinates) {
 			const { lat, lng } = business.coordinates;
 			const serviceAreaRadius = business.serviceArea?.value || null;
 			centerOn(lat, lng, serviceAreaRadius);
