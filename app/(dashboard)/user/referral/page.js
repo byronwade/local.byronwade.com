@@ -1,14 +1,12 @@
 "use client";
 import React, { useState } from "react";
 import { Button } from "@components/ui/button";
-import { ChevronDown, Facebook, Linkedin, Mail, Twitter } from "react-feather";
+import { ChevronDown, Facebook, Linkedin, Mail, Twitter, Copy } from "react-feather";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger } from "@components/ui/dropdown-menu";
 
 import { Card, CardHeader, CardDescription, CardTitle } from "@components/ui/card";
 import { Label } from "@components/ui/label";
 import { Input } from "@components/ui/input";
-
-import { Copy } from "react-feather";
 
 export default function Referral() {
 	const [referralLink, setReferralLink] = useState("https://thorbis.com/referral-code-1234");
