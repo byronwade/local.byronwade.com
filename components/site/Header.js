@@ -65,7 +65,7 @@ export default function Header() {
 	};
 
 	if (pathname.includes("/search")) {
-		return <div id="header"></div>;
+		return <div id="header" />;
 	}
 
 	return (

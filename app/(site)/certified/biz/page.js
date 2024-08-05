@@ -75,15 +75,15 @@ export default function Categories() {
 							<h2 className="mb-8 text-3xl font-bold">Diamond Certified Video Reports on Duncan Plumbing Ent., Inc.</h2>
 							<div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-3">
 								<div className="space-y-4">
-									<iframe src="https://www.youtube.com/embed/video1" className="w-full h-56 rounded-lg" title="Diamond Certified Company Profile"></iframe>
+									<iframe src="https://www.youtube.com/embed/video1" className="w-full h-56 rounded-lg" title="Diamond Certified Company Profile" />
 									<p className="text-center">Diamond Certified Company Profile</p>
 								</div>
 								<div className="space-y-4">
-									<iframe src="https://www.youtube.com/embed/video2" className="w-full h-56 rounded-lg" title="Company Story"></iframe>
+									<iframe src="https://www.youtube.com/embed/video2" className="w-full h-56 rounded-lg" title="Company Story" />
 									<p className="text-center">Company Story</p>
 								</div>
 								<div className="space-y-4">
-									<iframe src="https://www.youtube.com/embed/video3" className="w-full h-56 rounded-lg" title="Expert Contributions"></iframe>
+									<iframe src="https://www.youtube.com/embed/video3" className="w-full h-56 rounded-lg" title="Expert Contributions" />
 									<p className="text-center">Expert Contributions</p>
 								</div>
 							</div>

@@ -302,9 +302,9 @@ export default function Home() {
 						</div>
 
 						<div className="relative h-full md:h-[30em] w-full">
-							<div className="absolute inset-0 z-10 bg-gradient-to-b from-background via-transparent to-transparent"></div>
-							<div className="absolute inset-0 z-10 bg-gradient-to-t from-background via-transparent to-transparent"></div>
-							<div className="absolute inset-0 z-10 bg-gradient-to-r from-background via-transparent to-transparent"></div>
+							<div className="absolute inset-0 z-10 bg-gradient-to-b from-background via-transparent to-transparent" />
+							<div className="absolute inset-0 z-10 bg-gradient-to-t from-background via-transparent to-transparent" />
+							<div className="absolute inset-0 z-10 bg-gradient-to-r from-background via-transparent to-transparent" />
 							<img className="object-cover object-center w-full h-full" src="https://images.unsplash.com/photo-1708094018348-2f3853af61fb?q=80&w=3090&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Descendants: The Rise of Red" />
 							<div className="absolute top-[20%] z-20 w-full">
 								<div className="py-4 pl-8 sm:px-12 lg:px-24">

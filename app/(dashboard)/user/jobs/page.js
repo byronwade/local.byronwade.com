@@ -32,7 +32,7 @@ export default function Jobs() {
 				</div>
 
 				<div className="flex flex-row justify-between py-4">
-					<div className="mr-4 min-w-60"></div>
+					<div className="mr-4 min-w-60" />
 					<div className="flex items-center gap-x-3">
 						<TabsList className="p-0 bg-transparent h-9">
 							<TabsTrigger value="grid" className="h-9 data-[state=active]:bg-gray-200 !border-r-0 !rounded-e-[0px] rounded-md data-[state=active]:dark:bg-dark-800 bg-transperant border border-gray-300 dark:border-neutral-800">

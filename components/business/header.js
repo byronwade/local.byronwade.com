@@ -125,7 +125,7 @@ export default function Header() {
 					<div className="flex items-center space-x-2">
 						<Button size="icon" variant="ghost" className="relative p-2 text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-400">
 							<Bell className="w-5 h-5" />
-							<span className="absolute top-1 right-1 w-2.5 h-2.5 bg-blue-500 border-2 border-white dark:border-gray-800 rounded-full"></span>
+							<span className="absolute top-1 right-1 w-2.5 h-2.5 bg-blue-500 border-2 border-white dark:border-gray-800 rounded-full" />
 						</Button>
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
@@ -185,8 +185,8 @@ export default function Header() {
 							</DropdownMenuContent>
 						</DropdownMenu>
 						<button aria-label="Open menu" className="p-2 text-gray-500 md:hidden hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-400">
-							<div className="w-6 h-0.5 bg-current mb-1"></div>
-							<div className="w-6 h-0.5 bg-current"></div>
+							<div className="w-6 h-0.5 bg-current mb-1" />
+							<div className="w-6 h-0.5 bg-current" />
 						</button>
 					</div>
 				</div>

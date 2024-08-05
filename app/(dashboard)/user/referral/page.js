@@ -71,7 +71,7 @@ export default function Referral() {
 						</span>
 					</div>
 					<div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700" data-pc-el-id="div-47-56">
-						<div class="bg-primary h-2.5 rounded-full w-[30%]" role="progressbar" aria-valuenow="3" aria-valuemin="0" aria-valuemax="10" data-pc-el-id="div-48-55"></div>
+						<div class="bg-primary h-2.5 rounded-full w-[30%]" role="progressbar" aria-valuenow="3" aria-valuemin="0" aria-valuemax="10" data-pc-el-id="div-48-55" />
 					</div>
 					<p class="text-sm dark:text-gray-500 text-gray-500 mt-1" data-pc-el-id="p-57-57">
 						3 out of 10 referrals
