@@ -6,7 +6,9 @@
 		"dev": "next dev",
 		"build": "next build",
 		"start": "next start",
-		"lint": "next lint"
+		"lint": "next lint",
+		"cypress:open": "cypress open",
+		"cypress:run": "cypress run"
 	},
 	"dependencies": {
 		"@apollo/client": "^3.11.1",
@@ -104,6 +106,7 @@
 	"devDependencies": {
 		"@tailwindcss/typography": "^0.5.13",
 		"@types/react": "18.3.3",
+		"cypress": "^13.13.2",
 		"eslint": "^8",
 		"eslint-config-next": "^15.0.0-rc.0",
 		"postcss": "^8",
