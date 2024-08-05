@@ -88,11 +88,6 @@ export default function Header() {
 
 		// Trigger handleRouteChange on initial render
 		handleRouteChange();
-
-		router.events.on("routeChangeComplete", handleRouteChange);
-		return () => {
-			router.events.off("routeChangeComplete", handleRouteChange);
-		};
 	}, [activeIndex, router.events]);
 
 	const handleModeChange = (mode) => {
