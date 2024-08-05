@@ -74,7 +74,7 @@ const BusinessCard = memo(
 										<p className="text-sm text-green-600">{business.price}</p>
 									</Button>
 								</div>
-								{business.ratings && business.ratings.overall && (
+								{business.ratings?.overall && (
 									<div className="flex items-center mb-1 ml-1">
 										<Button variant="outline" className="inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow py-2 z-50 h-[calc(theme(spacing.7)_-_1px)] gap-1 rounded-[6px] px-3 text-xs">
 											<StarFilledIcon className="w-3 h-3 mr-1 text-yellow-500" />

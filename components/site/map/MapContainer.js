@@ -100,7 +100,7 @@ const MapContainer = React.forwardRef((props, ref) => {
 		if (activeBusinessId !== null && mapRef.current) {
 			const bounds = mapRef.current.getBounds();
 			const business = useBusinessStore.getState().cache.get(activeBusinessId);
-			if (business && business.coordinates) {
+			if (business?.coordinates) {
 				const { lat, lng } = business.coordinates;
 				if (lat >= bounds.getSouth() && lat <= bounds.getNorth() && lng >= bounds.getWest() && lng <= bounds.getEast()) {
 					console.log("Active business is within bounds");
