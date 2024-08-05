@@ -26,7 +26,7 @@ export const Gauge = ({ value, size = "small", showValue = true, color = "text-[
 	return (
 		<div className="relative flex flex-col items-center justify-center">
 			<svg fill="none" shapeRendering="crispEdges" height={sizes[size].height} width={sizes[size].width} viewBox="0 0 120 120" strokeWidth="2" className="transform -rotate-90">
-				<circle className={`dark:!text-dark-800 !text-dark-300`} strokeWidth="10" stroke="currentColor" fill="transparent" shapeRendering="geometricPrecision" r="53" cx="60" cy="60" />
+				<circle className={"dark:!text-dark-800 !text-dark-300"} strokeWidth="10" stroke="currentColor" fill="transparent" shapeRendering="geometricPrecision" r="53" cx="60" cy="60" />
 				<circle
 					className={`animate-gauge_fill dark:${color} ${color}`}
 					strokeWidth="12"

@@ -8,8 +8,8 @@ export default function BusinessCard({ business, disabled }) {
 		<Link href="/biz/1" className="flex flex-col items-start w-full h-auto">
 			<div className="relative flex-none h-0 pb-[56.25%] hover:scale-110 hover:z-10 transition-transform duration-300 w-72">
 				<div className="absolute top-0 left-0 w-full h-full overflow-visible">
-					<div className={`relative w-full h-full overflow-hidden rounded-md shadow-md hover:outline hover:outline-4 hover:outline-primary`}>
-						<img className={`absolute top-0 left-0 z-0 object-cover object-center w-full h-full`} src={business.image} alt={business.name} />
+					<div className={"relative w-full h-full overflow-hidden rounded-md shadow-md hover:outline hover:outline-4 hover:outline-primary"}>
+						<img className={"absolute top-0 left-0 z-0 object-cover object-center w-full h-full"} src={business.image} alt={business.name} />
 						{disabled && <div className="absolute inset-0 bg-black opacity-50" />}
 					</div>
 				</div>
