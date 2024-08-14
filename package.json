@@ -67,6 +67,7 @@
 		"generator-generator": "^5.1.0",
 		"graphql": "^16.9.0",
 		"input-otp": "^1.2.4",
+		"internal-ip": "^8.0.0",
 		"lodash": "^4.17.21",
 		"lodash.debounce": "^4.0.8",
 		"lodash.throttle": "^4.1.1",
