@@ -1,4 +1,8 @@
+import React from "react";
+import InitialSearch from "@components/site/search/InitialSearch";
+import SearchContainer from "@components/site/map/SearchContainer";
 import Script from "next/script";
+import "mapbox-gl/dist/mapbox-gl.css";
 
 export const metadata = {
 	metadataBase: new URL("https://www.thorbis.com/"),
@@ -81,12 +85,8 @@ export default function Search() {
 	return (
 		<>
 			<div>
-				<div>
-                    <div className="flex flex-col w-80">
-                        sidebar
-                    </div>
-
-                </div>
+				{/* <InitialSearch /> */}
+				<SearchContainer />
 			</div>
 			<Script data-testid="ldjson" id="json" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd, null, "\t") }} />
 		</>

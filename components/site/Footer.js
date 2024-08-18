@@ -11,7 +11,7 @@ export default function PublicHeader() {
 	const pathname = usePathname();
 
 	// Check if the current route contains /search
-	if (pathname.includes("/search")) {
+	if (pathname.includes("/search/map")) {
 		return null;
 	}
 
