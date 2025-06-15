@@ -2,6 +2,151 @@ import { create } from "zustand";
 import debounce from "lodash/debounce";
 import { algoliaIndex } from "@lib/algoliaClient";
 import useMapStore from "./useMapStore";
+import { generateBusinesses, searchBusinessesByQuery } from "../lib/businessDataGenerator";
+
+// Generate a large dataset of businesses using Faker.js
+let generatedBusinesses = [];
+let isGenerating = false;
+
+// Initialize businesses asynchronously
+const initializeBusinesses = async () => {
+	if (isGenerating || generatedBusinesses.length > 0) return generatedBusinesses;
+
+	isGenerating = true;
+	console.log("Generating businesses with Faker.js...");
+
+	try {
+		// Generate 5000 businesses for fast performance while still having variety
+		generatedBusinesses = generateBusinesses(5000);
+		console.log(`Generated ${generatedBusinesses.length} businesses successfully!`);
+	} catch (error) {
+		console.error("Failed to generate businesses:", error);
+		// Fallback to original mock data
+		generatedBusinesses = mockBusinesses;
+	} finally {
+		isGenerating = false;
+	}
+
+	return generatedBusinesses;
+};
+
+// Original mock businesses as fallback
+const mockBusinesses = [
+	{
+		id: "1",
+		name: "Joe's Pizza Palace",
+		slug: "joes-pizza-palace",
+		description: "Authentic New York style pizza with fresh ingredients and traditional recipes passed down through generations.",
+		categories: ["Restaurant", "Pizza", "Italian"],
+		ratings: { overall: 4.5 },
+		reviewCount: 127,
+		address: "123 Main St, San Francisco, CA 94102",
+		phone: "(415) 555-0123",
+		website: "https://joespizza.com",
+		hours: "Mon-Sun 11AM-10PM",
+		coordinates: { lat: 37.7749, lng: -122.4194 },
+		isOpenNow: true,
+		price: "$$",
+		statusMessage: "Closes at 10 PM",
+		isSponsored: false,
+		logo: null,
+	},
+	{
+		id: "2",
+		name: "Smith's Auto Repair",
+		slug: "smiths-auto-repair",
+		description: "Professional automotive repair services with over 20 years of experience. Specializing in brake repair, oil changes, and engine diagnostics.",
+		categories: ["Automotive", "Auto Repair", "Service"],
+		ratings: { overall: 4.8 },
+		reviewCount: 89,
+		address: "456 Oak Ave, San Francisco, CA 94103",
+		phone: "(415) 555-0456",
+		website: "https://smithsauto.com",
+		hours: "Mon-Fri 8AM-6PM, Sat 9AM-4PM",
+		coordinates: { lat: 37.7849, lng: -122.4094 },
+		isOpenNow: true,
+		price: "$$$",
+		statusMessage: "Closes at 6 PM",
+		isSponsored: true,
+		logo: null,
+	},
+	{
+		id: "3",
+		name: "Bella's Hair Salon",
+		slug: "bellas-hair-salon",
+		description: "Full-service hair salon offering cuts, colors, styling, and treatments. Our experienced stylists stay current with the latest trends.",
+		categories: ["Beauty & Spas", "Hair Salon", "Beauty"],
+		ratings: { overall: 4.3 },
+		reviewCount: 156,
+		address: "789 Pine St, San Francisco, CA 94104",
+		phone: "(415) 555-0789",
+		website: "https://bellashair.com",
+		hours: "Tue-Sat 9AM-7PM, Sun 10AM-5PM",
+		coordinates: { lat: 37.7649, lng: -122.4294 },
+		isOpenNow: false,
+		price: "$$",
+		statusMessage: "Closed - Opens at 9 AM",
+		isSponsored: false,
+		logo: null,
+	},
+	{
+		id: "4",
+		name: "Downtown Dental Care",
+		slug: "downtown-dental-care",
+		description: "Comprehensive dental services including cleanings, fillings, crowns, and cosmetic dentistry in a comfortable, modern environment.",
+		categories: ["Health & Medical", "Dentist", "Healthcare"],
+		ratings: { overall: 4.7 },
+		reviewCount: 203,
+		address: "321 Market St, San Francisco, CA 94105",
+		phone: "(415) 555-0321",
+		website: "https://downtowndental.com",
+		hours: "Mon-Thu 8AM-6PM, Fri 8AM-4PM",
+		coordinates: { lat: 37.7949, lng: -122.3994 },
+		isOpenNow: true,
+		price: "$$$",
+		statusMessage: "Closes at 6 PM",
+		isSponsored: false,
+		logo: null,
+	},
+	{
+		id: "5",
+		name: "The Coffee Corner",
+		slug: "the-coffee-corner",
+		description: "Artisan coffee shop serving locally roasted beans, fresh pastries, and light lunch options. Perfect spot for work or relaxation.",
+		categories: ["Coffee & Tea", "Cafe", "Breakfast"],
+		ratings: { overall: 4.2 },
+		reviewCount: 78,
+		address: "654 Union St, San Francisco, CA 94106",
+		phone: "(415) 555-0654",
+		website: "https://coffeecorner.com",
+		hours: "Mon-Fri 6AM-8PM, Sat-Sun 7AM-9PM",
+		coordinates: { lat: 37.7549, lng: -122.4394 },
+		isOpenNow: true,
+		price: "$",
+		statusMessage: "Closes at 8 PM",
+		isSponsored: false,
+		logo: null,
+	},
+	{
+		id: "6",
+		name: "Golden Gate Plumbing",
+		slug: "golden-gate-plumbing",
+		description: "Licensed plumbing contractors providing emergency repairs, installations, and maintenance services throughout the Bay Area.",
+		categories: ["Home Services", "Plumbing", "Contractors"],
+		ratings: { overall: 4.6 },
+		reviewCount: 94,
+		address: "987 Broadway, San Francisco, CA 94107",
+		phone: "(415) 555-0987",
+		website: "https://ggplumbing.com",
+		hours: "24/7 Emergency Service",
+		coordinates: { lat: 37.7449, lng: -122.4494 },
+		isOpenNow: true,
+		price: "$$$",
+		statusMessage: "24/7 Service Available",
+		isSponsored: true,
+		logo: null,
+	},
+];
 
 const useBusinessStore = create((set, get) => ({
 	allBusinesses: [],
@@ -19,6 +164,71 @@ const useBusinessStore = create((set, get) => ({
 		console.log("Initial coordinates set to:", { lat, lng });
 	},
 
+	// Enhanced search method using Faker.js data
+	searchBusinesses: async (query = "", location = "") => {
+		try {
+			set({ loading: true });
+
+			// Initialize businesses if not already done
+			const businesses = await initializeBusinesses();
+
+			// Use the search function from businessDataGenerator
+			const results = searchBusinessesByQuery(businesses, query, location);
+
+			// Sort results by relevance (sponsored first, then by rating)
+			const sortedResults = results.sort((a, b) => {
+				if (a.isSponsored && !b.isSponsored) return -1;
+				if (!a.isSponsored && b.isSponsored) return 1;
+				return (b.ratings?.overall || 0) - (a.ratings?.overall || 0);
+			});
+
+			// Update both allBusinesses and filteredBusinesses for map view
+			set({
+				allBusinesses: sortedResults,
+				filteredBusinesses: sortedResults,
+				loading: false,
+			});
+
+			console.log(`Search completed: ${sortedResults.length} results for "${query}" in "${location}"`);
+			return sortedResults;
+		} catch (error) {
+			console.error("Failed to search businesses:", error);
+			set({ loading: false });
+			return [];
+		}
+	},
+
+	// New method for general business fetching (used by search page)
+	fetchBusinesses: async (query = "", location = "") => {
+		return get().searchBusinesses(query, location);
+	},
+
+	// Initialize with generated data for immediate display
+	initializeWithMockData: async () => {
+		try {
+			set({ loading: true });
+			const businesses = await initializeBusinesses();
+
+			set({
+				allBusinesses: businesses,
+				filteredBusinesses: businesses.slice(0, 100), // Show first 100 for initial load
+				loading: false,
+				initialLoad: false,
+			});
+
+			console.log("Initialized with generated business data");
+		} catch (error) {
+			console.error("Failed to initialize with generated data:", error);
+			// Fallback to original mock data
+			set({
+				allBusinesses: mockBusinesses,
+				filteredBusinesses: mockBusinesses,
+				loading: false,
+				initialLoad: false,
+			});
+		}
+	},
+
 	fetchInitialBusinesses: async (bounds, zoom, query) => {
 		const { activeBusinessId, preventFetch, cache } = get();
 
@@ -34,20 +244,22 @@ const useBusinessStore = create((set, get) => ({
 
 		try {
 			set({ loading: true });
-			const response = await fetch(`/api/biz?zoom=${zoom}&north=${bounds.north}&south=${bounds.south}&east=${bounds.east}&west=${bounds.west}&query=${encodeURIComponent(query)}`);
-			const data = await response.json();
-			const initialBusinesses = data.businesses;
 
-			console.log("Initial businesses fetched:", initialBusinesses);
+			// Use generated businesses instead of API call
+			const businesses = await initializeBusinesses();
 
-			initialBusinesses.forEach((business) => {
-				if (!business.coordinates || business.coordinates.lat === undefined || business.coordinates.lng === undefined) {
-					console.error("Invalid business coordinates:", business.coordinates);
-				}
+			// Filter businesses by bounds
+			const boundsFiltered = businesses.filter((business) => {
+				const coords = business.coordinates;
+				if (!coords) return false;
+				const { lat, lng } = coords;
+				return lat >= bounds.south && lat <= bounds.north && lng >= bounds.west && lng <= bounds.east;
 			});
 
-			cache.set(bounds, initialBusinesses);
-			set({ allBusinesses: initialBusinesses, initialLoad: false, loading: false });
+			console.log("Initial businesses fetched:", boundsFiltered.length);
+
+			cache.set(bounds, boundsFiltered);
+			set({ allBusinesses: boundsFiltered, initialLoad: false, loading: false });
 			get().filterBusinessesByBounds(bounds);
 		} catch (error) {
 			console.error("Failed to fetch businesses:", error);
@@ -72,24 +284,28 @@ const useBusinessStore = create((set, get) => ({
 
 		try {
 			set({ loading: true });
-			const { hits } = await algoliaIndex.search(query, {
-				aroundLatLngViaIP: false,
-				insideBoundingBox: `${bounds.north},${bounds.west},${bounds.south},${bounds.east}`,
-				hitsPerPage: 1000,
-				facetFilters: [[`categories:${query}`, `name:${query}`, `display_phone:${query}`, `email:${query}`, `addresses:${query}`]],
+
+			// Use generated businesses with search
+			const businesses = await initializeBusinesses();
+			let filteredBusinesses = businesses;
+
+			// Apply query filter if provided
+			if (query) {
+				filteredBusinesses = searchBusinessesByQuery(businesses, query);
+			}
+
+			// Apply bounds filter
+			filteredBusinesses = filteredBusinesses.filter((business) => {
+				const coords = business.coordinates;
+				if (!coords) return false;
+				const { lat, lng } = coords;
+				return lat >= bounds.south && lat <= bounds.north && lng >= bounds.west && lng <= bounds.east;
 			});
-			const newBusinesses = hits;
-			console.log("Filtered businesses fetched:", newBusinesses);
 
-			newBusinesses.forEach((business) => {
-				if (!business.coordinates || business.coordinates.lat === undefined || business.coordinates.lng === undefined) {
-					console.error("Invalid business coordinates:", business.coordinates);
-				}
-			});
+			console.log("Filtered businesses fetched:", filteredBusinesses.length);
 
-			cache.set(bounds, newBusinesses);
-
-			set({ filteredBusinesses: newBusinesses, loading: false });
+			cache.set(bounds, filteredBusinesses);
+			set({ filteredBusinesses, loading: false });
 		} catch (error) {
 			console.error("Failed to fetch businesses:", error);
 			set({ loading: false });

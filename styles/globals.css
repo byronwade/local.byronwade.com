@@ -194,3 +194,37 @@ select {
   scrollbar-width: none;
   /* Firefox */
 }
+/* Map optimization styles */
+.mapboxgl-map {
+  font-smooth: always;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Optimize marker rendering */
+.mapboxgl-marker {
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
+/* Improve text rendering in markers */
+.mapboxgl-marker * {
+  font-feature-settings: "kern" 1, "liga" 1;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Optimize popup rendering */
+.mapboxgl-popup {
+  font-smooth: always;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Hardware acceleration for smooth animations */
+.mapboxgl-canvas-container {
+  transform: translateZ(0);
+  will-change: transform;
+}

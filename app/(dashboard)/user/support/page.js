@@ -18,7 +18,7 @@ export default function Support() {
 					<h1 className="text-4xl">Support</h1>
 					<div className="flex items-center gap-x-3">
 						<Button variant="outline" size="sm">
-							Claim a Buissness
+							Claim a Business
 						</Button>
 						<DropdownMenu>
 							<DropdownMenuTrigger>

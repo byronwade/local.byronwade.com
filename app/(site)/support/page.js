@@ -194,7 +194,7 @@ export default function SupportPage() {
 		// 		</div>
 		// 	</div>
 		// </main>
-		<div className="bg-[#212121] h-screen -mt-[64px]">
+		<div className="bg-background h-screen -mt-[64px]">
 			<Chat variant="Full" />
 		</div>
 	);

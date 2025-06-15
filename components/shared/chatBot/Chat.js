@@ -5,6 +5,7 @@ import ThorbisBubble from "@components/shared/chatBot/ThorbisBubble";
 import ChatInput from "@components/shared/chatBot/ChatInput";
 import ChatSuggestions from "@components/shared/chatBot/ChatSuggestions";
 import agent from "@lib/OpenAIClient"; // Import the OpenAI client
+import logger from "@lib/utils/logger";
 
 const initialMessages = [
 	// {
@@ -35,7 +36,7 @@ const initialMessages = [
 	// {
 	// 	id: 6,
 	// 	sender: "thorbis",
-	// 	message: "Why don’t scientists trust atoms? Because they make up everything!",
+	// 	message: "Why don't scientists trust atoms? Because they make up everything!",
 	// },
 	// {
 	// 	id: 7,
@@ -78,16 +79,16 @@ function ChatContent({ messages: initialMessages, suggestions }) {
 	const addMessage = async (message, sender) => {
 		const newMessages = [...messages, { id: messages.length + 1, message, sender }];
 		setMessages(newMessages);
-		console.log("Message added:", newMessages);
+		logger.info("Message added:", newMessages);
 
 		if (sender === "user") {
 			try {
-				console.log("Sending message to agent:", message);
+				logger.info("Sending message to agent:", message);
 				const response = await agent(message);
-				console.log("AI Response:", response);
+				logger.info("AI Response:", response);
 				setMessages([...newMessages, { id: newMessages.length + 1, message: response, sender: "thorbis" }]);
 			} catch (error) {
-				console.error("Error getting AI response:", error);
+				logger.error("Error getting AI response:", error);
 			}
 		}
 	};
@@ -104,7 +105,7 @@ function ChatContent({ messages: initialMessages, suggestions }) {
 
 function ChatWindow({ messages, suggestions }) {
 	return (
-		<div className="fixed bg-[#212121] bottom-4 right-4 w-96 text-white rounded-md min-h-96 flex flex-col">
+		<div className="fixed bg-card text-card-foreground bottom-4 right-4 w-96 rounded-md min-h-96 flex flex-col border shadow-lg">
 			<header className="flex flex-col space-y-1.5 pb-6 p-4 text-left">
 				<h2 className="text-lg font-semibold tracking-tight">Thorbis</h2>
 			</header>
@@ -115,7 +116,7 @@ function ChatWindow({ messages, suggestions }) {
 
 function ChatFull({ messages, suggestions }) {
 	return (
-		<div className="bg-[#212121] w-full text-white rounded-md min-h-96 flex flex-col justify-between h-full">
+		<div className="bg-card text-card-foreground w-full rounded-md min-h-96 flex flex-col justify-between h-full border">
 			<ChatContent messages={messages} suggestions={suggestions} />
 		</div>
 	);

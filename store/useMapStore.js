@@ -44,12 +44,22 @@ const useMapStore = create((set, get) => ({
 		return null;
 	},
 
-	centerOn: (latitude, longitude, radius) => {
+	centerOn: (latitude, longitude, radius, zoomLevel) => {
 		const mapRef = get().mapRef;
 		if (mapRef) {
 			const map = mapRef;
 			const defaultZoom = 10;
-			const zoom = radius ? Math.max(8, 14 - Math.log2(radius) + 0.5) : defaultZoom;
+
+			// Use provided zoom level, or calculate from radius, or use default
+			let zoom;
+			if (zoomLevel !== undefined) {
+				zoom = zoomLevel;
+			} else if (radius) {
+				zoom = Math.max(8, 14 - Math.log2(radius) + 0.5);
+			} else {
+				zoom = defaultZoom;
+			}
+
 			const offsetX = 500;
 			const offsetLng = offsetX / (256 * Math.pow(2, zoom));
 			const newCenter = [longitude + offsetLng, latitude];

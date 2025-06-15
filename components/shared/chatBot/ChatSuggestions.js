@@ -11,9 +11,9 @@ export default function ChatSuggestions({ suggestions, addMessage }) {
 					{suggestions.map((suggestion, index) => {
 						const Icon = Icons[suggestion.icon];
 						return (
-							<button key={index} className="relative flex w-40 flex-col gap-2 rounded-2xl border border-[#2f2f2f] px-3 pb-4 pt-3 text-start align-top text-[15px] shadow-xxs transition enabled:hover:bg-[#2f2f2f] disabled:cursor-not-allowed" onClick={() => addMessage(suggestion.text, "user")}>
-								<Icon className="icon-md" style={{ color: suggestion.color }} />
-								<div className="max-w-full text-gray-600 line-clamp-3 text-balance dark:text-gray-500 break-word">{suggestion.text}</div>
+							<button key={index} className="relative flex w-40 flex-col gap-2 rounded-2xl border border-border px-3 pb-4 pt-3 text-start align-top text-[15px] shadow-xxs transition enabled:hover:bg-muted disabled:cursor-not-allowed" onClick={() => addMessage(suggestion.text, "user")}>
+								<Icon className="icon-md text-primary" />
+								<div className="max-w-full text-muted-foreground line-clamp-3 text-balance break-word">{suggestion.text}</div>
 							</button>
 						);
 					})}

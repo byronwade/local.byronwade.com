@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import VerifyAccount from "@components/auth/shared/verify-account";
 import ActiveUser from "@components/auth/shared/active-user";
 import ActiveBusiness from "@components/auth/shared/active-business";
-import BuissnessSearch from "@components/auth/shared/buissness-search";
+import BusinessSearch from "@components/auth/shared/business-search";
 import Report from "@components/auth/report/report";
 import LoginPage from "@components/auth/login";
 import { Button } from "@components/ui/button";
@@ -17,7 +17,7 @@ const steps = [
 	{ component: ActiveUser, name: "Active User" },
 	{ component: WhatAreYouReporting, name: "What Are You Reporting" },
 	{ component: ActiveBusiness, name: "Active Business" },
-	{ component: BuissnessSearch, name: "Business Search" },
+	{ component: BusinessSearch, name: "Business Search" },
 	{ component: Report, name: "Report" },
 ];
 

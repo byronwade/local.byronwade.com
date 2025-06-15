@@ -119,16 +119,16 @@ module.exports = {
 		function ({ addBase, config }) {
 			addBase({
 				"input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill": {
-					"-webkit-box-shadow": `0 0 0px 1000px ${config("theme.colors.white")} inset`,
-					boxShadow: `0 0 0px 1000px ${config("theme.colors.white")} inset`,
-					"-webkit-text-fill-color": config("theme.colors.black"),
+					"-webkit-box-shadow": `0 0 0px 1000px hsl(var(--background)) inset`,
+					boxShadow: `0 0 0px 1000px hsl(var(--background)) inset`,
+					"-webkit-text-fill-color": `hsl(var(--foreground))`,
 					transition: "background-color 5000s ease-in-out 0s",
 				},
 				"@media (prefers-color-scheme: dark)": {
 					"input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill": {
-						"-webkit-box-shadow": `0 0 0px 1000px ${config("theme.colors.gray.900")} inset`,
-						boxShadow: `0 0 0px 1000px ${config("theme.colors.gray.900")} inset`,
-						"-webkit-text-fill-color": config("theme.colors.white"),
+						"-webkit-box-shadow": `0 0 0px 1000px hsl(var(--background)) inset`,
+						boxShadow: `0 0 0px 1000px hsl(var(--background)) inset`,
+						"-webkit-text-fill-color": `hsl(var(--foreground))`,
 					},
 				},
 			});

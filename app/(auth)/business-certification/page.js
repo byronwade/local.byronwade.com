@@ -9,13 +9,13 @@ import { Button } from "@components/ui/button";
 import { ArrowRight, ArrowLeft } from "react-feather";
 import useFormStore from "@store/useFormStore";
 import useAuth from "@hooks/useAuth";
-import BuissnessSearch from "@components/auth/shared/buissness-search";
+import BusinessSearch from "@components/auth/shared/business-search";
 import LoginPage from "@components/auth/login";
 
 const steps = [
 	{ component: ActiveUser, name: "Active User" },
 	{ component: ActiveBusiness, name: "Active Business" },
-	{ component: BuissnessSearch, name: "Business Search" },
+	{ component: BusinessSearch, name: "Business Search" },
 	{ component: BusinessCertification, name: "Business Certification" },
 ];
 

@@ -15,6 +15,7 @@ import useAuthStore from "@store/useAuthStore";
 
 export default function Header() {
 	const [open, setOpen] = useState(false);
+	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 	const pathname = usePathname();
 	const { user, userRoles, logout, setUser, setUserRoles, initializeAuth } = useAuthStore((state) => ({
 		user: state.user,
@@ -64,7 +65,11 @@ export default function Header() {
 		}
 	};
 
-	if (pathname.includes("/search/map")) {
+	const handleMobileSearch = () => {
+		window.location.href = "/search";
+	};
+
+	if (pathname.includes("/search/map") || (pathname === "/search" && typeof window !== "undefined" && window.location.search.includes("query"))) {
 		return <div id="header" />;
 	}
 
@@ -106,7 +111,7 @@ export default function Header() {
 							</DropdownMenuItem>
 							<DropdownMenuSeparator />
 							<DropdownMenuItem asChild>
-								<Link href="/buisiness-certification">Get Thorbis Certified</Link>
+								<Link href="/business-certification">Get Thorbis Certified</Link>
 							</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>
@@ -134,7 +139,7 @@ export default function Header() {
 				</div>
 
 				<div className="flex md:hidden">
-					<Button variant="outline" size="icon">
+					<Button variant="outline" size="icon" onClick={handleMobileSearch}>
 						<Search className="w-4 h-4" />
 					</Button>
 				</div>
@@ -151,13 +156,30 @@ export default function Header() {
 					</CommandList>
 				</CommandDialog>
 
-				<Drawer>
+				<Drawer open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
 					<DrawerTrigger asChild>
 						<Button variant="outline" size="icon" className="flex md:hidden">
 							<Menu className="w-4 h-4" />
 						</Button>
 					</DrawerTrigger>
 					<DrawerContent className="p-4 text-white bg-black h-5/6">
+						{/* Mobile Search Bar */}
+						<div className="mb-6">
+							<div className="flex items-center gap-2 p-3 bg-gray-800 rounded-lg">
+								<Search className="w-4 h-4 text-gray-400" />
+								<input
+									type="text"
+									placeholder="Search for businesses..."
+									className="flex-1 bg-transparent text-white placeholder-gray-400 border-none outline-none"
+									onKeyDown={(e) => {
+										if (e.key === "Enter" && e.target.value.trim()) {
+											window.location.href = `/search?query=${encodeURIComponent(e.target.value.trim())}`;
+										}
+									}}
+								/>
+							</div>
+						</div>
+
 						<nav>
 							<ul className="space-y-4">
 								<li>

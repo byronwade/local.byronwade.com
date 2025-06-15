@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse } from "next/server";
+import logger from "@lib/utils/logger";
 
 export async function updateSession(request) {
 	let supabaseResponse = NextResponse.next({
@@ -29,7 +30,7 @@ export async function updateSession(request) {
 		data: { user },
 	} = await supabase.auth.getUser();
 
-	console.log(user);
+	logger.debug("Middleware user:", user);
 
 	// IMPORTANT: You *must* return the supabaseResponse object as it is. If you're
 	// creating a new response object with NextResponse.next() make sure to:

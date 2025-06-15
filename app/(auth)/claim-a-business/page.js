@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import VerifyAccount from "@components/auth/shared/verify-account";
 import ActiveUser from "@components/auth/shared/active-user";
-import BuissnessSearch from "@components/auth/shared/buissness-search";
+import BusinessSearch from "@components/auth/shared/business-search";
 import BusinessVerification from "@components/auth/onboarding/business-verification";
 import BusinessSuccess from "@components/auth/onboarding/business-success";
 import { Button } from "@components/ui/button";
@@ -26,7 +26,7 @@ const businessVerificationSchema = z.object({
 
 const steps = [
 	{ component: ActiveUser, name: "activeUser" },
-	{ component: BuissnessSearch, name: "businessSearch" },
+	{ component: BusinessSearch, name: "businessSearch" },
 	{ component: BusinessVerification, name: "businessVerification" },
 	{ component: BusinessSuccess, name: "businessSuccess" },
 ];

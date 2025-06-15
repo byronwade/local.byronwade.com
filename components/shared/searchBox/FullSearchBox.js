@@ -1,12 +1,12 @@
 "use client";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import FilterDropdown from "@components/shared/searchBox/FilterDropdown";
 import SortDropdown from "@components/shared/searchBox/SortDropdown";
 import LocationDropdown from "@components/shared/searchBox/LocationDropdown";
 import AiButton from "@components/shared/searchBox/AiButton";
-import { ArrowRight, Search } from "react-feather";
+import { ArrowRight, Search, MapPin, Clock, Trending, X, Filter, SlidersHorizontal, Star, DollarSign, Navigation, History } from "lucide-react";
 import { Button } from "@components/ui/button";
 import { TooltipProvider } from "@components/ui/tooltip";
 import AutocompleteSuggestions from "@components/shared/searchBox/AutocompleteSuggestions";
@@ -15,24 +15,50 @@ import useSearchStore from "@store/useSearchStore";
 import useBusinessStore from "@store/useBusinessStore";
 import useMapStore from "@store/useMapStore";
 import debounce from "lodash/debounce";
+import { Input } from "@components/ui/input";
+import { Badge } from "@components/ui/badge";
+import { ScrollArea } from "@components/ui/scroll-area";
+import { Separator } from "@components/ui/separator";
 
 const FullSearchBox = () => {
 	const { searchQuery, setSearchQuery, location, setLocation, errors, setErrors, touched, setTouched, suggestions, loading, fetchAutocompleteSuggestions } = useSearchStore();
-	const { fetchFilteredBusinesses } = useBusinessStore();
+	const { fetchFilteredBusinesses, fetchBusinesses, initializeWithMockData, filteredBusinesses } = useBusinessStore();
 	const { getMapBounds, getMapZoom } = useMapStore();
 	const [autocompleteOpen, setAutocompleteOpen] = useState(false);
 	const [isFormValid, setIsFormValid] = useState(false);
+	const [query, setQuery] = useState("");
+	const [showSuggestions, setShowSuggestions] = useState(false);
+	const [recentSearches, setRecentSearches] = useState([]);
+	const [popularCategories] = useState(["Restaurants", "Plumbers", "Electricians", "Hair Salons", "Auto Repair", "Dentists", "Lawyers", "Real Estate"]);
+	const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
 
 	const router = useRouter();
 	const searchParams = useSearchParams();
+	const searchInputRef = useRef(null);
+	const locationInputRef = useRef(null);
+	const suggestionsRef = useRef(null);
+
+	// Initialize mock data on component mount
+	useEffect(() => {
+		initializeWithMockData();
+	}, [initializeWithMockData]);
 
 	useEffect(() => {
-		const queryParam = searchParams.get("query");
+		const queryParam = searchParams.get("q") || searchParams.get("query") || "";
+		const locationParam = searchParams.get("location") || "";
 		if (queryParam) {
 			setSearchQuery(queryParam);
+			setQuery(queryParam);
 			setTouched((prevTouched) => ({ ...prevTouched, searchQuery: true }));
 		}
-	}, [searchParams, setSearchQuery, setTouched]);
+		if (locationParam) {
+			setLocation({ value: locationParam });
+		}
+		// Fetch businesses if there's a query
+		if (queryParam) {
+			fetchBusinesses(queryParam, locationParam);
+		}
+	}, [searchParams, setSearchQuery, setTouched, setLocation, fetchBusinesses]);
 
 	useEffect(() => {
 		const validationErrors = {};
@@ -112,14 +138,171 @@ const FullSearchBox = () => {
 		debouncedFetchFilteredBusinesses();
 	};
 
-	const handleFormSubmit = (e) => {
+	const handleFormSubmit = async (e) => {
 		e.preventDefault();
-		if (!isFormValid) {
+		if (!searchQuery.trim()) {
 			return;
 		}
 
-		const queryString = new URLSearchParams({ query: searchQuery, location: location.value }).toString();
-		window.location.href = `/search?${queryString}`;
+		// Fetch businesses with the search query
+		await fetchBusinesses(searchQuery, location.value || "");
+
+		const queryString = new URLSearchParams({
+			q: searchQuery,
+			location: location.value || "",
+		}).toString();
+
+		// Update URL without full page reload if we're already on search page
+		if (window.location.pathname === "/search") {
+			router.push(`/search?${queryString}`);
+		} else {
+			window.location.href = `/search?${queryString}`;
+		}
+	};
+
+	// Load recent searches from localStorage
+	useEffect(() => {
+		const saved = localStorage.getItem("recentSearches");
+		if (saved) {
+			try {
+				setRecentSearches(JSON.parse(saved));
+			} catch (e) {
+				console.error("Error loading recent searches:", e);
+			}
+		}
+	}, []);
+
+	// Generate suggestions based on query
+	const generateSuggestions = useCallback(
+		async (searchQuery) => {
+			if (!searchQuery.trim()) {
+				setSuggestions([]);
+				return;
+			}
+
+			setLoading(true);
+
+			// Simulate API call delay
+			await new Promise((resolve) => setTimeout(resolve, 200));
+
+			const mockSuggestions = [
+				{ type: "business", name: `${searchQuery} near me`, icon: MapPin },
+				{ type: "category", name: `${searchQuery} services`, icon: Search },
+				{ type: "location", name: `${searchQuery} in San Francisco`, icon: MapPin },
+				{ type: "business", name: `Best ${searchQuery}`, icon: Star },
+				{ type: "category", name: `${searchQuery} reviews`, icon: Star },
+			];
+
+			// Add matching businesses from current results
+			const matchingBusinesses = filteredBusinesses
+				.filter((business) => business.name.toLowerCase().includes(searchQuery.toLowerCase()) || business.categories?.some((cat) => cat.toLowerCase().includes(searchQuery.toLowerCase())))
+				.slice(0, 3)
+				.map((business) => ({
+					type: "business",
+					name: business.name,
+					category: business.categories?.[0],
+					rating: business.ratings?.overall,
+					icon: MapPin,
+					business,
+				}));
+
+			setSuggestions([...matchingBusinesses, ...mockSuggestions.slice(0, 5 - matchingBusinesses.length)]);
+			setLoading(false);
+		},
+		[filteredBusinesses]
+	);
+
+	// Debounced search suggestions
+	useEffect(() => {
+		const timer = setTimeout(() => {
+			if (query && showSuggestions) {
+				generateSuggestions(query);
+			}
+		}, 300);
+
+		return () => clearTimeout(timer);
+	}, [query, showSuggestions, generateSuggestions]);
+
+	const handleSearch = useCallback(
+		(searchQuery = query, searchLocation = location) => {
+			if (!searchQuery.trim()) return;
+
+			// Save to recent searches
+			const newSearch = { query: searchQuery, location: searchLocation, timestamp: Date.now() };
+			const updated = [newSearch, ...recentSearches.filter((s) => s.query !== searchQuery)].slice(0, 10);
+			setRecentSearches(updated);
+			localStorage.setItem("recentSearches", JSON.stringify(updated));
+
+			// Update stores
+			setSearchQuery(searchQuery);
+			setLocation(searchLocation);
+			setTouched((prevTouched) => ({ ...prevTouched, searchQuery: true, location: true }));
+
+			// Update URL
+			const params = new URLSearchParams();
+			if (searchQuery) params.set("q", searchQuery);
+			if (searchLocation) params.set("location", searchLocation);
+
+			router.push(`/search?${params.toString()}`);
+			setShowSuggestions(false);
+		},
+		[query, location, recentSearches, setSearchQuery, setLocation, router]
+	);
+
+	const handleSuggestionClick = (suggestion) => {
+		if (suggestion.business) {
+			// Navigate to business page
+			router.push(`/biz/${suggestion.business.id}`);
+		} else {
+			setQuery(suggestion.name);
+			handleSearch(suggestion.name, location);
+		}
+	};
+
+	const handleKeyDown = (e) => {
+		if (!showSuggestions || suggestions.length === 0) return;
+
+		switch (e.key) {
+			case "ArrowDown":
+				e.preventDefault();
+				setSelectedSuggestionIndex((prev) => (prev < suggestions.length - 1 ? prev + 1 : 0));
+				break;
+			case "ArrowUp":
+				e.preventDefault();
+				setSelectedSuggestionIndex((prev) => (prev > 0 ? prev - 1 : suggestions.length - 1));
+				break;
+			case "Enter":
+				e.preventDefault();
+				if (selectedSuggestionIndex >= 0) {
+					handleSuggestionClick(suggestions[selectedSuggestionIndex]);
+				} else {
+					handleSearch();
+				}
+				break;
+			case "Escape":
+				setShowSuggestions(false);
+				setSelectedSuggestionIndex(-1);
+				break;
+		}
+	};
+
+	const clearRecentSearches = () => {
+		setRecentSearches([]);
+		localStorage.removeItem("recentSearches");
+	};
+
+	const handleLocationDetect = () => {
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(
+				(position) => {
+					// In a real app, you'd reverse geocode these coordinates
+					setLocation("Current Location");
+				},
+				(error) => {
+					console.error("Error getting location:", error);
+				}
+			);
+		}
 	};
 
 	return (

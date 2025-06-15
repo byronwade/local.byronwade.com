@@ -1,12 +1,16 @@
+import React from "react";
 import Script from "next/script";
+import SearchContainer from "@components/site/map/SearchContainer";
+import InitialSearch from "@components/site/search/InitialSearch";
+import "mapbox-gl/dist/mapbox-gl.css";
 
 export const metadata = {
 	metadataBase: new URL("https://www.thorbis.com/"),
 	title: {
-		default: "Thorbis - Discover and Connect with Local Businesses",
+		default: "Search Results - Thorbis",
 		template: "%s | Thorbis",
 	},
-	description: "Thorbis provides a powerful platform to discover and connect with top-rated local businesses. Explore and find businesses in your area with ease.",
+	description: "Search results for local businesses on Thorbis. Find and connect with top-rated businesses in your area.",
 	generator: "Next.js",
 	applicationName: "Thorbis",
 	keywords: ["Business Directory", "Local Business Search", "Find Businesses", "Business Reviews", "Business Listings"],
@@ -30,8 +34,8 @@ export const metadata = {
 	bookmarks: ["https://www.thorbis.com/"],
 	twitter: {
 		card: "summary_large_image",
-		title: "Thorbis - Discover and Connect with Local Businesses",
-		description: "Explore top-rated local businesses with Thorbis. Your comprehensive platform for finding and connecting with businesses in your area.",
+		title: "Search Results - Thorbis",
+		description: "Search results for local businesses on Thorbis. Find and connect with top-rated businesses in your area.",
 		creator: "@thorbis",
 		images: {
 			url: "https://www.thorbis.com/_next/image?url=%2FThorbisLogo.webp&w=96&q=75",
@@ -39,18 +43,18 @@ export const metadata = {
 		},
 	},
 	openGraph: {
-		title: "Thorbis - Discover and Connect with Local Businesses",
-		description: "Explore top-rated local businesses with Thorbis. Your comprehensive platform for finding and connecting with businesses in your area.",
+		title: "Search Results - Thorbis",
+		description: "Search results for local businesses on Thorbis. Find and connect with top-rated businesses in your area.",
 		url: "https://www.thorbis.com",
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://www.thorbis.com/api/og?title=Thorbis%20-%20Discover%20and%20Connect%20with%20Local%20Businesses&description=Find%20and%20connect%20with%20top-rated%20local%20businesses",
+				url: "https://www.thorbis.com/api/og?title=Search%20Results%20-%20Thorbis&description=Find%20and%20connect%20with%20top-rated%20local%20businesses",
 				width: 800,
 				height: 600,
 			},
 			{
-				url: "https://www.thorbis.com/api/og?title=Thorbis%20-%20Discover%20and%20Connect%20with%20Local%20Businesses&description=Find%20and%20connect%20with%20top-rated%20local%20businesses",
+				url: "https://www.thorbis.com/api/og?title=Search%20Results%20-%20Thorbis&description=Find%20and%20connect%20with%20top-rated%20local%20businesses",
 				width: 1800,
 				height: 1600,
 				alt: "Thorbis",
@@ -63,12 +67,12 @@ export const metadata = {
 
 const jsonLd = {
 	"@context": "https://schema.org",
-	"@type": "SearchService",
-	name: "Thorbis",
-	description: "Thorbis provides a powerful platform to discover and connect with top-rated local businesses. Explore and find businesses in your area with ease.",
+	"@type": "SearchResultsPage",
+	name: "Thorbis Search Results",
+	description: "Search results for local businesses on Thorbis. Find and connect with top-rated businesses in your area.",
 	url: "https://www.thorbis.com",
 	logo: "https://www.thorbis.com/_next/image?url=%2FThorbisLogo.webp&w=96&q=75",
-	image: "https://www.thorbis.com/api/og?title=Thorbis%20-%20Discover%20and%20Connect%20with%20Local%20Businesses&description=Find%20and%20connect%20with%20top-rated%20local%20businesses",
+	image: "https://www.thorbis.com/api/og?title=Search%20Results%20-%20Thorbis&description=Find%20and%20connect%20with%20top-rated%20local%20businesses",
 	sameAs: ["https://www.facebook.com/thorbis", "https://www.instagram.com/thorbis/?hl=en"],
 	potentialAction: {
 		"@type": "SearchAction",
@@ -77,17 +81,22 @@ const jsonLd = {
 	},
 };
 
-export default function Search() {
+// This component will handle the conditional rendering based on search params
+function SearchPageContent({ searchParams }) {
+	const query = searchParams?.query || searchParams?.q || "";
+
+	// If there's a search query, show the full-screen map view, otherwise show initial search
+	if (query) {
+		return <SearchContainer />;
+	}
+
+	return <InitialSearch />;
+}
+
+export default function Search({ searchParams }) {
 	return (
 		<>
-			<div>
-				<div>
-                    <div className="flex flex-col w-80">
-                        sidebar
-                    </div>
-
-                </div>
-			</div>
+			<SearchPageContent searchParams={searchParams} />
 			<Script data-testid="ldjson" id="json" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd, null, "\t") }} />
 		</>
 	);

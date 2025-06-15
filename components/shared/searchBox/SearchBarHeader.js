@@ -17,9 +17,15 @@ const searchSchema = z.object({
 
 const SearchBarOnly = () => {
 	const { searchQuery, setSearchQuery, location, setLocation, errors, setErrors, touched, setTouched, suggestions } = useSearchStore();
+	const { initializeWithMockData } = useBusinessStore();
 	const [loading, setLoading] = useState(false);
 	const [autocompleteOpen, setAutocompleteOpen] = useState(false);
 	const [isFormValid, setIsFormValid] = useState(false);
+
+	// Initialize mock data on component mount
+	useEffect(() => {
+		initializeWithMockData();
+	}, [initializeWithMockData]);
 
 	useEffect(() => {
 		const validationErrors = {};
@@ -68,7 +74,10 @@ const SearchBarOnly = () => {
 			return;
 		}
 
-		const queryString = new URLSearchParams({ query: searchQuery, location: location.value }).toString();
+		const queryString = new URLSearchParams({
+			q: searchQuery,
+			location: location.value || location,
+		}).toString();
 		window.location.href = `/search?${queryString}`;
 	};
 

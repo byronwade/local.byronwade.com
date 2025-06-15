@@ -7,7 +7,7 @@ import { Button } from "@components/ui/button";
 import { FaGithub, FaDiscord, FaProductHunt, FaHackerNews } from "react-icons/fa";
 import { RiTwitterXFill } from "react-icons/ri";
 
-export default function PublicHeader() {
+export default function Footer() {
 	const pathname = usePathname();
 
 	// Check if the current route contains /search
@@ -17,7 +17,7 @@ export default function PublicHeader() {
 
 	return (
 		<>
-			<footer className="relative w-full h-full px-4 py-20 pl-8 mx-auto bg-primary-700 text-gray-50 sm:px-12 lg:px-24">
+			<footer className="relative w-full h-full px-4 py-20 pl-8 mx-auto bg-primary text-primary-foreground sm:px-12 lg:px-24">
 				<div className="flex flex-col pr-2 my-4 text-sm">
 					<div className="flex pb-2 lg:pb-7">
 						<div className="flex">
@@ -49,11 +49,11 @@ export default function PublicHeader() {
 						</a>
 					</div>
 					<div className="flex gap-4 mt-6">
-						<FaDiscord className="w-6 h-6 text-discord hover:text-[#fff] hover:animate-spin-slow cursor-pointer" />
-						<RiTwitterXFill className="w-6 h-6 text-twitter hover:text-[#fff] hover:animate-spin-slow cursor-pointer" />
-						<FaGithub className="w-6 h-6 text-github hover:text-[#fff] hover:animate-spin-slow cursor-pointer" />
-						<FaProductHunt className="w-6 h-6 text-producthunt hover:text-[#fff] hover:animate-spin-slow cursor-pointer" />
-						<FaHackerNews className="w-6 h-6 text-hackernews hover:text-[#fff] hover:animate-spin-slow cursor-pointer" />
+						<FaDiscord className="w-6 h-6 text-primary-foreground/80 hover:text-primary-foreground hover:animate-spin-slow cursor-pointer" />
+						<RiTwitterXFill className="w-6 h-6 text-primary-foreground/80 hover:text-primary-foreground hover:animate-spin-slow cursor-pointer" />
+						<FaGithub className="w-6 h-6 text-primary-foreground/80 hover:text-primary-foreground hover:animate-spin-slow cursor-pointer" />
+						<FaProductHunt className="w-6 h-6 text-primary-foreground/80 hover:text-primary-foreground hover:animate-spin-slow cursor-pointer" />
+						<FaHackerNews className="w-6 h-6 text-primary-foreground/80 hover:text-primary-foreground hover:animate-spin-slow cursor-pointer" />
 					</div>
 					<p className="mt-2 max-w-[350px] pr-4 text-base opacity-50 transition-opacity  ease-in-out hover:opacity-100 ">Our mission is to transform lead management by providing the best business listing and review platform.</p>
 					<div className="mt-8">
@@ -75,34 +75,34 @@ export default function PublicHeader() {
 						<div>
 							<h2 className="text-lg font-semibold uppercase">About</h2>
 							<div className="flex flex-col mt-4 space-y-4">
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/about">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/about">
 									About Thorbis
 								</a>
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/careers">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/careers">
 									Careers
 								</a>
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/press">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/press">
 									Press
 								</a>
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/investor-relations">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/investor-relations">
 									Investor Relations
 								</a>
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/trust-safety">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/trust-safety">
 									Trust & Safety
 								</a>
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/content-guidelines">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/content-guidelines">
 									Content Guidelines
 								</a>
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/accessibility-statement">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/accessibility-statement">
 									Accessibility Statement
 								</a>
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/terms">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/terms">
 									Terms of Service
 								</a>
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/privacy">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/privacy">
 									Privacy Policy
 								</a>
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/ad-choices">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/ad-choices">
 									Ad Choices
 								</a>
 							</div>
@@ -110,25 +110,25 @@ export default function PublicHeader() {
 						<div>
 							<h2 className="text-lg font-semibold uppercase">Support</h2>
 							<div className="flex flex-col mt-4 space-y-4">
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/mobile">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/mobile">
 									Thorbis Mobile
 								</a>
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/developers">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/developers">
 									Developers
 								</a>
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/rss">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/rss">
 									RSS
 								</a>
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/contact-support">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/contact-support">
 									Contact Support
 								</a>
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/help-center">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/help-center">
 									Help Center
 								</a>
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/community-guidelines">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/community-guidelines">
 									Community Guidelines
 								</a>
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/faq">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/faq">
 									FAQ
 								</a>
 							</div>
@@ -136,28 +136,28 @@ export default function PublicHeader() {
 						<div>
 							<h2 className="text-lg font-semibold uppercase">Business</h2>
 							<div className="flex flex-col mt-4 space-y-4">
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/business">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/business">
 									Thorbis for Business
 								</a>
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/business-owner-login">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/business-owner-login">
 									Business Owner Login
 								</a>
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/claim-business">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/claim-business">
 									Claim your Business Page
 								</a>
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/advertise">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/advertise">
 									Advertise on Thorbis
 								</a>
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/restaurant-owners">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/restaurant-owners">
 									Thorbis for Restaurant Owners
 								</a>
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/table-management">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/table-management">
 									Table Management
 								</a>
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/business-success-stories">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/business-success-stories">
 									Business Success Stories
 								</a>
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/business-support">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/business-support">
 									Business Support
 								</a>
 							</div>
@@ -165,28 +165,28 @@ export default function PublicHeader() {
 						<div>
 							<h2 className="text-lg font-semibold uppercase">Cities</h2>
 							<div className="flex flex-col mt-4 space-y-4">
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/search?query=&zip=10001">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/search?query=&zip=10001">
 									New York, NY
 								</a>
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/search?query=&zip=90001">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/search?query=&zip=90001">
 									Los Angeles, CA
 								</a>
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/search?query=&zip=60601">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/search?query=&zip=60601">
 									Chicago, IL
 								</a>
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/search?query=&zip=77001">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/search?query=&zip=77001">
 									Houston, TX
 								</a>
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/search?query=&zip=85001">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/search?query=&zip=85001">
 									Phoenix, AZ
 								</a>
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/search?query=&zip=19101">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/search?query=&zip=19101">
 									Philadelphia, PA
 								</a>
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/search?query=&zip=94101">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/search?query=&zip=94101">
 									San Francisco, CA
 								</a>
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/search?query=&zip=98101">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/search?query=&zip=98101">
 									Seattle, WA
 								</a>
 							</div>
@@ -194,28 +194,28 @@ export default function PublicHeader() {
 						<div>
 							<h2 className="text-lg font-semibold uppercase">Company</h2>
 							<div className="flex flex-col mt-4 space-y-4">
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/jobs">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/jobs">
 									Jobs
 								</a>
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/about">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/about">
 									About
 								</a>
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="https://app.thorbis.com/support">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="https://app.thorbis.com/support">
 									Support
 								</a>
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/privacy">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/privacy">
 									Privacy
 								</a>
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/terms">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/terms">
 									Terms
 								</a>
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="https://github.com/thorbis/thorbis.com/blob/main/LICENSE">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="https://github.com/thorbis/thorbis.com/blob/main/LICENSE">
 									License
 								</a>
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/security">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/security">
 									Security
 								</a>
-								<a target="_blank" className="hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/subscribe">
+								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/subscribe">
 									Changelog
 								</a>
 							</div>
@@ -225,41 +225,41 @@ export default function PublicHeader() {
 					<div className="mt-8 text-center">
 						<h2 className="text-lg font-semibold uppercase">Compare to</h2>
 						<div className="grid grid-cols-2 gap-6 mt-4 md:grid-cols-3 lg:grid-cols-9">
-							<Link href="/yelp-alternative" className="flex flex-col items-center p-4 bg-black border rounded-md text-md hover:bg-gray-900">
+							<Link href="/yelp-alternative" className="flex flex-col items-center p-4 bg-background/10 border rounded-md text-md hover:bg-background/20">
 								<Image src="/chatgpt.svg" alt="Yelp" width={30} height={30} className="w-[30px] h-[30px] m-auto invert" />
-								<div className="mt-2 hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]">Yelp</div>
+								<div className="mt-2 hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]">Yelp</div>
 							</Link>
-							<Link href="/google-business-alternative" className="flex flex-col items-center p-4 bg-black border rounded-md text-md hover:bg-gray-900">
+							<Link href="/google-business-alternative" className="flex flex-col items-center p-4 bg-background/10 border rounded-md text-md hover:bg-background/20">
 								<Image src="/chatgpt.svg" alt="Google Business" width={30} height={30} className="w-[30px] h-[30px] m-auto invert" />
-								<div className="mt-2 hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]">Google Business</div>
+								<div className="mt-2 hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]">Google Business</div>
 							</Link>
-							<Link href="/tripadvisor-alternative" className="flex flex-col items-center p-4 bg-black border rounded-md text-md hover:bg-gray-900">
+							<Link href="/tripadvisor-alternative" className="flex flex-col items-center p-4 bg-background/10 border rounded-md text-md hover:bg-background/20">
 								<Image src="/chatgpt.svg" alt="TripAdvisor" width={30} height={30} className="w-[30px] h-[30px] m-auto invert" />
-								<div className="mt-2 hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]">TripAdvisor</div>
+								<div className="mt-2 hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]">TripAdvisor</div>
 							</Link>
-							<Link href="/angies-list-alternative" className="flex flex-col items-center p-4 bg-black border rounded-md text-md hover:bg-gray-900">
+							<Link href="/angies-list-alternative" className="flex flex-col items-center p-4 bg-background/10 border rounded-md text-md hover:bg-background/20">
 								<Image src="/chatgpt.svg" alt="Angie's List" width={30} height={30} className="w-[30px] h-[30px] m-auto invert" />
-								<div className="mt-2 hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]">Angie&apos;s List</div>
+								<div className="mt-2 hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]">Angie&apos;s List</div>
 							</Link>
-							<Link href="/booking-alternative" className="flex flex-col items-center p-4 bg-black border rounded-md text-md hover:bg-gray-900">
+							<Link href="/booking-alternative" className="flex flex-col items-center p-4 bg-background/10 border rounded-md text-md hover:bg-background/20">
 								<Image src="/chatgpt.svg" alt="Booking.com" width={30} height={30} className="w-[30px] h-[30px] m-auto invert" />
-								<div className="mt-2 hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]">Booking.com</div>
+								<div className="mt-2 hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]">Booking.com</div>
 							</Link>
-							<Link href="/expedia-alternative" className="flex flex-col items-center p-4 bg-black border rounded-md text-md hover:bg-gray-900">
+							<Link href="/expedia-alternative" className="flex flex-col items-center p-4 bg-background/10 border rounded-md text-md hover:bg-background/20">
 								<Image src="/chatgpt.svg" alt="Expedia" width={30} height={30} className="w-[30px] h-[30px] m-auto invert" />
-								<div className="mt-2 hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]">Expedia</div>
+								<div className="mt-2 hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]">Expedia</div>
 							</Link>
-							<Link href="/yellow-pages-alternative" className="flex flex-col items-center p-4 bg-black border rounded-md text-md hover:bg-gray-900">
+							<Link href="/yellow-pages-alternative" className="flex flex-col items-center p-4 bg-background/10 border rounded-md text-md hover:bg-background/20">
 								<Image src="/chatgpt.svg" alt="Yellow Pages" width={30} height={30} className="w-[30px] h-[30px] m-auto invert" />
-								<div className="mt-2 hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]">Yellow Pages</div>
+								<div className="mt-2 hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]">Yellow Pages</div>
 							</Link>
-							<Link href="/bark-alternative" className="flex flex-col items-center p-4 bg-black border rounded-md text-md hover:bg-gray-900">
+							<Link href="/bark-alternative" className="flex flex-col items-center p-4 bg-background/10 border rounded-md text-md hover:bg-background/20">
 								<Image src="/chatgpt.svg" alt="Bark.com" width={30} height={30} className="w-[30px] h-[30px] m-auto invert" />
-								<div className="mt-2 hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]">Bark.com</div>
+								<div className="mt-2 hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]">Bark.com</div>
 							</Link>
-							<Link href="/thumbtack-alternative" className="flex flex-col items-center p-4 bg-black border rounded-md text-md hover:bg-gray-900">
+							<Link href="/thumbtack-alternative" className="flex flex-col items-center p-4 bg-background/10 border rounded-md text-md hover:bg-background/20">
 								<Image src="/chatgpt.svg" alt="Thumbtack" width={30} height={30} className="w-[30px] h-[30px] m-auto invert" />
-								<div className="mt-2 hover:text-primary-200 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]">Thumbtack</div>
+								<div className="mt-2 hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]">Thumbtack</div>
 							</Link>
 						</div>
 					</div>

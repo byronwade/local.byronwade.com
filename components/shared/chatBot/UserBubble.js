@@ -8,7 +8,7 @@ export default function UserBubble({ message }) {
 					<div className="flex flex-col flex-grow max-w-full">
 						<div className="min-h-[20px] flex w-full flex-col items-end gap-2 whitespace-pre-wrap break-words overflow-x-auto mt-5">
 							<div className="flex flex-col items-end w-full gap-1 rtl:items-start">
-								<div className="relative max-w-[70%] rounded-3xl bg-[#2f2f2f] px-5 py-2.5 dark:bg-token-main-surface-secondary text-left">
+								<div className="relative max-w-[70%] rounded-3xl bg-primary px-5 py-2.5 text-primary-foreground text-left">
 									<div>{message}</div>
 								</div>
 							</div>

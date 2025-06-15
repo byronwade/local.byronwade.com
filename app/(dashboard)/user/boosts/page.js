@@ -13,7 +13,7 @@ export default function Boosts() {
 					<div className="flex items-center gap-x-3">
 						<Link href="/add-a-business" passHref legacyBehavior>
 							<Button variant="outline" size="sm">
-								Claim a Buissness
+								Claim a Business
 							</Button>
 						</Link>
 						<DropdownMenu>

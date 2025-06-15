@@ -37,7 +37,7 @@ const ServiceArea = () => {
 				id="service-area-fill"
 				type="fill"
 				paint={{
-					"fill-color": "#ff0000",
+					"fill-color": "rgb(239 68 68)", // red-500 equivalent
 					"fill-opacity": 0.2,
 				}}
 			/>
@@ -45,7 +45,7 @@ const ServiceArea = () => {
 				id="service-area-outline"
 				type="line"
 				paint={{
-					"line-color": "#111",
+					"line-color": "rgb(17 17 17)", // neutral-900 equivalent
 					"line-width": 4,
 				}}
 			/>
