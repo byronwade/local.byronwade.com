@@ -5,7 +5,7 @@ import ThorbisBubble from "@components/shared/chatBot/ThorbisBubble";
 import ChatInput from "@components/shared/chatBot/ChatInput";
 import ChatSuggestions from "@components/shared/chatBot/ChatSuggestions";
 import { ScrollArea } from "@components/ui/scroll-area";
-import agent from "@utils/OpenAIClient"; // Import the OpenAI client
+import agent from "@lib/OpenAIClient"; // Import the OpenAI client
 
 export default function ChatContent({ messages: initialMessages, suggestions }) {
 	const [messages, setMessages] = useState(initialMessages);

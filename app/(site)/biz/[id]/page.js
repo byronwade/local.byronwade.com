@@ -12,6 +12,8 @@ import {
 	Globe,
 	ChevronLeft,
 	ChevronRight,
+	ChevronUp,
+	ChevronDown,
 	X,
 	Camera,
 	CheckCircle,
@@ -68,6 +70,14 @@ export default function BizProfile({ params }) {
 	const [showScrollSpy, setShowScrollSpy] = useState(false);
 	const [showMobileNav, setShowMobileNav] = useState(false);
 	const [showReviewModal, setShowReviewModal] = useState(false);
+	const [scrollSpyScrollPosition, setScrollSpyScrollPosition] = useState(0);
+	const [headerHeight, setHeaderHeight] = useState(64);
+
+	// Enhanced scroll spy state
+	const [scrollSpyReady, setScrollSpyReady] = useState(false);
+
+	const [isNavigating, setIsNavigating] = useState(false);
+	const [scrollSpyError, setScrollSpyError] = useState(null);
 
 	const [newReview, setNewReview] = useState({
 		rating: 5,
@@ -75,6 +85,42 @@ export default function BizProfile({ params }) {
 		text: "",
 		author: "",
 	});
+
+	// Refs for scroll spy
+	const scrollSpyContainerRef = useRef(null);
+	const scrollSpyContentRef = useRef(null);
+	const scrollSpyRef = useRef(null);
+	const navigationTimeoutRef = useRef(null);
+	const intersectionObserverRef = useRef(null);
+
+	// Drag scroll state
+	const dragRef = useRef({
+		isDragging: false,
+		startY: 0,
+		startScrollTop: 0,
+		lastMoveY: 0,
+	});
+
+	// Section navigation items - defined early to avoid initialization errors
+	const navigationItems = [
+		{ id: "overview", label: "Overview", icon: Building },
+		{ id: "certification", label: "Get Certified", icon: Award },
+		{ id: "reviews", label: "Reviews", icon: Star },
+		{ id: "credentials", label: "Credentials", icon: Shield },
+		{ id: "availability", label: "Live Availability", icon: Zap },
+		{ id: "services", label: "Services & Showcase", icon: Settings },
+		{ id: "expertise", label: "Expertise & Team", icon: Target },
+		{ id: "pricing", label: "Pricing & Policies", icon: DollarSign },
+		{ id: "videoConsult", label: "Video Consult", icon: Video },
+		{ id: "emergencyServices", label: "Emergency Services", icon: Phone },
+		{ id: "information", label: "Business Info", icon: FileText },
+		{ id: "businessTransparency", label: "Business Operations", icon: Eye },
+		{ id: "recognition", label: "Recognition", icon: Award },
+		{ id: "warrantyTracker", label: "Warranty Tracker", icon: ClipboardCheck },
+		{ id: "faq", label: "FAQ & Support", icon: MessageCircle },
+		{ id: "careers", label: "Careers", icon: Users },
+		{ id: "partnerships", label: "Partnerships", icon: Handshake },
+	];
 
 	// Refs for sections
 	const sectionRefs = {
@@ -95,6 +141,127 @@ export default function BizProfile({ params }) {
 		faq: useRef(null),
 		careers: useRef(null),
 		partnerships: useRef(null),
+	};
+
+	// Enhanced scroll spy utility functions
+	const getCurrentSectionIndex = () => {
+		try {
+			return navigationItems.findIndex((item) => item.id === activeSection);
+		} catch (error) {
+			console.warn("Error finding current section:", error);
+			return 0;
+		}
+	};
+
+	const canNavigateUp = () => getCurrentSectionIndex() > 0;
+	const canNavigateDown = () => getCurrentSectionIndex() < navigationItems.length - 1;
+
+	const validateSection = (sectionId) => {
+		return navigationItems.some((item) => item.id === sectionId) && sectionRefs[sectionId] && sectionRefs[sectionId].current;
+	};
+
+	const getNextSection = (direction) => {
+		try {
+			const currentIndex = getCurrentSectionIndex();
+			let nextIndex;
+
+			if (direction === "up") {
+				nextIndex = Math.max(0, currentIndex - 1);
+			} else {
+				nextIndex = Math.min(navigationItems.length - 1, currentIndex + 1);
+			}
+
+			return navigationItems[nextIndex];
+		} catch (error) {
+			console.warn("Error getting next section:", error);
+			return null;
+		}
+	};
+
+	// Improved drag scroll functionality that doesn't interfere with buttons
+	const handleMouseDown = (e) => {
+		// Don't interfere with button clicks or links
+		if (e.target.closest("button") || e.target.closest("a")) return;
+		if (!scrollSpyContentRef.current || !scrollSpyContainerRef.current) return;
+
+		// Only handle left mouse button
+		if (e.button !== 0) return;
+
+		const startY = e.clientY;
+		const startScrollTop = scrollSpyScrollPosition;
+		let isDragging = false;
+		let hasMoved = false;
+
+		const handleMouseMove = (e) => {
+			const deltaY = Math.abs(e.clientY - startY);
+
+			// Start dragging only after moving 5px to avoid accidental drags
+			if (!isDragging && deltaY > 5) {
+				isDragging = true;
+				dragRef.current.isDragging = true;
+				document.body.style.userSelect = "none";
+				document.body.style.cursor = "grabbing";
+			}
+
+			if (!isDragging) return;
+
+			hasMoved = true;
+			e.preventDefault();
+
+			const totalDeltaY = e.clientY - startY;
+			const containerHeight = scrollSpyContainerRef.current?.clientHeight || 0;
+			const contentHeight = scrollSpyContentRef.current?.scrollHeight || 0;
+			const maxScroll = Math.max(0, contentHeight - containerHeight);
+
+			const newScrollPosition = Math.max(0, Math.min(maxScroll, startScrollTop - totalDeltaY));
+			setScrollSpyScrollPosition(newScrollPosition);
+		};
+
+		const handleMouseUp = () => {
+			dragRef.current.isDragging = false;
+			document.removeEventListener("mousemove", handleMouseMove);
+			document.removeEventListener("mouseup", handleMouseUp);
+			document.body.style.userSelect = "";
+			document.body.style.cursor = "";
+
+			// If we didn't move much, don't prevent the original event
+			if (!hasMoved) {
+				// Allow the original click to proceed
+			}
+		};
+
+		document.addEventListener("mousemove", handleMouseMove);
+		document.addEventListener("mouseup", handleMouseUp);
+	};
+
+	// Touch drag support
+	const handleTouchStart = (e) => {
+		if (e.target.closest("button") || e.target.closest("a")) return;
+		if (!scrollSpyContentRef.current || !scrollSpyContainerRef.current || e.touches.length !== 1) return;
+
+		const touch = e.touches[0];
+		dragRef.current.isDragging = true;
+		dragRef.current.startY = touch.clientY;
+		dragRef.current.startScrollTop = scrollSpyScrollPosition;
+	};
+
+	const handleTouchMove = (e) => {
+		if (!dragRef.current.isDragging || !scrollSpyContentRef.current || !scrollSpyContainerRef.current || e.touches.length !== 1) return;
+
+		e.preventDefault();
+		const touch = e.touches[0];
+		const deltaY = touch.clientY - dragRef.current.startY;
+
+		const containerHeight = scrollSpyContainerRef.current.clientHeight;
+		const contentHeight = scrollSpyContentRef.current.scrollHeight;
+		const maxScroll = Math.max(0, contentHeight - containerHeight);
+
+		const newScrollPosition = Math.max(0, Math.min(maxScroll, dragRef.current.startScrollTop - deltaY));
+		setScrollSpyScrollPosition(newScrollPosition);
+	};
+
+	const handleTouchEnd = () => {
+		dragRef.current.isDragging = false;
 	};
 
 	// Generate comprehensive business data on client side to avoid hydration issues
@@ -725,62 +892,361 @@ export default function BizProfile({ params }) {
 		setBusiness(generateBusiness());
 	}, [params.id]);
 
-	// Handle keyboard navigation
+	// Enhanced keyboard navigation with scroll spy support
 	useEffect(() => {
 		const handleKeyDown = (e) => {
-			if (showAllPhotos) {
-				if (e.key === "ArrowLeft") {
-					setSelectedImageIndex((prev) => (prev > 0 ? prev - 1 : allImages.length - 1));
-				} else if (e.key === "ArrowRight") {
-					setSelectedImageIndex((prev) => (prev < allImages.length - 1 ? prev + 1 : 0));
-				} else if (e.key === "Escape") {
-					setShowAllPhotos(false);
+			try {
+				// Photo modal navigation
+				if (showAllPhotos) {
+					if (e.key === "ArrowLeft") {
+						e.preventDefault();
+						setSelectedImageIndex((prev) => (prev > 0 ? prev - 1 : allImages.length - 1));
+					} else if (e.key === "ArrowRight") {
+						e.preventDefault();
+						setSelectedImageIndex((prev) => (prev < allImages.length - 1 ? prev + 1 : 0));
+					} else if (e.key === "Escape") {
+						e.preventDefault();
+						setShowAllPhotos(false);
+					}
+					return;
 				}
+
+				// Scroll spy navigation (only when scroll spy is visible)
+				if (showScrollSpy && !showReviewModal && !showMobileNav) {
+					console.log(`⌨️ Key pressed: ${e.key}`, {
+						showScrollSpy,
+						showReviewModal,
+						showMobileNav,
+						canNavigateUp: canNavigateUp(),
+						canNavigateDown: canNavigateDown(),
+					});
+
+					if (e.key === "ArrowUp" && canNavigateUp()) {
+						e.preventDefault();
+						console.log("⌨️ Keyboard navigation: Up");
+						handleScrollSpyScroll("up");
+					} else if (e.key === "ArrowDown" && canNavigateDown()) {
+						e.preventDefault();
+						console.log("⌨️ Keyboard navigation: Down");
+						handleScrollSpyScroll("down");
+					} else if (e.key === "Home") {
+						e.preventDefault();
+						console.log("⌨️ Keyboard navigation: Home");
+						scrollToSection(navigationItems[0]?.id);
+					} else if (e.key === "End") {
+						e.preventDefault();
+						console.log("⌨️ Keyboard navigation: End");
+						scrollToSection(navigationItems[navigationItems.length - 1]?.id);
+					}
+				}
+
+				// Global navigation shortcuts
+				if (e.key === "Escape") {
+					e.preventDefault();
+					if (showReviewModal) {
+						setShowReviewModal(false);
+					} else if (showMobileNav) {
+						setShowMobileNav(false);
+					}
+				}
+			} catch (error) {
+				console.error("Keyboard navigation error:", error);
 			}
 		};
 
 		window.addEventListener("keydown", handleKeyDown);
 		return () => window.removeEventListener("keydown", handleKeyDown);
-	}, [showAllPhotos, business?.photos, business?.portfolioPhotos]);
+	}, [showAllPhotos, showScrollSpy, showReviewModal, showMobileNav, activeSection, business?.photos, business?.portfolioPhotos]);
 
-	// Handle scroll spy
+	// Enhanced header height calculation with error handling
 	useEffect(() => {
+		const calculateHeaderHeight = () => {
+			try {
+				const header = document.querySelector("header");
+				if (header) {
+					const totalHeight = header.offsetHeight;
+					const scrollSpyOffset = totalHeight + 16; // 16px gap
+
+					console.log("📏 Header height calculated:", {
+						totalHeight,
+						scrollSpyOffset,
+						showScrollSpy,
+						timestamp: new Date().toISOString(),
+					});
+
+					setHeaderHeight(totalHeight);
+					setScrollSpyError(null);
+				} else {
+					console.warn("Header element not found");
+					setScrollSpyError("Header not found");
+				}
+			} catch (error) {
+				console.error("Error calculating header height:", error);
+				setScrollSpyError("Failed to calculate header height");
+			}
+		};
+
+		// Debounced calculation with error handling
+		const debouncedCalculation = () => {
+			if (navigationTimeoutRef.current) {
+				clearTimeout(navigationTimeoutRef.current);
+			}
+			navigationTimeoutRef.current = setTimeout(calculateHeaderHeight, 100);
+		};
+
+		// Initial calculation
+		calculateHeaderHeight();
+
+		// Listen for resize events
+		window.addEventListener("resize", debouncedCalculation);
+
+		// Multiple checks to ensure proper positioning
+		const timers = [
+			setTimeout(calculateHeaderHeight, 100),
+			setTimeout(calculateHeaderHeight, 300),
+			setTimeout(calculateHeaderHeight, 500),
+			setTimeout(calculateHeaderHeight, 1000), // Extra check
+		];
+
+		return () => {
+			window.removeEventListener("resize", debouncedCalculation);
+			timers.forEach((timer) => clearTimeout(timer));
+			if (navigationTimeoutRef.current) {
+				clearTimeout(navigationTimeoutRef.current);
+			}
+		};
+	}, [showScrollSpy]);
+
+	// No longer needed since we're not scrolling the container
+
+	// Auto-scroll scroll spy to keep active section visible
+	useEffect(() => {
+		if (!scrollSpyContentRef.current || !scrollSpyContainerRef.current) return;
+
+		const activeIndex = navigationItems.findIndex((item) => item.id === activeSection);
+		if (activeIndex === -1) return;
+
+		const itemHeight = 48; // Approximate height of each item (p-2 + h-5 + spacing)
+		const activeItemPosition = activeIndex * itemHeight;
+		const containerHeight = scrollSpyContainerRef.current.clientHeight;
+		const buffer = 20; // Buffer space around active item
+
+		// Calculate if we need to scroll to keep active item visible
+		const currentScroll = scrollSpyScrollPosition;
+		const isAboveView = activeItemPosition < currentScroll + buffer;
+		const isBelowView = activeItemPosition + itemHeight > currentScroll + containerHeight - buffer;
+
+		if (isAboveView || isBelowView) {
+			// Center the active item in the container
+			const targetScroll = Math.max(0, activeItemPosition - containerHeight / 2 + itemHeight / 2);
+			const maxScroll = Math.max(0, scrollSpyContentRef.current.scrollHeight - containerHeight);
+			const newPosition = Math.min(targetScroll, maxScroll);
+
+			setScrollSpyScrollPosition(newPosition);
+			if (scrollSpyContentRef.current) {
+				scrollSpyContentRef.current.style.transform = `translateY(-${newPosition}px)`;
+			}
+		}
+	}, [activeSection, navigationItems]);
+
+	// Enhanced scroll spy with Intersection Observer
+	useEffect(() => {
+		let scrollTimeout;
+
 		const handleScroll = () => {
 			const scrollY = window.scrollY;
 			setShowScrollSpy(scrollY > 300);
+		};
 
-			// Update active section based on scroll position
+		// Throttled scroll handler for performance
+		const throttledScroll = () => {
+			if (scrollTimeout) return;
+			scrollTimeout = setTimeout(() => {
+				handleScroll();
+				scrollTimeout = null;
+			}, 16); // ~60fps
+		};
+
+		// Enhanced section detection with Intersection Observer
+		const createIntersectionObserver = () => {
+			try {
+				if (intersectionObserverRef.current) {
+					intersectionObserverRef.current.disconnect();
+				}
+
+				const options = {
+					root: null,
+					rootMargin: `${-headerHeight}px 0px -50% 0px`, // Account for header height
+					threshold: [0, 0.1, 0.25, 0.5, 0.75, 1.0],
+				};
+
+				intersectionObserverRef.current = new IntersectionObserver((entries) => {
+					try {
+						// Find the section with highest intersection ratio
+						let mostVisible = null;
+						let highestRatio = 0;
+
+						entries.forEach((entry) => {
+							const sectionId = entry.target.id;
+							if (entry.isIntersecting && entry.intersectionRatio > highestRatio) {
+								highestRatio = entry.intersectionRatio;
+								mostVisible = sectionId;
+							}
+						});
+
+						if (mostVisible && mostVisible !== activeSection) {
+							console.log(`🎯 Section changed: ${activeSection} -> ${mostVisible}`);
+							setActiveSection(mostVisible);
+						}
+					} catch (error) {
+						console.error("Intersection Observer error:", error);
+						setScrollSpyError("Section detection failed");
+					}
+				}, options);
+
+				// Observe all sections
+				Object.entries(sectionRefs).forEach(([sectionId, ref]) => {
+					if (ref.current) {
+						ref.current.id = sectionId; // Ensure ID is set
+						intersectionObserverRef.current.observe(ref.current);
+					}
+				});
+
+				setScrollSpyReady(true);
+			} catch (error) {
+				console.error("Failed to create Intersection Observer:", error);
+				setScrollSpyError("Failed to initialize scroll spy");
+				// Fallback to scroll detection
+				fallbackScrollDetection();
+			}
+		};
+
+		// Fallback scroll detection for older browsers
+		const fallbackScrollDetection = () => {
+			const detectionPoint = window.innerHeight * 0.25;
 			const sections = Object.keys(sectionRefs);
+
 			for (const section of sections) {
 				const ref = sectionRefs[section];
 				if (ref.current) {
 					const rect = ref.current.getBoundingClientRect();
-					if (rect.top <= 150 && rect.bottom > 150) {
-						setActiveSection(section);
+					if (rect.top <= detectionPoint && rect.bottom > detectionPoint) {
+						if (section !== activeSection) {
+							setActiveSection(section);
+						}
 						break;
 					}
 				}
 			}
 		};
 
-		window.addEventListener("scroll", handleScroll);
-		return () => window.removeEventListener("scroll", handleScroll);
-	}, []);
+		// Initialize
+		window.addEventListener("scroll", throttledScroll, { passive: true });
 
-	// Navigate to section
-	const scrollToSection = (sectionId) => {
-		const ref = sectionRefs[sectionId];
-		if (ref.current) {
-			const headerOffset = 100;
-			const elementPosition = ref.current.getBoundingClientRect().top;
-			const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+		// Delay observer creation to ensure sections are rendered
+		const initTimer = setTimeout(createIntersectionObserver, 1000);
 
-			window.scrollTo({
-				top: offsetPosition,
-				behavior: "smooth",
+		return () => {
+			window.removeEventListener("scroll", throttledScroll);
+			if (scrollTimeout) clearTimeout(scrollTimeout);
+			if (initTimer) clearTimeout(initTimer);
+			if (intersectionObserverRef.current) {
+				intersectionObserverRef.current.disconnect();
+			}
+		};
+	}, [headerHeight, activeSection]); // Dependencies for observer recreation
+
+	// Enhanced scroll spy navigation with error handling and features
+	const handleScrollSpyScroll = (direction) => {
+		try {
+			console.log(`🔄 Scroll spy navigation requested: ${direction}`, {
+				isNavigating,
+				activeSection,
+				navigationItemsLength: navigationItems.length,
+				canNavigateUp: canNavigateUp(),
+				canNavigateDown: canNavigateDown(),
 			});
+
+			if (isNavigating) {
+				console.log("Navigation in progress, ignoring request");
+				return;
+			}
+
+			const nextSection = getNextSection(direction);
+			if (!nextSection) {
+				console.warn(`No ${direction} section available`);
+				return;
+			}
+
+			if (nextSection.id === activeSection) {
+				console.log(`Already at ${direction === "up" ? "first" : "last"} section`);
+				return;
+			}
+
+			console.log(`🧭 Navigating ${direction}: ${activeSection} -> ${nextSection.id}`);
+			setIsNavigating(true);
+
+			// Add haptic feedback if available
+			if (navigator.vibrate) {
+				navigator.vibrate(50);
+			}
+
+			scrollToSection(nextSection.id);
+
+			// Reset navigation state after animation
+			setTimeout(() => {
+				setIsNavigating(false);
+			}, 800);
+		} catch (error) {
+			console.error("Navigation error:", error);
+			setScrollSpyError("Navigation failed");
+			setIsNavigating(false);
 		}
-		setShowMobileNav(false);
+	};
+
+	// Enhanced section navigation with validation and error handling
+	const scrollToSection = (sectionId, options = {}) => {
+		try {
+			// Validate section exists
+			if (!validateSection(sectionId)) {
+				console.warn(`Invalid section: ${sectionId}`);
+				setScrollSpyError(`Section "${sectionId}" not found`);
+				return false;
+			}
+
+			const ref = sectionRefs[sectionId];
+			const element = ref.current;
+
+			// Enhanced scroll behavior
+			const scrollOptions = {
+				behavior: options.smooth !== false ? "smooth" : "auto",
+				block: options.block || "start",
+				inline: "nearest",
+				...options,
+			};
+
+			console.log(`📍 Scrolling to section: ${sectionId}`, scrollOptions);
+
+			// Perform scroll
+			element.scrollIntoView(scrollOptions);
+
+			// Update active section immediately for responsive UI
+			if (sectionId !== activeSection) {
+				setActiveSection(sectionId);
+			}
+
+			// Close mobile nav
+			setShowMobileNav(false);
+
+			// Clear any existing error
+			setScrollSpyError(null);
+
+			return true;
+		} catch (error) {
+			console.error(`Failed to scroll to section ${sectionId}:`, error);
+			setScrollSpyError(`Failed to navigate to ${sectionId}`);
+			return false;
+		}
 	};
 
 	// Submit review
@@ -796,27 +1262,6 @@ export default function BizProfile({ params }) {
 		});
 		// Show success message or update reviews list
 	};
-
-	// Section navigation items
-	const navigationItems = [
-		{ id: "overview", label: "Overview", icon: Building },
-		{ id: "certification", label: "Get Certified", icon: Award },
-		{ id: "reviews", label: "Reviews", icon: Star },
-		{ id: "credentials", label: "Credentials", icon: Shield },
-		{ id: "availability", label: "Live Availability", icon: Zap },
-		{ id: "services", label: "Services & Showcase", icon: Settings },
-		{ id: "expertise", label: "Expertise & Team", icon: Target },
-		{ id: "pricing", label: "Pricing & Policies", icon: DollarSign },
-		{ id: "videoConsult", label: "Video Consult", icon: Video },
-		{ id: "emergencyServices", label: "Emergency Services", icon: Phone },
-		{ id: "information", label: "Business Info", icon: FileText },
-		{ id: "businessTransparency", label: "Business Operations", icon: Eye },
-		{ id: "recognition", label: "Recognition", icon: Award },
-		{ id: "warrantyTracker", label: "Warranty Tracker", icon: ClipboardCheck },
-		{ id: "faq", label: "FAQ & Support", icon: MessageCircle },
-		{ id: "careers", label: "Careers", icon: Users },
-		{ id: "partnerships", label: "Partnerships", icon: Handshake },
-	];
 
 	// Show loading state while business data is being generated
 	if (!business) {
@@ -1253,7 +1698,7 @@ export default function BizProfile({ params }) {
 						{/* Main Content Sections */}
 						<div className="space-y-20 sm:space-y-24 md:space-y-32 lg:space-y-40">
 							{/* 1. BUSINESS OVERVIEW SECTION - First Impression */}
-							<section ref={sectionRefs.overview}>
+							<section ref={sectionRefs.overview} className="scroll-mt-20 sm:scroll-mt-24 lg:scroll-mt-32">
 								<div className="mb-6 sm:mb-8 md:mb-12">
 									<h2 className="flex items-center mb-3 text-2xl font-bold sm:text-3xl md:text-4xl text-foreground">
 										<Building className="w-6 h-6 mr-3 sm:w-8 sm:h-8 sm:mr-4 text-primary" />
@@ -1292,7 +1737,7 @@ export default function BizProfile({ params }) {
 							</section>
 
 							{/* 2. GET THORBIS CERTIFIED SECTION - Trust Building */}
-							<section ref={sectionRefs.certification}>
+							<section ref={sectionRefs.certification} className="scroll-mt-20 sm:scroll-mt-24 lg:scroll-mt-32">
 								<div className="mb-6 sm:mb-8 md:mb-12">
 									<h2 className="flex items-center mb-3 text-2xl font-bold sm:text-3xl md:text-4xl text-foreground">
 										<Award className="w-6 h-6 mr-3 sm:w-8 sm:h-8 sm:mr-4 text-primary" />
@@ -1426,7 +1871,7 @@ export default function BizProfile({ params }) {
 							</section>
 
 							{/* 3. REVIEWS & NEIGHBORHOOD INSIGHTS SECTION - Social Proof */}
-							<section ref={sectionRefs.reviews}>
+							<section ref={sectionRefs.reviews} className="scroll-mt-20 sm:scroll-mt-24 lg:scroll-mt-32">
 								<div className="mb-8 sm:mb-12">
 									<h2 className="flex items-center mb-3 text-2xl font-bold sm:text-3xl md:text-4xl text-foreground">
 										<Star className="w-6 h-6 mr-3 sm:w-8 sm:h-8 sm:mr-4 text-primary" />
@@ -1706,7 +2151,7 @@ export default function BizProfile({ params }) {
 							</section>
 
 							{/* 4. CREDENTIALS & LICENSING SECTION - Trust Building */}
-							<section ref={sectionRefs.credentials}>
+							<section ref={sectionRefs.credentials} className="scroll-mt-20 sm:scroll-mt-24 lg:scroll-mt-32">
 								<div className="mb-6 sm:mb-8 md:mb-12">
 									<h2 className="flex items-center mb-3 text-2xl font-bold sm:text-3xl md:text-4xl text-foreground">
 										<Shield className="w-6 h-6 mr-3 sm:w-8 sm:h-8 sm:mr-4 text-primary" />
@@ -1750,7 +2195,7 @@ export default function BizProfile({ params }) {
 							</section>
 
 							{/* 4. ⚡ LIVE AVAILABILITY & BOOKING SECTION - Immediate Action */}
-							<section ref={sectionRefs.availability}>
+							<section ref={sectionRefs.availability} className="scroll-mt-20 sm:scroll-mt-24 lg:scroll-mt-32">
 								<div className="mb-6 sm:mb-8 md:mb-12">
 									<h2 className="flex items-center mb-3 text-2xl font-bold sm:text-3xl md:text-4xl text-foreground">
 										<Zap className="w-6 h-6 mr-3 sm:w-8 sm:h-8 sm:mr-4 text-primary" />⚡ Live Availability & Booking
@@ -1858,7 +2303,7 @@ export default function BizProfile({ params }) {
 							</section>
 
 							{/* 5. SERVICES & WORK SHOWCASE SECTION - What They Offer & Proof */}
-							<section ref={sectionRefs.services}>
+							<section ref={sectionRefs.services} className="scroll-mt-20 sm:scroll-mt-24 lg:scroll-mt-32">
 								<div className="mb-8">
 									<h2 className="flex items-center mb-2 text-2xl font-bold text-foreground">
 										<Zap className="w-6 h-6 mr-3 text-primary" />
@@ -1986,7 +2431,7 @@ export default function BizProfile({ params }) {
 							</section>
 
 							{/* 6. EXPERTISE & PROFESSIONAL DETAILS SECTION - Deep Dive Capabilities */}
-							<section ref={sectionRefs.expertise}>
+							<section ref={sectionRefs.expertise} className="scroll-mt-20 sm:scroll-mt-24 lg:scroll-mt-32">
 								<div className="mb-8">
 									<h2 className="flex items-center mb-2 text-2xl font-bold text-foreground">
 										<Target className="w-6 h-6 mr-3 text-primary" />
@@ -2099,7 +2544,7 @@ export default function BizProfile({ params }) {
 							</section>
 
 							{/* 7. PRICING & POLICIES SECTION - Practical Considerations */}
-							<section ref={sectionRefs.pricing}>
+							<section ref={sectionRefs.pricing} className="scroll-mt-20 sm:scroll-mt-24 lg:scroll-mt-32">
 								<div className="mb-8">
 									<h2 className="flex items-center mb-2 text-2xl font-bold text-foreground">
 										<DollarSign className="w-6 h-6 mr-3 text-primary" />
@@ -2283,7 +2728,7 @@ export default function BizProfile({ params }) {
 							</section>
 
 							{/* 8. 📹 VIDEO CONSULT SECTION - Modern Convenience */}
-							<section ref={sectionRefs.videoConsult}>
+							<section ref={sectionRefs.videoConsult} className="scroll-mt-20 sm:scroll-mt-24 lg:scroll-mt-32">
 								<div className="mb-8">
 									<h2 className="flex items-center mb-2 text-2xl font-bold text-foreground">
 										<Video className="w-6 h-6 mr-3 text-primary" />
@@ -2348,7 +2793,7 @@ export default function BizProfile({ params }) {
 							</section>
 
 							{/* 9. 🚨 EMERGENCY SERVICES SECTION - Immediate Help */}
-							<section ref={sectionRefs.emergencyServices}>
+							<section ref={sectionRefs.emergencyServices} className="scroll-mt-20 sm:scroll-mt-24 lg:scroll-mt-32">
 								<div className="mb-8">
 									<h2 className="flex items-center mb-2 text-2xl font-bold text-foreground">
 										<Phone className="w-6 h-6 mr-3 text-primary" />
@@ -2411,7 +2856,7 @@ export default function BizProfile({ params }) {
 							</section>
 
 							{/* 10. 👁️ BUSINESS OPERATIONS SECTION - Transparency */}
-							<section ref={sectionRefs.businessTransparency}>
+							<section ref={sectionRefs.businessTransparency} className="scroll-mt-20 sm:scroll-mt-24 lg:scroll-mt-32">
 								<div className="mb-8">
 									<h2 className="flex items-center mb-2 text-2xl font-bold text-foreground">
 										<Eye className="w-6 h-6 mr-3 text-primary" />
@@ -2504,7 +2949,7 @@ export default function BizProfile({ params }) {
 							</section>
 
 							{/* 11. BUSINESS INFORMATION SECTION - Basic Details */}
-							<section ref={sectionRefs.information}>
+							<section ref={sectionRefs.information} className="scroll-mt-20 sm:scroll-mt-24 lg:scroll-mt-32">
 								<div className="mb-8">
 									<h2 className="flex items-center mb-2 text-2xl font-bold text-foreground">
 										<Building className="w-6 h-6 mr-3 text-primary" />
@@ -2579,7 +3024,7 @@ export default function BizProfile({ params }) {
 							</section>
 
 							{/* 12. RECOGNITION & COMMUNITY SECTION - Awards & Involvement */}
-							<section ref={sectionRefs.recognition}>
+							<section ref={sectionRefs.recognition} className="scroll-mt-20 sm:scroll-mt-24 lg:scroll-mt-32">
 								<div className="mb-8">
 									<h2 className="flex items-center mb-2 text-2xl font-bold text-foreground">
 										<Award className="w-6 h-6 mr-3 text-primary" />
@@ -2612,7 +3057,7 @@ export default function BizProfile({ params }) {
 							</section>
 
 							{/* 13. 🛡️ WARRANTY TRACKER SECTION - Long-term Value */}
-							<section ref={sectionRefs.warrantyTracker}>
+							<section ref={sectionRefs.warrantyTracker} className="scroll-mt-20 sm:scroll-mt-24 lg:scroll-mt-32">
 								<div className="mb-8">
 									<h2 className="flex items-center mb-2 text-2xl font-bold text-foreground">
 										<Shield className="w-6 h-6 mr-3 text-primary" />
@@ -2642,17 +3087,6 @@ export default function BizProfile({ params }) {
 														</Badge>
 													</div>
 
-													{/* Progress Bar */}
-													<div className="mb-3">
-														<div className="flex justify-between mb-1 text-sm">
-															<span className="text-muted-foreground">Coverage Progress</span>
-															<span className="text-foreground">Until {warranty.endDate}</span>
-														</div>
-														<div className="w-full h-2 bg-gray-200 rounded-full">
-															<div className="h-2 transition-all duration-300 bg-purple-500 rounded-full" style={{ width: "75%" }} />
-														</div>
-													</div>
-
 													<div className="text-sm">
 														<p className="text-muted-foreground">{warranty.coverageDetails}</p>
 													</div>
@@ -2669,7 +3103,7 @@ export default function BizProfile({ params }) {
 							</section>
 
 							{/* 14. FAQ & SUPPORT SECTION - Address Concerns */}
-							<section ref={sectionRefs.faq}>
+							<section ref={sectionRefs.faq} className="scroll-mt-20 sm:scroll-mt-24 lg:scroll-mt-32">
 								<div className="mb-8">
 									<h2 className="flex items-center mb-2 text-2xl font-bold text-foreground">
 										<MessageCircle className="w-6 h-6 mr-3 text-primary" />
@@ -2743,7 +3177,7 @@ export default function BizProfile({ params }) {
 							</section>
 
 							{/* 15. 💼 CAREERS SECTION - Secondary Interest */}
-							<section ref={sectionRefs.careers}>
+							<section ref={sectionRefs.careers} className="scroll-mt-20 sm:scroll-mt-24 lg:scroll-mt-32">
 								<div className="mb-8">
 									<h2 className="flex items-center mb-2 text-2xl font-bold text-foreground">
 										<Users className="w-6 h-6 mr-3 text-primary" />
@@ -2867,7 +3301,7 @@ export default function BizProfile({ params }) {
 							</section>
 
 							{/* 16. 🤝 PARTNERSHIPS SECTION - Least Immediate Relevance */}
-							<section ref={sectionRefs.partnerships}>
+							<section ref={sectionRefs.partnerships} className="scroll-mt-20 sm:scroll-mt-24 lg:scroll-mt-32">
 								<div className="mb-8">
 									<h2 className="flex items-center mb-2 text-2xl font-bold text-foreground">
 										<Building className="w-6 h-6 mr-3 text-primary" />
@@ -3034,49 +3468,95 @@ export default function BizProfile({ params }) {
 				</div>
 			)}
 
-			{/* Floating Scroll Spy Navigation - Desktop Only */}
+			{/* Enhanced Floating Scroll Spy Navigation - Desktop Only */}
 			{showScrollSpy && (
-				<div className="fixed z-30 hidden ease-out -translate-y-1/2 lg:block left-6 top-1/2 animate-in slide-in-from-left-4 fade-in-0 duration-400">
-					<div className="p-2 border shadow-lg bg-card/90 backdrop-blur-md border-border rounded-xl">
-						<div className="space-y-1">
-							{navigationItems.map((item, index) => {
-								const Icon = item.icon;
-								const isActive = activeSection === item.id;
-								const isCertification = item.id === "certification";
-								return (
-									<button
-										key={item.id}
-										onClick={() => scrollToSection(item.id)}
-										className={`group relative flex items-center p-2 rounded-lg transition-all duration-200 hover:scale-105 active:scale-95 animate-in slide-in-from-left-2 fade-in-0 ${
-											isCertification
-												? isActive
-													? "bg-gradient-to-r from-blue-600 to-green-600 text-white shadow-lg shadow-blue-500/25"
-													: "bg-gradient-to-r from-blue-50 to-green-50 dark:from-blue-950/30 dark:to-green-950/30 text-blue-600 hover:from-blue-100 hover:to-green-100 dark:hover:from-blue-900/40 dark:hover:to-green-900/40 border border-blue-200/50 shadow-md"
-												: isActive
-												? "bg-primary text-primary-foreground shadow-md"
-												: "text-muted-foreground hover:text-foreground hover:bg-muted"
-										}`}
-										style={{ animationDelay: `${index * 50 + 200}ms`, animationDuration: "300ms" }}
-										title={item.label}
-									>
-										<Icon className={`w-5 h-5 transition-transform duration-200 ${isCertification ? "animate-pulse" : ""}`} />
+				<div
+					className="fixed z-30 hidden lg:block left-6 ease-out animate-in slide-in-from-left-4 fade-in-0 duration-400"
+					style={{
+						top: `${headerHeight + 16}px`,
+						bottom: "2em",
+					}}
+				>
+					<div className="flex flex-col border shadow-lg bg-card/90 backdrop-blur-md border-border rounded-xl overflow-visible w-20">
+						{/* Error State */}
+						{scrollSpyError && <div className="p-2 text-xs text-red-500 bg-red-50 dark:bg-red-950/30 border-b border-red-200 dark:border-red-800">⚠️ {scrollSpyError}</div>}
 
-										{/* Enhanced Tooltip for Certification */}
-										<div className={`absolute left-full ml-3 px-3 py-2 bg-popover text-popover-foreground text-sm rounded-md shadow-lg whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-all duration-200 scale-95 group-hover:scale-100 z-50 ${isCertification ? "bg-gradient-to-r from-blue-600 to-green-600 text-white border border-blue-500/50 shadow-xl" : isActive ? "opacity-100" : ""}`}>
-											{isCertification ? (
-												<div className="flex items-center space-x-2">
-													<Award className="w-4 h-4" />
-													<span className="font-semibold">{item.label}</span>
-													<div className="px-2 py-0.5 bg-white/20 rounded text-xs">NEW</div>
-												</div>
-											) : (
-												item.label
-											)}
-										</div>
-									</button>
-								);
-							})}
+						{/* Previous Section Arrow */}
+						{navigationItems.length > 1 && (
+							<Button variant="ghost" size="sm" onClick={() => handleScrollSpyScroll("up")} className={`group relative flex-shrink-0 h-10 px-3 border-b border-border rounded-none transition-all duration-200 flex items-center justify-center ${!canNavigateUp() || isNavigating ? "opacity-40 cursor-not-allowed bg-muted/20" : "opacity-100 hover:bg-primary/10 hover:text-primary active:bg-primary/20"}`} disabled={!canNavigateUp() || isNavigating} title="Previous section">
+								<ChevronUp className={`w-4 h-4 transition-transform duration-200 ${isNavigating ? "animate-pulse" : "group-hover:scale-110"}`} />
+							</Button>
+						)}
+
+						{/* Navigation Items Container */}
+						<div
+							ref={scrollSpyContainerRef}
+							className="relative overflow-hidden"
+							style={{
+								maxHeight: `min(400px, calc(100vh - ${headerHeight + 120}px))`,
+								minHeight: "200px",
+							}}
+						>
+							<div ref={scrollSpyContentRef} className="p-2 space-y-1 transition-transform duration-200 ease-out cursor-grab active:cursor-grabbing" style={{ transform: `translateY(-${scrollSpyScrollPosition}px)` }} onMouseDown={handleMouseDown} onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
+								{navigationItems.map((item, index) => {
+									const Icon = item.icon;
+									const isActive = activeSection === item.id;
+									const isCertification = item.id === "certification";
+
+									return (
+										<button
+											key={item.id}
+											onClick={() => scrollToSection(item.id)}
+											onKeyDown={(e) => {
+												if (e.key === "Enter" || e.key === " ") {
+													e.preventDefault();
+													scrollToSection(item.id);
+												}
+											}}
+											className={`group relative flex items-center justify-center p-2 rounded-lg transition-all duration-200 hover:scale-105 active:scale-95 w-10 h-10 animate-in slide-in-from-left-2 fade-in-0 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
+												isCertification
+													? isActive
+														? "bg-gradient-to-r from-blue-600 to-green-600 text-white shadow-lg shadow-blue-500/25"
+														: "bg-gradient-to-r from-blue-50 to-green-50 dark:from-blue-950/30 dark:to-green-950/30 text-blue-600 hover:from-blue-100 hover:to-green-100 dark:hover:from-blue-900/40 dark:hover:to-green-900/40 border border-blue-200/50 shadow-md"
+													: isActive
+													? "bg-primary text-primary-foreground shadow-md ring-2 ring-primary/20"
+													: "text-muted-foreground hover:text-foreground hover:bg-muted"
+											} ${isNavigating ? "pointer-events-none opacity-75" : ""}`}
+											style={{ animationDelay: `${index * 50 + 200}ms`, animationDuration: "300ms" }}
+											title={item.label}
+											aria-label={`Navigate to ${item.label} section`}
+											aria-current={isActive ? "page" : undefined}
+											disabled={isNavigating}
+										>
+											<Icon className={`w-5 h-5 transition-transform duration-200 ${isCertification ? "animate-pulse" : ""} ${isActive ? "scale-110" : "group-hover:scale-105"}`} />
+
+											{/* Enhanced Tooltip */}
+											<div className={`absolute left-full ml-3 px-3 py-2 bg-popover text-popover-foreground text-sm rounded-md shadow-lg whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-all duration-200 scale-95 group-hover:scale-100 z-50 ${isCertification ? "bg-gradient-to-r from-blue-600 to-green-600 text-white border border-blue-500/50 shadow-xl" : isActive ? "bg-primary text-primary-foreground border border-primary/20" : ""}`}>
+												{isCertification ? (
+													<div className="flex items-center space-x-2">
+														<Award className="w-4 h-4" />
+														<span className="font-semibold">{item.label}</span>
+														<div className="px-2 py-0.5 bg-white/20 rounded text-xs">NEW</div>
+													</div>
+												) : (
+													<div className="flex items-center space-x-2">
+														<span>{item.label}</span>
+														{isActive && <span className="text-xs opacity-75">(Current)</span>}
+													</div>
+												)}
+											</div>
+										</button>
+									);
+								})}
+							</div>
 						</div>
+
+						{/* Next Section Arrow */}
+						{navigationItems.length > 1 && (
+							<Button variant="ghost" size="sm" onClick={() => handleScrollSpyScroll("down")} className={`group relative flex-shrink-0 h-10 px-3 border-t border-border rounded-none transition-all duration-200 flex items-center justify-center ${!canNavigateDown() || isNavigating ? "opacity-40 cursor-not-allowed bg-muted/20" : "opacity-100 hover:bg-primary/10 hover:text-primary active:bg-primary/20"}`} disabled={!canNavigateDown() || isNavigating} title="Next section">
+								<ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isNavigating ? "animate-pulse" : "group-hover:scale-110"}`} />
+							</Button>
+						)}
 					</div>
 				</div>
 			)}
