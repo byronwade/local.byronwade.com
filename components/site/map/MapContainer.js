@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 import { Button } from "@components/ui/button";
 import { Badge } from "@components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@components/ui/tooltip";
-import { Compass, Minus, Plus, MapPin, Navigation, Layers, Filter, Search, Target, Maximize, RotateCcw, Zap } from "lucide-react";
+import { Compass, Minus, Plus, MapPin, Navigation, Layers, Filter, Search, Target, Maximize, RotateCcw, Zap, Move, Shield, Eye, Users, Star } from "lucide-react";
 import BusinessInfoPanel from "@components/site/map/BusinessInfoPanel";
 import FullScreenMapSkeleton from "@components/site/map/FullScreenMapSkeleton";
 import useMapStore from "@store/useMapStore";
@@ -38,6 +38,9 @@ const MapContainer = React.forwardRef((props, ref) => {
 	const { searchQuery } = useSearchStore();
 	const { fetchInitialBusinesses, fetchFilteredBusinesses, initializeWithMockData, initialLoad, activeBusinessId, setActiveBusinessId, filteredBusinesses, loading } = useBusinessStore();
 	const initialFetchDone = useRef(false);
+
+	// Check if business details panel is open
+	const isBusinessDetailsOpen = Boolean(activeBusinessId);
 
 	const mapStyles = [
 		{ name: "Default", value: "mapbox://styles/byronwade/clywtphyo006d01r7ep5s0h8a" },
@@ -228,7 +231,7 @@ const MapContainer = React.forwardRef((props, ref) => {
 	}, []);
 
 	return (
-		<div className="relative w-full h-full overflow-hidden" ref={containerRef}>
+		<div className="map-container relative w-full h-full overflow-hidden" ref={containerRef}>
 			<Suspense fallback={<FullScreenMapSkeleton />}>
 				<Map
 					ref={mapRef}
@@ -240,7 +243,12 @@ const MapContainer = React.forwardRef((props, ref) => {
 					onLoad={handleMapLoad}
 					interactiveLayerIds={[]}
 					cursor="default"
-					style={{ width: "100%", height: "100%" }}
+					style={{
+						width: "100%",
+						height: "100%",
+						marginLeft: isBusinessDetailsOpen ? "384px" : "0",
+						transition: "margin-left 300ms ease-in-out",
+					}}
 					{...mapSettings}
 					// Performance optimizations
 					reuseMaps={true}
@@ -261,157 +269,29 @@ const MapContainer = React.forwardRef((props, ref) => {
 
 			<BusinessInfoPanel />
 
-			{/* Custom Controls */}
-			<div className="absolute top-4 left-4 z-10">
+			{/* Simple Search Button */}
+			<div className="absolute top-4 right-4 z-20">
+				<Button onClick={handleSearchInArea} disabled={isSearching} className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg px-4 py-2 text-sm rounded-lg">
+					<Search className="w-4 h-4 mr-2" />
+					{isSearching ? "Searching..." : "Search this area"}
+				</Button>
+			</div>
+
+			{/* Simple Map Controls */}
+			<div className="absolute bottom-6 right-6 z-10">
 				<div className="flex flex-col gap-2">
-					{/* Search Status */}
-					{isSearching && (
-						<div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg px-3 py-2 flex items-center gap-2">
-							<div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
-							<span className="text-sm font-medium">Searching...</span>
-						</div>
-					)}
-
-					{/* Results Count */}
-					{filteredBusinesses.length > 0 && (
-						<div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg px-3 py-2">
-							<span className="text-sm font-medium">
-								{filteredBusinesses.length} business{filteredBusinesses.length !== 1 ? "es" : ""} found
-							</span>
-						</div>
-					)}
-				</div>
-			</div>
-
-			{/* Map Style Selector */}
-			<div className="absolute top-4 right-20 z-10">
-				<div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-2">
-					<div className="flex flex-wrap gap-1">
-						{mapStyles.map((style) => (
-							<Button key={style.value} size="sm" variant={mapStyle === style.value ? "default" : "ghost"} onClick={() => setMapStyle(style.value)} className="text-xs">
-								{style.name}
+					{/* Basic Zoom and Location Controls */}
+					<div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200/50 dark:border-gray-700/50 p-2">
+						<div className="flex gap-1">
+							<Button variant="ghost" size="sm" onClick={() => mapRef.current?.zoomIn()} className="h-8 w-8 p-0">
+								<Plus className="w-4 h-4" />
 							</Button>
-						))}
-					</div>
-				</div>
-			</div>
-
-			{/* Advanced Controls */}
-			<div className="absolute bottom-4 right-4 z-10">
-				<TooltipProvider>
-					<div className="flex flex-col gap-2">
-						{/* Search in Area */}
-						<Tooltip>
-							<TooltipTrigger asChild>
-								<Button onClick={handleSearchInArea} disabled={isSearching} className="shadow-lg">
-									<Search className="w-4 h-4 mr-2" />
-									Search this area
-								</Button>
-							</TooltipTrigger>
-							<TooltipContent>
-								<p>Search for businesses in the current map area</p>
-							</TooltipContent>
-						</Tooltip>
-
-						{/* Control Buttons */}
-						<div className="flex flex-col gap-1">
-							<Tooltip>
-								<TooltipTrigger asChild>
-									<Button variant="secondary" size="icon" onClick={() => mapRef.current?.zoomIn()}>
-										<Plus className="w-4 h-4" />
-									</Button>
-								</TooltipTrigger>
-								<TooltipContent>
-									<p>Zoom in</p>
-								</TooltipContent>
-							</Tooltip>
-
-							<Tooltip>
-								<TooltipTrigger asChild>
-									<Button variant="secondary" size="icon" onClick={() => mapRef.current?.zoomOut()}>
-										<Minus className="w-4 h-4" />
-									</Button>
-								</TooltipTrigger>
-								<TooltipContent>
-									<p>Zoom out</p>
-								</TooltipContent>
-							</Tooltip>
-
-							<Tooltip>
-								<TooltipTrigger asChild>
-									<Button variant="secondary" size="icon" onClick={handleMyLocation}>
-										<Target className="w-4 h-4" />
-									</Button>
-								</TooltipTrigger>
-								<TooltipContent>
-									<p>Go to my location</p>
-								</TooltipContent>
-							</Tooltip>
-
-							<Tooltip>
-								<TooltipTrigger asChild>
-									<Button variant="secondary" size="icon" onClick={handleToggle3D}>
-										<Zap className="w-4 h-4" />
-									</Button>
-								</TooltipTrigger>
-								<TooltipContent>
-									<p>Toggle 3D view</p>
-								</TooltipContent>
-							</Tooltip>
-
-							<Tooltip>
-								<TooltipTrigger asChild>
-									<Button variant="secondary" size="icon" onClick={handleResetView}>
-										<RotateCcw className="w-4 h-4" />
-									</Button>
-								</TooltipTrigger>
-								<TooltipContent>
-									<p>Reset view</p>
-								</TooltipContent>
-							</Tooltip>
-
-							<Tooltip>
-								<TooltipTrigger asChild>
-									<Button
-										variant="secondary"
-										size="icon"
-										onClick={() => {
-											const center = mapRef.current?.getCenter();
-											if (center) {
-												mapRef.current?.flyTo({
-													center: [center.lng, center.lat],
-													bearing: 0,
-												});
-											}
-										}}
-									>
-										<Compass className="w-4 h-4" />
-									</Button>
-								</TooltipTrigger>
-								<TooltipContent>
-									<p>Reset compass</p>
-								</TooltipContent>
-							</Tooltip>
-						</div>
-					</div>
-				</TooltipProvider>
-			</div>
-
-			{/* Quick Stats */}
-			<div className="absolute bottom-4 left-4 z-10">
-				<div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-3">
-					<div className="flex items-center gap-4 text-sm">
-						<div className="flex items-center gap-1">
-							<div className="w-2 h-2 bg-green-500 rounded-full"></div>
-							<span>{filteredBusinesses.filter((b) => b.isOpenNow).length} Open</span>
-						</div>
-						<div className="flex items-center gap-1">
-							<div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
-							<span>{filteredBusinesses.filter((b) => b.isSponsored).length} Sponsored</span>
-						</div>
-						<div className="flex items-center gap-1">
-							<div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-							<span>{filteredBusinesses.filter((b) => b.ratings?.overall >= 4.5).length} Top Rated</span>
+							<Button variant="ghost" size="sm" onClick={() => mapRef.current?.zoomOut()} className="h-8 w-8 p-0">
+								<Minus className="w-4 h-4" />
+							</Button>
+							<Button variant="ghost" size="sm" onClick={handleMyLocation} className="h-8 w-8 p-0">
+								<Target className="w-4 h-4" />
+							</Button>
 						</div>
 					</div>
 				</div>

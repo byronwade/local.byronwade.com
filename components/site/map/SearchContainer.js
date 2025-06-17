@@ -19,6 +19,7 @@ import FullScreenMapSkeleton from "@components/site/map/FullScreenMapSkeleton";
 import LiveActivityFeed from "@components/site/map/LiveActivityFeed";
 import CompactSearchBox from "@components/shared/searchBox/CompactSearchBox";
 import AIChatDrawer from "@components/shared/ai/AIChatDrawer";
+import AISidebarChat from "@components/site/map/AISidebarChat";
 import { useSearchParams } from "next/navigation";
 
 const MapContainer = dynamic(() => import("@components/site/map/MapContainer"), {
@@ -28,7 +29,7 @@ const MapContainer = dynamic(() => import("@components/site/map/MapContainer"), 
 
 const SearchContainer = () => {
 	const searchParams = useSearchParams();
-	const { filteredBusinesses, activeBusinessId, initializeWithMockData, loading, searchBusinesses } = useBusinessStore();
+	const { filteredBusinesses, activeBusinessId, selectedBusiness, setSelectedBusiness, clearSelectedBusiness, initializeWithMockData, loading, searchBusinesses } = useBusinessStore();
 	const { searchQuery, searchLocation } = useSearchStore();
 	const [isLoading, setIsLoading] = useState(true);
 	const [viewMode, setViewMode] = useState("list"); // 'list' or 'grid'
@@ -37,8 +38,8 @@ const SearchContainer = () => {
 	const [panelSize, setPanelSize] = useState(25);
 	const [showActivityFeed, setShowActivityFeed] = useState(false);
 	const activeCardRef = useRef(null);
-	const [selectedBusiness, setSelectedBusiness] = useState(null);
 	const [isAIOpen, setIsAIOpen] = useState(false);
+	const [isAISidebarOpen, setIsAISidebarOpen] = useState(false);
 	const [showSort, setShowSort] = useState(false);
 
 	useEffect(() => {
@@ -91,11 +92,20 @@ const SearchContainer = () => {
 	};
 
 	const handleBusinessClose = () => {
-		setSelectedBusiness(null);
+		clearSelectedBusiness();
 	};
 
 	const handleAIClick = () => {
-		setIsAIOpen(true);
+		setIsAISidebarOpen(true);
+	};
+
+	const handleAIClose = () => {
+		setIsAISidebarOpen(false);
+		// Clear any highlighted businesses when closing AI chat
+		const { setHighlightedBusinesses } = useBusinessStore.getState();
+		if (setHighlightedBusinesses) {
+			setHighlightedBusinesses([]);
+		}
 	};
 
 	const handleFilterClick = () => {
@@ -111,25 +121,25 @@ const SearchContainer = () => {
 	};
 
 	return (
-		<div className="h-screen w-full flex flex-col bg-gray-50 dark:bg-gray-900 overflow-hidden">
+		<div className="h-screen w-full flex flex-col bg-background overflow-hidden">
 			{/* Compact Search Header */}
 			<div className="flex-shrink-0">
-				<CompactSearchBox onAIClick={handleAIClick} onFilterClick={handleFilterClick} onSortClick={handleSortClick} />
+				<CompactSearchBox onAIClick={handleAIClick} onFilterClick={handleFilterClick} onSortClick={handleSortClick} isAIActive={isAISidebarOpen} />
 			</div>
 
 			{/* Main Content Area */}
 			<div className="flex-1 min-h-0 relative">
-				<ResizablePanelGroup direction="horizontal" className="h-full">
-					{/* Sidebar Panel */}
-					<ResizablePanel defaultSize={25} minSize={20} maxSize={40}>
-						<div className="h-full bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-hidden">
-							{selectedBusiness ? (
-								<BusinessInfoPanel business={selectedBusiness} onClose={handleBusinessClose} />
-							) : (
-								<div className="h-full flex flex-col">
-									<BusinessCardList businesses={filteredBusinesses} loading={loading} onBusinessSelect={handleBusinessSelect} />
-								</div>
-							)}
+				<ResizablePanelGroup direction="horizontal" className="h-full" onLayout={handlePanelResize}>
+					{/* Sidebar Panel - Dynamic sizing based on content */}
+					<ResizablePanel defaultSize={selectedBusiness ? 30 : 22} minSize={selectedBusiness ? 25 : 18} maxSize={selectedBusiness ? 45 : 35}>
+						<div className="h-full bg-card border-r border-border overflow-hidden relative">
+							{/* Business List - Default View */}
+							<div className={`absolute inset-0 transition-all duration-500 ease-in-out ${!isAISidebarOpen ? "transform translate-x-0 opacity-100 z-10" : "transform -translate-x-full opacity-0 z-0"}`}>
+								<BusinessCardList businesses={filteredBusinesses} loading={loading} onBusinessSelect={handleBusinessSelect} activeBusinessId={activeBusinessId} activeCardRef={activeCardRef} />
+							</div>
+
+							{/* AI Chat Sidebar */}
+							<div className={`absolute inset-0 transition-all duration-500 ease-in-out ${isAISidebarOpen ? "transform translate-x-0 opacity-100 z-10" : "transform translate-x-full opacity-0 z-0"}`}>{isAISidebarOpen && <AISidebarChat isOpen={isAISidebarOpen} onClose={handleAIClose} />}</div>
 						</div>
 					</ResizablePanel>
 
@@ -137,7 +147,7 @@ const SearchContainer = () => {
 					<ResizableHandle withHandle />
 
 					{/* Map Panel */}
-					<ResizablePanel defaultSize={75}>
+					<ResizablePanel defaultSize={selectedBusiness ? 70 : 78}>
 						<div className="h-full w-full relative overflow-hidden">
 							<MapContainer businesses={filteredBusinesses} selectedBusiness={selectedBusiness} onBusinessSelect={handleBusinessSelect} />
 						</div>
@@ -151,9 +161,9 @@ const SearchContainer = () => {
 			{/* Loading Overlay */}
 			{loading && (
 				<div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 flex items-center justify-center">
-					<div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-2xl flex items-center gap-3">
+					<div className="bg-card rounded-lg p-6 shadow-2xl flex items-center gap-3 border border-border">
 						<div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
-						<span className="text-sm font-medium">Loading businesses...</span>
+						<span className="text-sm font-medium text-card-foreground">Loading businesses...</span>
 					</div>
 				</div>
 			)}

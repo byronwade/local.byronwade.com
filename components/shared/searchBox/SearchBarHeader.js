@@ -90,12 +90,12 @@ const SearchBarOnly = () => {
 				</div>
 			</Button> */}
 
-			<form className="relative z-10 flex flex-col w-full h-full min-w-0 p-2 ml-6 bg-white border border-gray-300 rounded-md dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-primary focus:border-primary dark:focus:border-primary dark:focus-within:border-primary" onSubmit={handleFormSubmit}>
+			<form className="relative z-10 flex flex-col w-full h-full min-w-0 p-2 ml-6 bg-background border border-border rounded-md focus-within:border-primary focus:border-primary" onSubmit={handleFormSubmit}>
 				<div className="relative flex items-center justify-between w-full align-center">
 					<div className="flex items-center justify-center flex-1">
 						<div className="relative w-full">
 							<input
-								className={`!bg-transparent w-full min-h-[1.5rem] resize-none !border-0 text-sm leading-relaxed shadow-none !outline-none !ring-0 [scroll-padding-block:0.75rem] disabled:bg-transparent disabled:opacity-80 pl-1 ${!errors.searchQuery ? "" : "text-red-500 placeholder:text-red-500"}`}
+								className={`!bg-transparent w-full min-h-[1.5rem] resize-none !border-0 text-sm leading-relaxed shadow-none !outline-none !ring-0 [scroll-padding-block:0.75rem] disabled:bg-transparent disabled:opacity-80 pl-1 text-foreground placeholder:text-muted-foreground ${!errors.searchQuery ? "" : "text-destructive placeholder:text-destructive"}`}
 								id="search-input"
 								placeholder="Search for a business"
 								rows="1"
@@ -106,11 +106,17 @@ const SearchBarOnly = () => {
 								autoComplete="off"
 								onFocus={() => setAutocompleteOpen(true)}
 							/>
-							{errors.searchQuery && touched.searchQuery && <p className="text-sm text-red-500">{errors.searchQuery}</p>}
+							{errors.searchQuery && touched.searchQuery && <p className="text-sm text-destructive">{errors.searchQuery}</p>}
 						</div>
 					</div>
 					<div className="relative flex items-center space-x-2">
-						<Button size="icon" variant="outline" className={`${isFormValid ? "bg-primary !border-primary-dark" : ""} flex items-center justify-center h-6 gap-2 px-2 py-2 text-sm font-medium transition-colors rounded-md select-none ring-offset-background focus-visible:ring-offset-2 shrink-0 whitespace-nowrap focus-visible:outline-none focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 sm:px-3`} type="submit" disabled={!isFormValid || loading}>
+						<Button
+							size="icon"
+							variant="outline"
+							className={`${isFormValid ? "bg-primary border-primary text-primary-foreground hover:bg-primary/90" : "border-border text-muted-foreground"} flex items-center justify-center h-6 gap-2 px-2 py-2 text-sm font-medium transition-colors rounded-md select-none ring-offset-background focus-visible:ring-offset-2 shrink-0 whitespace-nowrap focus-visible:outline-none focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 sm:px-3`}
+							type="submit"
+							disabled={!isFormValid || loading}
+						>
 							{loading ? <Loader2 className="w-4 h-4 animate-spin" /> : isFormValid ? <ArrowRight className="w-4 h-4" /> : <Search className="w-4 h-4" />}
 						</Button>
 					</div>

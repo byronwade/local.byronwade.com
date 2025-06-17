@@ -1,86 +1,45 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Button } from "@components/ui/button";
 import { Badge } from "@components/ui/badge";
 import { ScrollArea } from "@components/ui/scroll-area";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
-import { X, ChevronLeft, ChevronRight, Star, Phone, Mail, Globe, MapPin, Clock, Share2, Heart, MessageCircle, Camera, ExternalLink, Navigation, Calendar, DollarSign, Users, Award, Bookmark } from "lucide-react";
+import { X, Star, Phone, Globe, MapPin, Clock, Share2, Heart, ExternalLink, Navigation, DollarSign, Wifi, CreditCard, ParkingCircle as Parking, Accessibility, ChevronLeft, ChevronRight, TrendingUp, Users, Award } from "lucide-react";
 import useBusinessStore from "@store/useBusinessStore";
 import useMapStore from "@store/useMapStore";
 
 const BusinessInfoPanel = () => {
 	const { activeBusinessId, filteredBusinesses, setActiveBusinessId } = useBusinessStore();
 	const { centerOn } = useMapStore();
-	const [activeTab, setActiveTab] = useState("overview");
 	const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 	const [isFavorited, setIsFavorited] = useState(false);
 
 	const business = filteredBusinesses.find((b) => b.id === activeBusinessId);
 	const businessIndex = business ? filteredBusinesses.findIndex((b) => b.id === business.id) : -1;
 
-	// Mock reviews data
-	const mockReviews = [
-		{
-			id: 1,
-			author: "Sarah Johnson",
-			avatar: "/placeholder.svg",
-			rating: 5,
-			date: "2024-01-15",
-			text: "Excellent service! The team was professional and completed the work on time. Highly recommended!",
-			helpful: 12,
-		},
-		{
-			id: 2,
-			author: "Mike Chen",
-			avatar: "/placeholder.svg",
-			rating: 4,
-			date: "2024-01-10",
-			text: "Good quality work, fair pricing. Would use their services again.",
-			helpful: 8,
-		},
-		{
-			id: 3,
-			author: "Emily Davis",
-			avatar: "/placeholder.svg",
-			rating: 5,
-			date: "2024-01-05",
-			text: "Outstanding customer service and attention to detail. Very satisfied with the results.",
-			helpful: 15,
-		},
-	];
+	const allImages = [business?.image || "https://picsum.photos/400/300", "https://picsum.photos/400/301", "https://picsum.photos/400/302", "https://picsum.photos/400/303"];
 
-	// Mock hours data
-	const mockHours = {
-		monday: "8:00 AM - 6:00 PM",
-		tuesday: "8:00 AM - 6:00 PM",
-		wednesday: "8:00 AM - 6:00 PM",
-		thursday: "8:00 AM - 6:00 PM",
-		friday: "8:00 AM - 6:00 PM",
-		saturday: "9:00 AM - 4:00 PM",
-		sunday: "Closed",
-	};
-
+	// Center map on business when panel opens
 	useEffect(() => {
 		if (business?.coordinates) {
 			const { lat, lng } = business.coordinates;
-			const serviceAreaRadius = business.serviceArea?.value || null;
-			centerOn(lat, lng, serviceAreaRadius);
+			if (typeof lat === "number" && typeof lng === "number" && !isNaN(lat) && !isNaN(lng) && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
+				centerOn(lat, lng);
+			}
 		}
 	}, [business, centerOn]);
 
 	const handlePrev = () => {
 		if (businessIndex > 0) {
-			setActiveBusinessId(filteredBusinesses[businessIndex - 1].id);
-			setActiveTab("overview");
+			const prevBusiness = filteredBusinesses[businessIndex - 1];
+			setActiveBusinessId(prevBusiness.id);
 		}
 	};
 
 	const handleNext = () => {
 		if (businessIndex < filteredBusinesses.length - 1) {
-			setActiveBusinessId(filteredBusinesses[businessIndex + 1].id);
-			setActiveTab("overview");
+			const nextBusiness = filteredBusinesses[businessIndex + 1];
+			setActiveBusinessId(nextBusiness.id);
 		}
 	};
 
@@ -88,301 +47,232 @@ const BusinessInfoPanel = () => {
 		setActiveBusinessId(null);
 	};
 
-	const handleCall = () => {
-		if (business?.phone) {
-			window.open(`tel:${business.phone}`, "_self");
-		}
-	};
-
-	const handleEmail = () => {
-		if (business?.email) {
-			window.open(`mailto:${business.email}`, "_self");
-		}
-	};
-
-	const handleWebsite = () => {
-		if (business?.website) {
-			window.open(business.website, "_blank");
-		}
-	};
-
-	const handleDirections = () => {
-		if (business?.coordinates) {
-			const { lat, lng } = business.coordinates;
-			window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`, "_blank");
-		}
-	};
-
-	const handleShare = async () => {
-		if (navigator.share) {
-			try {
-				await navigator.share({
-					title: business?.name,
-					text: `Check out ${business?.name}`,
-					url: window.location.href,
-				});
-			} catch (err) {
-				console.log("Error sharing:", err);
-			}
-		} else {
-			// Fallback to clipboard
-			navigator.clipboard.writeText(window.location.href);
-		}
-	};
-
 	const renderStars = (rating) => {
-		return Array.from({ length: 5 }, (_, i) => <Star key={i} className={`w-4 h-4 ${i < Math.floor(rating) ? "fill-yellow-400 text-yellow-400" : i < rating ? "fill-yellow-200 text-yellow-400" : "text-gray-300"}`} />);
+		return Array.from({ length: 5 }, (_, i) => <Star key={i} className={`w-4 h-4 ${i < Math.floor(rating) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`} />);
 	};
 
 	if (!business) return null;
 
-	const allImages = [business.image, ...(business.images || [])].filter(Boolean);
-
 	return (
-		<div className="absolute top-0 left-0 z-10 w-1/4 h-full p-4 overflow-hidden min-w-96">
-			<div className="flex flex-col h-full bg-white dark:bg-gray-900 rounded-lg shadow-2xl border">
-				{/* Header */}
-				<div className="flex items-center justify-between p-4 border-b">
-					<div className="flex items-center gap-2">
-						<Button variant="ghost" size="icon" onClick={handlePrev} disabled={businessIndex === 0}>
+		<div className="absolute top-0 left-0 z-10 flex flex-col h-full transition-transform duration-300 ease-in-out transform bg-card/95 backdrop-blur-md shadow-xl w-96">
+			{/* Header - More Compact */}
+			<div className="flex items-center justify-between px-3 py-2 bg-card/50 border-b border-border/20">
+				<div className="flex items-center gap-1">
+					{businessIndex > 0 && (
+						<button onClick={handlePrev} className="p-1.5 transition-colors rounded-full hover:bg-accent/80 text-muted-foreground hover:text-foreground">
 							<ChevronLeft className="w-4 h-4" />
-						</Button>
-						<Button variant="ghost" size="icon" onClick={handleNext} disabled={businessIndex === filteredBusinesses.length - 1}>
+						</button>
+					)}
+					{businessIndex < filteredBusinesses.length - 1 && (
+						<button onClick={handleNext} className="p-1.5 transition-colors rounded-full hover:bg-accent/80 text-muted-foreground hover:text-foreground">
 							<ChevronRight className="w-4 h-4" />
-						</Button>
-						<span className="text-sm text-gray-500">
-							{businessIndex + 1} of {filteredBusinesses.length}
-						</span>
-					</div>
-					<div className="flex items-center gap-2">
-						<Button variant="ghost" size="icon" onClick={() => setIsFavorited(!isFavorited)}>
-							<Heart className={`w-4 h-4 ${isFavorited ? "fill-red-500 text-red-500" : ""}`} />
-						</Button>
-						<Button variant="ghost" size="icon" onClick={handleShare}>
-							<Share2 className="w-4 h-4" />
-						</Button>
-						<Button variant="ghost" size="icon" onClick={handleClose}>
-							<X className="w-4 h-4" />
-						</Button>
-					</div>
+						</button>
+					)}
+				</div>
+				<div className="flex items-center gap-1">
+					<button onClick={() => setIsFavorited(!isFavorited)} className="p-1.5 transition-colors rounded-full hover:bg-accent/80 text-muted-foreground hover:text-foreground">
+						<Heart className={`w-4 h-4 ${isFavorited ? "fill-red-500 text-red-500" : ""}`} />
+					</button>
+					<button className="p-1.5 transition-colors rounded-full hover:bg-accent/80 text-muted-foreground hover:text-foreground">
+						<Share2 className="w-4 h-4" />
+					</button>
+					<button onClick={handleClose} className="p-1.5 transition-colors rounded-full hover:bg-accent/80 text-muted-foreground hover:text-foreground">
+						<X className="w-4 h-4" />
+					</button>
+				</div>
+			</div>
+
+			<ScrollArea className="flex-1">
+				{/* Image Gallery */}
+				<div className="relative h-64 bg-muted/30">
+					<Image src={allImages[selectedImageIndex]} alt={business.name} fill className="object-cover" />
+
+					{/* Image Navigation */}
+					{allImages.length > 1 && (
+						<>
+							<button onClick={() => setSelectedImageIndex((prev) => (prev > 0 ? prev - 1 : allImages.length - 1))} className="absolute p-2 transition-all transform -translate-y-1/2 rounded-full shadow-lg left-3 top-1/2 bg-background/80 backdrop-blur-sm hover:bg-background/90">
+								<ChevronLeft className="w-4 h-4 text-foreground" />
+							</button>
+							<button onClick={() => setSelectedImageIndex((prev) => (prev < allImages.length - 1 ? prev + 1 : 0))} className="absolute p-2 transition-all transform -translate-y-1/2 rounded-full shadow-lg right-3 top-1/2 bg-background/80 backdrop-blur-sm hover:bg-background/90">
+								<ChevronRight className="w-4 h-4 text-foreground" />
+							</button>
+
+							{/* Image Dots */}
+							<div className="absolute flex gap-1.5 transform -translate-x-1/2 bottom-4 left-1/2">
+								{allImages.map((_, index) => (
+									<button key={index} onClick={() => setSelectedImageIndex(index)} className={`w-2.5 h-2.5 rounded-full transition-all ${index === selectedImageIndex ? "bg-white shadow-sm" : "bg-white/50"}`} />
+								))}
+							</div>
+						</>
+					)}
 				</div>
 
-				{/* Content */}
-				<ScrollArea className="flex-1">
-					<div className="p-4">
-						{/* Hero Image */}
-						<div className="relative mb-4">
-							<div className="aspect-video rounded-lg overflow-hidden bg-gray-100">
-								<Image src={allImages[selectedImageIndex] || "/placeholder.svg"} alt={business.name} fill className="object-cover" />
-								{allImages.length > 1 && (
-									<div className="absolute bottom-2 right-2 bg-black/50 text-white px-2 py-1 rounded text-xs">
-										{selectedImageIndex + 1} / {allImages.length}
-									</div>
-								)}
-							</div>
-							{allImages.length > 1 && (
-								<div className="flex gap-2 mt-2 overflow-x-auto">
-									{allImages.map((img, index) => (
-										<button key={index} onClick={() => setSelectedImageIndex(index)} className={`flex-shrink-0 w-16 h-16 rounded-md overflow-hidden border-2 ${selectedImageIndex === index ? "border-primary" : "border-transparent"}`}>
-											<Image src={img} alt="" width={64} height={64} className="object-cover w-full h-full" />
-										</button>
-									))}
-								</div>
-							)}
+				{/* Business Info */}
+				<div className="p-6 space-y-6">
+					{/* Title & Rating */}
+					<div>
+						<h1 className="mb-2 text-2xl font-semibold text-card-foreground">{business.name}</h1>
+						<p className="mb-4 text-muted-foreground">{business.categories?.[0] || "Business"}</p>
+
+						<div className="flex items-center gap-3 mb-3">
+							<div className="flex items-center bg-muted/30 px-3 py-1.5 rounded-lg">{renderStars(business.ratings?.overall || 0)}</div>
+							<span className="font-medium text-foreground">{business.ratings?.overall?.toFixed(1) || "New"}</span>
+							<span className="text-muted-foreground">({business.ratings?.count || 0} reviews)</span>
 						</div>
 
-						{/* Business Info */}
-						<div className="space-y-4">
+						{business.priceLevel && (
+							<div className="text-lg font-medium text-card-foreground">
+								{"$".repeat(business.priceLevel)} • {business.cuisine || "Local Business"}
+							</div>
+						)}
+					</div>
+
+					{/* Status & Hours */}
+					<div className="space-y-4">
+						{business.isOpen && (
+							<div className="flex items-center gap-2">
+								<div className="w-2.5 h-2.5 bg-green-500 rounded-full shadow-sm shadow-green-500/50"></div>
+								<span className="font-medium text-green-600 dark:text-green-400">Open now</span>
+							</div>
+						)}
+
+						<div className="flex items-start gap-3 text-muted-foreground">
+							<Clock className="w-4 h-4 mt-0.5 flex-shrink-0" />
 							<div>
-								<div className="flex items-start justify-between mb-2">
-									<h1 className="text-xl font-bold">{business.name}</h1>
-									{business.isSponsored && (
-										<Badge variant="secondary" className="text-xs">
-											<Award className="w-3 h-3 mr-1" />
-											Sponsored
-										</Badge>
-									)}
-								</div>
+								<div className="text-foreground">Today: 9:00 AM - 9:00 PM</div>
+								<button className="text-sm text-primary hover:text-primary/80 transition-colors">See all hours</button>
+							</div>
+						</div>
 
-								{business.ratings?.overall && (
-									<div className="flex items-center gap-2 mb-2">
-										<div className="flex items-center">{renderStars(business.ratings.overall)}</div>
-										<span className="font-medium">{business.ratings.overall}</span>
-										<span className="text-sm text-gray-500">({business.reviewCount || 0} reviews)</span>
-									</div>
-								)}
-
-								<div className="flex flex-wrap gap-2 mb-3">
-									{business.categories?.slice(0, 3).map((category, index) => (
-										<Badge key={index} variant="outline" className="text-xs">
-											{category}
-										</Badge>
-									))}
-									{business.price && (
-										<Badge variant="secondary" className="text-xs">
-											<DollarSign className="w-3 h-3 mr-1" />
-											{business.price}
-										</Badge>
-									)}
-								</div>
-
-								<div className="flex items-center gap-2 text-sm">
-									<div className={`w-2 h-2 rounded-full ${business.isOpenNow ? "bg-green-500" : "bg-red-500"}`}></div>
-									<span className={business.isOpenNow ? "text-green-600" : "text-red-600"}>{business.isOpenNow ? "Open now" : business.statusMessage || "Closed"}</span>
+						<div className="flex items-start gap-3 text-muted-foreground">
+							<MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
+							<div>
+								<div className="text-foreground">{business.address || "Address not available"}</div>
+								<div className="text-sm text-muted-foreground">
+									{business.city}, {business.state} {business.zipCode}
 								</div>
 							</div>
-
-							{/* Action Buttons */}
-							<div className="grid grid-cols-2 gap-2">
-								<Button onClick={handleCall} className="flex items-center gap-2">
-									<Phone className="w-4 h-4" />
-									Call
-								</Button>
-								<Button variant="outline" onClick={handleDirections} className="flex items-center gap-2">
-									<Navigation className="w-4 h-4" />
-									Directions
-								</Button>
-								{business.website && (
-									<Button variant="outline" onClick={handleWebsite} className="flex items-center gap-2">
-										<Globe className="w-4 h-4" />
-										Website
-									</Button>
-								)}
-								{business.email && (
-									<Button variant="outline" onClick={handleEmail} className="flex items-center gap-2">
-										<Mail className="w-4 h-4" />
-										Email
-									</Button>
-								)}
-							</div>
-
-							{/* Tabs */}
-							<Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-								<TabsList className="grid w-full grid-cols-4">
-									<TabsTrigger value="overview">Overview</TabsTrigger>
-									<TabsTrigger value="reviews">Reviews</TabsTrigger>
-									<TabsTrigger value="photos">Photos</TabsTrigger>
-									<TabsTrigger value="hours">Hours</TabsTrigger>
-								</TabsList>
-
-								<TabsContent value="overview" className="space-y-4">
-									<Card>
-										<CardHeader>
-											<CardTitle className="text-sm">Contact Information</CardTitle>
-										</CardHeader>
-										<CardContent className="space-y-3">
-											{business.address && (
-												<div className="flex items-start gap-3">
-													<MapPin className="w-4 h-4 mt-0.5 text-gray-500" />
-													<span className="text-sm">{business.address}</span>
-												</div>
-											)}
-											{business.phone && (
-												<div className="flex items-center gap-3">
-													<Phone className="w-4 h-4 text-gray-500" />
-													<span className="text-sm">{business.phone}</span>
-												</div>
-											)}
-											{business.email && (
-												<div className="flex items-center gap-3">
-													<Mail className="w-4 h-4 text-gray-500" />
-													<span className="text-sm">{business.email}</span>
-												</div>
-											)}
-										</CardContent>
-									</Card>
-
-									{business.description && (
-										<Card>
-											<CardHeader>
-												<CardTitle className="text-sm">About</CardTitle>
-											</CardHeader>
-											<CardContent>
-												<p className="text-sm text-gray-600 dark:text-gray-300">{business.description}</p>
-											</CardContent>
-										</Card>
-									)}
-
-									<Card>
-										<CardHeader>
-											<CardTitle className="text-sm">Services</CardTitle>
-										</CardHeader>
-										<CardContent>
-											<div className="flex flex-wrap gap-2">
-												{business.categories?.map((category, index) => (
-													<Badge key={index} variant="outline" className="text-xs">
-														{category}
-													</Badge>
-												))}
-											</div>
-										</CardContent>
-									</Card>
-								</TabsContent>
-
-								<TabsContent value="reviews" className="space-y-4">
-									{mockReviews.map((review) => (
-										<Card key={review.id}>
-											<CardContent className="pt-4">
-												<div className="flex items-start gap-3">
-													<Avatar className="w-8 h-8">
-														<AvatarImage src={review.avatar} />
-														<AvatarFallback>{review.author[0]}</AvatarFallback>
-													</Avatar>
-													<div className="flex-1">
-														<div className="flex items-center gap-2 mb-1">
-															<span className="font-medium text-sm">{review.author}</span>
-															<div className="flex">{renderStars(review.rating)}</div>
-														</div>
-														<p className="text-sm text-gray-600 dark:text-gray-300 mb-2">{review.text}</p>
-														<div className="flex items-center gap-4 text-xs text-gray-500">
-															<span>{new Date(review.date).toLocaleDateString()}</span>
-															<button className="flex items-center gap-1 hover:text-gray-700">
-																<MessageCircle className="w-3 h-3" />
-																Helpful ({review.helpful})
-															</button>
-														</div>
-													</div>
-												</div>
-											</CardContent>
-										</Card>
-									))}
-								</TabsContent>
-
-								<TabsContent value="photos" className="space-y-4">
-									<div className="grid grid-cols-2 gap-2">
-										{allImages.map((img, index) => (
-											<button key={index} onClick={() => setSelectedImageIndex(index)} className="aspect-square rounded-lg overflow-hidden bg-gray-100">
-												<Image src={img} alt="" width={150} height={150} className="object-cover w-full h-full hover:scale-105 transition-transform" />
-											</button>
-										))}
-									</div>
-								</TabsContent>
-
-								<TabsContent value="hours" className="space-y-4">
-									<Card>
-										<CardHeader>
-											<CardTitle className="text-sm flex items-center gap-2">
-												<Clock className="w-4 h-4" />
-												Business Hours
-											</CardTitle>
-										</CardHeader>
-										<CardContent>
-											<div className="space-y-2">
-												{Object.entries(mockHours).map(([day, hours]) => (
-													<div key={day} className="flex justify-between text-sm">
-														<span className="capitalize font-medium">{day}</span>
-														<span className={hours === "Closed" ? "text-red-600" : "text-gray-600"}>{hours}</span>
-													</div>
-												))}
-											</div>
-										</CardContent>
-									</Card>
-								</TabsContent>
-							</Tabs>
 						</div>
 					</div>
-				</ScrollArea>
-			</div>
+
+					{/* AI Insights - Subtle */}
+					<div className="p-4 rounded-xl bg-gradient-to-br from-primary/5 to-primary/10">
+						<div className="flex items-center gap-2 mb-3">
+							<Award className="w-4 h-4 text-primary" />
+							<span className="text-sm font-medium text-card-foreground">Business Insights</span>
+						</div>
+						<div className="grid grid-cols-2 gap-4 text-sm">
+							<div className="flex items-center gap-2">
+								<TrendingUp className="w-3 h-3 text-green-600 dark:text-green-400" />
+								<span className="text-muted-foreground">Trending up</span>
+							</div>
+							<div className="flex items-center gap-2">
+								<Users className="w-3 h-3 text-primary" />
+								<span className="text-muted-foreground">Popular choice</span>
+							</div>
+						</div>
+						<div className="mt-2 text-xs text-muted-foreground">{Math.floor(Math.random() * 20) + 15} people viewed today</div>
+					</div>
+
+					{/* Action Buttons */}
+					<div className="grid grid-cols-2 gap-3">
+						<Button className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm">
+							<Phone className="w-4 h-4 mr-2" />
+							Call
+						</Button>
+						<Button variant="outline" className="border-0 hover:bg-accent/80 transition-all">
+							<Navigation className="w-4 h-4 mr-2" />
+							Directions
+						</Button>
+					</div>
+
+					{/* Amenities */}
+					<div>
+						<h3 className="mb-4 font-medium text-card-foreground">What this place offers</h3>
+						<div className="grid grid-cols-2 gap-3">
+							<div className="flex items-center gap-2 text-sm text-muted-foreground">
+								<Wifi className="w-4 h-4 text-primary" />
+								Free Wi-Fi
+							</div>
+							<div className="flex items-center gap-2 text-sm text-muted-foreground">
+								<CreditCard className="w-4 h-4 text-primary" />
+								Cards accepted
+							</div>
+							<div className="flex items-center gap-2 text-sm text-muted-foreground">
+								<Parking className="w-4 h-4 text-primary" />
+								Free parking
+							</div>
+							<div className="flex items-center gap-2 text-sm text-muted-foreground">
+								<Accessibility className="w-4 h-4 text-primary" />
+								Accessible
+							</div>
+						</div>
+					</div>
+
+					{/* Description */}
+					{business.description && (
+						<div>
+							<h3 className="mb-3 font-medium text-card-foreground">About</h3>
+							<p className="text-sm leading-relaxed text-muted-foreground">{business.description}</p>
+						</div>
+					)}
+
+					{/* Reviews Preview */}
+					<div>
+						<h3 className="mb-4 font-medium text-card-foreground">Recent reviews</h3>
+						<div className="space-y-4">
+							<div className="pb-4">
+								<div className="flex items-center gap-3 mb-2">
+									<div className="w-8 h-8 bg-muted rounded-full"></div>
+									<div>
+										<div className="text-sm font-medium text-card-foreground">Sarah M.</div>
+										<div className="flex items-center gap-1">
+											{renderStars(5)}
+											<span className="ml-1 text-xs text-muted-foreground">2 days ago</span>
+										</div>
+									</div>
+								</div>
+								<p className="text-sm text-muted-foreground leading-relaxed">Great service and friendly staff. Would definitely recommend!</p>
+							</div>
+
+							<div className="pb-4">
+								<div className="flex items-center gap-3 mb-2">
+									<div className="w-8 h-8 bg-muted rounded-full"></div>
+									<div>
+										<div className="text-sm font-medium text-card-foreground">Mike R.</div>
+										<div className="flex items-center gap-1">
+											{renderStars(4)}
+											<span className="ml-1 text-xs text-muted-foreground">1 week ago</span>
+										</div>
+									</div>
+								</div>
+								<p className="text-sm text-muted-foreground leading-relaxed">Good experience overall. Fast and professional service.</p>
+							</div>
+						</div>
+
+						<button className="mt-3 text-sm text-primary hover:text-primary/80 transition-colors">Show all {business.ratings?.count || 0} reviews</button>
+					</div>
+
+					{/* View Full Profile - More Prominent */}
+					<Link
+						href={`/biz/${
+							business.slug ||
+							business.name
+								.toLowerCase()
+								.replace(/[^a-z0-9\s-]/g, "")
+								.replace(/\s+/g, "-")
+								.replace(/-+/g, "-")
+								.trim()
+						}`}
+						className="block"
+					>
+						<Button className="w-full py-3 font-medium bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm">
+							<ExternalLink className="w-4 h-4 mr-2" />
+							View Full Business Profile
+						</Button>
+					</Link>
+				</div>
+			</ScrollArea>
 		</div>
 	);
 };

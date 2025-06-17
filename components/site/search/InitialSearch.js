@@ -50,73 +50,75 @@ export default function InitialSearch() {
 	];
 
 	return (
-		<div className="container mx-auto px-4 py-8">
-			{/* Hero Section */}
-			<div className="text-center mb-12">
-				<h1 className="text-4xl font-bold mb-4">Find Local Businesses</h1>
-				<p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">Discover and connect with top-rated businesses in your area. Search by category, location, or business name.</p>
+		<div className="min-h-screen bg-background">
+			<div className="container mx-auto px-4 py-8">
+				{/* Hero Section */}
+				<div className="text-center mb-12">
+					<h1 className="text-4xl font-bold mb-4 text-foreground">Find Local Businesses</h1>
+					<p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">Discover and connect with top-rated businesses in your area. Search by category, location, or business name.</p>
 
-				{/* Search Bar */}
-				<div className="max-w-2xl mx-auto mb-8">
-					<SearchBarHeader />
+					{/* Search Bar */}
+					<div className="max-w-2xl mx-auto mb-8">
+						<SearchBarHeader />
+					</div>
 				</div>
-			</div>
 
-			{/* Popular Searches */}
-			<div className="mb-12">
-				<h2 className="text-2xl font-semibold mb-6 flex items-center gap-2">
-					<TrendingUp className="w-6 h-6" />
-					Popular Searches
-				</h2>
-				<div className="flex flex-wrap gap-2">
-					{popularSearches.map((search) => (
-						<Link key={search} href={`/search?q=${encodeURIComponent(search)}`}>
-							<Badge variant="secondary" className="text-sm py-2 px-4 hover:bg-primary hover:text-primary-foreground transition-colors cursor-pointer">
-								{search}
-							</Badge>
-						</Link>
-					))}
+				{/* Popular Searches */}
+				<div className="mb-12">
+					<h2 className="text-2xl font-semibold mb-6 flex items-center gap-2 text-foreground">
+						<TrendingUp className="w-6 h-6 text-primary" />
+						Popular Searches
+					</h2>
+					<div className="flex flex-wrap gap-2">
+						{popularSearches.map((search) => (
+							<Link key={search} href={`/search?q=${encodeURIComponent(search)}`}>
+								<Badge variant="secondary" className="text-sm py-2 px-4 hover:bg-primary hover:text-primary-foreground transition-colors cursor-pointer bg-secondary/80 dark:bg-secondary/60 text-secondary-foreground dark:text-secondary-foreground border border-border dark:border-border hover:border-primary dark:hover:border-primary">
+									{search}
+								</Badge>
+							</Link>
+						))}
+					</div>
 				</div>
-			</div>
 
-			{/* Featured Categories */}
-			<div className="mb-12">
-				<h2 className="text-2xl font-semibold mb-6">Browse by Category</h2>
-				<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-					{featuredCategories.map((category) => (
-						<Link key={category.name} href={category.href}>
-							<Card className="h-full transition-all duration-200 hover:shadow-md hover:border-primary/50 cursor-pointer">
-								<CardHeader className="pb-3">
-									<div className="flex items-center gap-3">
-										<span className="text-2xl">{category.icon}</span>
-										<div>
-											<CardTitle className="text-lg">{category.name}</CardTitle>
-											<p className="text-sm text-muted-foreground">{category.count} businesses</p>
+				{/* Featured Categories */}
+				<div className="mb-12">
+					<h2 className="text-2xl font-semibold mb-6 text-foreground">Browse by Category</h2>
+					<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+						{featuredCategories.map((category) => (
+							<Link key={category.name} href={category.href}>
+								<Card className="h-full transition-all duration-200 hover:shadow-md hover:border-primary/50 cursor-pointer bg-card dark:bg-card border-border dark:border-border hover:bg-card/80 dark:hover:bg-card/80">
+									<CardHeader className="pb-3">
+										<div className="flex items-center gap-3">
+											<span className="text-2xl">{category.icon}</span>
+											<div>
+												<CardTitle className="text-lg text-card-foreground dark:text-card-foreground">{category.name}</CardTitle>
+												<p className="text-sm text-muted-foreground">{category.count} businesses</p>
+											</div>
 										</div>
-									</div>
-								</CardHeader>
-							</Card>
-						</Link>
-					))}
+									</CardHeader>
+								</Card>
+							</Link>
+						))}
+					</div>
 				</div>
-			</div>
 
-			{/* Quick Actions */}
-			<div className="text-center">
-				<h2 className="text-2xl font-semibold mb-6">Quick Actions</h2>
-				<div className="flex flex-col sm:flex-row gap-4 justify-center">
-					<Button asChild size="lg">
-						<Link href="/add-a-business">Add Your Business</Link>
-					</Button>
-					<Button asChild variant="outline" size="lg">
-						<Link href="/search/map">
-							<MapPin className="w-4 h-4 mr-2" />
-							View Map
-						</Link>
-					</Button>
-					<Button asChild variant="outline" size="lg">
-						<Link href="/categories">Browse All Categories</Link>
-					</Button>
+				{/* Quick Actions */}
+				<div className="text-center">
+					<h2 className="text-2xl font-semibold mb-6 text-foreground">Quick Actions</h2>
+					<div className="flex flex-col sm:flex-row gap-4 justify-center">
+						<Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground">
+							<Link href="/add-a-business">Add Your Business</Link>
+						</Button>
+						<Button asChild variant="outline" size="lg" className="border-border dark:border-border text-foreground hover:bg-accent dark:hover:bg-accent">
+							<Link href="/search/map">
+								<MapPin className="w-4 h-4 mr-2" />
+								View Map
+							</Link>
+						</Button>
+						<Button asChild variant="outline" size="lg" className="border-border dark:border-border text-foreground hover:bg-accent dark:hover:bg-accent">
+							<Link href="/categories">Browse All Categories</Link>
+						</Button>
+					</div>
 				</div>
 			</div>
 		</div>

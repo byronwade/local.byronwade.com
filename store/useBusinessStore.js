@@ -152,6 +152,7 @@ const useBusinessStore = create((set, get) => ({
 	allBusinesses: [],
 	filteredBusinesses: [],
 	activeBusinessId: null,
+	selectedBusiness: null,
 	initialLoad: true,
 	loading: false,
 	initialCoordinates: { lat: 37.7749, lng: -122.4194 },
@@ -164,16 +165,19 @@ const useBusinessStore = create((set, get) => ({
 		console.log("Initial coordinates set to:", { lat, lng });
 	},
 
-	// Enhanced search method using Faker.js data
+	// Enhanced search method using mock data
 	searchBusinesses: async (query = "", location = "") => {
 		try {
 			set({ loading: true });
 
-			// Initialize businesses if not already done
-			const businesses = await initializeBusinesses();
+			// Use mock businesses for now
+			let results = [...mockBusinesses];
 
-			// Use the search function from businessDataGenerator
-			const results = searchBusinessesByQuery(businesses, query, location);
+			// Simple search filtering
+			if (query) {
+				const searchTerm = query.toLowerCase();
+				results = results.filter((business) => business.name.toLowerCase().includes(searchTerm) || business.description.toLowerCase().includes(searchTerm) || business.categories.some((cat) => cat.toLowerCase().includes(searchTerm)));
+			}
 
 			// Sort results by relevance (sponsored first, then by rating)
 			const sortedResults = results.sort((a, b) => {
@@ -207,18 +211,20 @@ const useBusinessStore = create((set, get) => ({
 	initializeWithMockData: async () => {
 		try {
 			set({ loading: true });
-			const businesses = await initializeBusinesses();
+
+			// For now, use mock data immediately to avoid loading issues
+			console.log("Using mock business data for immediate display");
 
 			set({
-				allBusinesses: businesses,
-				filteredBusinesses: businesses.slice(0, 100), // Show first 100 for initial load
+				allBusinesses: mockBusinesses,
+				filteredBusinesses: mockBusinesses,
 				loading: false,
 				initialLoad: false,
 			});
 
-			console.log("Initialized with generated business data");
+			console.log("Initialized with mock business data");
 		} catch (error) {
-			console.error("Failed to initialize with generated data:", error);
+			console.error("Failed to initialize with mock data:", error);
 			// Fallback to original mock data
 			set({
 				allBusinesses: mockBusinesses,
@@ -384,6 +390,17 @@ const useBusinessStore = create((set, get) => ({
 	},
 
 	clearFilteredBusinesses: () => set({ filteredBusinesses: [] }),
+
+	// Business selection methods
+	setSelectedBusiness: (business) => {
+		set({ selectedBusiness: business });
+		console.log("Selected business set to:", business?.name || null);
+	},
+
+	clearSelectedBusiness: () => {
+		set({ selectedBusiness: null });
+		console.log("Selected business cleared");
+	},
 }));
 
 export default useBusinessStore;

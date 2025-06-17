@@ -2,48 +2,13 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Info } from "react-feather";
+import { Search, MapPin, Star, Users, Shield } from "react-feather";
 import { Button } from "@components/ui/button";
 import { Carousel, CarouselContent, CarouselItem } from "@components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 
 export default function HeroSection({ carouselItems }) {
 	const carouselApiRef = useRef(null);
-	const playerRefs = useRef([]);
-	const [isYouTubeAPIReady, setYouTubeAPIReady] = useState(false);
-
-	const isYouTubeUrl = (url) => {
-		const youtubeRegex = /^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+$/;
-		return youtubeRegex.test(url);
-	};
-
-	const isVideoUrl = (url) => {
-		const videoRegex = /\.(mp4|webm|ogg)$/;
-		return videoRegex.test(url);
-	};
-
-	const getYouTubeEmbedUrl = (url) => {
-		let videoId;
-
-		if (url.includes("embed")) {
-			// If the URL is already an embed link, ensure autoplay is enabled
-			return url.includes("autoplay=1") ? url : `${url}?autoplay=1`;
-		}
-
-		if (url.includes("youtube.com")) {
-			const urlParams = new URLSearchParams(new URL(url).search);
-			videoId = urlParams.get("v");
-		} else if (url.includes("youtu.be")) {
-			videoId = url.split("youtu.be/")[1].split("?")[0];
-		}
-
-		if (videoId) {
-			return `https://www.youtube.com/embed/${videoId}`;
-		} else {
-			console.error("Invalid YouTube URL:", url);
-			return "";
-		}
-	};
 
 	const handleKeyDown = (e) => {
 		if (carouselApiRef.current) {
@@ -62,111 +27,131 @@ export default function HeroSection({ carouselItems }) {
 		};
 	}, []);
 
-	useEffect(() => {
-		const tag = document.createElement("script");
-		tag.src = "https://www.youtube.com/iframe_api";
-		const firstScriptTag = document.getElementsByTagName("script")[0];
-		firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-		window.onYouTubeIframeAPIReady = () => {
-			setYouTubeAPIReady(true);
-		};
-	}, []);
-
-	useEffect(() => {
-		if (isYouTubeAPIReady) {
-			playerRefs.current.forEach((playerRef, index) => {
-				if (playerRef) {
-					new YT.Player(playerRef, {
-						videoId: getYouTubeEmbedUrl(playerRef.dataset.src).split("embed/")[1].split("?")[0],
-						playerVars: {
-							autoplay: 1,
-							controls: 0,
-							mute: 1,
-							loop: 1,
-							modestbranding: 1,
-							rel: 0,
-							showinfo: 0,
-							fs: 0,
-							iv_load_policy: 3,
-							playlist: getYouTubeEmbedUrl(playerRef.dataset.src).split("embed/")[1].split("?")[0],
-						},
-						events: {
-							onReady: (event) => {
-								event.target.playVideo();
-							},
-							onError: (event) => {
-								console.error("YouTube Player Error:", event.data);
-							},
-						},
-					});
-				}
-			});
-		}
-	}, [isYouTubeAPIReady, carouselItems]);
-
 	return (
-		<div className="relative h-[60vh]">
+		<div className="relative h-[70vh] min-h-[600px] overflow-hidden">
+			{/* Background Pattern */}
+			<div className="absolute inset-0 bg-gradient-to-br from-background via-background/95 to-background/90"></div>
+			<div className="absolute inset-0 opacity-5">
+				<div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.3),transparent_50%)]"></div>
+				<div className="absolute top-1/4 right-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl"></div>
+				<div className="absolute bottom-1/4 left-1/4 w-80 h-80 bg-secondary/10 rounded-full blur-3xl"></div>
+			</div>
+
 			<Carousel
 				setApi={(api) => (carouselApiRef.current = api)}
-				className="relative z-20 h-[60vh]"
+				className="relative z-20 h-full"
 				opts={{
-					loop: true, // Enable looping
+					loop: true,
 				}}
 				plugins={[
 					Autoplay({
-						delay: 12000, // Auto-slide every 12 seconds
+						delay: 8000,
 					}),
 				]}
 			>
-				<CarouselContent className="h-[60vh]">
+				<CarouselContent className="h-full">
 					{carouselItems.map((item, index) => (
-						<CarouselItem key={index} className="w-full h-[60vh]">
-							<div className="relative w-full h-[60vh]">
-								<div className="absolute inset-0 z-10 bg-gradient-to-t from-background to-transparent" />
-								<div className="absolute inset-0 z-10 bg-gradient-to-r from-background to-transparent" />
+						<CarouselItem key={index} className="w-full h-full">
+							<div className="relative w-full h-full">
+								{/* Enhanced Background Image with Better Overlay */}
+								<div className="absolute inset-0 z-10 bg-gradient-to-t from-background via-background/60 to-background/20" />
+								<div className="absolute inset-0 z-10 bg-gradient-to-r from-background via-background/40 to-transparent" />
 								<div className="absolute inset-0">
-									{isYouTubeUrl(item.mediaSrc) ? (
-										<div ref={(el) => (playerRefs.current[index] = el)} className="absolute top-0 left-0 z-0 object-cover w-full h-full" data-src={getYouTubeEmbedUrl(item.mediaSrc)} />
-									) : isVideoUrl(item.mediaSrc) ? (
-										<video autoPlay muted loop className="absolute top-0 left-0 object-cover w-full h-full" playsInline>
-											<source src={item.mediaSrc} type="video/mp4" />
-											<source src={item.mediaSrc} type="video/webm" />
-											<source src={item.mediaSrc} type="video/ogg" />
-										</video>
-									) : (
-										<Image width={2200} height={2200} src={item.mediaSrc} alt={item.title} className="object-cover w-full h-full" />
-									)}
+									<Image width={2200} height={2200} src={item.mediaSrc} alt={`Business category ${index + 1}`} className="object-cover w-full h-full opacity-80" />
 								</div>
-								<div className="relative z-20 flex flex-col items-start justify-center h-full px-6 space-y-4 sm:px-12 lg:px-24">
-									<div className="max-w-lg">
-										<Image width={2200} height={2200} src={item.title} alt="Title" className="w-full h-auto mb-4" />
-										<p className="text-xl text-white">{item.description}</p>
-										<div className="z-50 flex mt-8 space-x-4">
-											<Link href={item.link} className="inline-block" passHref legacyBehavior>
-												<Button size="lg" className="flex items-center space-x-2 h-14">
-													<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" preserveAspectRatio="xMidYMid meet" className="mr-2">
-														<circle cx="16" cy="16" r="15" fill="currentColor" opacity="0.1" />
-														<circle cx="16" cy="16" r="7" fill="currentColor" opacity="0.4" />
-														<circle cx="16" cy="16" r="3" fill="currentColor" />
-													</svg>
-													<span>Live Now</span>
+
+								{/* Enhanced Content Section - Vertically Centered, Left Aligned */}
+								<div className="relative z-20 flex flex-col justify-center h-full px-6 space-y-8 sm:px-12 lg:px-24">
+									<div className="max-w-4xl">
+										{/* Enhanced Badge */}
+										<div className="inline-flex items-center px-4 py-2 mb-6 text-sm font-semibold text-primary bg-primary/10 rounded-full border border-primary/20 backdrop-blur-sm shadow-lg">
+											<Shield className="w-4 h-4 mr-2" />
+											🏢 Trusted Local Business Directory
+										</div>
+
+										{/* Enhanced Headlines */}
+										<h1 className="text-5xl font-bold text-foreground sm:text-7xl mb-6 leading-tight">
+											{index === 0 && (
+												<>
+													Find <span className="text-primary">Local</span>
+													<br />
+													Businesses
+												</>
+											)}
+											{index === 1 && (
+												<>
+													<span className="text-primary">Home</span> Services
+													<br />
+													Made Easy
+												</>
+											)}
+											{index === 2 && (
+												<>
+													Restaurants &
+													<br />
+													<span className="text-primary">Dining</span>
+												</>
+											)}
+											{index === 3 && (
+												<>
+													Health &
+													<br />
+													<span className="text-primary">Wellness</span>
+												</>
+											)}
+										</h1>
+
+										<p className="text-xl text-muted-foreground mb-10 leading-relaxed max-w-2xl">{item.description}</p>
+
+										{/* Enhanced Action Buttons */}
+										<div className="flex flex-col sm:flex-row gap-4 mb-8">
+											<Link href={item.link} className="inline-block">
+												<Button size="lg" className="flex items-center space-x-3 h-16 px-10 bg-primary hover:bg-primary/90 text-primary-foreground shadow-xl hover:shadow-2xl transition-all duration-300 text-lg font-semibold">
+													<Search className="w-6 h-6" />
+													<span>Search Now</span>
 												</Button>
 											</Link>
-											<Link href={item.link} className="inline-block" passHref legacyBehavior>
-												<Button variant="secondary" size="lg" className="flex items-center space-x-2 h-14">
-													<Info className="w-6 h-6" />
-													<span>More Info</span>
+											<Link href="/search" className="inline-block">
+												<Button variant="outline" size="lg" className="flex items-center space-x-3 h-16 px-10 border-2 border-primary/20 text-foreground hover:bg-primary/5 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 text-lg font-semibold">
+													<MapPin className="w-6 h-6" />
+													<span>Browse Categories</span>
 												</Button>
 											</Link>
 										</div>
+
+										{/* Enhanced Stats Section */}
+										<div className="flex flex-wrap items-center gap-8 text-sm text-muted-foreground">
+											<div className="flex items-center space-x-3 bg-background/20 backdrop-blur-sm rounded-full px-4 py-2 border border-primary/10">
+												<div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+												<Users className="w-4 h-4" />
+												<span className="font-medium">10,000+ Businesses</span>
+											</div>
+											<div className="flex items-center space-x-3 bg-background/20 backdrop-blur-sm rounded-full px-4 py-2 border border-primary/10">
+												<div className="w-3 h-3 bg-blue-400 rounded-full animate-pulse"></div>
+												<Shield className="w-4 h-4" />
+												<span className="font-medium">Verified Reviews</span>
+											</div>
+											<div className="flex items-center space-x-3 bg-background/20 backdrop-blur-sm rounded-full px-4 py-2 border border-primary/10">
+												<div className="w-3 h-3 bg-yellow-400 rounded-full animate-pulse"></div>
+												<Star className="w-4 h-4" />
+												<span className="font-medium">Local Experts</span>
+											</div>
+										</div>
 									</div>
 								</div>
+
+								{/* Enhanced Floating Elements */}
+								<div className="absolute top-20 right-20 w-4 h-4 bg-primary/30 rounded-full animate-bounce hidden lg:block"></div>
+								<div className="absolute bottom-32 right-32 w-6 h-6 bg-secondary/30 rounded-full animate-pulse hidden lg:block"></div>
+								<div className="absolute top-1/2 right-10 w-2 h-2 bg-accent/40 rounded-full animate-ping hidden lg:block"></div>
 							</div>
 						</CarouselItem>
 					))}
 				</CarouselContent>
 			</Carousel>
+
+			{/* Enhanced Bottom Gradient */}
+			<div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent z-30"></div>
 		</div>
 	);
 }

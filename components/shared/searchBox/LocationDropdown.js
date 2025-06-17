@@ -25,7 +25,13 @@ const LocationDropdown = ({ className }) => {
 				const { lat, lng } = await fetchCoordinatesFromCityAndState(locationValue);
 				setLocation({ lat, lng, value: locationValue, city: locationValue, error: false });
 				setActiveBusinessId(null);
-				centerOn(lat, lng);
+
+				// Validate coordinates before centering
+				if (typeof lat === "number" && typeof lng === "number" && !isNaN(lat) && !isNaN(lng) && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
+					centerOn(lat, lng);
+				} else {
+					console.error("Invalid coordinates from fetchCoordinatesFromCityAndState:", { lat, lng });
+				}
 			} catch (error) {
 				console.error("Error fetching coordinates:", error);
 				setLocation({ error: true });
@@ -57,13 +63,20 @@ const LocationDropdown = ({ className }) => {
 			console.log("Location:", location);
 			if (location?.lat && location.lng) {
 				const { lat, lng } = location;
-				const { city, state } = await fetchCityAndStateFromCoordinates(lat, lng);
-				const locationString = `${city}, ${state}`;
-				console.log("Location string:", locationString);
-				setLocation({ lat, lng, value: locationString, city: locationString, error: false });
-				setActiveBusinessId(null);
-				updateURL({ location: locationString });
-				centerOn(lat, lng);
+
+				// Validate coordinates before using them
+				if (typeof lat === "number" && typeof lng === "number" && !isNaN(lat) && !isNaN(lng) && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
+					const { city, state } = await fetchCityAndStateFromCoordinates(lat, lng);
+					const locationString = `${city}, ${state}`;
+					console.log("Location string:", locationString);
+					setLocation({ lat, lng, value: locationString, city: locationString, error: false });
+					setActiveBusinessId(null);
+					updateURL({ location: locationString });
+					centerOn(lat, lng);
+				} else {
+					console.error("Invalid coordinates from getCurrentLocation:", { lat, lng });
+					throw new Error("Invalid coordinates received");
+				}
 			} else {
 				throw new Error("Location is undefined");
 			}
@@ -107,9 +120,16 @@ const LocationDropdown = ({ className }) => {
 		try {
 			const details = await fetchPlaceDetails(location.place_id);
 			const { lat, lng } = details.geometry.location;
-			setLocation({ lat, lng, value: location.description, city: location.description, error: false });
-			updateURL({ location: location.description });
-			centerOn(lat, lng);
+
+			// Validate coordinates before centering
+			if (typeof lat === "number" && typeof lng === "number" && !isNaN(lat) && !isNaN(lng) && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
+				setLocation({ lat, lng, value: location.description, city: location.description, error: false });
+				updateURL({ location: location.description });
+				centerOn(lat, lng);
+			} else {
+				console.error("Invalid coordinates from place details:", { lat, lng });
+				throw new Error("Invalid coordinates from place details");
+			}
 		} catch (error) {
 			setLocation({ error: true });
 		}

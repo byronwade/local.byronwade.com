@@ -3,7 +3,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { ArrowRight, ChevronLeft, ChevronRight } from "react-feather";
 import { Button } from "@components/ui/button";
 
-export default function ScrollSection({ title, link, children }) {
+export default function ScrollSection({ title, link, children, subtitle, category }) {
 	const scrollContainerRef = useRef(null);
 	const [canScrollLeft, setCanScrollLeft] = useState(false);
 	const [canScrollRight, setCanScrollRight] = useState(false);
@@ -62,24 +62,35 @@ export default function ScrollSection({ title, link, children }) {
 	return (
 		<div className="w-full">
 			<div className="relative w-full overflow-hidden group">
-				{(title || link) && (
-					<div className="flex items-center justify-between w-full px-6 py-4 -mb-8 md:justify-start sm:px-12 lg:px-24">
-						{title && <h2 className="text-sm font-bold text-white md:text-xl sm:tracking-tight">{title}</h2>}
-						{link && (
-							<a href={link} className="inline-block ml-8">
-								<Button variant="secondary" size="xs">
-									View more <ArrowRight className="inline-block w-4 h-4 ml-2 align-middle" />
-								</Button>
-							</a>
+				{(title || link || category) && (
+					<div className="flex flex-col space-y-2 px-6 py-6 sm:px-12 lg:px-24">
+						{category && (
+							<div className="flex items-center space-x-2">
+								<span className="px-3 py-1 text-xs font-semibold text-primary bg-primary/10 rounded-full border border-primary/20">{category}</span>
+							</div>
 						)}
+						<div className="flex items-center justify-between">
+							<div className="flex flex-col space-y-1">
+								{title && <h2 className="text-2xl font-bold text-white tracking-tight hover:text-primary transition-colors duration-200">{title}</h2>}
+								{subtitle && <p className="text-sm text-gray-400 max-w-2xl">{subtitle}</p>}
+							</div>
+							{link && (
+								<Button variant="ghost" size="sm" className="text-primary hover:text-primary-foreground hover:bg-primary transition-all duration-200 group" asChild>
+									<a href={link} className="flex items-center space-x-2">
+										<span>View all</span>
+										<ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+									</a>
+								</Button>
+							)}
+						</div>
 					</div>
 				)}
 				<div className="relative">
-					<div ref={scrollContainerRef} onScroll={handleScroll} className="flex flex-row gap-8 px-6 py-8 overflow-x-auto sm:px-12 lg:px-24 scrollbar-hide scroll-smooth" style={{ scrollBehavior: "smooth" }}>
+					<div ref={scrollContainerRef} onScroll={handleScroll} className="flex flex-row gap-6 px-6 py-4 overflow-x-auto sm:px-12 lg:px-24 scrollbar-hide scroll-smooth" style={{ scrollBehavior: "smooth" }}>
 						{React.Children.map(children, (child, idx) => (
 							<div
 								key={idx}
-								className="flex-none relative min-w-[200px]"
+								className="flex-none relative min-w-[280px]"
 								style={{
 									aspectRatio: "16 / 9",
 								}}
@@ -89,14 +100,18 @@ export default function ScrollSection({ title, link, children }) {
 						))}
 					</div>
 					{canScrollLeft && (
-						<div className="absolute inset-y-0 left-0 items-center justify-center hidden px-4 transition-all cursor-pointer md:flex md:px-12 text-muted-foreground hover:text-white group-hover:opacity-100" onClick={() => scrollBy(-getScrollDistance())}>
-							<ChevronLeft className="w-6 h-6 md:w-16 md:h-16" />
-						</div>
+						<button onClick={() => scrollBy(-getScrollDistance())} className="absolute inset-y-0 left-0 z-50 items-center justify-center hidden px-4 transition-all cursor-pointer md:flex md:px-12 text-white hover:text-white group-hover:opacity-100 bg-gradient-to-r from-background/80 to-transparent pointer-events-auto" style={{ pointerEvents: "auto" }}>
+							<div className="p-2 rounded-full bg-black/50 backdrop-blur-sm hover:bg-black/70 transition-colors duration-200">
+								<ChevronLeft className="w-6 h-6" />
+							</div>
+						</button>
 					)}
 					{canScrollRight && (
-						<div className="absolute inset-y-0 right-0 items-center justify-center hidden px-4 transition-all cursor-pointer md:flex md:px-12 text-muted-foreground hover:text-white group-hover:opacity-100" onClick={() => scrollBy(getScrollDistance())}>
-							<ChevronRight className="w-6 h-6 md:w-16 md:h-16" />
-						</div>
+						<button onClick={() => scrollBy(getScrollDistance())} className="absolute inset-y-0 right-0 z-50 items-center justify-center hidden px-4 transition-all cursor-pointer md:flex md:px-12 text-white hover:text-white group-hover:opacity-100 bg-gradient-to-l from-background/80 to-transparent pointer-events-auto" style={{ pointerEvents: "auto" }}>
+							<div className="p-2 rounded-full bg-black/50 backdrop-blur-sm hover:bg-black/70 transition-colors duration-200">
+								<ChevronRight className="w-6 h-6" />
+							</div>
+						</button>
 					)}
 				</div>
 			</div>

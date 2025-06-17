@@ -79,12 +79,12 @@ export default function SearchResults() {
 	};
 
 	const BusinessCard = ({ business }) => (
-		<Card className="h-full transition-all duration-200 hover:shadow-md hover:border-primary/50">
+		<Card className="h-full transition-all duration-200 hover:shadow-md hover:border-primary/50 bg-card border-border">
 			<CardHeader className="pb-3">
 				<div className="flex items-start justify-between">
 					<div className="flex-1">
-						<CardTitle className="text-lg font-semibold line-clamp-1">
-							<Link href={`/biz/${business.slug || business.id}`} className="hover:text-primary">
+						<CardTitle className="text-lg font-semibold line-clamp-1 text-card-foreground">
+							<Link href={`/biz/${business.slug || business.id}`} className="hover:text-primary transition-colors">
 								{business.name}
 							</Link>
 						</CardTitle>
@@ -92,12 +92,12 @@ export default function SearchResults() {
 							{business.rating && (
 								<div className="flex items-center gap-1">
 									<Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-									<span className="text-sm font-medium">{business.rating}</span>
+									<span className="text-sm font-medium text-foreground">{business.rating}</span>
 									<span className="text-sm text-muted-foreground">({business.reviewCount || 0})</span>
 								</div>
 							)}
 							{business.category && (
-								<Badge variant="secondary" className="text-xs">
+								<Badge variant="secondary" className="text-xs bg-secondary/80 text-secondary-foreground border-border">
 									{business.category}
 								</Badge>
 							)}
@@ -133,11 +133,11 @@ export default function SearchResults() {
 					</div>
 
 					<div className="flex gap-2 pt-2">
-						<Button asChild size="sm" className="flex-1">
+						<Button asChild size="sm" className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground">
 							<Link href={`/biz/${business.slug || business.id}`}>View Details</Link>
 						</Button>
 						{business.website && (
-							<Button asChild variant="outline" size="sm">
+							<Button asChild variant="outline" size="sm" className="border-border hover:bg-accent">
 								<Link href={business.website} target="_blank" rel="noopener noreferrer">
 									<Globe className="w-4 h-4" />
 								</Link>
@@ -150,27 +150,27 @@ export default function SearchResults() {
 	);
 
 	const BusinessListItem = ({ business }) => (
-		<Card className="transition-all duration-200 hover:shadow-md hover:border-primary/50">
+		<Card className="transition-all duration-200 hover:shadow-md hover:border-primary/50 bg-card border-border">
 			<CardContent className="p-4">
 				<div className="flex gap-4">
 					<div className="flex-1">
 						<div className="flex items-start justify-between mb-2">
-							<h3 className="text-lg font-semibold">
-								<Link href={`/biz/${business.slug || business.id}`} className="hover:text-primary">
+							<h3 className="text-lg font-semibold text-card-foreground">
+								<Link href={`/biz/${business.slug || business.id}`} className="hover:text-primary transition-colors">
 									{business.name}
 								</Link>
 							</h3>
 							{business.rating && (
 								<div className="flex items-center gap-1">
 									<Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-									<span className="text-sm font-medium">{business.rating}</span>
+									<span className="text-sm font-medium text-foreground">{business.rating}</span>
 								</div>
 							)}
 						</div>
 
 						<div className="flex items-center gap-2 mb-2">
 							{business.category && (
-								<Badge variant="secondary" className="text-xs">
+								<Badge variant="secondary" className="text-xs bg-secondary/80 text-secondary-foreground border-border">
 									{business.category}
 								</Badge>
 							)}
@@ -195,11 +195,11 @@ export default function SearchResults() {
 					</div>
 
 					<div className="flex flex-col gap-2">
-						<Button asChild size="sm">
+						<Button asChild size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground">
 							<Link href={`/biz/${business.slug || business.id}`}>View Details</Link>
 						</Button>
 						{business.website && (
-							<Button asChild variant="outline" size="sm">
+							<Button asChild variant="outline" size="sm" className="border-border hover:bg-accent">
 								<Link href={business.website} target="_blank" rel="noopener noreferrer">
 									<Globe className="w-4 h-4" />
 								</Link>
@@ -212,76 +212,78 @@ export default function SearchResults() {
 	);
 
 	return (
-		<div className="container mx-auto px-4 py-6">
-			{/* Search Header */}
-			<div className="mb-6">
-				<h1 className="text-2xl font-bold mb-2">{query ? `Search results for "${query}"` : "All Businesses"}</h1>
-				{location && <p className="text-muted-foreground">in {location}</p>}
-				<p className="text-sm text-muted-foreground mt-1">{loading ? "Loading..." : `${filteredBusinesses.length} results found`}</p>
+		<div className="min-h-screen bg-background">
+			<div className="container mx-auto px-4 py-6">
+				{/* Search Header */}
+				<div className="mb-6">
+					<h1 className="text-2xl font-bold mb-2 text-foreground">{query ? `Search results for "${query}"` : "All Businesses"}</h1>
+					{location && <p className="text-muted-foreground">in {location}</p>}
+					<p className="text-sm text-muted-foreground mt-1">{loading ? "Loading..." : `${filteredBusinesses.length} results found`}</p>
+				</div>
+
+				{/* Controls */}
+				<div className="flex flex-col sm:flex-row gap-4 mb-6">
+					<div className="flex items-center gap-2">
+						<Button variant={viewMode === "grid" ? "default" : "outline"} size="sm" onClick={() => setViewMode("grid")} className={viewMode === "grid" ? "bg-primary text-primary-foreground" : "border-border text-foreground hover:bg-accent"}>
+							<Grid className="w-4 h-4" />
+						</Button>
+						<Button variant={viewMode === "list" ? "default" : "outline"} size="sm" onClick={() => setViewMode("list")} className={viewMode === "list" ? "bg-primary text-primary-foreground" : "border-border text-foreground hover:bg-accent"}>
+							<List className="w-4 h-4" />
+						</Button>
+						<Button variant={viewMode === "map" ? "default" : "outline"} size="sm" onClick={() => setViewMode("map")} asChild className={viewMode === "map" ? "bg-primary text-primary-foreground" : "border-border text-foreground hover:bg-accent"}>
+							<Link href={`/search/map?query=${query}&location=${location}`}>
+								<Map className="w-4 h-4" />
+							</Link>
+						</Button>
+					</div>
+
+					<div className="flex items-center gap-2">
+						<Select value={sortBy} onValueChange={handleSortChange}>
+							<SelectTrigger className="w-40 border-border bg-background text-foreground">
+								<SelectValue placeholder="Sort by" />
+							</SelectTrigger>
+							<SelectContent className="bg-popover border-border">
+								<SelectItem value="relevance">Relevance</SelectItem>
+								<SelectItem value="rating">Rating</SelectItem>
+								<SelectItem value="distance">Distance</SelectItem>
+								<SelectItem value="name">Name</SelectItem>
+							</SelectContent>
+						</Select>
+					</div>
+				</div>
+
+				{/* Results */}
+				{loading ? (
+					<div className={viewMode === "grid" ? "grid gap-6 md:grid-cols-2 lg:grid-cols-3" : "space-y-4"}>
+						{Array.from({ length: 6 }).map((_, i) => (
+							<Card key={i} className="bg-card border-border">
+								<CardHeader>
+									<Skeleton className="h-6 w-3/4 bg-muted" />
+									<Skeleton className="h-4 w-1/2 bg-muted" />
+								</CardHeader>
+								<CardContent>
+									<Skeleton className="h-4 w-full mb-2 bg-muted" />
+									<Skeleton className="h-4 w-2/3 bg-muted" />
+								</CardContent>
+							</Card>
+						))}
+					</div>
+				) : filteredBusinesses.length === 0 ? (
+					<div className="text-center py-12">
+						<h3 className="text-lg font-semibold mb-2 text-foreground">No results found</h3>
+						<p className="text-muted-foreground mb-4">Try adjusting your search terms or location.</p>
+						<Button asChild className="bg-primary hover:bg-primary/90 text-primary-foreground">
+							<Link href="/">Back to Home</Link>
+						</Button>
+					</div>
+				) : (
+					<div className={viewMode === "grid" ? "grid gap-6 md:grid-cols-2 lg:grid-cols-3" : "space-y-4"}>
+						{filteredBusinesses.map((business) => (
+							<div key={business.id}>{viewMode === "grid" ? <BusinessCard business={business} /> : <BusinessListItem business={business} />}</div>
+						))}
+					</div>
+				)}
 			</div>
-
-			{/* Controls */}
-			<div className="flex flex-col sm:flex-row gap-4 mb-6">
-				<div className="flex items-center gap-2">
-					<Button variant={viewMode === "grid" ? "default" : "outline"} size="sm" onClick={() => setViewMode("grid")}>
-						<Grid className="w-4 h-4" />
-					</Button>
-					<Button variant={viewMode === "list" ? "default" : "outline"} size="sm" onClick={() => setViewMode("list")}>
-						<List className="w-4 h-4" />
-					</Button>
-					<Button variant={viewMode === "map" ? "default" : "outline"} size="sm" onClick={() => setViewMode("map")} asChild>
-						<Link href={`/search/map?query=${query}&location=${location}`}>
-							<Map className="w-4 h-4" />
-						</Link>
-					</Button>
-				</div>
-
-				<div className="flex items-center gap-2">
-					<Select value={sortBy} onValueChange={handleSortChange}>
-						<SelectTrigger className="w-40">
-							<SelectValue placeholder="Sort by" />
-						</SelectTrigger>
-						<SelectContent>
-							<SelectItem value="relevance">Relevance</SelectItem>
-							<SelectItem value="rating">Rating</SelectItem>
-							<SelectItem value="distance">Distance</SelectItem>
-							<SelectItem value="name">Name</SelectItem>
-						</SelectContent>
-					</Select>
-				</div>
-			</div>
-
-			{/* Results */}
-			{loading ? (
-				<div className={viewMode === "grid" ? "grid gap-6 md:grid-cols-2 lg:grid-cols-3" : "space-y-4"}>
-					{Array.from({ length: 6 }).map((_, i) => (
-						<Card key={i}>
-							<CardHeader>
-								<Skeleton className="h-6 w-3/4" />
-								<Skeleton className="h-4 w-1/2" />
-							</CardHeader>
-							<CardContent>
-								<Skeleton className="h-4 w-full mb-2" />
-								<Skeleton className="h-4 w-2/3" />
-							</CardContent>
-						</Card>
-					))}
-				</div>
-			) : filteredBusinesses.length === 0 ? (
-				<div className="text-center py-12">
-					<h3 className="text-lg font-semibold mb-2">No results found</h3>
-					<p className="text-muted-foreground mb-4">Try adjusting your search terms or location.</p>
-					<Button asChild>
-						<Link href="/">Back to Home</Link>
-					</Button>
-				</div>
-			) : (
-				<div className={viewMode === "grid" ? "grid gap-6 md:grid-cols-2 lg:grid-cols-3" : "space-y-4"}>
-					{filteredBusinesses.map((business) => (
-						<div key={business.id}>{viewMode === "grid" ? <BusinessCard business={business} /> : <BusinessListItem business={business} />}</div>
-					))}
-				</div>
-			)}
 		</div>
 	);
 }

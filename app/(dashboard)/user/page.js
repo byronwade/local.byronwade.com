@@ -88,7 +88,7 @@ export default function Dashboard() {
 				</div>
 			</div>
 
-			<p className="text-muted-foreground">Welcome to your dashboard. Here's a quick overview of your account.</p>
+			<p className="text-muted-foreground">Welcome to your dashboard. Here&apos;s a quick overview of your account.</p>
 
 			<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 				{dashboardItems.map((item) => (
