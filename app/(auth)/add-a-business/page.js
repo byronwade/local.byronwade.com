@@ -84,7 +84,7 @@ const AddBusiness = () => {
 			console.log("Validation Errors:", formMethods.formState.errors);
 		}
 		setLoading(false);
-		if (isStepValid) {
+		if (isStepValid && currentStep < steps.length - 1) {
 			setCurrentStep((prev) => prev + 1);
 		}
 	};
@@ -114,7 +114,9 @@ const AddBusiness = () => {
 		}
 	};
 
-	const CurrentComponent = steps[currentStep].component;
+	// Ensure currentStep is within bounds
+	const safeCurrentStep = Math.max(0, Math.min(currentStep, steps.length - 1));
+	const CurrentComponent = steps[safeCurrentStep]?.component;
 
 	if (authLoading || !isInitialized) {
 		return (
@@ -132,30 +134,44 @@ const AddBusiness = () => {
 		return <VerifyAccount />;
 	}
 
+	// Add safety check for CurrentComponent
+	if (!CurrentComponent) {
+		console.error("CurrentComponent is undefined. currentStep:", currentStep, "steps.length:", steps.length);
+		return (
+			<div className="flex justify-center w-full">
+				<div className="text-center">
+					<h2 className="text-xl font-bold mb-4">Something went wrong</h2>
+					<p className="text-muted-foreground mb-4">There was an issue loading this step.</p>
+					<Button onClick={() => setCurrentStep(0)}>Start Over</Button>
+				</div>
+			</div>
+		);
+	}
+
 	return (
 		<FormProvider {...formMethods}>
 			<form>
 				<CurrentComponent />
-				{currentStep !== steps.findIndex((step) => step.name === "businessSuccess") && (
+				{safeCurrentStep !== steps.findIndex((step) => step.name === "businessSuccess") && (
 					<div className="flex justify-between mt-10">
-						{currentStep > 0 && currentStep !== steps.findIndex((step) => step.name === "activeUser") && (
+						{safeCurrentStep > 0 && safeCurrentStep !== steps.findIndex((step) => step.name === "activeUser") && (
 							<Button variant="outline" type="button" onClick={prevStep} className="mt-2">
 								<ArrowLeft className="w-4 h-4 mr-2" /> Back
 							</Button>
 						)}
-						{currentStep < steps.length - 1 && currentStep !== steps.findIndex((step) => step.name === "businessProfile") && (
+						{safeCurrentStep < steps.length - 1 && safeCurrentStep !== steps.findIndex((step) => step.name === "businessProfile") && (
 							<Button type="button" onClick={nextStep} className="mt-2">
 								Next <ArrowRight className="w-4 h-4 ml-2" />
 							</Button>
 						)}
-						{currentStep === steps.findIndex((step) => step.name === "businessProfile") && (
+						{safeCurrentStep === steps.findIndex((step) => step.name === "businessProfile") && (
 							<Button type="button" onClick={handleSubmit} className="mt-2">
 								Submit <ArrowRight className="w-4 h-4 ml-2" />
 							</Button>
 						)}
 					</div>
 				)}
-				{currentStep === steps.findIndex((step) => step.name === "businessSuccess") && (
+				{safeCurrentStep === steps.findIndex((step) => step.name === "businessSuccess") && (
 					<div className="flex flex-row justify-between w-full mt-4">
 						<Link href="/claim-a-business" passHref legacyBehavior>
 							<Button variant="outline" type="submit">

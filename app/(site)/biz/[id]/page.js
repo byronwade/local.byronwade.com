@@ -90,6 +90,9 @@ export default function BizProfile({ params }) {
 		author: "",
 	});
 
+	// Combine all images for photo navigation
+	const allImages = business ? [...(business.photos || []), ...(business.portfolioPhotos || [])] : [];
+
 	// Refs for scroll spy
 	const scrollSpyContainerRef = useRef(null);
 	const scrollSpyContentRef = useRef(null);
@@ -176,6 +179,81 @@ export default function BizProfile({ params }) {
 			return null;
 		}
 	};
+
+	// Enhanced section navigation with validation and error handling
+	const scrollToSection = useCallback(
+		(sectionId, options = {}) => {
+			try {
+				// Validate section exists
+				if (!validateSection(sectionId)) {
+					console.warn(`Invalid section: ${sectionId}`);
+					setScrollSpyError(`Section "${sectionId}" not found`);
+					return false;
+				}
+
+				const ref = sectionRefs[sectionId];
+				const element = ref.current;
+
+				// Enhanced scroll behavior
+				const scrollOptions = {
+					behavior: options.smooth !== false ? "smooth" : "auto",
+					block: options.block || "start",
+					inline: "nearest",
+					...options,
+				};
+
+				console.log(`📍 Scrolling to section: ${sectionId}`, scrollOptions);
+
+				// Perform scroll
+				element.scrollIntoView(scrollOptions);
+
+				// Update active section immediately for responsive UI
+				if (sectionId !== activeSection) {
+					setActiveSection(sectionId);
+				}
+
+				// Close mobile nav
+				setShowMobileNav(false);
+
+				// Clear any existing error
+				setScrollSpyError(null);
+
+				return true;
+			} catch (error) {
+				console.error(`Failed to scroll to section ${sectionId}:`, error);
+				setScrollSpyError(`Failed to navigate to ${sectionId}`);
+				return false;
+			}
+		},
+		[validateSection, sectionRefs, activeSection, setActiveSection, setShowMobileNav, setScrollSpyError]
+	);
+
+	// Enhanced scroll spy navigation with error handling and features
+	const handleScrollSpyScroll = useCallback(
+		(direction) => {
+			try {
+				const nextSection = getNextSection(direction);
+				if (!nextSection) {
+					return;
+				}
+
+				if (nextSection.id === activeSection) {
+					return;
+				}
+
+				// Add haptic feedback if available
+				if (navigator.vibrate) {
+					navigator.vibrate(50);
+				}
+
+				scrollToSection(nextSection.id);
+			} catch (error) {
+				console.error("Navigation error:", error);
+				setScrollSpyError("Navigation failed");
+			}
+		},
+		[getNextSection, activeSection, scrollToSection, setScrollSpyError]
+	);
 
 	// Load business data using the centralized business data generator
 	useEffect(() => {
@@ -857,81 +935,6 @@ export default function BizProfile({ params }) {
 		};
 	}, [headerHeight, activeSection, sectionRefs]); // Dependencies for observer recreation
 
-	// Enhanced scroll spy navigation with error handling and features
-	const handleScrollSpyScroll = useCallback(
-		(direction) => {
-			try {
-				const nextSection = getNextSection(direction);
-				if (!nextSection) {
-					return;
-				}
-
-				if (nextSection.id === activeSection) {
-					return;
-				}
-
-				// Add haptic feedback if available
-				if (navigator.vibrate) {
-					navigator.vibrate(50);
-				}
-
-				scrollToSection(nextSection.id);
-			} catch (error) {
-				console.error("Navigation error:", error);
-				setScrollSpyError("Navigation failed");
-			}
-		},
-		[getNextSection, activeSection, setScrollSpyError]
-	);
-
-	// Enhanced section navigation with validation and error handling
-	const scrollToSection = useCallback(
-		(sectionId, options = {}) => {
-			try {
-				// Validate section exists
-				if (!validateSection(sectionId)) {
-					console.warn(`Invalid section: ${sectionId}`);
-					setScrollSpyError(`Section "${sectionId}" not found`);
-					return false;
-				}
-
-				const ref = sectionRefs[sectionId];
-				const element = ref.current;
-
-				// Enhanced scroll behavior
-				const scrollOptions = {
-					behavior: options.smooth !== false ? "smooth" : "auto",
-					block: options.block || "start",
-					inline: "nearest",
-					...options,
-				};
-
-				console.log(`📍 Scrolling to section: ${sectionId}`, scrollOptions);
-
-				// Perform scroll
-				element.scrollIntoView(scrollOptions);
-
-				// Update active section immediately for responsive UI
-				if (sectionId !== activeSection) {
-					setActiveSection(sectionId);
-				}
-
-				// Close mobile nav
-				setShowMobileNav(false);
-
-				// Clear any existing error
-				setScrollSpyError(null);
-
-				return true;
-			} catch (error) {
-				console.error(`Failed to scroll to section ${sectionId}:`, error);
-				setScrollSpyError(`Failed to navigate to ${sectionId}`);
-				return false;
-			}
-		},
-		[validateSection, sectionRefs, activeSection, setActiveSection, setShowMobileNav, setScrollSpyError]
-	);
-
 	// Submit review
 	const handleSubmitReview = () => {
 		// In a real app, this would submit to an API
@@ -954,8 +957,6 @@ export default function BizProfile({ params }) {
 			</div>
 		);
 	}
-
-	const allImages = [...business.photos, ...business.portfolioPhotos];
 
 	return (
 		<div className="min-h-screen bg-background">
@@ -1063,15 +1064,14 @@ export default function BizProfile({ params }) {
 										<Clock className="w-3 h-3 mr-2" />
 										Hours
 									</h4>
-									<div className="grid grid-cols-2 text-xs gap-x-4 gap-y-2">
-										{Object.entries(business?.hours || {})
-											.slice(0, 4)
-											.map(([day, hours]) => (
-												<div key={day} className="flex justify-between">
-													<span className="capitalize text-muted-foreground">{day.slice(0, 3)}</span>
-													<span className="text-foreground">{hours}</span>
-												</div>
-											))}
+									<div className="text-xs text-foreground">
+										{business.isOpenNow && (
+											<div className="flex items-center space-x-1 mb-1">
+												<div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+												<span className="text-green-600 font-medium">Open</span>
+											</div>
+										)}
+										<div className="text-muted-foreground">{business?.hours || "Hours not available"}</div>
 									</div>
 								</div>
 
@@ -1124,214 +1124,113 @@ export default function BizProfile({ params }) {
 			<div className="px-3 py-4 mx-auto max-w-7xl sm:px-4 sm:py-6 lg:px-8 lg:py-8">
 				{/* Main Content - Full Width */}
 				<div className="space-y-6 sm:space-y-8">
-					{/* Business Header */}
-					{/* Clean Minimalistic Business Header */}
-					<div className="space-y-8">
-						{/* Business Name & Status Row */}
-						<div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:items-start sm:justify-between">
-							<div className="space-y-3">
-								<div className="space-y-2">
-									<h1 className="text-3xl font-bold leading-tight text-foreground sm:text-4xl md:text-5xl">{business.name}</h1>
-									<div className="flex items-center space-x-3 text-muted-foreground">
-										<p className="text-lg">{business.type}</p>
+					{/* Minimalistic Business Header */}
+					<div className="space-y-6">
+						{/* Business Name & Basic Info */}
+						<div className="space-y-4">
+							<div className="flex items-start justify-between">
+								<div className="space-y-3 flex-1">
+									<h1 className="text-3xl font-bold text-foreground sm:text-4xl lg:text-5xl">{business.name}</h1>
+									<div className="flex items-center space-x-2 text-muted-foreground">
+										<span className="text-lg">{business.type}</span>
 										<span>•</span>
-										<div className="flex items-center space-x-1 text-sm">
-											<MapPin className="w-4 h-4" />
-											<span>{business.serviceArea.primary}</span>
+										<MapPin className="w-4 h-4" />
+										<span>{business.serviceArea.primary}</span>
+									</div>
+								</div>
+								{business.verified && (
+									<div className="flex items-center px-3 py-1.5 space-x-2 rounded-full bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-950/20 dark:text-blue-400 dark:border-blue-800/50">
+										<Shield className="w-4 h-4" />
+										<span className="text-sm font-medium">Verified</span>
+									</div>
+								)}
+							</div>
+
+							{/* Rating & Status Row */}
+							<div className="flex items-center justify-between">
+								<div className="flex items-center space-x-6">
+									<div className="flex items-center space-x-2">
+										<div className="flex items-center space-x-1">
+											{[...Array(5)].map((_, i) => (
+												<Star key={i} className={`w-5 h-5 ${i < Math.floor(business.rating) ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground"}`} />
+											))}
 										</div>
+										<span className="text-lg font-semibold">{business.rating}</span>
+										<span className="text-muted-foreground">({business.reviewCount})</span>
+									</div>
+									<div className={`flex items-center px-2 py-1 space-x-1.5 text-sm rounded-lg ${business.status === "Open" ? "bg-green-50 text-green-700 dark:bg-green-950/20 dark:text-green-400" : "bg-red-50 text-red-700 dark:bg-red-950/20 dark:text-red-400"}`}>
+										<div className={`w-2 h-2 rounded-full ${business.status === "Open" ? "bg-green-500" : "bg-red-500"}`} />
+										<span className="font-medium">{business.status}</span>
 									</div>
 								</div>
-
-								{/* Quick Business Details - More Spaced */}
-								<div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
-									<div className="flex items-center space-x-2">
-										<Calendar className="w-4 h-4" />
-										<span>Since {business.established}</span>
-									</div>
-									<div className="flex items-center space-x-2">
-										<Users className="w-4 h-4" />
-										<span>{business.employees} employees</span>
-									</div>
-									<div className="flex items-center space-x-2">
-										<Shield className="w-4 h-4 text-green-500" />
-										<span className="text-green-600">Licensed & Insured</span>
-									</div>
-								</div>
-							</div>
-
-							{/* Verification & Status */}
-							<div className="flex flex-col items-start space-y-3 sm:items-end">
-								<div className="flex items-center px-4 py-2 space-x-2 rounded-full shadow-lg bg-gradient-to-r from-blue-500 to-green-500">
-									<Award className="w-4 h-4 text-white" />
-									<span className="text-sm font-semibold text-white">Thorbis Verified</span>
-								</div>
-								<div className={`flex items-center px-3 py-1.5 space-x-2 rounded-full ${business.status === "Open" ? "bg-green-500/10 text-green-600 border border-green-500/20" : "bg-red-500/10 text-red-600 border border-red-500/20"}`}>
-									<div className={`w-2 h-2 rounded-full ${business.status === "Open" ? "bg-green-500" : "bg-red-500"}`} />
-									<span className="text-sm font-medium">{business.status}</span>
-									{business.status === "Open" && <span className="text-xs text-green-500/70">• Closes 6 PM</span>}
-								</div>
-							</div>
-						</div>
-
-						{/* Rating & Actions Row - Cleaner Layout */}
-						<div className="flex flex-col space-y-6 lg:flex-row lg:space-y-0 lg:items-center lg:justify-between">
-							{/* Rating Section */}
-							<div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:items-center sm:space-x-8">
-								<div className="flex items-center space-x-4">
-									<div className="flex items-center space-x-2">
-										{[...Array(5)].map((_, i) => (
-											<Star key={i} className={`w-6 h-6 ${i < Math.floor(business.rating) ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground"}`} />
-										))}
-									</div>
-									<div className="text-2xl font-bold text-foreground">{business.rating}</div>
-								</div>
-								<div className="flex items-center space-x-4 text-muted-foreground">
-									<span>({business.reviewCount.toLocaleString()} reviews)</span>
-									<div className="flex items-center px-3 py-1 text-sm font-medium border rounded-full text-primary bg-primary/10 border-primary/20">{business.priceLevel}</div>
-								</div>
-							</div>
-
-							{/* Action Buttons */}
-							<div className="flex items-center space-x-3">
-								<Button variant="outline" size="sm" className="border-border hover:bg-muted">
-									<Share className="w-4 h-4 mr-2" />
-									Share
-								</Button>
-								<Button variant="outline" size="sm" className="border-border hover:bg-muted">
-									<Heart className="w-4 h-4 mr-2" />
-									Save
-								</Button>
-								<Button variant="outline" size="sm" className="border-border hover:bg-muted">
-									<Flag className="w-4 h-4 mr-2" />
-									Report
-								</Button>
-							</div>
-						</div>
-
-						{/* Key Performance Stats - Improved Visual Hierarchy */}
-						<div className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">
-							<div className="p-4 text-center transition-all duration-200 border rounded-xl bg-card/50 border-border/50 hover:bg-card/70 hover:shadow-md lg:p-6">
-								<div className="text-2xl font-bold text-primary lg:text-3xl">{business.trustScore}%</div>
-								<div className="mt-1 text-sm font-medium text-muted-foreground">Trust Score</div>
-								<div className="mt-1 text-xs text-muted-foreground lg:mt-2">Industry leading</div>
-							</div>
-							<div className="p-4 text-center transition-all duration-200 border rounded-xl bg-card/50 border-border/50 hover:bg-card/70 hover:shadow-md lg:p-6">
-								<div className="text-2xl font-bold text-green-500 lg:text-3xl">{business.responseRate}%</div>
-								<div className="mt-1 text-sm font-medium text-muted-foreground">Response Rate</div>
-								<div className="mt-1 text-xs text-muted-foreground lg:mt-2">Responds {business.responseTime}</div>
-							</div>
-							<div className="p-4 text-center transition-all duration-200 border rounded-xl bg-card/50 border-border/50 hover:bg-card/70 hover:shadow-md lg:p-6">
-								<div className="text-2xl font-bold text-blue-500 lg:text-3xl">{business.stats.monthlyViews.toLocaleString()}</div>
-								<div className="mt-1 text-sm font-medium text-muted-foreground">Monthly Views</div>
-								<div className="mt-1 text-xs text-muted-foreground lg:mt-2">Top 5% in area</div>
-							</div>
-							<div className="p-4 text-center transition-all duration-200 border rounded-xl bg-card/50 border-border/50 hover:bg-card/70 hover:shadow-md lg:p-6">
-								<div className="text-2xl font-bold text-purple-500 lg:text-3xl">{business.stats.repeatCustomers}%</div>
-								<div className="mt-1 text-sm font-medium text-muted-foreground">Repeat Customers</div>
-								<div className="mt-1 text-xs text-muted-foreground lg:mt-2">Customer loyalty</div>
-							</div>
-						</div>
-
-						{/* Contact & Information Grid - Better Organization */}
-						<div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-							{/* Contact Section - Streamlined */}
-							<div className="space-y-4">
-								<h3 className="text-lg font-semibold text-foreground">Contact</h3>
-								<div className="space-y-3">
-									<Button className="w-full h-12 font-semibold transition-all duration-200 bg-primary hover:bg-primary/90 text-primary-foreground hover:shadow-lg">
-										<Phone className="w-5 h-5 mr-3" />
-										Call {business.phone}
+								<div className="flex items-center space-x-2">
+									<Button variant="ghost" size="sm">
+										<Share className="w-4 h-4" />
 									</Button>
-									<div className="grid grid-cols-2 gap-3">
-										<Button variant="outline" className="h-10 border-border hover:bg-muted hover:border-primary">
+									<Button variant="ghost" size="sm">
+										<Heart className="w-4 h-4" />
+									</Button>
+								</div>
+							</div>
+						</div>
+
+						{/* Essential Info Grid */}
+						<div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+							{/* Contact */}
+							<div className="space-y-4">
+								<div className="space-y-3">
+									<Button className="w-full h-12 text-base font-semibold">
+										<Phone className="w-5 h-5 mr-2" />
+										{business.phone}
+									</Button>
+									<div className="grid grid-cols-2 gap-2">
+										<Button variant="outline" className="h-10">
 											<MapPin className="w-4 h-4 mr-2" />
 											Directions
 										</Button>
-										<Button variant="outline" className="h-10 border-border hover:bg-muted hover:border-primary">
+										<Button variant="outline" className="h-10">
 											<Globe className="w-4 h-4 mr-2" />
 											Website
 										</Button>
 									</div>
-									<div className="grid grid-cols-2 gap-3">
-										<Button variant="outline" className="h-10 border-border hover:bg-muted hover:border-primary">
-											<Mail className="w-4 h-4 mr-2" />
-											Message
-										</Button>
-										<Button variant="outline" className="h-10 border-border hover:bg-muted hover:border-primary">
-											<Calendar className="w-4 h-4 mr-2" />
-											Book Now
-										</Button>
-									</div>
 								</div>
-
-								{/* Contact Details - Cleaner */}
-								<div className="pt-4 space-y-3 text-sm border-t text-muted-foreground border-border">
+								<div className="text-sm text-muted-foreground">
 									<div className="flex items-start space-x-2">
 										<MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
-										<span className="leading-relaxed">{business.address}</span>
-									</div>
-									<div className="flex items-center space-x-2">
-										<Clock className="w-4 h-4 flex-shrink-0" />
-										<span className="font-medium text-green-600">Open until 6:00 PM</span>
+										<span>{business.address}</span>
 									</div>
 								</div>
 							</div>
 
-							{/* Hours Section - More Concise */}
+							{/* Hours */}
 							<div className="space-y-4">
-								<h3 className="text-lg font-semibold text-foreground">Hours</h3>
+								<h3 className="font-semibold">Hours</h3>
 								<div className="space-y-2 text-sm">
-									{Object.entries(business.hours).map(([day, hours]) => {
-										const today = new Date().toLocaleDateString("en-US", { weekday: "long" }).toLowerCase();
-										const isToday = day.toLowerCase() === today;
-										return (
-											<div key={day} className="flex items-center justify-between py-1">
-												<span className="font-medium capitalize text-muted-foreground">{day.slice(0, 3)}</span>
-												<span className={`font-medium text-right ${isToday ? "text-primary" : "text-foreground"}`}>{hours}</span>
-											</div>
-										);
-									})}
-								</div>
-								<div className="pt-3 mt-4 space-y-2 border-t border-border">
-									<Button variant="ghost" size="sm" className="h-8 p-0 text-primary hover:text-primary/80">
-										View special hours
-									</Button>
+									{business.isOpenNow && (
+										<div className="flex items-center space-x-2 mb-2">
+											<div className="w-2 h-2 bg-green-500 rounded-full"></div>
+											<span className="text-green-600 font-medium text-sm">Open Now</span>
+										</div>
+									)}
+									<div className="text-foreground">{business.hours || "Hours not available"}</div>
 								</div>
 							</div>
 
-							{/* Reviews & Services - Simplified */}
+							{/* Quick Actions */}
 							<div className="space-y-4">
-								<h3 className="text-lg font-semibold text-foreground">Quick Actions</h3>
-								<div className="space-y-3">
-									<Button size="default" className="w-full h-12 font-semibold transition-all duration-200 bg-primary hover:bg-primary/90 text-primary-foreground hover:shadow-lg" onClick={() => setShowReviewModal(true)}>
-										<Edit className="w-5 h-5 mr-3" />
+								<h3 className="font-semibold">Quick Actions</h3>
+								<div className="space-y-2">
+									<Button variant="outline" className="w-full justify-start h-10" onClick={() => setShowReviewModal(true)}>
+										<Edit className="w-4 h-4 mr-2" />
 										Write Review
 									</Button>
-									<div className="grid grid-cols-1 gap-2">
-										<Button variant="outline" size="default" className="h-10 font-medium border-border hover:bg-muted hover:border-primary" onClick={() => scrollToSection("reviews")}>
-											<Star className="w-4 h-4 mr-2" />
-											{business.reviewCount} Reviews
-										</Button>
-										<Button variant="outline" size="default" className="h-10 font-medium border-border hover:bg-muted hover:border-primary" onClick={() => scrollToSection("services")}>
-											<Building className="w-4 h-4 mr-2" />
-											View Services
-										</Button>
-									</div>
-								</div>
-
-								{/* Popular Services - More Compact */}
-								<div className="pt-4 space-y-3 border-t border-border">
-									<h4 className="text-sm font-medium text-foreground">What&apos;s Available</h4>
-									<div className="space-y-2">
-										{business.amenities.slice(0, 3).map((amenity, index) => (
-											<div key={index} className="flex items-center space-x-2 text-sm">
-												<CheckCircle className="w-3.5 h-3.5 text-green-500 flex-shrink-0" />
-												<span className="text-foreground">{amenity.name}</span>
-											</div>
-										))}
-									</div>
-									<Button variant="ghost" size="sm" className="h-8 p-0 mt-2 text-primary hover:text-primary/80">
-										View all amenities
+									<Button variant="outline" className="w-full justify-start h-10" onClick={() => scrollToSection("reviews")}>
+										<Star className="w-4 h-4 mr-2" />
+										View Reviews
+									</Button>
+									<Button variant="outline" className="w-full justify-start h-10" onClick={() => scrollToSection("services")}>
+										<Settings className="w-4 h-4 mr-2" />
+										Services
 									</Button>
 								</div>
 							</div>

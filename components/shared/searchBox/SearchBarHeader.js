@@ -145,7 +145,10 @@ const SearchBarOnly = () => {
 		setSearchQuery(value);
 		setTouched({ ...touched, searchQuery: true });
 
-		if (value.trim()) {
+		const isValid = value.trim().length > 0;
+		console.log("Input changed", { value, isValid, aiMode });
+
+		if (isValid) {
 			setIsFormValid(true);
 			setErrors({});
 			if (!aiMode) {
@@ -171,15 +174,22 @@ const SearchBarOnly = () => {
 
 	// Handle suggestion selection
 	const handleSuggestionSelect = (suggestion) => {
-		setSearchQuery(suggestion.text || suggestion.query || suggestion);
+		const searchText = suggestion.text || suggestion.query || suggestion;
+		setSearchQuery(searchText);
 		setAutocompleteOpen(false);
 		setActiveDropdown(null);
-		addRecentSearch(suggestion.text || suggestion.query || suggestion);
+		addRecentSearch(searchText);
+		// Update form validity when suggestion is selected
+		if (searchText.trim()) {
+			setIsFormValid(true);
+			setErrors({});
+		}
 	};
 
 	// Handle form submission
 	const handleFormSubmit = (e) => {
 		e.preventDefault();
+		console.log("Form submitted", { searchQuery, isFormValid, aiMode, loading });
 
 		if (aiMode) {
 			// Handle AI mode submission
@@ -187,6 +197,13 @@ const SearchBarOnly = () => {
 				window.handleAIInput(searchQuery);
 				setSearchQuery(""); // Clear the search bar after sending to AI
 			}
+			return;
+		}
+
+		// Check if form is valid before proceeding
+		if (!searchQuery.trim()) {
+			console.log("Search query is empty, not submitting");
+			setErrors({ searchQuery: "Search query cannot be empty" });
 			return;
 		}
 
@@ -204,9 +221,12 @@ const SearchBarOnly = () => {
 				location: location.value || "",
 			}).toString();
 
+			console.log("Navigating to search page:", `/search?${queryString}`);
+
 			// Navigate to search page
 			window.location.href = `/search?${queryString}`;
 		} catch (error) {
+			console.error("Form submission error:", error);
 			if (error instanceof z.ZodError) {
 				const fieldErrors = {};
 				error.errors.forEach((err) => {
@@ -277,10 +297,18 @@ const SearchBarOnly = () => {
 						<Button
 							size="icon"
 							variant={aiMode ? "default" : isFormValid ? "default" : "ghost"}
-							className={`${aiMode ? "bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:from-purple-600 hover:to-blue-600 border-purple-500" : isFormValid ? "bg-primary border-primary text-primary-foreground hover:bg-primary/90 shadow-sm" : "border-border text-muted-foreground hover:bg-muted"} h-6 w-6 transition-all duration-200`}
+							className={`${aiMode ? "bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:from-purple-600 hover:to-blue-600 border-purple-500" : isFormValid ? "bg-primary border-primary text-primary-foreground hover:bg-primary/90 shadow-sm" : "border-border text-muted-foreground hover:bg-muted"} h-6 w-6 transition-all duration-200 pointer-events-auto cursor-pointer`}
 							type="submit"
 							disabled={(!isFormValid && !aiMode) || loading}
 							title={aiMode ? "Send message" : "Search"}
+							onClick={(e) => {
+								// Ensure the click event propagates properly
+								if ((!isFormValid && !aiMode) || loading) {
+									e.preventDefault();
+									return;
+								}
+								console.log("Submit button clicked", { isFormValid, aiMode, searchQuery });
+							}}
 						>
 							{loading ? <Loader2 className="w-3 h-3 animate-spin" /> : aiMode ? <Send className="w-3 h-3" /> : <ArrowRight className="w-3 h-3" />}
 						</Button>

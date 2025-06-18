@@ -6,7 +6,7 @@ import { Users, Settings, LifeBuoy, BarChart2, Crown, FileText, ShoppingCart } f
 
 const adminItems = [
 	{
-		href: "/admin/users",
+		href: "/dashboard/admin/users",
 		icon: <Users className="w-6 h-6" />,
 		title: "Users",
 		description: "Manage all registered users.",

@@ -26,8 +26,9 @@ const MapContainer = dynamic(() => import("@components/site/map/MapContainer"), 
 	loading: () => <FullScreenMapSkeleton />,
 });
 
-const SearchContainer = () => {
-	const searchParams = useSearchParams();
+const SearchContainer = ({ searchParams: propSearchParams }) => {
+	const urlSearchParams = useSearchParams();
+	const searchParams = propSearchParams || urlSearchParams;
 	const { filteredBusinesses, activeBusinessId, selectedBusiness, setSelectedBusiness, clearSelectedBusiness, initializeWithMockData, loading, searchBusinesses, setActiveBusinessId } = useBusinessStore();
 	const { searchQuery, searchLocation } = useSearchStore();
 	const [isLoading, setIsLoading] = useState(true);
@@ -35,6 +36,7 @@ const SearchContainer = () => {
 	const [showActivityFeed, setShowActivityFeed] = useState(false);
 	const activeCardRef = useRef(null);
 	const [isAISidebarOpen, setIsAISidebarOpen] = useState(false);
+	const [showMap, setShowMap] = useState(true);
 
 	useEffect(() => {
 		// Initialize with mock data immediately
@@ -50,8 +52,9 @@ const SearchContainer = () => {
 
 	// Handle URL parameters
 	useEffect(() => {
-		const query = searchParams.get("q");
-		const location = searchParams.get("location");
+		// Handle both URLSearchParams (from useSearchParams) and plain object (from props)
+		const query = typeof searchParams?.get === "function" ? searchParams.get("q") : searchParams?.q || "";
+		const location = typeof searchParams?.get === "function" ? searchParams.get("location") : searchParams?.location || "";
 
 		// For now, don't override with search results if we have businesses
 		if ((query || location) && filteredBusinesses.length === 0) {
@@ -80,6 +83,7 @@ const SearchContainer = () => {
 		setSelectedBusiness(business);
 		setActiveBusinessId(business.id);
 		console.log("SearchContainer - activeBusinessId set to:", business?.id);
+		console.log("SearchContainer - Current store state:", { activeBusinessId, selectedBusiness });
 	};
 
 	const handleBusinessClose = () => {
@@ -100,6 +104,10 @@ const SearchContainer = () => {
 		}
 	};
 
+	const handleMapToggle = () => {
+		setShowMap(!showMap);
+	};
+
 	return (
 		<div className="h-screen w-full flex flex-col bg-background overflow-hidden">
 			{/* Main Header from Homepage */}
@@ -109,30 +117,45 @@ const SearchContainer = () => {
 
 			{/* Main Content Area */}
 			<div className="flex-1 min-h-0 relative">
-				<ResizablePanelGroup direction="horizontal" className="h-full" onLayout={handlePanelResize}>
-					{/* Sidebar Panel - Dynamic sizing based on content */}
-					<ResizablePanel defaultSize={activeBusinessId ? 30 : 22} minSize={activeBusinessId ? 25 : 18} maxSize={activeBusinessId ? 45 : 35}>
-						<div className="h-full bg-card border-r border-border overflow-hidden relative">
-							{/* Business List - Default View */}
+				{showMap ? (
+					<ResizablePanelGroup direction="horizontal" className="h-full" onLayout={handlePanelResize}>
+						{/* Sidebar Panel - Better minimum width for proper header layout */}
+						<ResizablePanel defaultSize={activeBusinessId ? 35 : 28} minSize={22} maxSize={85} className="lg:max-w-[45%] md:max-w-[65%] sm:max-w-[80%] max-w-[95%]">
+							<div className="h-full bg-card border-r border-border overflow-hidden relative">
+								{/* Business List - Default View */}
+								<div className={`absolute inset-0 transition-all duration-500 ease-in-out ${!isAISidebarOpen ? "transform translate-x-0 opacity-100 z-10" : "transform -translate-x-full opacity-0 z-0"}`}>
+									<BusinessCardList businesses={filteredBusinesses} loading={loading} onBusinessSelect={handleBusinessSelect} activeBusinessId={activeBusinessId} activeCardRef={activeCardRef} onAIClick={handleAIClick} showMap={showMap} onMapToggle={handleMapToggle} />
+								</div>
+
+								{/* AI Chat Sidebar */}
+								<div className={`absolute inset-0 transition-all duration-500 ease-in-out ${isAISidebarOpen ? "transform translate-x-0 opacity-100 z-10" : "transform translate-x-full opacity-0 z-0"}`}>{isAISidebarOpen && <UnifiedAIChat isOpen={isAISidebarOpen} onClose={handleAIClose} mode="sidebar" />}</div>
+							</div>
+						</ResizablePanel>
+
+						{/* Resizable Handle */}
+						<ResizableHandle withHandle />
+
+						{/* Map Panel */}
+						<ResizablePanel defaultSize={activeBusinessId ? 65 : 72}>
+							<div className="h-full w-full relative overflow-hidden">
+								<MapContainer businesses={filteredBusinesses} selectedBusiness={selectedBusiness} onBusinessSelect={handleBusinessSelect} />
+							</div>
+						</ResizablePanel>
+					</ResizablePanelGroup>
+				) : (
+					/* List-only view - Full width */
+					<div className="h-full w-full transition-all duration-500 ease-in-out bg-background">
+						<div className="h-full overflow-hidden relative">
+							{/* Business List - Full Width View */}
 							<div className={`absolute inset-0 transition-all duration-500 ease-in-out ${!isAISidebarOpen ? "transform translate-x-0 opacity-100 z-10" : "transform -translate-x-full opacity-0 z-0"}`}>
-								<BusinessCardList businesses={filteredBusinesses} loading={loading} onBusinessSelect={handleBusinessSelect} activeBusinessId={activeBusinessId} activeCardRef={activeCardRef} onAIClick={handleAIClick} />
+								<BusinessCardList businesses={filteredBusinesses} loading={loading} onBusinessSelect={handleBusinessSelect} activeBusinessId={activeBusinessId} activeCardRef={activeCardRef} onAIClick={handleAIClick} showMap={showMap} onMapToggle={handleMapToggle} listMode="full" />
 							</div>
 
 							{/* AI Chat Sidebar */}
 							<div className={`absolute inset-0 transition-all duration-500 ease-in-out ${isAISidebarOpen ? "transform translate-x-0 opacity-100 z-10" : "transform translate-x-full opacity-0 z-0"}`}>{isAISidebarOpen && <UnifiedAIChat isOpen={isAISidebarOpen} onClose={handleAIClose} mode="sidebar" />}</div>
 						</div>
-					</ResizablePanel>
-
-					{/* Resizable Handle */}
-					<ResizableHandle withHandle />
-
-					{/* Map Panel */}
-					<ResizablePanel defaultSize={activeBusinessId ? 70 : 78}>
-						<div className="h-full w-full relative overflow-hidden">
-							<MapContainer businesses={filteredBusinesses} selectedBusiness={selectedBusiness} onBusinessSelect={handleBusinessSelect} />
-						</div>
-					</ResizablePanel>
-				</ResizablePanelGroup>
+					</div>
+				)}
 			</div>
 
 			{/* Loading Overlay */}

@@ -11,49 +11,49 @@ import { Activity, Briefcase, ChevronDown, DollarSign, Gift, Settings, Star, Tre
 
 const dashboardItems = [
 	{
-		href: "/user/activity",
+		href: "/dashboard/user/activity",
 		icon: <Activity className="w-6 h-6" />,
 		title: "My Activity",
 		description: "See your latest activity and interactions.",
 	},
 	{
-		href: "/user/jobs",
+		href: "/dashboard/user/jobs",
 		icon: <Briefcase className="w-6 h-6" />,
 		title: "My Jobs",
 		description: "Manage your job postings and applications.",
 	},
 	{
-		href: "/user/billing",
+		href: "/dashboard/user/billing",
 		icon: <DollarSign className="w-6 h-6" />,
 		title: "Billing",
 		description: "View your billing history and manage payment methods.",
 	},
 	{
-		href: "/user/boosts",
+		href: "/dashboard/user/boosts",
 		icon: <TrendingUp className="w-6 h-6" />,
 		title: "Boosts",
 		description: "Manage your boosts and see their performance.",
 	},
 	{
-		href: "/user/pro",
+		href: "/dashboard/user/pro",
 		icon: <Star className="w-6 h-6" />,
 		title: "Pro Account",
 		description: "Upgrade to a Pro account for more features.",
 	},
 	{
-		href: "/user/referral",
+		href: "/dashboard/user/referral",
 		icon: <Gift className="w-6 h-6" />,
 		title: "Referrals",
 		description: "Refer friends and earn rewards.",
 	},
 	{
-		href: "/user/settings",
+		href: "/dashboard/user/settings",
 		icon: <Settings className="w-6 h-6" />,
 		title: "Settings",
 		description: "Manage your account settings.",
 	},
 	{
-		href: "/user/support",
+		href: "/dashboard/user/support",
 		icon: <HelpCircle className="w-6 h-6" />,
 		title: "Support",
 		description: "Get help and support.",
@@ -78,7 +78,7 @@ export default function Dashboard() {
 						</DropdownMenuTrigger>
 						<DropdownMenuContent align="end">
 							<DropdownMenuItem>
-								<Link href="/user/jobs/new">New Job</Link>
+								<Link href="/dashboard/user/jobs/new">New Job</Link>
 							</DropdownMenuItem>
 							<DropdownMenuItem>
 								<Link href="/add-a-business">New Business</Link>

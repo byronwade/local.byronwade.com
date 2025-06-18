@@ -231,7 +231,7 @@ export default function SearchResults() {
 							<List className="w-4 h-4" />
 						</Button>
 						<Button variant={viewMode === "map" ? "default" : "outline"} size="sm" onClick={() => setViewMode("map")} asChild className={viewMode === "map" ? "bg-primary text-primary-foreground" : "border-border text-foreground hover:bg-accent"}>
-							<Link href={`/search/map?query=${query}&location=${location}`}>
+							<Link href={`/search?q=${query}&location=${location}`}>
 								<Map className="w-4 h-4" />
 							</Link>
 						</Button>

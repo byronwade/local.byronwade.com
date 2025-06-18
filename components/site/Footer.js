@@ -11,7 +11,7 @@ export default function Footer() {
 	const pathname = usePathname();
 
 	// Check if the current route contains /search
-	if (pathname.includes("/search/map")) {
+	if (pathname.includes("/search")) {
 		return null;
 	}
 

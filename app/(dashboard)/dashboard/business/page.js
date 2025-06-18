@@ -11,11 +11,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Briefcase, Building, LifeBuoy, Settings } from "lucide-react";
 
 const businessNavItems = [
-	{ name: "Profile", href: "/business/profile", icon: Building },
-	{ name: "Jobs", href: "/business/jobs", icon: Briefcase },
-	{ name: "Billing", href: "/business/billing", icon: CreditCard },
-	{ name: "Settings", href: "/business/settings", icon: Settings },
-	{ name: "Support", href: "/business/support", icon: LifeBuoy },
+	{ name: "Profile", href: "/dashboard/business/profile", icon: Building },
+	{ name: "Jobs", href: "/dashboard/business/jobs", icon: Briefcase },
+	{ name: "Billing", href: "/dashboard/business/billing", icon: CreditCard },
+	{ name: "Settings", href: "/dashboard/business/settings", icon: Settings },
+	{ name: "Support", href: "/dashboard/business/support", icon: LifeBuoy },
 ];
 
 const stats = [

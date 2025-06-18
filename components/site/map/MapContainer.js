@@ -116,50 +116,49 @@ const MapContainer = React.forwardRef((props, ref) => {
 		};
 	}, []);
 
-	const handleMapLoad = useCallback(async () => {
-		if (mapRef.current) {
-			const map = mapRef.current.getMap();
-			setMapRef(map);
+	// Define event handlers before using them in useCallback dependencies
+	const handleMoveStart = useCallback(() => {
+		try {
+			if (activeBusinessId !== null && mapRef.current) {
+				const map = mapRef.current.getMap();
+				if (!map || !map.isStyleLoaded()) return;
 
-			// Optimize map performance
-			map.on("sourcedata", (e) => {
-				if (e.isSourceLoaded) {
-					// Source has finished loading
-					map.getCanvas().style.cursor = "";
+				const bounds = mapRef.current.getBounds();
+				const business = useBusinessStore.getState().filteredBusinesses.find((b) => b.id === activeBusinessId);
+				if (business?.coordinates) {
+					const { lat, lng } = business.coordinates;
+					if (lat >= bounds.getSouth() && lat <= bounds.getNorth() && lng >= bounds.getWest() && lng <= bounds.getEast()) {
+						console.log("Active business is within bounds");
+					} else {
+						setActiveBusinessId(null);
+						console.log("Active business set to null on move start");
+					}
 				}
-			});
-
-			// Add custom controls and interactions
-			map.on("click", (e) => {
-				// Clear active business when clicking empty area
-				if (!e.originalEvent.target.closest(".mapboxgl-marker")) {
-					setActiveBusinessId(null);
-				}
-			});
-
-			map.on("movestart", handleMoveStart);
-			map.on("moveend", handleMapMoveEnd);
-			map.on("zoomend", handleZoomEnd);
-
-			return () => {
-				map.off("movestart", handleMoveStart);
-				map.off("moveend", handleMapMoveEnd);
-				map.off("zoomend", handleZoomEnd);
-			};
+			}
+		} catch (error) {
+			console.warn("Move start handler error:", error);
 		}
-	}, [setMapRef, setActiveBusinessId, handleMoveStart, handleMapMoveEnd, handleZoomEnd]);
+	}, [activeBusinessId, setActiveBusinessId]);
 
 	// Debounced map move handler for better performance
 	const handleMapMoveEnd = useCallback(async () => {
-		if (mapRef.current && !loading) {
-			setIsSearching(true);
-			const bounds = await getMapBounds();
-			const zoom = await getMapZoom();
-			console.log("Map move ended with bounds:", bounds, "and zoom:", zoom);
-			if (bounds && !activeBusinessId) {
-				console.log("Fetching filtered businesses with bounds:", bounds, "and zoom:", zoom, "and query:", searchQuery);
-				await fetchFilteredBusinesses(bounds, zoom, searchQuery);
+		try {
+			if (mapRef.current && !loading) {
+				const map = mapRef.current.getMap();
+				if (!map || !map.isStyleLoaded()) return;
+
+				setIsSearching(true);
+				const bounds = await getMapBounds();
+				const zoom = await getMapZoom();
+				console.log("Map move ended with bounds:", bounds, "and zoom:", zoom);
+				if (bounds && !activeBusinessId) {
+					console.log("Fetching filtered businesses with bounds:", bounds, "and zoom:", zoom, "and query:", searchQuery);
+					await fetchFilteredBusinesses(bounds, zoom, searchQuery);
+				}
+				setIsSearching(false);
 			}
+		} catch (error) {
+			console.warn("Move end handler error:", error);
 			setIsSearching(false);
 		}
 	}, [getMapBounds, fetchFilteredBusinesses, activeBusinessId, searchQuery, getMapZoom, loading]);
@@ -169,21 +168,49 @@ const MapContainer = React.forwardRef((props, ref) => {
 		handleMapMoveEnd();
 	}, [handleMapMoveEnd]);
 
-	const handleMoveStart = useCallback(() => {
-		if (activeBusinessId !== null && mapRef.current) {
-			const bounds = mapRef.current.getBounds();
-			const business = useBusinessStore.getState().filteredBusinesses.find((b) => b.id === activeBusinessId);
-			if (business?.coordinates) {
-				const { lat, lng } = business.coordinates;
-				if (lat >= bounds.getSouth() && lat <= bounds.getNorth() && lng >= bounds.getWest() && lng <= bounds.getEast()) {
-					console.log("Active business is within bounds");
-				} else {
-					setActiveBusinessId(null);
-					console.log("Active business set to null on move start");
+	const handleMapLoad = useCallback(async () => {
+		if (mapRef.current) {
+			const map = mapRef.current.getMap();
+			setMapRef(map);
+
+			// Wait for map to be fully loaded before adding event listeners
+			map.once("idle", () => {
+				// Optimize map performance
+				map.on("sourcedata", (e) => {
+					if (e.isSourceLoaded) {
+						// Source has finished loading
+						map.getCanvas().style.cursor = "";
+					}
+				});
+
+				// Add custom controls and interactions with safety checks
+				map.on("click", (e) => {
+					try {
+						// Clear active business when clicking empty area
+						if (!e.originalEvent.target.closest(".mapboxgl-marker")) {
+							setActiveBusinessId(null);
+						}
+					} catch (error) {
+						console.warn("Map click handler error:", error);
+					}
+				});
+
+				map.on("movestart", handleMoveStart);
+				map.on("moveend", handleMapMoveEnd);
+				map.on("zoomend", handleZoomEnd);
+			});
+
+			return () => {
+				try {
+					map.off("movestart", handleMoveStart);
+					map.off("moveend", handleMapMoveEnd);
+					map.off("zoomend", handleZoomEnd);
+				} catch (error) {
+					console.warn("Error removing map event listeners:", error);
 				}
-			}
+			};
 		}
-	}, [activeBusinessId, setActiveBusinessId]);
+	}, [setMapRef, setActiveBusinessId, handleMoveStart, handleMapMoveEnd, handleZoomEnd]);
 
 	const handleSearchInArea = useCallback(async () => {
 		setIsSearching(true);
@@ -259,6 +286,12 @@ const MapContainer = React.forwardRef((props, ref) => {
 						[-180, -85],
 						[180, 85],
 					]}
+					// Additional safety options
+					cooperativeGestures={false}
+					preventStyleDiffing={true}
+					onError={(error) => {
+						console.warn("Map error:", error);
+					}}
 				>
 					{/* Built-in Controls */}
 					<ScaleControl position="bottom-left" />

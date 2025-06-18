@@ -32,13 +32,13 @@ export default function Header() {
 	};
 
 	const adminNavItems = [
-		{ href: "/admin", text: "Dashboard", icon: BarChart3 },
-		{ href: "/admin/users", text: "Users", icon: Users },
-		{ href: "/admin/pro-accounts", text: "Pro Accounts", icon: Shield },
-		{ href: "/admin/customers", text: "Customers", icon: Users },
-		{ href: "/admin/support", text: "Support", icon: HelpCircle },
-		{ href: "/admin/billing", text: "Billing", icon: CreditCard },
-		{ href: "/admin/settings", text: "Settings", icon: Settings },
+		{ href: "/dashboard/admin", text: "Dashboard", icon: BarChart3 },
+		{ href: "/dashboard/admin/users", text: "Users", icon: Users },
+		{ href: "/dashboard/admin/pro-accounts", text: "Pro Accounts", icon: Shield },
+		{ href: "/dashboard/admin/customers", text: "Customers", icon: Users },
+		{ href: "/dashboard/admin/support", text: "Support", icon: HelpCircle },
+		{ href: "/dashboard/admin/billing", text: "Billing", icon: CreditCard },
+		{ href: "/dashboard/admin/settings", text: "Settings", icon: Settings },
 	];
 
 	return (
@@ -61,7 +61,7 @@ export default function Header() {
 				{/* Right Section - Navigation and User Menu */}
 				<div className="hidden space-x-1 lg:flex xl:space-x-2">
 					{adminNavItems.map((item) => {
-						const isActive = pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href));
+						const isActive = pathname === item.href || (item.href !== "/dashboard/admin" && pathname.startsWith(item.href));
 						return (
 							<Link key={item.href} href={item.href} passHref legacyBehavior>
 								<Button variant={isActive ? "default" : "ghost"} size="sm" className={`text-sm font-medium transition-colors hover:text-primary ${isActive ? "bg-primary text-primary-foreground" : ""}`}>
@@ -133,7 +133,7 @@ export default function Header() {
 							</div>
 							<DropdownMenuGroup>
 								<DropdownMenuItem asChild>
-									<Link href="/admin/settings">
+									<Link href="/dashboard/admin/settings">
 										<Settings className="w-4 h-4 mr-2" />
 										<span>Settings</span>
 									</Link>
@@ -165,7 +165,7 @@ export default function Header() {
 							<nav className="mt-6">
 								<ul className="space-y-2">
 									{adminNavItems.map((item) => {
-										const isActive = pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href));
+										const isActive = pathname === item.href || (item.href !== "/dashboard/admin" && pathname.startsWith(item.href));
 										return (
 											<li key={item.href}>
 												<Link href={item.href} onClick={() => setMobileMenuOpen(false)}>

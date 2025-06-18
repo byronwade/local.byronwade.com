@@ -37,13 +37,13 @@ export default function Header() {
 	};
 
 	const userNavItems = [
-		{ href: "/user", text: "Overview", icon: BarChart3 },
-		{ href: "/user/jobs", text: "Jobs", icon: Briefcase },
-		{ href: "/user/activity", text: "Activity", icon: Activity },
-		{ href: "/user/boosts", text: "Boosts", icon: Zap },
-		{ href: "/user/referral", text: "Referral", icon: Users },
-		{ href: "/user/pro", text: "Pro", icon: CreditCard },
-		{ href: "/user/settings", text: "Settings", icon: Settings },
+		{ href: "/dashboard/user", text: "Overview", icon: BarChart3 },
+		{ href: "/dashboard/user/jobs", text: "Jobs", icon: Briefcase },
+		{ href: "/dashboard/user/activity", text: "Activity", icon: Activity },
+		{ href: "/dashboard/user/boosts", text: "Boosts", icon: Zap },
+		{ href: "/dashboard/user/referral", text: "Referral", icon: Users },
+		{ href: "/dashboard/user/pro", text: "Pro", icon: CreditCard },
+		{ href: "/dashboard/user/settings", text: "Settings", icon: Settings },
 	];
 
 	return (
@@ -91,7 +91,7 @@ export default function Header() {
 								</DropdownMenuItem>
 								<DropdownMenuSeparator />
 								<DropdownMenuItem asChild>
-									<Link href="/user/jobs">View all requests</Link>
+									<Link href="/dashboard/user/jobs">View all requests</Link>
 								</DropdownMenuItem>
 							</DropdownMenuContent>
 						</DropdownMenu>
@@ -101,7 +101,7 @@ export default function Header() {
 				{/* Right Section - Navigation and User Menu */}
 				<div className="hidden space-x-1 lg:flex xl:space-x-2">
 					{userNavItems.map((item) => {
-						const isActive = pathname === item.href || (item.href !== "/user" && pathname.startsWith(item.href));
+						const isActive = pathname === item.href || (item.href !== "/dashboard/user" && pathname.startsWith(item.href));
 						return (
 							<Link key={item.href} href={item.href} passHref legacyBehavior>
 								<Button variant={isActive ? "default" : "ghost"} size="sm" className={`text-sm font-medium transition-colors hover:text-primary ${isActive ? "bg-primary text-primary-foreground" : ""}`}>
@@ -173,13 +173,13 @@ export default function Header() {
 							</div>
 							<DropdownMenuGroup>
 								<DropdownMenuItem asChild>
-									<Link href="/user/settings">
+									<Link href="/dashboard/user/settings">
 										<Settings className="w-4 h-4 mr-2" />
 										<span>Settings</span>
 									</Link>
 								</DropdownMenuItem>
 								<DropdownMenuItem asChild>
-									<Link href="/user/billing">
+									<Link href="/dashboard/user/billing">
 										<CreditCard className="w-4 h-4 mr-2" />
 										<span>Billing</span>
 									</Link>
@@ -244,7 +244,7 @@ export default function Header() {
 							<nav className="mt-6">
 								<ul className="space-y-2">
 									{userNavItems.map((item) => {
-										const isActive = pathname === item.href || (item.href !== "/user" && pathname.startsWith(item.href));
+										const isActive = pathname === item.href || (item.href !== "/dashboard/user" && pathname.startsWith(item.href));
 										return (
 											<li key={item.href}>
 												<Link href={item.href} onClick={() => setMobileMenuOpen(false)}>

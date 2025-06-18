@@ -42,11 +42,11 @@ export default function LoginPage() {
 	useEffect(() => {
 		if (user) {
 			if (userRoles.includes("admin")) {
-				redirect("/admin");
+				redirect("/dashboard/admin");
 			} else if (userRoles.includes("business_owner")) {
-				redirect("/business");
+				redirect("/dashboard/business");
 			} else {
-				redirect("/user");
+				redirect("/dashboard/user");
 			}
 		}
 	}, [user, userRoles]);

@@ -72,7 +72,7 @@ const BusinessInfoPanel = () => {
 	if (!business) return null;
 
 	return (
-		<div className={`absolute top-0 left-0 z-30 flex flex-col h-full transition-transform duration-300 ease-in-out shadow-xl bg-card/95 backdrop-blur-md w-96 ${business ? "translate-x-0" : "-translate-x-full"}`}>
+		<div className={`absolute top-0 left-0 z-40 flex flex-col h-full transition-transform duration-300 ease-in-out shadow-xl bg-card border-r border-border w-96 ${business ? "translate-x-0" : "-translate-x-full"}`}>
 			{/* Header - More Compact */}
 			<div className="flex items-center justify-between px-3 py-2 border-b bg-card/50 border-border/20">
 				<div className="flex items-center gap-1">

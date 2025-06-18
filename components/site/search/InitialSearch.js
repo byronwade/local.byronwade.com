@@ -110,7 +110,7 @@ export default function InitialSearch() {
 							<Link href="/add-a-business">Add Your Business</Link>
 						</Button>
 						<Button asChild variant="outline" size="lg" className="border-border dark:border-border text-foreground hover:bg-accent dark:hover:bg-accent">
-							<Link href="/search/map">
+							<Link href="/search">
 								<MapPin className="w-4 h-4 mr-2" />
 								View Map
 							</Link>

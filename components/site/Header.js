@@ -48,11 +48,11 @@ export default function Header() {
 	// useEffect(() => {
 	// 	if (user) {
 	// 		if (userRoles.includes("admin")) {
-	// 			redirect("/admin");
+	// 			redirect("/dashboard/admin");
 	// 		} else if (userRoles.includes("business_owner")) {
-	// 			redirect("/business");
+	// 			redirect("/dashboard/business");
 	// 		} else {
-	// 			redirect("/user");
+	// 			redirect("/dashboard/user");
 	// 		}
 	// 	}
 	// }, [user, userRoles]);
@@ -101,12 +101,12 @@ export default function Header() {
 							Categories
 						</Button>
 					</Link>
-					<Link href="/user" passHref legacyBehavior>
+					<Link href="/dashboard/user" passHref legacyBehavior>
 						<Button variant="ghost" size="sm" className="text-sm font-medium transition-colors hover:text-primary">
 							Post a Job
 						</Button>
 					</Link>
-					<Link href="/user" passHref legacyBehavior>
+					<Link href="/dashboard/user" passHref legacyBehavior>
 						<Button variant="ghost" size="sm" className="text-sm font-medium transition-colors hover:text-primary">
 							Write Review
 						</Button>
@@ -237,17 +237,17 @@ export default function Header() {
 										</div>
 									</div>
 									<DropdownMenuItem asChild>
-										<Link href="/user" className="flex items-center">
+										<Link href="/dashboard/user" className="flex items-center">
 											<span>Dashboard</span>
 										</Link>
 									</DropdownMenuItem>
 									<DropdownMenuItem asChild>
-										<Link href="/user/settings" className="flex items-center">
+										<Link href="/dashboard/user/settings" className="flex items-center">
 											<span>Settings</span>
 										</Link>
 									</DropdownMenuItem>
 									<DropdownMenuItem asChild>
-										<Link href="/user/support" className="flex items-center">
+										<Link href="/dashboard/user/support" className="flex items-center">
 											<span>Support</span>
 										</Link>
 									</DropdownMenuItem>
@@ -346,7 +346,7 @@ export default function Header() {
 								{user ? (
 									<>
 										<li>
-											<Link href="/user" onClick={() => setMobileMenuOpen(false)}>
+											<Link href="/dashboard/user" onClick={() => setMobileMenuOpen(false)}>
 												Dashboard
 											</Link>
 										</li>
