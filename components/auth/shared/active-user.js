@@ -12,8 +12,24 @@ export default function ActiveUser() {
 		return null;
 	}
 
-	const { email, identities } = user;
-	const { first_name, last_name, username, email: identityEmail } = identities[0].identity_data;
+	const { email, identities, user_metadata } = user;
+
+	// Safely extract user data with fallbacks
+	let first_name, last_name, username, identityEmail;
+
+	if (identities && identities.length > 0 && identities[0].identity_data) {
+		// Use identity data if available
+		const identityData = identities[0].identity_data;
+		first_name = identityData.first_name;
+		last_name = identityData.last_name;
+		username = identityData.username;
+		identityEmail = identityData.email;
+	}
+
+	// Fallback to user_metadata or email if identity data is not available
+	first_name = first_name || user_metadata?.first_name || "User";
+	last_name = last_name || user_metadata?.last_name || "";
+	identityEmail = identityEmail || email || "No email";
 
 	return (
 		<div className="mt-10">

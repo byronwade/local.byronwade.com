@@ -17,6 +17,24 @@ const BusinessInfoPanel = () => {
 	const business = filteredBusinesses.find((b) => b.id === activeBusinessId);
 	const businessIndex = business ? filteredBusinesses.findIndex((b) => b.id === business.id) : -1;
 
+	// Debug logging
+	useEffect(() => {
+		console.log("BusinessInfoPanel - activeBusinessId:", activeBusinessId, "business found:", business?.name);
+		console.log("BusinessInfoPanel - filteredBusinesses count:", filteredBusinesses.length);
+		if (activeBusinessId && !business) {
+			console.log("BusinessInfoPanel - No business found with ID:", activeBusinessId);
+			console.log(
+				"Available business IDs:",
+				filteredBusinesses.map((b) => b.id)
+			);
+		}
+		if (business) {
+			console.log("BusinessInfoPanel - Showing panel for business:", business.name);
+		} else {
+			console.log("BusinessInfoPanel - No business to show, panel hidden");
+		}
+	}, [activeBusinessId, business?.name, filteredBusinesses.length]);
+
 	const allImages = [business?.image || "https://picsum.photos/400/300", "https://picsum.photos/400/301", "https://picsum.photos/400/302", "https://picsum.photos/400/303"];
 
 	// Center map on business when panel opens
@@ -54,9 +72,9 @@ const BusinessInfoPanel = () => {
 	if (!business) return null;
 
 	return (
-		<div className="absolute top-0 left-0 z-10 flex flex-col h-full transition-transform duration-300 ease-in-out transform bg-card/95 backdrop-blur-md shadow-xl w-96">
+		<div className={`absolute top-0 left-0 z-30 flex flex-col h-full transition-transform duration-300 ease-in-out shadow-xl bg-card/95 backdrop-blur-md w-96 ${business ? "translate-x-0" : "-translate-x-full"}`}>
 			{/* Header - More Compact */}
-			<div className="flex items-center justify-between px-3 py-2 bg-card/50 border-b border-border/20">
+			<div className="flex items-center justify-between px-3 py-2 border-b bg-card/50 border-border/20">
 				<div className="flex items-center gap-1">
 					{businessIndex > 0 && (
 						<button onClick={handlePrev} className="p-1.5 transition-colors rounded-full hover:bg-accent/80 text-muted-foreground hover:text-foreground">
@@ -140,7 +158,7 @@ const BusinessInfoPanel = () => {
 							<Clock className="w-4 h-4 mt-0.5 flex-shrink-0" />
 							<div>
 								<div className="text-foreground">Today: 9:00 AM - 9:00 PM</div>
-								<button className="text-sm text-primary hover:text-primary/80 transition-colors">See all hours</button>
+								<button className="text-sm transition-colors text-primary hover:text-primary/80">See all hours</button>
 							</div>
 						</div>
 
@@ -176,11 +194,11 @@ const BusinessInfoPanel = () => {
 
 					{/* Action Buttons */}
 					<div className="grid grid-cols-2 gap-3">
-						<Button className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm">
+						<Button className="shadow-sm bg-primary hover:bg-primary/90 text-primary-foreground">
 							<Phone className="w-4 h-4 mr-2" />
 							Call
 						</Button>
-						<Button variant="outline" className="border-0 hover:bg-accent/80 transition-all">
+						<Button variant="outline" className="transition-all border-0 hover:bg-accent/80">
 							<Navigation className="w-4 h-4 mr-2" />
 							Directions
 						</Button>
@@ -223,7 +241,7 @@ const BusinessInfoPanel = () => {
 						<div className="space-y-4">
 							<div className="pb-4">
 								<div className="flex items-center gap-3 mb-2">
-									<div className="w-8 h-8 bg-muted rounded-full"></div>
+									<div className="w-8 h-8 rounded-full bg-muted"></div>
 									<div>
 										<div className="text-sm font-medium text-card-foreground">Sarah M.</div>
 										<div className="flex items-center gap-1">
@@ -232,12 +250,12 @@ const BusinessInfoPanel = () => {
 										</div>
 									</div>
 								</div>
-								<p className="text-sm text-muted-foreground leading-relaxed">Great service and friendly staff. Would definitely recommend!</p>
+								<p className="text-sm leading-relaxed text-muted-foreground">Great service and friendly staff. Would definitely recommend!</p>
 							</div>
 
 							<div className="pb-4">
 								<div className="flex items-center gap-3 mb-2">
-									<div className="w-8 h-8 bg-muted rounded-full"></div>
+									<div className="w-8 h-8 rounded-full bg-muted"></div>
 									<div>
 										<div className="text-sm font-medium text-card-foreground">Mike R.</div>
 										<div className="flex items-center gap-1">
@@ -246,11 +264,11 @@ const BusinessInfoPanel = () => {
 										</div>
 									</div>
 								</div>
-								<p className="text-sm text-muted-foreground leading-relaxed">Good experience overall. Fast and professional service.</p>
+								<p className="text-sm leading-relaxed text-muted-foreground">Good experience overall. Fast and professional service.</p>
 							</div>
 						</div>
 
-						<button className="mt-3 text-sm text-primary hover:text-primary/80 transition-colors">Show all {business.ratings?.count || 0} reviews</button>
+						<button className="mt-3 text-sm transition-colors text-primary hover:text-primary/80">Show all {business.ratings?.count || 0} reviews</button>
 					</div>
 
 					{/* View Full Profile - More Prominent */}
@@ -266,7 +284,7 @@ const BusinessInfoPanel = () => {
 						}`}
 						className="block"
 					>
-						<Button className="w-full py-3 font-medium bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm">
+						<Button className="w-full py-3 font-medium shadow-sm bg-primary hover:bg-primary/90 text-primary-foreground">
 							<ExternalLink className="w-4 h-4 mr-2" />
 							View Full Business Profile
 						</Button>

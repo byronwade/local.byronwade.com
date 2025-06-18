@@ -5,7 +5,8 @@ import { Button } from "@components/ui/button";
 import { Badge } from "@components/ui/badge";
 import { ScrollArea } from "@components/ui/scroll-area";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@components/ui/tooltip";
-import { Bookmark, Circle, Clock, ExternalLink, Info, Share2, Star, Phone, MapPin, Navigation, Heart, Eye, Award, DollarSign, Users, MessageCircle, Camera, Globe, Plus, Shield, Verified, Timer, ChevronRight, TrendingUp, Zap } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@components/ui/dropdown-menu";
+import { Bookmark, Circle, Clock, ExternalLink, Info, Share2, Star, Phone, MapPin, Navigation, Heart, Eye, Award, DollarSign, Users, MessageCircle, Camera, Globe, Plus, Shield, Verified, Timer, ChevronRight, TrendingUp, Zap, Filter, SortAsc, ChevronDown, Bot } from "lucide-react";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import useBusinessStore from "@store/useBusinessStore";
 import useSearchStore from "@store/useSearchStore";
@@ -93,10 +94,10 @@ const BusinessCard = memo(
 						)}
 
 						{/* Main Content */}
-						<div className="flex flex-row items-start gap-4 p-5">
+						<div className="flex flex-row items-start gap-4 p-4">
 							{/* Business Logo/Image */}
 							<div className="flex-shrink-0">
-								<div className="relative w-16 h-16 overflow-hidden bg-muted/50 rounded-xl shadow-sm ring-1 ring-border/50">
+								<div className="relative w-14 h-14 overflow-hidden bg-muted/50 rounded-xl shadow-sm ring-1 ring-border/50">
 									{business.logo && !imageError ? (
 										<Image src={business.logo} alt={`${business.name} logo`} fill className="object-cover" onError={() => setImageError(true)} />
 									) : (
@@ -115,51 +116,51 @@ const BusinessCard = memo(
 							{/* Business Info */}
 							<div className="flex-1 min-w-0">
 								<div className="flex items-start justify-between mb-2">
-									<h3 className="pr-2 text-lg font-semibold leading-tight truncate text-card-foreground">{business.name}</h3>
+									<h3 className="pr-2 text-lg font-semibold leading-tight truncate text-card-foreground tracking-tight">{business.name}</h3>
 									<div className="flex items-center flex-shrink-0 gap-1">
 										{business.ratings?.overall && (
 											<div className="flex items-center gap-1 bg-muted/30 px-2 py-1 rounded-lg">
 												<div className="flex">{renderStars(business.ratings.overall)}</div>
-												<span className="text-sm font-medium text-foreground">{business.ratings.overall}</span>
+												<span className="text-sm font-semibold text-foreground">{business.ratings.overall}</span>
 											</div>
 										)}
 									</div>
 								</div>
 
 								{/* Categories */}
-								<div className="flex flex-wrap gap-1.5 mb-3">
+								<div className="flex flex-wrap gap-1.5 mb-2">
 									{Array.isArray(business.categories) &&
-										business.categories.slice(0, 3).map((category, index) => (
-											<Badge key={index} variant="outline" className="px-2 py-0.5 text-xs bg-secondary/50 text-secondary-foreground border-border/50 hover:bg-secondary/80 transition-colors">
+										business.categories.slice(0, 2).map((category, index) => (
+											<Badge key={index} variant="outline" className="px-2 py-0.5 text-sm bg-secondary/50 text-secondary-foreground border-border/50 hover:bg-secondary/80 transition-colors font-medium">
 												{category}
 											</Badge>
 										))}
-									{business.categories && business.categories.length > 3 && (
-										<Badge variant="outline" className="px-2 py-0.5 text-xs bg-secondary/50 text-secondary-foreground border-border/50">
-											+{business.categories.length - 3}
+									{business.categories && business.categories.length > 2 && (
+										<Badge variant="outline" className="px-2 py-0.5 text-sm bg-secondary/50 text-secondary-foreground border-border/50 font-medium">
+											+{business.categories.length - 2}
 										</Badge>
 									)}
 								</div>
 
 								{/* Description */}
-								<p className="mb-3 text-sm text-muted-foreground line-clamp-2 leading-relaxed">{business.description}</p>
+								<p className="mb-2 text-sm text-muted-foreground line-clamp-2 leading-relaxed">{business.description}</p>
 
 								{/* Quick Info */}
 								<div className="flex items-center gap-4 text-sm">
 									<div className="flex items-center gap-1.5">
 										<div className={`w-2 h-2 rounded-full ${business.isOpenNow ? "bg-green-500 shadow-sm shadow-green-500/50" : "bg-red-500 shadow-sm shadow-red-500/50"}`}></div>
-										<span className={`font-medium ${business.isOpenNow ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}`}>{business.isOpenNow ? "Open" : "Closed"}</span>
+										<span className={`font-semibold ${business.isOpenNow ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}`}>{business.isOpenNow ? "Open" : "Closed"}</span>
 									</div>
 									{business.price && (
 										<div className="flex items-center gap-1">
-											<DollarSign className="w-3 h-3 text-muted-foreground" />
-											<span className="text-foreground font-medium">{business.price}</span>
+											<DollarSign className="w-3.5 h-3.5 text-muted-foreground" />
+											<span className="text-foreground font-semibold">{business.price}</span>
 										</div>
 									)}
 									{business.address && (
 										<div className="flex items-center gap-1 truncate">
-											<MapPin className="flex-shrink-0 w-3 h-3 text-muted-foreground" />
-											<span className="text-xs text-muted-foreground truncate">{business.address.split(",")[0]}</span>
+											<MapPin className="flex-shrink-0 w-3.5 h-3.5 text-muted-foreground" />
+											<span className="text-sm text-muted-foreground truncate font-medium">{business.address.split(",")[0]}</span>
 										</div>
 									)}
 								</div>
@@ -167,7 +168,7 @@ const BusinessCard = memo(
 						</div>
 
 						{/* Action Buttons - Show on hover or when active */}
-						<div className={`px-5 pb-4 transition-all duration-200 ${isHovered || isActive ? "opacity-100 max-h-20" : "opacity-0 max-h-0 overflow-hidden"}`}>
+						<div className={`px-4 pb-3 transition-all duration-200 ${isHovered || isActive ? "opacity-100 max-h-20" : "opacity-0 max-h-0 overflow-hidden"}`}>
 							<div className="flex gap-2">
 								<TooltipProvider>
 									<Tooltip>
@@ -204,49 +205,6 @@ const BusinessCard = memo(
 											<p>Share business</p>
 										</TooltipContent>
 									</Tooltip>
-
-									<Tooltip>
-										<TooltipTrigger asChild>
-											<Button
-												size="sm"
-												variant="outline"
-												onClick={(e) => {
-													e.stopPropagation();
-													setIsFavorited(!isFavorited);
-												}}
-												className="border-border/50 hover:bg-accent/80 hover:border-primary/50 transition-all"
-											>
-												<Heart className={`w-3 h-3 ${isFavorited ? "fill-red-500 text-red-500" : ""}`} />
-											</Button>
-										</TooltipTrigger>
-										<TooltipContent>
-											<p>{isFavorited ? "Remove from favorites" : "Add to favorites"}</p>
-										</TooltipContent>
-									</Tooltip>
-
-									<Tooltip>
-										<TooltipTrigger asChild>
-											<Link
-												href={`/biz/${
-													business.slug ||
-													business.name
-														.toLowerCase()
-														.replace(/[^a-z0-9\s-]/g, "")
-														.replace(/\s+/g, "-")
-														.replace(/-+/g, "-")
-														.trim()
-												}`}
-												target="_blank"
-											>
-												<Button size="sm" variant="outline" onClick={(e) => e.stopPropagation()} className="border-border/50 hover:bg-accent/80 hover:border-primary/50 transition-all">
-													<ExternalLink className="w-3 h-3" />
-												</Button>
-											</Link>
-										</TooltipTrigger>
-										<TooltipContent>
-											<p>View full profile</p>
-										</TooltipContent>
-									</Tooltip>
 								</TooltipProvider>
 							</div>
 						</div>
@@ -279,14 +237,30 @@ const BusinessCard = memo(
 
 BusinessCard.displayName = "BusinessCard";
 
-const BusinessCardList = ({ activeBusinessId, activeCardRef }) => {
-	const { filteredBusinesses = [], loading, setActiveBusinessId, selectedBusiness } = useBusinessStore();
+const BusinessCardList = ({ businesses, activeBusinessId, activeCardRef, onAIClick, onBusinessSelect, loading }) => {
+	const { setActiveBusinessId, selectedBusiness } = useBusinessStore();
+	const filteredBusinesses = businesses || [];
 	const { searchQuery, searchLocation } = useSearchStore();
 	const { centerOn, loadingBusinessId } = useMapStore();
 	const listRef = useRef(null);
 	const activeCardElementRef = useRef(null);
 	const sentinelRef = useRef(null);
 	const [hoveredBusinessId, setHoveredBusinessId] = useState(null);
+
+	// Debug logging
+	useEffect(() => {
+		console.log("BusinessCardList - businesses count:", filteredBusinesses.length);
+		console.log("BusinessCardList - onBusinessSelect provided:", !!onBusinessSelect);
+		console.log("BusinessCardList - activeBusinessId:", activeBusinessId);
+		if (filteredBusinesses.length > 0) {
+			console.log("First business:", filteredBusinesses[0]);
+		}
+	}, [filteredBusinesses, onBusinessSelect, activeBusinessId]);
+
+	// Filter and sort state
+	const [sortBy, setSortBy] = useState("relevance");
+	const [showFilters, setShowFilters] = useState(false);
+	const [showSort, setShowSort] = useState(false);
 
 	// Virtual scrolling state
 	const [visibleStartIndex, setVisibleStartIndex] = useState(0);
@@ -299,6 +273,28 @@ const BusinessCardList = ({ activeBusinessId, activeCardRef }) => {
 	const visibleBusinesses = useMemo(() => {
 		return filteredBusinesses.slice(0, itemsToShow);
 	}, [filteredBusinesses, itemsToShow]);
+
+	// Sort options
+	const sortOptions = [
+		{ value: "relevance", label: "Best Match" },
+		{ value: "rating", label: "Highest Rated" },
+		{ value: "distance", label: "Distance" },
+		{ value: "name", label: "Name A-Z" },
+	];
+
+	// Handle filter and sort actions
+	const handleFilterClick = () => {
+		setShowFilters(!showFilters);
+		// TODO: Implement filter panel
+		console.log("Filter clicked");
+	};
+
+	const handleSortSelect = (value) => {
+		setSortBy(value);
+		setShowSort(false);
+		// TODO: Implement actual sorting logic
+		console.log("Sort changed to:", value);
+	};
 
 	// Intersection Observer for infinite loading
 	useEffect(() => {
@@ -345,7 +341,18 @@ const BusinessCardList = ({ activeBusinessId, activeCardRef }) => {
 	}, [activeBusinessId]);
 
 	const handleCardClick = (business) => {
+		console.log("Business card clicked:", business.name, "ID:", business.id);
+		console.log("Current activeBusinessId before setting:", activeBusinessId);
 		setActiveBusinessId(business.id);
+		console.log("setActiveBusinessId called with:", business.id);
+
+		// Call the onBusinessSelect prop to show business details
+		if (onBusinessSelect) {
+			console.log("Calling onBusinessSelect with business:", business.name);
+			onBusinessSelect(business);
+		} else {
+			console.log("onBusinessSelect is not provided");
+		}
 
 		// Simplified coordinate validation
 		if (business.coordinates && business.coordinates.lat && business.coordinates.lng) {
@@ -379,11 +386,21 @@ const BusinessCardList = ({ activeBusinessId, activeCardRef }) => {
 			if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
 				e.preventDefault();
 				const prevIndex = (currentIndex - 1 + visibleBusinesses.length) % visibleBusinesses.length;
-				setActiveBusinessId(visibleBusinesses[prevIndex].id);
+				const prevBusiness = visibleBusinesses[prevIndex];
+				setActiveBusinessId(prevBusiness.id);
+				// Also call onBusinessSelect to show the panel
+				if (onBusinessSelect) {
+					onBusinessSelect(prevBusiness);
+				}
 			} else if (e.key === "ArrowDown" || e.key === "ArrowRight") {
 				e.preventDefault();
 				const nextIndex = (currentIndex + 1) % visibleBusinesses.length;
-				setActiveBusinessId(visibleBusinesses[nextIndex].id);
+				const nextBusiness = visibleBusinesses[nextIndex];
+				setActiveBusinessId(nextBusiness.id);
+				// Also call onBusinessSelect to show the panel
+				if (onBusinessSelect) {
+					onBusinessSelect(nextBusiness);
+				}
 			} else if (e.key === "Enter" && activeBusinessId) {
 				e.preventDefault();
 				const activeBusiness = visibleBusinesses.find((b) => b.id === activeBusinessId);
@@ -400,7 +417,7 @@ const BusinessCardList = ({ activeBusinessId, activeCardRef }) => {
 				}
 			}
 		},
-		[visibleBusinesses, activeBusinessId, setActiveBusinessId]
+		[visibleBusinesses, activeBusinessId, setActiveBusinessId, onBusinessSelect]
 	);
 
 	useEffect(() => {
@@ -586,9 +603,10 @@ const BusinessCardList = ({ activeBusinessId, activeCardRef }) => {
 
 	return (
 		<div className="flex flex-col h-full">
-			{/* Clean Results Header */}
-			<div className="px-5 py-4 border-b border-border/50 bg-card/30 backdrop-blur-sm">
-				<div className="flex flex-col gap-2">
+			{/* Enhanced Results Header with Filter and Sort */}
+			<div className="px-4 py-3 border-b border-border/50 bg-card/30 backdrop-blur-sm">
+				<div className="flex flex-col gap-3">
+					{/* Results Count */}
 					<div className="flex items-center justify-between">
 						<h2 className="text-base font-medium text-card-foreground">
 							{filteredBusinesses.length.toLocaleString()} result{filteredBusinesses.length !== 1 ? "s" : ""}
@@ -596,13 +614,49 @@ const BusinessCardList = ({ activeBusinessId, activeCardRef }) => {
 							{searchLocation && ` in ${searchLocation}`}
 						</h2>
 					</div>
-					<div className="flex items-center gap-4 text-xs text-muted-foreground">
-						<span className="flex items-center gap-1">
-							<div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
-							{filteredBusinesses.filter((b) => b.isOpenNow).length} open now
-						</span>
-						<span>•</span>
-						<span>Sorted by relevance</span>
+
+					{/* Filters and Sort Controls */}
+					<div className="flex items-center justify-between">
+						<div className="flex items-center gap-4 text-xs text-muted-foreground">
+							<span className="flex items-center gap-1">
+								<div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+								{filteredBusinesses.filter((b) => b.isOpenNow).length} open now
+							</span>
+						</div>
+
+						<div className="flex items-center gap-2">
+							{/* AI Assistant Button */}
+							{onAIClick && (
+								<Button variant="outline" size="sm" onClick={onAIClick} className="h-8 px-3 text-xs bg-gradient-to-r from-blue-500 to-purple-600 text-white border-blue-500 hover:from-blue-600 hover:to-purple-700 hover:border-blue-600 transition-all duration-200">
+									<Bot className="w-3 h-3 mr-1" />
+									<span className="font-medium">AI Assistant</span>
+								</Button>
+							)}
+
+							{/* Filter Button */}
+							<Button variant="outline" size="sm" onClick={handleFilterClick} className="h-8 px-3 text-xs border-border/50 hover:bg-accent hover:border-primary/50 transition-all">
+								<Filter className="w-3 h-3 mr-1" />
+								Filters
+							</Button>
+
+							{/* Sort Dropdown */}
+							<DropdownMenu open={showSort} onOpenChange={setShowSort}>
+								<DropdownMenuTrigger asChild>
+									<Button variant="outline" size="sm" className="h-8 px-3 text-xs border-border/50 hover:bg-accent hover:border-primary/50 transition-all">
+										<SortAsc className="w-3 h-3 mr-1" />
+										{sortOptions.find((option) => option.value === sortBy)?.label || "Sort"}
+										<ChevronDown className="w-3 h-3 ml-1" />
+									</Button>
+								</DropdownMenuTrigger>
+								<DropdownMenuContent align="end" className="w-40">
+									{sortOptions.map((option) => (
+										<DropdownMenuItem key={option.value} onClick={() => handleSortSelect(option.value)} className="text-sm">
+											{option.label}
+										</DropdownMenuItem>
+									))}
+								</DropdownMenuContent>
+							</DropdownMenu>
+						</div>
 					</div>
 				</div>
 			</div>

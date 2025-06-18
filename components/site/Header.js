@@ -5,11 +5,13 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname, redirect } from "next/navigation";
 import { Button } from "@components/ui/button";
+import { Badge } from "@components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from "@components/ui/sheet";
 import { Command, CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator, CommandShortcut } from "@components/ui/command";
 import { Drawer, DrawerContent, DrawerTrigger } from "@components/ui/drawer";
-import { ChevronDown, Menu, Search } from "react-feather";
+import { ChevronDown, Menu, Search, Bell } from "react-feather";
+import { Bot } from "lucide-react";
 import SearchBarHeader from "@components/shared/searchBox/SearchBarHeader";
 import useAuthStore from "@store/useAuthStore";
 
@@ -69,78 +71,212 @@ export default function Header() {
 		window.location.href = "/search";
 	};
 
-	if (pathname.includes("/search/map") || (pathname === "/search" && typeof window !== "undefined" && window.location.search.includes("query"))) {
-		return <div id="header" />;
-	}
+	// Check if we're on any search page
+	const isSearchMapPage = pathname.startsWith("/search");
 
 	return (
-		<div id="header" className="transition-none sticky top-0 z-[60] bg-card">
-			<div className="flex items-center justify-between w-full gap-6 p-2 mx-auto shadow-md lg:px-24">
-				<div className="flex flex-row items-center w-full space-x-4">
-					<Link href="/" className="flex flex-col items-center text-xl font-bold text-center">
-						<Image src="/ThorbisLogo.webp" alt="Thorbis" width={50} height={50} className="w-10 h-10" />
-						{/* <h1 className="hidden text-sm leading-none text-primary md:block">Thorbis</h1> */}
+		<div id="header" className="transition-none sticky top-0 z-[60] bg-card/95 backdrop-blur-md border-b border-border/50">
+			<div className={`flex items-center justify-between w-full gap-6 py-3 mx-auto ${isSearchMapPage ? "max-w-none px-4" : "px-4 lg:px-24"}`}>
+				<div className="flex flex-row items-center w-full space-x-6">
+					<Link href="/" className="flex items-center space-x-3 text-xl font-bold group">
+						<div className="relative">
+							<Image src="/ThorbisLogo.webp" alt="Thorbis" width={50} height={50} className="w-12 h-12 transition-transform duration-200 group-hover:scale-105" />
+							<div className="absolute inset-0 transition-opacity duration-200 rounded-full opacity-0 bg-gradient-to-r from-blue-500/20 to-green-500/20 group-hover:opacity-100" />
+						</div>
+						<div className="hidden sm:block">
+							<h1 className="text-lg font-bold leading-none text-foreground">Thorbis</h1>
+							<p className="text-xs text-muted-foreground">Local Business Directory</p>
+						</div>
 					</Link>
-					<div className="items-center hidden w-full md:flex">
-						<SearchBarHeader />
+					<div className="items-center hidden w-full max-w-2xl md:flex">
+						{/* Show search bar on all pages */}
+						<div className="flex items-center w-full max-w-2xl">
+							<SearchBarHeader />
+						</div>
 					</div>
 				</div>
-				<div className="hidden space-x-2 lg:flex">
-					<Link href="/user" passHref legacyBehavior>
-						<Button variant="ghost">Post a job</Button>
+				<div className="hidden space-x-1 lg:flex xl:space-x-2">
+					<Link href="/categories" passHref legacyBehavior>
+						<Button variant="ghost" size="sm" className="text-sm font-medium transition-colors hover:text-primary">
+							Categories
+						</Button>
 					</Link>
 					<Link href="/user" passHref legacyBehavior>
-						<Button variant="ghost">Write a review</Button>
+						<Button variant="ghost" size="sm" className="text-sm font-medium transition-colors hover:text-primary">
+							Post a Job
+						</Button>
+					</Link>
+					<Link href="/user" passHref legacyBehavior>
+						<Button variant="ghost" size="sm" className="text-sm font-medium transition-colors hover:text-primary">
+							Write Review
+						</Button>
 					</Link>
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
-							<Button variant="ghost">
-								Add a Business <ChevronDown className="w-4 h-4 ml-2" />
+							<Button variant="ghost" size="sm" className="text-sm font-medium transition-colors hover:text-primary">
+								For Business <ChevronDown className="w-4 h-4 ml-1" />
 							</Button>
 						</DropdownMenuTrigger>
-						<DropdownMenuContent className="w-56 z-[80]">
-							<DropdownMenuItem asChild>
-								<Link href="/add-a-business">Add a Business</Link>
+						<DropdownMenuContent className="w-64 z-[80] bg-card/95 backdrop-blur-md border border-border/50">
+							<DropdownMenuItem asChild className="text-sm">
+								<Link href="/add-a-business">
+									<div className="flex flex-col">
+										<span className="font-medium">Add a Business</span>
+										<span className="text-xs text-muted-foreground">List your business for free</span>
+									</div>
+								</Link>
 							</DropdownMenuItem>
-							<DropdownMenuItem asChild>
-								<Link href="/claim-a-business">Claim your business</Link>
+							<DropdownMenuItem asChild className="text-sm">
+								<Link href="/claim-a-business">
+									<div className="flex flex-col">
+										<span className="font-medium">Claim Your Business</span>
+										<span className="text-xs text-muted-foreground">Already listed? Claim ownership</span>
+									</div>
+								</Link>
 							</DropdownMenuItem>
 							<DropdownMenuSeparator />
-							<DropdownMenuItem asChild>
-								<Link href="/explore-business">Explore Thorbis for Business</Link>
+							<DropdownMenuItem asChild className="text-sm">
+								<Link href="/explore-business">
+									<div className="flex flex-col">
+										<span className="font-medium">Business Solutions</span>
+										<span className="text-xs text-muted-foreground">Grow your business with Thorbis</span>
+									</div>
+								</Link>
 							</DropdownMenuItem>
 							<DropdownMenuSeparator />
-							<DropdownMenuItem asChild>
-								<Link href="/business-certification">Get Thorbis Certified</Link>
+							<DropdownMenuItem asChild className="text-sm">
+								<Link href="/business-certification">
+									<div className="flex items-center">
+										<span className="font-medium text-transparent bg-gradient-to-r from-blue-500 to-green-500 bg-clip-text">Get Thorbis Certified</span>
+										<span className="ml-2 px-1.5 py-0.5 text-xs bg-gradient-to-r from-blue-500 to-green-500 text-white rounded-full">Elite</span>
+									</div>
+								</Link>
+							</DropdownMenuItem>
+							<DropdownMenuSeparator />
+							<DropdownMenuItem asChild className="text-sm">
+								<Link href="/localhub">
+									<div className="flex flex-col">
+										<div className="flex items-center">
+											<span className="font-medium">Build Your Local Directory</span>
+											<span className="ml-2 px-1.5 py-0.5 text-xs bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full">New</span>
+										</div>
+										<span className="text-xs text-muted-foreground">Create & monetize your neighborhood hub</span>
+									</div>
+								</Link>
 							</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>
 					{user ? (
-						<>
-							<Button variant="outline" className="transition-none" onClick={handleLogout}>
-								Logout
-							</Button>
-							<Link href="/user">
-								<Button className="transition-none">Dashboard</Button>
-							</Link>
-						</>
+						<div className="flex items-center space-x-2">
+							{/* Notification Bell */}
+							<DropdownMenu>
+								<DropdownMenuTrigger asChild>
+									<Button variant="ghost" size="sm" className="relative p-2 h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-accent">
+										<Bell className="w-5 h-5" />
+										<span className="absolute top-1 right-1 w-2.5 h-2.5 bg-blue-500 border-2 border-white dark:border-gray-800 rounded-full"></span>
+									</Button>
+								</DropdownMenuTrigger>
+								<DropdownMenuContent className="w-80 z-[80] bg-card/95 backdrop-blur-md border border-border/50">
+									<div className="flex items-center justify-between p-3 border-b border-border/50">
+										<h3 className="font-semibold text-foreground">Notifications</h3>
+										<Badge variant="secondary" className="text-xs">
+											3 new
+										</Badge>
+									</div>
+									<div className="overflow-y-auto max-h-96">
+										<DropdownMenuItem className="flex items-start p-4 space-x-3">
+											<div className="flex-shrink-0 w-2 h-2 mt-2 bg-blue-500 rounded-full"></div>
+											<div className="flex-1 min-w-0">
+												<p className="text-sm font-medium text-foreground">New review received</p>
+												<p className="mt-1 text-xs text-muted-foreground">Someone reviewed your business listing</p>
+												<p className="text-xs text-muted-foreground">2 minutes ago</p>
+											</div>
+										</DropdownMenuItem>
+										<DropdownMenuItem className="flex items-start p-4 space-x-3">
+											<div className="flex-shrink-0 w-2 h-2 mt-2 bg-green-500 rounded-full"></div>
+											<div className="flex-1 min-w-0">
+												<p className="text-sm font-medium text-foreground">Job application received</p>
+												<p className="mt-1 text-xs text-muted-foreground">New application for your job posting</p>
+												<p className="text-xs text-muted-foreground">1 hour ago</p>
+											</div>
+										</DropdownMenuItem>
+										<DropdownMenuItem className="flex items-start p-4 space-x-3">
+											<div className="flex-shrink-0 w-2 h-2 mt-2 bg-orange-500 rounded-full"></div>
+											<div className="flex-1 min-w-0">
+												<p className="text-sm font-medium text-foreground">Subscription reminder</p>
+												<p className="mt-1 text-xs text-muted-foreground">Your premium plan expires in 3 days</p>
+												<p className="text-xs text-muted-foreground">3 hours ago</p>
+											</div>
+										</DropdownMenuItem>
+									</div>
+									<div className="p-3 border-t border-border/50">
+										<Button variant="ghost" size="sm" className="justify-center w-full text-xs">
+											View all notifications
+										</Button>
+									</div>
+								</DropdownMenuContent>
+							</DropdownMenu>
+
+							{/* User Avatar Menu */}
+							<DropdownMenu>
+								<DropdownMenuTrigger asChild>
+									<Button variant="outline" size="sm" className="p-0 border rounded-full shadow-sm h-9 w-9 border-input bg-background hover:bg-accent hover:text-accent-foreground hover:border-primary" aria-label="User menu">
+										<div className="relative flex w-8 h-8 mx-auto overflow-hidden rounded-full shrink-0">
+											<img className="object-cover w-full h-full aspect-square" alt={user?.user_metadata?.first_name || user?.email?.split("@")[0] || "User"} src={`https://vercel.com/api/www/avatar?u=${user?.email?.split("@")[0] || "user"}&s=64`} />
+										</div>
+									</Button>
+								</DropdownMenuTrigger>
+								<DropdownMenuContent className="w-56 z-[80] bg-card/95 backdrop-blur-md border border-border/50">
+									<div className="flex items-center p-3 space-x-3 border-b border-border/50">
+										<div className="relative flex w-8 h-8 overflow-hidden rounded-full shrink-0">
+											<img className="object-cover w-full h-full aspect-square" alt={user?.user_metadata?.first_name || user?.email?.split("@")[0] || "User"} src={`https://vercel.com/api/www/avatar?u=${user?.email?.split("@")[0] || "user"}&s=64`} />
+										</div>
+										<div className="flex-1 min-w-0">
+											<p className="text-sm font-medium truncate text-foreground">{user?.user_metadata?.first_name || user?.email?.split("@")[0] || "User"}</p>
+											<p className="text-xs truncate text-muted-foreground">{user?.email}</p>
+										</div>
+									</div>
+									<DropdownMenuItem asChild>
+										<Link href="/user" className="flex items-center">
+											<span>Dashboard</span>
+										</Link>
+									</DropdownMenuItem>
+									<DropdownMenuItem asChild>
+										<Link href="/user/settings" className="flex items-center">
+											<span>Settings</span>
+										</Link>
+									</DropdownMenuItem>
+									<DropdownMenuItem asChild>
+										<Link href="/user/support" className="flex items-center">
+											<span>Support</span>
+										</Link>
+									</DropdownMenuItem>
+									<DropdownMenuSeparator />
+									<DropdownMenuItem onClick={handleLogout} className="text-red-600 focus:text-red-600">
+										Logout
+									</DropdownMenuItem>
+								</DropdownMenuContent>
+							</DropdownMenu>
+						</div>
 					) : (
 						<>
 							<Link href="/login">
-								<Button variant="outline" className="transition-none">
-									Login
+								<Button variant="ghost" size="sm" className="text-sm font-medium transition-colors hover:text-primary">
+									Log In
 								</Button>
 							</Link>
 							<Link href="/onboarding">
-								<Button className="transition-none">Sign Up</Button>
+								<Button size="sm" className="transition-colors bg-primary hover:bg-primary/90 text-primary-foreground">
+									Sign Up
+								</Button>
 							</Link>
 						</>
 					)}
 				</div>
 
-				<div className="flex md:hidden">
-					<Button variant="outline" size="icon" onClick={handleMobileSearch}>
-						<Search className="w-4 h-4" />
+				<div className="flex items-center space-x-2 md:hidden">
+					<Button variant="ghost" size="icon" onClick={handleMobileSearch} className="text-muted-foreground hover:text-foreground">
+						<Search className="w-5 h-5" />
 					</Button>
 				</div>
 
@@ -170,7 +306,7 @@ export default function Header() {
 								<input
 									type="text"
 									placeholder="Search for businesses..."
-									className="flex-1 bg-transparent text-white placeholder-gray-400 border-none outline-none"
+									className="flex-1 text-white placeholder-gray-400 bg-transparent border-none outline-none"
 									onKeyDown={(e) => {
 										if (e.key === "Enter" && e.target.value.trim()) {
 											window.location.href = `/search?query=${encodeURIComponent(e.target.value.trim())}`;
@@ -253,6 +389,11 @@ export default function Header() {
 											<DropdownMenuItem asChild>
 												<Link href="/explore-business" onClick={() => setMobileMenuOpen(false)}>
 													Explore Thorbis for Business
+												</Link>
+											</DropdownMenuItem>
+											<DropdownMenuItem asChild>
+												<Link href="/localhub" onClick={() => setMobileMenuOpen(false)}>
+													Build Your Local Directory
 												</Link>
 											</DropdownMenuItem>
 										</DropdownMenuContent>

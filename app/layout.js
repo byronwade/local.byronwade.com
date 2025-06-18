@@ -15,27 +15,7 @@ const fontSans = FontSans({
 export default function RootLayout({ children }) {
 	return (
 		<html lang="en" suppressHydrationWarning>
-			<head>
-				<script
-					dangerouslySetInnerHTML={{
-						__html: `
-							try {
-								const theme = localStorage.getItem('thorbis-theme') || 'dark';
-								if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-									document.documentElement.classList.add('dark');
-									document.documentElement.style.colorScheme = 'dark';
-								} else {
-									document.documentElement.classList.remove('dark');
-									document.documentElement.style.colorScheme = 'light';
-								}
-							} catch (e) {
-								document.documentElement.classList.add('dark');
-								document.documentElement.style.colorScheme = 'dark';
-							}
-						`,
-					}}
-				/>
-			</head>
+			<head />
 			<CSPostHogProvider>
 				<body className={cn("min-h-screen bg-background text-foreground font-sans antialiased", fontSans.variable)}>
 					<ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange storageKey="thorbis-theme">

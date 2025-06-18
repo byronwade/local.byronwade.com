@@ -9,6 +9,7 @@ import Autoplay from "embla-carousel-autoplay";
 
 export default function HeroSection({ carouselItems }) {
 	const carouselApiRef = useRef(null);
+	const [headerHeight, setHeaderHeight] = useState(64); // Default header height
 
 	const handleKeyDown = (e) => {
 		if (carouselApiRef.current) {
@@ -20,6 +21,30 @@ export default function HeroSection({ carouselItems }) {
 		}
 	};
 
+	// Calculate actual header height
+	useEffect(() => {
+		const calculateHeaderHeight = () => {
+			const header = document.querySelector("#header");
+			if (header) {
+				const actualHeight = header.offsetHeight;
+				setHeaderHeight(actualHeight);
+				console.log("Header height calculated:", actualHeight);
+			}
+		};
+
+		// Calculate on mount and resize
+		calculateHeaderHeight();
+		window.addEventListener("resize", calculateHeaderHeight);
+
+		// Multiple checks to ensure accurate calculation
+		const timeouts = [setTimeout(calculateHeaderHeight, 100), setTimeout(calculateHeaderHeight, 500), setTimeout(calculateHeaderHeight, 1000)];
+
+		return () => {
+			window.removeEventListener("resize", calculateHeaderHeight);
+			timeouts.forEach((timeout) => clearTimeout(timeout));
+		};
+	}, []);
+
 	useEffect(() => {
 		window.addEventListener("keydown", handleKeyDown);
 		return () => {
@@ -28,7 +53,7 @@ export default function HeroSection({ carouselItems }) {
 	}, []);
 
 	return (
-		<div className="relative h-[70vh] min-h-[600px] overflow-hidden">
+		<div className="relative w-full overflow-hidden">
 			{/* Background Pattern */}
 			<div className="absolute inset-0 bg-gradient-to-br from-background via-background/95 to-background/90"></div>
 			<div className="absolute inset-0 opacity-5">
@@ -39,7 +64,7 @@ export default function HeroSection({ carouselItems }) {
 
 			<Carousel
 				setApi={(api) => (carouselApiRef.current = api)}
-				className="relative z-20 h-full"
+				className="relative z-20 w-full"
 				opts={{
 					loop: true,
 				}}
@@ -49,109 +74,69 @@ export default function HeroSection({ carouselItems }) {
 					}),
 				]}
 			>
-				<CarouselContent className="h-full">
+				<CarouselContent>
 					{carouselItems.map((item, index) => (
-						<CarouselItem key={index} className="w-full h-full">
-							<div className="relative w-full h-full">
+						<CarouselItem key={index} className="w-full">
+							<div className="relative w-full pt-24 pb-12 sm:pt-32 sm:pb-16 md:pt-40 md:pb-20 lg:pt-48 lg:pb-24 xl:pt-56 xl:pb-28">
 								{/* Enhanced Background Image with Better Overlay */}
 								<div className="absolute inset-0 z-10 bg-gradient-to-t from-background via-background/60 to-background/20" />
 								<div className="absolute inset-0 z-10 bg-gradient-to-r from-background via-background/40 to-transparent" />
 								<div className="absolute inset-0">
-									<Image width={2200} height={2200} src={item.mediaSrc} alt={`Business category ${index + 1}`} className="object-cover w-full h-full opacity-80" />
+									<Image width={2200} height={2200} src={item.mediaSrc} alt={`Business category ${index + 1}`} className="object-cover w-full h-full" priority={index === 0} />
 								</div>
 
-								{/* Enhanced Content Section - Vertically Centered, Left Aligned */}
-								<div className="relative z-20 flex flex-col justify-center h-full px-6 space-y-8 sm:px-12 lg:px-24">
+								{/* Content */}
+								<div className="relative z-20 px-4 lg:px-24">
 									<div className="max-w-4xl">
-										{/* Enhanced Badge */}
-										<div className="inline-flex items-center px-4 py-2 mb-6 text-sm font-semibold text-primary bg-primary/10 rounded-full border border-primary/20 backdrop-blur-sm shadow-lg">
-											<Shield className="w-4 h-4 mr-2" />
-											🏢 Trusted Local Business Directory
-										</div>
-
-										{/* Enhanced Headlines */}
-										<h1 className="text-5xl font-bold text-foreground sm:text-7xl mb-6 leading-tight">
-											{index === 0 && (
-												<>
-													Find <span className="text-primary">Local</span>
-													<br />
-													Businesses
-												</>
-											)}
-											{index === 1 && (
-												<>
-													<span className="text-primary">Home</span> Services
-													<br />
-													Made Easy
-												</>
-											)}
-											{index === 2 && (
-												<>
-													Restaurants &
-													<br />
-													<span className="text-primary">Dining</span>
-												</>
-											)}
-											{index === 3 && (
-												<>
-													Health &
-													<br />
-													<span className="text-primary">Wellness</span>
-												</>
-											)}
+										{/* Main heading */}
+										<h1 className="mb-4 text-4xl font-bold leading-tight sm:mb-6 sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl text-foreground">
+											{item.title}
+											<span className="block mt-2 text-2xl font-normal sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-muted-foreground">{item.subtitle}</span>
 										</h1>
 
-										<p className="text-xl text-muted-foreground mb-10 leading-relaxed max-w-2xl">{item.description}</p>
+										{/* Description */}
+										<p className="mb-6 text-lg leading-relaxed sm:mb-8 sm:text-xl md:text-2xl lg:text-3xl text-muted-foreground max-w-3xl">{item.description}</p>
 
-										{/* Enhanced Action Buttons */}
-										<div className="flex flex-col sm:flex-row gap-4 mb-8">
-											<Link href={item.link} className="inline-block">
-												<Button size="lg" className="flex items-center space-x-3 h-16 px-10 bg-primary hover:bg-primary/90 text-primary-foreground shadow-xl hover:shadow-2xl transition-all duration-300 text-lg font-semibold">
-													<Search className="w-6 h-6" />
-													<span>Search Now</span>
-												</Button>
-											</Link>
-											<Link href="/search" className="inline-block">
-												<Button variant="outline" size="lg" className="flex items-center space-x-3 h-16 px-10 border-2 border-primary/20 text-foreground hover:bg-primary/5 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 text-lg font-semibold">
-													<MapPin className="w-6 h-6" />
-													<span>Browse Categories</span>
-												</Button>
-											</Link>
+										{/* CTA Buttons */}
+										<div className="flex flex-col space-y-3 sm:flex-row sm:space-y-0 sm:space-x-4 md:space-x-6">
+											<Button size="lg" className="h-12 px-6 text-base font-semibold transition-all duration-200 sm:h-14 sm:px-8 sm:text-lg bg-primary hover:bg-primary/90 text-primary-foreground hover:shadow-lg hover:scale-105 active:scale-95">
+												<Search className="w-5 h-5 mr-2 sm:w-6 sm:h-6" />
+												Find Local Businesses
+											</Button>
+											<Button variant="outline" size="lg" className="h-12 px-6 text-base font-semibold transition-all duration-200 sm:h-14 sm:px-8 sm:text-lg border-border hover:bg-muted hover:scale-105 active:scale-95">
+												<MapPin className="w-5 h-5 mr-2 sm:w-6 sm:h-6" />
+												Browse by Location
+											</Button>
 										</div>
 
-										{/* Enhanced Stats Section */}
-										<div className="flex flex-wrap items-center gap-8 text-sm text-muted-foreground">
-											<div className="flex items-center space-x-3 bg-background/20 backdrop-blur-sm rounded-full px-4 py-2 border border-primary/10">
-												<div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-												<Users className="w-4 h-4" />
-												<span className="font-medium">10,000+ Businesses</span>
+										{/* Trust indicators */}
+										<div className="flex flex-wrap items-center gap-4 mt-8 text-sm sm:gap-6 sm:mt-12 sm:text-base text-muted-foreground">
+											<div className="flex items-center space-x-2">
+												<Users className="w-4 h-4 sm:w-5 sm:h-5" />
+												<span>10,000+ verified businesses</span>
 											</div>
-											<div className="flex items-center space-x-3 bg-background/20 backdrop-blur-sm rounded-full px-4 py-2 border border-primary/10">
-												<div className="w-3 h-3 bg-blue-400 rounded-full animate-pulse"></div>
-												<Shield className="w-4 h-4" />
-												<span className="font-medium">Verified Reviews</span>
+											<div className="flex items-center space-x-2">
+												<Star className="w-4 h-4 sm:w-5 sm:h-5" />
+												<span>50,000+ customer reviews</span>
 											</div>
-											<div className="flex items-center space-x-3 bg-background/20 backdrop-blur-sm rounded-full px-4 py-2 border border-primary/10">
-												<div className="w-3 h-3 bg-yellow-400 rounded-full animate-pulse"></div>
-												<Star className="w-4 h-4" />
-												<span className="font-medium">Local Experts</span>
+											<div className="flex items-center space-x-2">
+												<Shield className="w-4 h-4 sm:w-5 sm:h-5" />
+												<span>Trust & safety verified</span>
 											</div>
 										</div>
 									</div>
 								</div>
 
-								{/* Enhanced Floating Elements */}
-								<div className="absolute top-20 right-20 w-4 h-4 bg-primary/30 rounded-full animate-bounce hidden lg:block"></div>
-								<div className="absolute bottom-32 right-32 w-6 h-6 bg-secondary/30 rounded-full animate-pulse hidden lg:block"></div>
-								<div className="absolute top-1/2 right-10 w-2 h-2 bg-accent/40 rounded-full animate-ping hidden lg:block"></div>
+								{/* Bottom gradient for smooth transition */}
+								<div className="absolute bottom-0 left-0 right-0 z-10 h-8 bg-gradient-to-t from-background to-transparent" />
 							</div>
 						</CarouselItem>
 					))}
 				</CarouselContent>
 			</Carousel>
 
-			{/* Enhanced Bottom Gradient */}
-			<div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent z-30"></div>
+			{/* Minimal Bottom Gradient - Smooth transition to content */}
+			<div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-background via-background/60 to-transparent z-30"></div>
 		</div>
 	);
 }

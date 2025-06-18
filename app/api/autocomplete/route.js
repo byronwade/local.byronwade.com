@@ -3,22 +3,31 @@
 import { NextResponse } from "next/server";
 
 export async function GET(request) {
-	const { searchParams } = new URL(request.url);
-	const input = searchParams.get("input");
-
-	if (!input) {
-		return NextResponse.json({ error: "Missing input parameter" }, { status: 400 });
-	}
-
-	const apiKey = process.env.NEXT_PUBLIC_GOOGLE_API_KEY;
-	const url = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(input)}&key=${apiKey}`;
-
 	try {
-		const response = await fetch(url);
+		const { searchParams } = new URL(request.url);
+		const input = searchParams.get("input");
+
+		if (!input) {
+			return Response.json({ predictions: [] }, { status: 200 });
+		}
+
+		const response = await fetch(`https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(input)}&types=(cities)&key=${process.env.GOOGLE_PLACES_API_KEY}`, {
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
+
+		if (!response.ok) {
+			throw new Error(`Google Places API error: ${response.status}`);
+		}
+
 		const data = await response.json();
-		return NextResponse.json(data, { status: 200 });
+
+		return Response.json({
+			predictions: data.predictions || [],
+		});
 	} catch (error) {
-		console.error("Error fetching autocomplete suggestions:", error);
-		return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+		console.error("Autocomplete API error:", error);
+		return Response.json({ error: "Failed to fetch autocomplete suggestions", predictions: [] }, { status: 500 });
 	}
 }

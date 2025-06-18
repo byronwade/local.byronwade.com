@@ -883,8 +883,8 @@ const BusinessMarkers = () => {
 								)}
 							</div>
 
-							{/* Action Button */}
-							<div className="pt-2 border-t border-gray-100 dark:border-gray-700">
+							{/* Action Buttons */}
+							<div className="pt-2 border-t border-gray-100 dark:border-gray-700 space-y-2">
 								<Button
 									onClick={() => {
 										handleMarkerClick(popupBusiness);
@@ -900,8 +900,34 @@ const BusinessMarkers = () => {
 									}}
 								>
 									View Details
-									<ExternalLink className="w-3 h-3 ml-1" />
 								</Button>
+								<a
+									href={`/biz/${
+										popupBusiness.slug ||
+										popupBusiness.name
+											.toLowerCase()
+											.replace(/[^a-z0-9\s-]/g, "")
+											.replace(/\s+/g, "-")
+											.replace(/-+/g, "-")
+											.trim()
+									}`}
+									className="block"
+								>
+									<Button
+										variant="outline"
+										className="w-full h-8 text-sm"
+										style={{
+											fontFamily: "'Roboto', 'Helvetica Neue', 'Arial', sans-serif",
+											fontSize: "13px",
+											fontWeight: "500",
+											WebkitFontSmoothing: "antialiased",
+											MozOsxFontSmoothing: "grayscale",
+										}}
+									>
+										View Profile
+										<ExternalLink className="w-3 h-3 ml-1" />
+									</Button>
+								</a>
 							</div>
 						</div>
 					</div>

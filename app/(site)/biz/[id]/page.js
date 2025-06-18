@@ -57,26 +57,30 @@ import {
 	Settings,
 	MoreHorizontal,
 	Handshake,
+	TrendingUp,
 } from "lucide-react";
 import { Button } from "@components/ui/button";
 import { Badge } from "@components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
+import { generateBusinesses, searchBusinessesByQuery } from "@lib/businessDataGenerator";
 
 export default function BizProfile({ params }) {
 	const [business, setBusiness] = useState(null);
 	const [showAllPhotos, setShowAllPhotos] = useState(false);
 	const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 	const [activeSection, setActiveSection] = useState("overview");
-	const [showScrollSpy, setShowScrollSpy] = useState(false);
+	const [showScrollSpy, setShowScrollSpy] = useState(true); // Always show scroll spy
+	const [showHeaderSection, setShowHeaderSection] = useState(false); // Controls sticky header section
 	const [showMobileNav, setShowMobileNav] = useState(false);
 	const [showReviewModal, setShowReviewModal] = useState(false);
 	const [scrollSpyScrollPosition, setScrollSpyScrollPosition] = useState(0);
 	const [headerHeight, setHeaderHeight] = useState(64);
+	const [shouldShowArrows, setShouldShowArrows] = useState(false);
+	const [scrollSpyContainerHeight, setScrollSpyContainerHeight] = useState(400);
+	const [actualContentHeight, setActualContentHeight] = useState(null);
 
 	// Enhanced scroll spy state
 	const [scrollSpyReady, setScrollSpyReady] = useState(false);
-
-	const [isNavigating, setIsNavigating] = useState(false);
 	const [scrollSpyError, setScrollSpyError] = useState(null);
 
 	const [newReview, setNewReview] = useState({
@@ -92,14 +96,6 @@ export default function BizProfile({ params }) {
 	const scrollSpyRef = useRef(null);
 	const navigationTimeoutRef = useRef(null);
 	const intersectionObserverRef = useRef(null);
-
-	// Drag scroll state
-	const dragRef = useRef({
-		isDragging: false,
-		startY: 0,
-		startScrollTop: 0,
-		lastMoveY: 0,
-	});
 
 	// Section navigation items - defined early to avoid initialization errors
 	const navigationItems = [
@@ -178,718 +174,325 @@ export default function BizProfile({ params }) {
 		}
 	};
 
-	// Improved drag scroll functionality that doesn't interfere with buttons
-	const handleMouseDown = (e) => {
-		// Don't interfere with button clicks or links
-		if (e.target.closest("button") || e.target.closest("a")) return;
-		if (!scrollSpyContentRef.current || !scrollSpyContainerRef.current) return;
-
-		// Only handle left mouse button
-		if (e.button !== 0) return;
-
-		const startY = e.clientY;
-		const startScrollTop = scrollSpyScrollPosition;
-		let isDragging = false;
-		let hasMoved = false;
-
-		const handleMouseMove = (e) => {
-			const deltaY = Math.abs(e.clientY - startY);
-
-			// Start dragging only after moving 5px to avoid accidental drags
-			if (!isDragging && deltaY > 5) {
-				isDragging = true;
-				dragRef.current.isDragging = true;
-				document.body.style.userSelect = "none";
-				document.body.style.cursor = "grabbing";
-			}
-
-			if (!isDragging) return;
-
-			hasMoved = true;
-			e.preventDefault();
-
-			const totalDeltaY = e.clientY - startY;
-			const containerHeight = scrollSpyContainerRef.current?.clientHeight || 0;
-			const contentHeight = scrollSpyContentRef.current?.scrollHeight || 0;
-			const maxScroll = Math.max(0, contentHeight - containerHeight);
-
-			const newScrollPosition = Math.max(0, Math.min(maxScroll, startScrollTop - totalDeltaY));
-			setScrollSpyScrollPosition(newScrollPosition);
-		};
-
-		const handleMouseUp = () => {
-			dragRef.current.isDragging = false;
-			document.removeEventListener("mousemove", handleMouseMove);
-			document.removeEventListener("mouseup", handleMouseUp);
-			document.body.style.userSelect = "";
-			document.body.style.cursor = "";
-
-			// If we didn't move much, don't prevent the original event
-			if (!hasMoved) {
-				// Allow the original click to proceed
-			}
-		};
-
-		document.addEventListener("mousemove", handleMouseMove);
-		document.addEventListener("mouseup", handleMouseUp);
-	};
-
-	// Touch drag support
-	const handleTouchStart = (e) => {
-		if (e.target.closest("button") || e.target.closest("a")) return;
-		if (!scrollSpyContentRef.current || !scrollSpyContainerRef.current || e.touches.length !== 1) return;
-
-		const touch = e.touches[0];
-		dragRef.current.isDragging = true;
-		dragRef.current.startY = touch.clientY;
-		dragRef.current.startScrollTop = scrollSpyScrollPosition;
-	};
-
-	const handleTouchMove = (e) => {
-		if (!dragRef.current.isDragging || !scrollSpyContentRef.current || !scrollSpyContainerRef.current || e.touches.length !== 1) return;
-
-		e.preventDefault();
-		const touch = e.touches[0];
-		const deltaY = touch.clientY - dragRef.current.startY;
-
-		const containerHeight = scrollSpyContainerRef.current.clientHeight;
-		const contentHeight = scrollSpyContentRef.current.scrollHeight;
-		const maxScroll = Math.max(0, contentHeight - containerHeight);
-
-		const newScrollPosition = Math.max(0, Math.min(maxScroll, dragRef.current.startScrollTop - deltaY));
-		setScrollSpyScrollPosition(newScrollPosition);
-	};
-
-	const handleTouchEnd = () => {
-		dragRef.current.isDragging = false;
-	};
-
-	// Generate comprehensive business data on client side to avoid hydration issues
+	// Load business data using the centralized business data generator
 	useEffect(() => {
-		const generateBusiness = () => {
-			const businessNames = ["Wade's Plumbing & Septic", "Joe's Pizza Palace", "Kautzer-Bergstrom Auto Repair", "Mountain View Landscaping", "City Center Dental", "Elite Fitness Gym"];
-			const businessTypes = ["Plumbing & Septic Services", "Italian Restaurant", "Auto Repair Shop", "Landscaping Services", "Dental Practice", "Fitness Center"];
-			const randomIndex = Math.floor(Math.random() * businessNames.length);
+		const loadBusinessData = () => {
+			try {
+				// Generate a pool of businesses (smaller for performance)
+				const businesses = generateBusinesses(100);
 
-			return {
-				id: params.id,
-				name: businessNames[randomIndex],
-				type: businessTypes[randomIndex],
-				rating: (4.2 + Math.random() * 0.8).toFixed(1),
-				reviewCount: Math.floor(Math.random() * 500) + 50,
-				priceLevel: "$".repeat(Math.floor(Math.random() * 3) + 1),
-				status: Math.random() > 0.3 ? "Open" : "Closed",
-				phone: "(555) 123-4567",
-				website: "www.example.com",
-				address: "123 Main St, Anytown, GA 30309",
-				hours: {
-					monday: "8:00 AM - 6:00 PM",
-					tuesday: "8:00 AM - 6:00 PM",
-					wednesday: "8:00 AM - 6:00 PM",
-					thursday: "8:00 AM - 6:00 PM",
-					friday: "8:00 AM - 6:00 PM",
-					saturday: "9:00 AM - 4:00 PM",
-					sunday: "Closed",
-				},
-				photos: ["https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&h=600&fit=crop", "https://images.unsplash.com/photo-1562813733-b31f71025d54?w=800&h=600&fit=crop", "https://images.unsplash.com/photo-1581578949510-fa7315b2b50d?w=800&h=600&fit=crop", "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop", "https://images.unsplash.com/photo-1562813733-b31f71025d54?w=800&h=600&fit=crop"],
-				portfolioPhotos: ["https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop", "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&h=600&fit=crop", "https://images.unsplash.com/photo-1562813733-b31f71025d54?w=800&h=600&fit=crop", "https://images.unsplash.com/photo-1581578949510-fa7315b2b50d?w=800&h=600&fit=crop", "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop"],
-				description: "Professional plumbing and septic services with over 20 years of experience. We provide reliable, affordable solutions for all your plumbing needs. Family-owned and operated since 2011.",
-				services: ["Emergency Plumbing", "Drain Cleaning", "Septic Tank Services", "Water Heater Installation", "Pipe Repair & Replacement", "Bathroom Remodeling"],
-				detailedServices: ["Emergency Plumbing Repair", "Drain Cleaning & Unclogging", "Septic Tank Pumping & Cleaning", "Water Heater Installation & Repair", "Pipe Repair & Replacement", "Bathroom Remodeling", "Kitchen Plumbing", "Sewer Line Repair", "Leak Detection", "Fixture Installation", "Garbage Disposal Repair", "Water Line Installation"],
-				highlights: ["Licensed & Insured", "24/7 Emergency Service", "Free Estimates", "Veteran Owned", "BBB Accredited"],
-				businessHighlights: ["Locally owned & operated", "Licensed & Insured", "Emergency services available", "Satisfaction guaranteed", "Free estimates", "Same-day service available", "20+ years experience", "Veteran-owned business", "BBB A+ Rating", "Fully bonded & insured"],
-				trustScore: 95,
-				responseRate: 98,
-				responseTime: "within 2 hours",
-				paymentMethods: ["Cash", "Credit Cards", "Debit Cards", "Check", "Financing Available", "PayPal", "Venmo"],
-				serviceArea: {
-					primary: "Atlanta, GA",
-					coverage: "25 mile radius",
-					cities: ["Atlanta", "Marietta", "Roswell", "Alpharetta", "Sandy Springs", "Dunwoody", "Brookhaven", "Decatur"],
-				},
-				license: {
-					number: "GA Plumbing License #PL-2024-001234",
-					state: "Georgia",
-					verified: true,
-					expires: "12/31/2025",
-				},
-				established: "2011",
-				employees: "5-10",
-				amenities: [
-					{ name: "Free Wi-Fi", icon: Wifi, available: true },
-					{ name: "Credit Cards", icon: CreditCard, available: true },
-					{ name: "Free Parking", icon: Car, available: true },
-					{ name: "Emergency Service", icon: Phone, available: true },
-					{ name: "Free Estimates", icon: DollarSign, available: true },
-					{ name: "Licensed & Insured", icon: Shield, available: true },
-				],
-				// NEW FEATURES DATA
-				realTimeAvailability: {
-					currentStatus: "Available Now",
-					nextAvailable: "Today 2:00 PM",
-					emergencyAvailable: true,
-					avgResponseTime: "45 minutes",
-					todaySlots: [
-						{ time: "2:00 PM", available: true, type: "standard" },
-						{ time: "3:30 PM", available: true, type: "standard" },
-						{ time: "5:00 PM", available: false, type: "standard" },
-						{ time: "Emergency", available: true, type: "emergency" },
-					],
-				},
-				videoConsultation: {
-					available: true,
-					pricePerSession: "$25",
-					duration: "30 minutes",
-					languages: ["English", "Spanish"],
-					nextSlot: "Today 3:00 PM",
-					specialties: ["Initial Assessment", "Quote Estimation", "Problem Diagnosis", "Maintenance Tips"],
-				},
-				warranties: [
-					{
-						id: "WTY-2024-001",
-						service: "Water Heater Installation",
-						startDate: "2024-01-15",
-						endDate: "2026-01-15",
-						status: "Active",
-						coverageDetails: "Full replacement coverage for manufacturer defects",
-						claimHistory: [],
-					},
-					{
-						id: "WTY-2024-002",
-						service: "Bathroom Remodel",
-						startDate: "2024-03-10",
-						endDate: "2026-03-10",
-						status: "Active",
-						coverageDetails: "2-year warranty on all labor and materials",
-						claimHistory: [],
-					},
-				],
-				peerRecommendations: [
-					{
-						recommenderName: "Sarah Johnson",
-						recommenderAddress: "124 Main St (Next Door)",
-						relationship: "Neighbor",
-						serviceUsed: "Emergency Plumbing",
-						rating: 5,
-						comment: "Wade saved the day when our main line burst! Professional and fast response.",
-						verificationStatus: "Verified Neighbor",
-						date: "2 weeks ago",
-					},
-					{
-						recommenderName: "Mike Chen",
-						recommenderAddress: "456 Oak Ave (2 blocks away)",
-						relationship: "Community Member",
-						serviceUsed: "Septic Tank Service",
-						rating: 5,
-						comment: "Honest pricing and excellent work. Highly recommend to anyone in the area.",
-						verificationStatus: "Verified Address",
-						date: "1 month ago",
-					},
-				],
-				multiLanguage: {
-					supportedLanguages: [
-						{ code: "en", name: "English", flag: "🇺🇸", native: "English" },
-						{ code: "es", name: "Spanish", flag: "🇪🇸", native: "Español" },
-						{ code: "fr", name: "French", flag: "🇫🇷", native: "Français" },
-						{ code: "de", name: "German", flag: "🇩🇪", native: "Deutsch" },
-					],
-					staffLanguages: ["English", "Spanish"],
-					translationQuality: "Professional",
-					culturalContext: {
-						familyOwned: "Family-owned business with traditional values",
-						communityFocus: "Strong community ties and local involvement",
-						workEthic: "Punctual, respectful, and professional service",
-					},
-				},
-				insuranceBilling: {
-					acceptedInsurance: ["State Farm", "Allstate", "Progressive", "GEICO", "Farmers Insurance", "USAA"],
-					directBilling: true,
-					claimAssistance: true,
-					approvalProcess: "We handle all insurance paperwork and pre-approvals",
-					averageClaimTime: "5-7 business days",
-					claimSuccessRate: "96%",
-				},
-				maintenancePlans: [
-					{
-						name: "Basic Care Plan",
-						price: "$99/year",
-						services: ["Annual plumbing inspection", "Drain cleaning", "Emergency priority"],
-						savings: "Save 15% on all services",
-						popular: false,
-					},
-					{
-						name: "Complete Protection",
-						price: "$199/year",
-						services: ["Bi-annual inspections", "Preventive maintenance", "Priority emergency service", "Water heater flush", "Leak detection check"],
-						savings: "Save 25% on all services",
-						popular: true,
-					},
-					{
-						name: "Premium Care Plus",
-						price: "$299/year",
-						services: ["Quarterly inspections", "All preventive maintenance", "24/7 priority service", "Free minor repairs", "Annual septic check", "Smart home integration"],
-						savings: "Save 35% on all services + Free minor repairs",
-						popular: false,
-					},
-				],
-				stats: {
-					monthlyViews: 1250,
+				// Find business by slug or ID
+				let foundBusiness = null;
+
+				// Try to find by slug first
+				if (isNaN(params.id)) {
+					foundBusiness = businesses.find((b) => b.slug === params.id);
+				} else {
+					// Find by ID (ensure string comparison)
+					foundBusiness = businesses.find((b) => b.id === params.id.toString());
+				}
+
+				// If not found, use the first business as fallback
+				if (!foundBusiness) {
+					foundBusiness = businesses[0];
+				}
+
+				// Transform the business data to match our component expectations
+				const transformedBusiness = {
+					...foundBusiness,
+					// Add missing fields that our component expects
+					trustScore: Math.floor(foundBusiness.ratings.overall * 20), // Convert 5-star to 100-point scale
+					responseRate: Math.floor(Math.random() * 10) + 90, // 90-100%
 					responseTime: "within 2 hours",
-					responseRate: 98,
-					bookingRate: 92,
-					repeatCustomers: 85,
-				},
-				reviews: [
-					{
-						id: 1,
-						author: "Sarah M.",
-						avatar: "https://i.pravatar.cc/150?img=1",
-						rating: 5,
-						date: "2 weeks ago",
-						text: "Excellent service! They fixed our emergency leak quickly and professionally. Wade was at my location within 30 minutes after reaching out with an emergency issue. Highly recommend!",
-						helpful: 12,
-						verified: true,
-						photos: 2,
+					detailedServices: foundBusiness.categories.concat(["Emergency Services", "Free Estimates", "Licensed & Insured Work", "Quality Workmanship", "Customer Satisfaction"]),
+					businessHighlights: ["Locally owned & operated", "Licensed & Insured", "Emergency services available", "Satisfaction guaranteed", "Free estimates", "Same-day service available"],
+					portfolioPhotos: foundBusiness.photos.slice(0, 3),
+					realTimeAvailability: {
+						currentStatus: "Available Now",
+						nextAvailable: "Today 2:00 PM",
+						emergencyAvailable: true,
+						avgResponseTime: "45 minutes",
+						todaySlots: [
+							{ time: "2:00 PM", available: true, type: "standard" },
+							{ time: "3:30 PM", available: true, type: "standard" },
+							{ time: "5:00 PM", available: false, type: "standard" },
+							{ time: "Emergency", available: true, type: "emergency" },
+						],
 					},
-					{
-						id: 2,
-						author: "Mike R.",
-						avatar: "https://i.pravatar.cc/150?img=2",
-						rating: 5,
-						date: "1 month ago",
-						text: "Great work on our bathroom remodel. Clean, professional, and on time. Starting from my original interaction with Wade (who is amazing!) things ran as smooth as possible.",
-						helpful: 8,
-						verified: true,
-						photos: 0,
+					videoConsultation: {
+						available: true,
+						pricePerSession: "$25",
+						duration: "30 minutes",
+						languages: ["English", "Spanish"],
+						nextSlot: "Today 3:00 PM",
+						specialties: ["Initial Assessment", "Quote Estimation", "Problem Diagnosis", "Maintenance Tips"],
 					},
-					{
-						id: 3,
-						author: "Jennifer L.",
-						avatar: "https://i.pravatar.cc/150?img=3",
-						rating: 5,
-						date: "3 weeks ago",
-						text: "Professional service and fair pricing. I'll definitely use them again for future projects. Wade explained everything clearly and the work was completed efficiently.",
-						helpful: 15,
-						verified: true,
-						photos: 1,
-					},
-				],
-				reviewHighlights: [
-					{
-						author: "Sarah",
-						quote: "Wade was at my location within 30 minutes after reaching out with an emergency issue.",
-						reviewCount: 3,
-					},
-					{
-						author: "Mike",
-						quote: "Starting from my original interaction with Wade (who is amazing!) things ran as smooth as possible.",
-						reviewCount: 5,
-					},
-					{
-						author: "Jennifer",
-						quote: "Professional service and fair pricing. I'll definitely use them again for future projects.",
-						reviewCount: 2,
-					},
-				],
-				businessUpdates: [
-					{
-						id: 1,
-						date: "2 days ago",
-						title: "Service Excellence Explained",
-						content: "Reliable plumbing services and repairs in your area. We pride ourselves on quality workmanship and customer satisfaction.",
-						image: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&h=300&fit=crop",
-					},
-					{
-						id: 2,
-						date: "1 week ago",
-						title: "Latest Project Completion",
-						content: "Recently completed a major bathroom remodeling project with excellent results. Customer satisfaction is our top priority.",
-						image: "https://images.unsplash.com/photo-1562813733-b31f71025d54?w=400&h=300&fit=crop",
-					},
-				],
-				portfolio: [
-					{
-						title: "Emergency Plumbing Repair",
-						image: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&h=300&fit=crop",
-						description: "24/7 emergency plumbing services",
-					},
-					{
-						title: "Bathroom Remodeling",
-						image: "https://images.unsplash.com/photo-1562813733-b31f71025d54?w=400&h=300&fit=crop",
-						description: "Complete bathroom renovation",
-					},
-					{
-						title: "Septic Tank Services",
-						image: "https://images.unsplash.com/photo-1581578949510-fa7315b2b50d?w=400&h=300&fit=crop",
-						description: "Professional septic maintenance",
-					},
-					{
-						title: "Water Heater Installation",
-						image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop",
-						description: "Expert water heater services",
-					},
-				],
-				qna: [
-					{
-						id: 1,
-						question: "Do you offer emergency services?",
-						answer: "Yes, we provide 24/7 emergency plumbing services with rapid response times.",
-						author: "Wade's Plumbing",
-						date: "1 week ago",
-						helpful: 8,
-					},
-					{
-						id: 2,
-						question: "What payment methods do you accept?",
-						answer: "We accept cash, credit cards, checks, and offer financing options for larger projects.",
-						author: "Wade's Plumbing",
-						date: "2 weeks ago",
-						helpful: 12,
-					},
-					{
-						id: 3,
-						question: "Do you provide free estimates?",
-						answer: "Yes, we provide free estimates for all plumbing projects. Just give us a call!",
-						author: "Wade's Plumbing",
-						date: "3 weeks ago",
-						helpful: 15,
-					},
-				],
-				// Additional comprehensive business data
-				pricing: {
-					hourlyRate: "$85 - $125/hour",
-					emergencyRate: "$150 - $200/hour",
-					minimumCharge: "$95",
-					discounts: ["10% Senior Discount", "15% Military Discount", "5% Cash Payment"],
-					financing: "0% APR for 12 months on jobs over $1,000",
-					freeServices: ["Estimates", "Basic Diagnostics", "Second Opinions"],
-				},
-				team: [
-					{
-						name: "Wade Thompson",
-						title: "Owner & Master Plumber",
-						experience: "20+ years",
-						certifications: ["Master Plumber License", "Backflow Prevention"],
-						photo: "https://i.pravatar.cc/150?img=11",
-						specialties: ["Emergency Repairs", "Septic Systems", "Commercial Plumbing"],
-					},
-					{
-						name: "Sarah Mitchell",
-						title: "Licensed Plumber",
-						experience: "8 years",
-						certifications: ["Journeyman Plumber", "Green Plumbing"],
-						photo: "https://i.pravatar.cc/150?img=12",
-						specialties: ["Residential Plumbing", "Bathroom Remodels", "Water Heaters"],
-					},
-					{
-						name: "Mike Rodriguez",
-						title: "Septic Specialist",
-						experience: "12 years",
-						certifications: ["Septic System Inspector", "Environmental Safety"],
-						photo: "https://i.pravatar.cc/150?img=13",
-						specialties: ["Septic Installation", "Drain Fields", "System Maintenance"],
-					},
-				],
-				certifications: [
-					{
-						name: "Georgia Master Plumber License",
-						number: "MP-GA-2024-001234",
-						issuer: "Georgia State Board of Plumbers",
-						issued: "2018-03-15",
-						expires: "2025-03-15",
-						status: "Active",
-						verified: true,
-					},
-					{
-						name: "Backflow Prevention Certification",
-						number: "BP-2024-567",
-						issuer: "American Water Works Association",
-						issued: "2023-06-20",
-						expires: "2026-06-20",
-						status: "Active",
-						verified: true,
-					},
-					{
-						name: "Green Plumbing Certification",
-						number: "GPC-2024-890",
-						issuer: "Green Plumbers USA",
-						issued: "2022-11-10",
-						expires: "2025-11-10",
-						status: "Active",
-						verified: true,
-					},
-					{
-						name: "OSHA Safety Certification",
-						number: "OSH-2024-345",
-						issuer: "Occupational Safety & Health Administration",
-						issued: "2024-01-15",
-						expires: "2027-01-15",
-						status: "Active",
-						verified: true,
-					},
-				],
-				insurance: {
-					liability: "$2,000,000 General Liability",
-					workersComp: "Workers' Compensation - Full Coverage",
-					bonding: "$50,000 Surety Bond",
-					provider: "State Farm Business Insurance",
-					policyNumber: "SF-2024-BUS-123456",
-					verified: true,
-					lastUpdated: "2024-01-01",
-				},
-				warranties: [
-					{
-						type: "Labor Warranty",
-						duration: "2 years",
-						coverage: "All labor and workmanship",
-						conditions: "Standard installation and repair work",
-					},
-					{
-						type: "Parts Warranty",
-						duration: "Manufacturer warranty",
-						coverage: "All parts and materials",
-						conditions: "Varies by manufacturer (typically 1-10 years)",
-					},
-					{
-						type: "Emergency Service Guarantee",
-						duration: "90 days",
-						coverage: "Follow-up emergency calls for same issue",
-						conditions: "Free return visit if problem recurs",
-					},
-				],
-				guarantees: ["100% Satisfaction Guarantee", "Same-day service available", "Upfront pricing - no hidden fees", "Licensed & insured technicians", "Clean work area guarantee", "Emergency response within 2 hours"],
-				specializations: ["Emergency Plumbing Repairs", "Septic Tank Systems", "Water Heater Services", "Bathroom Remodeling", "Kitchen Plumbing", "Sewer Line Repair", "Leak Detection", "Pipe Replacement", "Drain Cleaning", "Fixture Installation"],
-				equipment: ["Hydro-jetting equipment", "Digital leak detection tools", "Pipe inspection cameras", "Trenchless repair equipment", "Professional grade tools", "Emergency response vehicles"],
-				brands: ["Kohler", "American Standard", "Rheem", "Bradford White", "Delta", "Moen", "Toto", "Rinnai", "AO Smith", "Navien"],
-				awards: [
-					{
-						title: "Best Plumbing Service 2023",
-						issuer: "Atlanta Home & Garden",
-						year: "2023",
-					},
-					{
-						title: "BBB A+ Rating",
-						issuer: "Better Business Bureau",
-						year: "2020-2024",
-					},
-					{
-						title: "Angie's List Super Service Award",
-						issuer: "Angie's List",
-						year: "2022",
-					},
-					{
-						title: "Home Advisor Elite Service",
-						issuer: "Home Advisor",
-						year: "2023",
-					},
-				],
-				emergencyServices: {
-					available247: true,
-					responseTime: "30-60 minutes",
-					emergencyFee: "$50 service call fee",
-					serviceTypes: ["Burst pipes", "Sewer backups", "Water heater failures", "Gas leaks", "Frozen pipes", "Major leaks"],
-				},
-				businessTransparency: {
-					operationalAreas: [
-						{ category: "Professional Staff", importance: "High", description: "Licensed plumbers, apprentices, and skilled technicians" },
-						{ category: "Professional Training", importance: "High", description: "Ongoing education, certifications, and safety training" },
-						{ category: "Insurance & Bonding", importance: "Critical", description: "Liability protection, workers compensation, and bonding" },
-						{ category: "Professional Equipment", importance: "High", description: "Diagnostic tools, specialized equipment, and service vehicles" },
-						{ category: "Quality Materials", importance: "High", description: "Premium parts, supplies, and manufacturer warranties" },
-						{ category: "Business Operations", importance: "Medium", description: "Licensing, permits, marketing, and administrative costs" },
-						{ category: "Emergency Readiness", importance: "High", description: "24/7 availability, response vehicles, and on-call staff" },
-						{ category: "Customer Protection", importance: "Critical", description: "Warranties, guarantees, and service follow-up" },
-					],
-					whyQualityMatters: [
-						{ factor: "Licensed Professionals", impact: "Ensures work meets safety codes and local regulations" },
-						{ factor: "Proper Insurance", impact: "Protects your property and provides liability coverage" },
-						{ factor: "Quality Equipment", impact: "Faster diagnosis, better repairs, less disruption to your home" },
-						{ factor: "Ongoing Training", impact: "Knowledge of latest techniques and safety practices" },
-						{ factor: "Emergency Response", impact: "24/7 availability requires dedicated resources and staffing" },
-						{ factor: "Warranty Protection", impact: "Guarantees on work performed for your peace of mind" },
-					],
-					industryInsights: {
-						commonCosts: "Professional service businesses invest significantly in staff, equipment, training, and insurance",
-						qualityIndicators: ["Licensed and insured professionals", "Comprehensive warranties on work", "Professional diagnostic equipment", "Ongoing staff education and certification", "Emergency response capabilities", "Established business reputation"],
-						investmentAreas: ["Advanced diagnostic equipment and tools", "Professional vehicle fleet and maintenance", "Staff training and certification programs", "Technology systems for scheduling and customer service"],
-					},
-				},
-				beforeAfterGallery: [
-					{
-						title: "Bathroom Remodel - Modern Upgrade",
-						beforeImage: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=400&h=300&fit=crop",
-						afterImage: "https://images.unsplash.com/photo-1562813733-b31f71025d54?w=400&h=300&fit=crop",
-						description: "Complete bathroom renovation with modern fixtures and efficient plumbing.",
-					},
-					{
-						title: "Kitchen Plumbing - Professional Installation",
-						beforeImage: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop",
-						afterImage: "https://images.unsplash.com/photo-1556909179-f2692cdccbc6?w=400&h=300&fit=crop",
-						description: "New kitchen plumbing installation with garbage disposal and dishwasher connections.",
-					},
-				],
-				testimonials: [
-					{
-						customer: "Jennifer Adams",
-						service: "Emergency Plumbing",
-						rating: 5,
-						text: "Wade responded to our emergency call at 10 PM on a Sunday and had our water back on within 2 hours. Professional, courteous, and reasonably priced. You can't ask for better service!",
-						date: "March 2024",
-					},
-					{
-						customer: "Robert Kim",
-						service: "Septic Tank Service",
-						rating: 5,
-						text: "Outstanding septic tank service. Wade explained everything clearly, completed the work efficiently, and cleaned up perfectly. Will definitely use again and recommend to neighbors.",
-						date: "February 2024",
-					},
-				],
-				communityInvolvement: [
-					{
-						activity: "Local School Sponsorship",
-						description: "Sponsors the Anytown Elementary School baseball team",
-					},
-					{
-						activity: "Free Senior Services",
-						description: "Provides free plumbing inspections for seniors over 65",
-					},
-					{
-						activity: "Community Clean-up Events",
-						description: "Participates in annual community clean-up and repair events",
-					},
-					{
-						activity: "Local Charity Support",
-						description: "Donates services to Habitat for Humanity projects",
-					},
-				],
-				faq: [
-					{
-						question: "How quickly can you respond to emergency calls?",
-						answer: "We typically respond to emergency calls within 30-60 minutes, 24/7. Our emergency service fee is $50, which goes toward the cost of repairs.",
-					},
-					{
-						question: "Do you offer financing for larger projects?",
-						answer: "Yes, we offer 0% APR financing for 12 months on projects over $1,000. We also accept cash, credit cards, and checks.",
-					},
-					{
-						question: "Are you licensed and insured?",
-						answer: "Absolutely. We carry $2 million in general liability insurance, full workers' compensation, and a $50,000 surety bond. All our technicians are licensed professionals.",
-					},
-					{
-						question: "What areas do you serve?",
-						answer: "We serve Atlanta and surrounding areas within a 25-mile radius, including Marietta, Roswell, Alpharetta, Sandy Springs, and more.",
-					},
-					{
-						question: "Do you provide warranties on your work?",
-						answer: "Yes, we provide a 2-year warranty on all labor and workmanship, plus manufacturer warranties on parts. Emergency repairs come with a 90-day guarantee.",
-					},
-				],
-				accessibility: ["Wheelchair accessible service vehicles", "Clear communication for hearing impaired", "Written estimates available", "Flexible scheduling for special needs", "Senior-friendly service approach"],
-				careers: {
-					isHiring: true,
-					companySize: "5-10 employees",
-					culture: "Family-owned business with strong work-life balance",
-					benefits: ["Health Insurance", "Paid Time Off", "Tool Allowance", "Training & Certification", "Overtime Pay", "Retirement Plan"],
-					openPositions: [
+					warranties: [
 						{
-							title: "Licensed Plumber",
-							type: "Full-time",
-							experience: "3+ years",
-							location: "Atlanta, GA",
-							salary: "$55,000 - $75,000",
-							description: "Seeking experienced plumber for residential and commercial projects. Must have valid GA license.",
-							requirements: ["Valid GA Plumbing License", "3+ years experience", "Own tools", "Clean driving record", "Professional appearance"],
-							posted: "2 weeks ago",
-						},
-						{
-							title: "Plumbing Apprentice",
-							type: "Full-time",
-							experience: "Entry Level",
-							location: "Atlanta, GA",
-							salary: "$35,000 - $45,000",
-							description: "Great opportunity for someone starting their plumbing career. Will provide training and mentorship.",
-							requirements: ["High school diploma", "Willingness to learn", "Physical fitness", "Reliable transportation", "Team player"],
-							posted: "1 week ago",
+							id: "WTY-2024-001",
+							service: "Service Work",
+							startDate: "2024-01-15",
+							endDate: "2026-01-15",
+							status: "Active",
+							coverageDetails: "Full replacement coverage for manufacturer defects",
+							claimHistory: [],
 						},
 					],
-					perks: ["Company vehicle for qualified technicians", "Professional development opportunities", "Family-friendly environment", "Local community involvement"],
-					testimonials: [
+					peerRecommendations: [
 						{
-							employee: "Mike T., Senior Plumber",
-							quote: "Been with Wade's for 5 years. Great team, fair pay, and they actually care about work-life balance.",
-							tenure: "5 years",
-						},
-						{
-							employee: "Sarah L., Office Manager",
-							quote: "Love the family atmosphere here. Wade treats everyone with respect and values our input.",
-							tenure: "3 years",
-						},
-					],
-				},
-				partnerships: {
-					supplierPartners: [
-						{
-							name: "Ferguson Enterprises",
-							type: "Primary Supplier",
-							relationship: "Preferred Partner since 2015",
-							benefits: "Priority ordering, competitive pricing, technical support",
-							logo: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=200&h=100&fit=crop",
-						},
-						{
-							name: "Home Depot Pro",
-							type: "Supply Partner",
-							relationship: "Commercial Account",
-							benefits: "Bulk pricing, quick pickup, wide selection",
-							logo: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&h=100&fit=crop",
+							recommenderName: "Sarah Johnson",
+							recommenderAddress: "124 Main St (Next Door)",
+							relationship: "Neighbor",
+							serviceUsed: "Emergency Service",
+							rating: 5,
+							comment: "Professional and fast response. Highly recommend!",
+							verificationStatus: "Verified Neighbor",
+							date: "2 weeks ago",
 						},
 					],
-					servicePartners: [
+					multiLanguage: {
+						supportedLanguages: [
+							{ code: "en", name: "English", flag: "🇺🇸", native: "English" },
+							{ code: "es", name: "Spanish", flag: "🇪🇸", native: "Español" },
+						],
+						staffLanguages: ["English", "Spanish"],
+						translationQuality: "Professional",
+					},
+					insuranceBilling: {
+						acceptedInsurance: ["State Farm", "Allstate", "Progressive", "GEICO"],
+						directBilling: true,
+						claimAssistance: true,
+						approvalProcess: "We handle all insurance paperwork and pre-approvals",
+						averageClaimTime: "5-7 business days",
+						claimSuccessRate: "96%",
+					},
+					maintenancePlans: [
 						{
-							name: "Atlanta Septic Services",
-							type: "Septic Specialist",
-							relationship: "Referral Partner",
-							description: "For complex septic system installations and repairs",
-						},
-						{
-							name: "Emergency Restoration LLC",
-							type: "Water Damage",
-							relationship: "Emergency Partner",
-							description: "24/7 water damage restoration and cleanup services",
+							name: "Basic Care Plan",
+							price: "$99/year",
+							services: ["Annual inspection", "Priority service"],
+							savings: "Save 15% on all services",
+							popular: false,
 						},
 					],
-					communityPartners: [
+					stats: {
+						monthlyViews: Math.floor(Math.random() * 2000) + 500,
+						responseTime: "within 2 hours",
+						responseRate: Math.floor(Math.random() * 10) + 90,
+						bookingRate: Math.floor(Math.random() * 10) + 85,
+						repeatCustomers: Math.floor(Math.random() * 15) + 80,
+					},
+					reviews: [
 						{
-							name: "Habitat for Humanity",
-							type: "Charity Organization",
-							involvement: "Monthly volunteer projects",
-							description: "Providing plumbing services for new home builds",
+							id: 1,
+							author: "Sarah M.",
+							avatar: "https://i.pravatar.cc/150?img=1",
+							rating: 5,
+							date: "2 weeks ago",
+							text: "Excellent service! Professional and reliable. Highly recommend!",
+							helpful: 12,
+							verified: true,
+							photos: 2,
 						},
 						{
-							name: "Anytown Chamber of Commerce",
-							type: "Business Organization",
-							involvement: "Active Member since 2012",
-							description: "Supporting local business community and networking",
+							id: 2,
+							author: "Mike R.",
+							avatar: "https://i.pravatar.cc/150?img=2",
+							rating: 5,
+							date: "1 month ago",
+							text: "Great work and fair pricing. Will use again.",
+							helpful: 8,
+							verified: true,
+							photos: 0,
+						},
+					],
+					reviewHighlights: [
+						{
+							author: "Sarah",
+							quote: "Professional and reliable service.",
+							reviewCount: 3,
+						},
+					],
+					businessUpdates: [
+						{
+							id: 1,
+							date: "2 days ago",
+							title: "Service Excellence",
+							content: "We pride ourselves on quality workmanship and customer satisfaction.",
+							image: foundBusiness.photos[0],
+						},
+					],
+					portfolio: foundBusiness.photos.slice(0, 4).map((photo, index) => ({
+						title: `Project ${index + 1}`,
+						image: photo,
+						description: "Professional service delivery",
+					})),
+					qna: [
+						{
+							id: 1,
+							question: "Do you offer emergency services?",
+							answer: "Yes, we provide emergency services with rapid response times.",
+							author: foundBusiness.name,
+							date: "1 week ago",
+							helpful: 8,
+						},
+					],
+					pricing: {
+						hourlyRate: `$${Math.floor(Math.random() * 50) + 75} - $${Math.floor(Math.random() * 50) + 125}/hour`,
+						emergencyRate: `$${Math.floor(Math.random() * 50) + 150} - $${Math.floor(Math.random() * 50) + 200}/hour`,
+						minimumCharge: `$${Math.floor(Math.random() * 30) + 75}`,
+						discounts: ["10% Senior Discount", "15% Military Discount"],
+						financing: "Financing available for larger projects",
+						freeServices: ["Estimates", "Basic Diagnostics"],
+					},
+					team: [
+						{
+							name: foundBusiness.name.split("'")[0] || "Owner",
+							title: "Owner & Operator",
+							experience: `${Math.floor(Math.random() * 15) + 5}+ years`,
+							certifications: ["Licensed Professional"],
+							photo: "https://i.pravatar.cc/150?img=11",
+							specialties: foundBusiness.categories,
 						},
 					],
 					certifications: [
 						{
-							name: "Better Business Bureau",
-							grade: "A+",
-							since: "2013",
-							benefits: "Consumer trust, dispute resolution, ethical standards",
-						},
-						{
-							name: "Angie's List Super Service Award",
-							year: "2023",
-							achievement: "Top 5% of service providers",
-							benefits: "Customer recognition and referrals",
+							name: "Professional License",
+							number: `LIC-${Math.floor(Math.random() * 10000)}`,
+							issuer: "State Licensing Board",
+							issued: "2020-01-15",
+							expires: "2025-01-15",
+							status: "Active",
+							verified: foundBusiness.verified,
 						},
 					],
-				},
-			};
+					insurance: {
+						liability: "$1,000,000 General Liability",
+						workersComp: "Workers' Compensation Coverage",
+						bonding: "$25,000 Surety Bond",
+						provider: "Business Insurance Provider",
+						verified: foundBusiness.verified,
+					},
+					guarantees: ["Satisfaction Guarantee", "Licensed & insured professionals", "Quality workmanship"],
+					specializations: foundBusiness.categories,
+					equipment: ["Professional tools", "Modern equipment", "Service vehicles"],
+					brands: ["Industry leading brands", "Quality suppliers"],
+					awards: foundBusiness.verified
+						? [
+								{
+									title: "Verified Business",
+									issuer: "Thorbis",
+									year: "2024",
+								},
+						  ]
+						: [],
+					emergencyServices: {
+						available247: true,
+						responseTime: "30-60 minutes",
+						emergencyFee: "$50 service call fee",
+						serviceTypes: ["Emergency calls", "Urgent repairs"],
+					},
+					businessTransparency: {
+						operationalAreas: [
+							{ category: "Professional Staff", importance: "High", description: "Licensed and skilled professionals" },
+							{ category: "Quality Equipment", importance: "High", description: "Professional tools and equipment" },
+							{ category: "Insurance & Bonding", importance: "Critical", description: "Full liability protection" },
+						],
+						whyQualityMatters: [
+							{ factor: "Licensed Professionals", impact: "Ensures work meets safety standards" },
+							{ factor: "Proper Insurance", impact: "Protects your property" },
+						],
+						industryInsights: {
+							commonCosts: "Professional businesses invest in staff, equipment, and training",
+							qualityIndicators: ["Licensed professionals", "Insurance coverage", "Professional equipment"],
+							investmentAreas: ["Professional equipment", "Staff training", "Insurance coverage"],
+						},
+					},
+					beforeAfterGallery: [
+						{
+							title: "Professional Work",
+							beforeImage: foundBusiness.photos[0],
+							afterImage: foundBusiness.photos[1] || foundBusiness.photos[0],
+							description: "Quality service delivery",
+						},
+					],
+					testimonials: [
+						{
+							customer: "Jennifer Adams",
+							service: "Professional Service",
+							rating: 5,
+							text: "Outstanding service. Professional and reliable.",
+							date: "March 2024",
+						},
+					],
+					communityInvolvement: [
+						{
+							activity: "Local Community Support",
+							description: "Active in local community initiatives",
+						},
+					],
+					faq: [
+						{
+							question: "What areas do you serve?",
+							answer: `We serve ${foundBusiness.address.split(",").slice(-2).join(",").trim()} and surrounding areas.`,
+						},
+						{
+							question: "Are you licensed and insured?",
+							answer: "Yes, we are fully licensed and insured for your protection.",
+						},
+					],
+					accessibility: ["Professional service approach", "Clear communication", "Flexible scheduling"],
+					careers: {
+						isHiring: Math.random() > 0.5,
+						companySize: foundBusiness.employees || "1-5 employees",
+						culture: "Professional and customer-focused",
+						benefits: ["Competitive pay", "Professional development"],
+						openPositions: [],
+						perks: ["Professional environment", "Growth opportunities"],
+						testimonials: [],
+					},
+					partnerships: {
+						supplierPartners: [],
+						servicePartners: [],
+						communityPartners: [],
+						certifications: [],
+					},
+					// Transform amenities to match expected format
+					amenities: foundBusiness.amenities.map((amenity) => ({
+						name: amenity,
+						icon: CheckCircle,
+						available: true,
+					})),
+					// Add missing required fields
+					serviceArea: {
+						primary: foundBusiness.address.split(",").slice(-2).join(",").trim(),
+						coverage: "Local area",
+						cities: [foundBusiness.address.split(",")[1]?.trim() || "Local"],
+					},
+					license: {
+						number: `LIC-${foundBusiness.id}`,
+						state: foundBusiness.address.split(",").slice(-1)[0]?.trim() || "State",
+						verified: foundBusiness.verified,
+						expires: "12/31/2025",
+					},
+				};
+
+				setBusiness(transformedBusiness);
+			} catch (error) {
+				console.error("Error loading business data:", error);
+				// Fallback to a default business
+				setBusiness({
+					id: params.id,
+					name: "Local Business",
+					type: "Professional Services",
+					rating: 4.5,
+					reviewCount: 50,
+					// Add other required fields...
+				});
+			}
 		};
 
-		setBusiness(generateBusiness());
+		loadBusinessData();
 	}, [params.id]);
 
 	// Enhanced keyboard navigation with scroll spy support
@@ -964,17 +567,83 @@ export default function BizProfile({ params }) {
 			try {
 				const header = document.querySelector("header");
 				if (header) {
-					const totalHeight = header.offsetHeight;
+					// Get the actual measured height of the sticky header
+					const baseHeaderHeight = header.offsetHeight;
+					// Add extra height when header section is active to account for the desktop scroll header section
+					const scrollHeaderHeight = showHeaderSection ? 80 : 0; // Approximate height of the scroll header section
+					const totalHeight = baseHeaderHeight + scrollHeaderHeight;
 					const scrollSpyOffset = totalHeight + 16; // 16px gap
 
-					console.log("📏 Header height calculated:", {
-						totalHeight,
-						scrollSpyOffset,
-						showScrollSpy,
+					// Calculate available viewport height for scroll spy
+					const viewportHeight = window.innerHeight;
+					const topGap = 16; // Gap above scroll spy
+					const bottomGap = 32; // Gap below scroll spy (2em)
+					const arrowHeight = 32; // Height of each arrow button (h-8)
+					const errorStateHeight = scrollSpyError ? 32 : 0; // Error message height if present
+
+					// Calculate container height accounting for arrows and gaps
+					let availableHeight = viewportHeight - totalHeight - topGap - bottomGap - errorStateHeight;
+
+					// Calculate scroll spy content height (precise)
+					const itemHeight = 40; // Height per navigation item: h-9 (36px) + space-y-1 (4px between items)
+					const contentPadding = 16; // Padding inside content container (p-2 = 8px top + 8px bottom)
+					const scrollSpyContentHeight = navigationItems.length * 36 + (navigationItems.length - 1) * 4 + contentPadding; // 36px per button + 4px spacing between + padding
+
+					// Show arrows only if content overflows available space
+					const needsArrows = scrollSpyContentHeight > availableHeight;
+
+					// If arrows are needed, subtract their height from available space
+					if (needsArrows) {
+						availableHeight -= arrowHeight * 2; // Top and bottom arrows
+					}
+
+					// Ensure minimum and maximum heights with responsive breakpoints
+					const minHeight = Math.min(200, viewportHeight * 0.3); // Minimum 200px or 30% of viewport
+
+					// More generous max height for larger screens
+					const getMaxHeight = () => {
+						if (viewportHeight >= 1080) {
+							// Large screens (1080p+)
+							return Math.min(scrollSpyContentHeight + 40, viewportHeight * 0.8); // Allow 80% of viewport or content height
+						} else if (viewportHeight >= 768) {
+							// Medium screens
+							return Math.min(800, viewportHeight * 0.75); // 800px max or 75% of viewport
+						} else {
+							// Small screens
+							return Math.min(600, viewportHeight * 0.7); // 600px max or 70% of viewport
+						}
+					};
+
+					const maxHeight = getMaxHeight();
+
+					// Calculate final container height - prefer showing all content on large screens
+					let containerHeight;
+					if (scrollSpyContentHeight <= availableHeight) {
+						// If content fits, use the exact content height (no minimum constraint when content fits)
+						containerHeight = scrollSpyContentHeight;
+					} else {
+						// Otherwise, use constrained height with minimum
+						containerHeight = Math.max(minHeight, Math.min(maxHeight, availableHeight));
+					}
+
+					console.log("📏 Responsive scroll spy calculated:", {
+						viewportHeight,
+						baseHeaderHeight,
+						scrollHeaderHeight,
+						totalHeaderHeight: totalHeight,
+						availableHeight,
+						scrollSpyContentHeight,
+						needsArrows: scrollSpyContentHeight > containerHeight,
+						containerHeight,
+						minHeight,
+						maxHeight,
+						showHeaderSection,
 						timestamp: new Date().toISOString(),
 					});
 
 					setHeaderHeight(totalHeight);
+					setShouldShowArrows(scrollSpyContentHeight > containerHeight);
+					setScrollSpyContainerHeight(containerHeight);
 					setScrollSpyError(null);
 				} else {
 					console.warn("Header element not found");
@@ -1015,7 +684,30 @@ export default function BizProfile({ params }) {
 				clearTimeout(navigationTimeoutRef.current);
 			}
 		};
-	}, [showScrollSpy]);
+	}, [showHeaderSection]);
+
+	// Measure actual content height for precise sizing
+	useEffect(() => {
+		if (scrollSpyContentRef.current && showScrollSpy) {
+			const measureContent = () => {
+				const contentElement = scrollSpyContentRef.current;
+				if (contentElement) {
+					const actualHeight = contentElement.scrollHeight;
+					setActualContentHeight(actualHeight);
+
+					console.log("📐 Actual content measured:", {
+						scrollHeight: actualHeight,
+						calculatedHeight: scrollSpyContainerHeight,
+						shouldShowArrows: actualHeight > scrollSpyContainerHeight,
+					});
+				}
+			};
+
+			// Measure after render
+			const timer = setTimeout(measureContent, 100);
+			return () => clearTimeout(timer);
+		}
+	}, [showScrollSpy, navigationItems.length, scrollSpyContainerHeight]);
 
 	// No longer needed since we're not scrolling the container
 
@@ -1026,7 +718,7 @@ export default function BizProfile({ params }) {
 		const activeIndex = navigationItems.findIndex((item) => item.id === activeSection);
 		if (activeIndex === -1) return;
 
-		const itemHeight = 48; // Approximate height of each item (p-2 + h-5 + spacing)
+		const itemHeight = 40; // Height per item: h-9 (36px) + space-y-1 (4px)
 		const activeItemPosition = activeIndex * itemHeight;
 		const containerHeight = scrollSpyContainerRef.current.clientHeight;
 		const buffer = 20; // Buffer space around active item
@@ -1055,7 +747,8 @@ export default function BizProfile({ params }) {
 
 		const handleScroll = () => {
 			const scrollY = window.scrollY;
-			setShowScrollSpy(scrollY > 300);
+			// Show header section after scrolling past threshold
+			setShowHeaderSection(scrollY > 200);
 		};
 
 		// Throttled scroll handler for performance
@@ -1140,14 +833,19 @@ export default function BizProfile({ params }) {
 			}
 		};
 
+		// Initialize scroll spy visibility immediately
+		handleScroll();
+
 		// Initialize
 		window.addEventListener("scroll", throttledScroll, { passive: true });
+		window.addEventListener("resize", handleScroll, { passive: true });
 
 		// Delay observer creation to ensure sections are rendered
 		const initTimer = setTimeout(createIntersectionObserver, 1000);
 
 		return () => {
 			window.removeEventListener("scroll", throttledScroll);
+			window.removeEventListener("resize", handleScroll);
 			if (scrollTimeout) clearTimeout(scrollTimeout);
 			if (initTimer) clearTimeout(initTimer);
 			if (intersectionObserverRef.current) {
@@ -1159,32 +857,14 @@ export default function BizProfile({ params }) {
 	// Enhanced scroll spy navigation with error handling and features
 	const handleScrollSpyScroll = (direction) => {
 		try {
-			console.log(`🔄 Scroll spy navigation requested: ${direction}`, {
-				isNavigating,
-				activeSection,
-				navigationItemsLength: navigationItems.length,
-				canNavigateUp: canNavigateUp(),
-				canNavigateDown: canNavigateDown(),
-			});
-
-			if (isNavigating) {
-				console.log("Navigation in progress, ignoring request");
-				return;
-			}
-
 			const nextSection = getNextSection(direction);
 			if (!nextSection) {
-				console.warn(`No ${direction} section available`);
 				return;
 			}
 
 			if (nextSection.id === activeSection) {
-				console.log(`Already at ${direction === "up" ? "first" : "last"} section`);
 				return;
 			}
-
-			console.log(`🧭 Navigating ${direction}: ${activeSection} -> ${nextSection.id}`);
-			setIsNavigating(true);
 
 			// Add haptic feedback if available
 			if (navigator.vibrate) {
@@ -1192,15 +872,9 @@ export default function BizProfile({ params }) {
 			}
 
 			scrollToSection(nextSection.id);
-
-			// Reset navigation state after animation
-			setTimeout(() => {
-				setIsNavigating(false);
-			}, 800);
 		} catch (error) {
 			console.error("Navigation error:", error);
 			setScrollSpyError("Navigation failed");
-			setIsNavigating(false);
 		}
 	};
 
@@ -1277,10 +951,10 @@ export default function BizProfile({ params }) {
 	return (
 		<div className="min-h-screen bg-background">
 			{/* Header */}
-			<header className={`sticky top-0 z-40 border-b bg-background/95 backdrop-blur-md border-border transition-all duration-300 ease-out ${showScrollSpy ? "lg:block" : "block"}`}>
+			<header className={`sticky top-0 z-40 border-b bg-background/95 backdrop-blur-md border-border transition-all duration-300 ease-out ${showHeaderSection ? "lg:block" : "block"}`}>
 				<div className="px-3 mx-auto max-w-7xl sm:px-4 lg:px-8">
 					{/* Desktop Header - Always Visible */}
-					<div className={`${showScrollSpy ? "hidden lg:flex" : "flex"} items-center justify-between h-14 sm:h-16 transition-all duration-300 ease-out`}>
+					<div className={`${showHeaderSection ? "hidden lg:flex" : "flex"} items-center justify-between h-14 sm:h-16 transition-all duration-300 ease-out`}>
 						<div className="flex items-center space-x-2 sm:space-x-4">
 							<Button variant="ghost" size="sm" className="h-8 px-2 text-muted-foreground hover:text-foreground sm:h-9 sm:px-3">
 								<ArrowLeft className="w-4 h-4 mr-1 sm:mr-2" />
@@ -1308,12 +982,12 @@ export default function BizProfile({ params }) {
 					</div>
 
 					{/* Mobile Scroll Header - Replaces main header on scroll */}
-					{showScrollSpy && (
-						<div className="flex items-center justify-between py-2 duration-300 ease-out lg:hidden sm:py-3 animate-in slide-in-from-top-2 fade-in-0">
+					{showHeaderSection && (
+						<div className="flex items-center justify-between py-2 lg:hidden sm:py-3">
 							{/* Business Name & Rating */}
 							<div className="flex-1 min-w-0">
-								<h1 className="text-sm font-bold truncate duration-300 delay-75 text-foreground sm:text-base animate-in slide-in-from-left-2 fade-in-0">{business?.name}</h1>
-								<div className="flex items-center space-x-2 text-xs duration-300 delay-100 text-muted-foreground animate-in slide-in-from-left-2 fade-in-0">
+								<h1 className="text-sm font-bold truncate text-foreground sm:text-base">{business?.name}</h1>
+								<div className="flex items-center space-x-2 text-xs text-muted-foreground">
 									<div className="flex items-center space-x-1">
 										{[...Array(5)].map((_, i) => (
 											<Star key={i} className={`w-3 h-3 ${i < Math.floor(business?.rating || 0) ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground"}`} />
@@ -1326,7 +1000,7 @@ export default function BizProfile({ params }) {
 							</div>
 
 							{/* Primary Action Buttons */}
-							<div className="flex space-x-2 duration-300 delay-150 animate-in slide-in-from-right-2 fade-in-0">
+							<div className="flex space-x-2">
 								<Button size="sm" className="h-8 text-xs font-semibold transition-all duration-200 bg-primary hover:bg-primary/90 hover:scale-105 active:scale-95">
 									<Phone className="w-3 h-3 mr-1" />
 									Call
@@ -1342,13 +1016,13 @@ export default function BizProfile({ params }) {
 					)}
 
 					{/* Desktop Scroll Header - Only for desktop */}
-					{showScrollSpy && (
-						<div className="hidden py-3 duration-300 ease-out lg:block animate-in slide-in-from-top-2 fade-in-0">
+					{showHeaderSection && (
+						<div className="hidden px-4 py-4 lg:block">
 							<div className="grid grid-cols-3 gap-6">
 								{/* Contact Info */}
-								<div className="space-y-3 duration-300 delay-75 animate-in slide-in-from-left-2 fade-in-0">
+								<div className="space-y-4">
 									<div className="flex items-center justify-between">
-										<div className="flex items-center space-x-3">
+										<div className="flex items-center space-x-4">
 											<div className="text-center">
 												<div className="text-lg font-bold text-primary">{business?.trustScore}%</div>
 												<div className="text-xs text-muted-foreground">Trust Score</div>
@@ -1375,12 +1049,12 @@ export default function BizProfile({ params }) {
 								</div>
 
 								{/* Hours */}
-								<div className="space-y-2 duration-300 delay-100 animate-in slide-in-from-top-2 fade-in-0">
+								<div className="space-y-3">
 									<h4 className="flex items-center text-sm font-semibold text-foreground">
 										<Clock className="w-3 h-3 mr-2" />
 										Hours
 									</h4>
-									<div className="grid grid-cols-2 text-xs gap-x-4 gap-y-1">
+									<div className="grid grid-cols-2 text-xs gap-x-4 gap-y-2">
 										{Object.entries(business?.hours || {})
 											.slice(0, 4)
 											.map(([day, hours]) => (
@@ -1393,9 +1067,9 @@ export default function BizProfile({ params }) {
 								</div>
 
 								{/* Key Amenities */}
-								<div className="space-y-2 duration-300 delay-150 animate-in slide-in-from-right-2 fade-in-0">
+								<div className="space-y-3">
 									<h4 className="text-sm font-semibold text-foreground">What This Place Offers</h4>
-									<div className="grid grid-cols-2 gap-1">
+									<div className="grid grid-cols-2 gap-2">
 										{business?.amenities?.slice(0, 4).map((amenity, index) => (
 											<div key={index} className="flex items-center space-x-2">
 												<amenity.icon className="flex-shrink-0 w-3 h-3 text-muted-foreground" />
@@ -1410,7 +1084,7 @@ export default function BizProfile({ params }) {
 
 					{/* Mobile Navigation Menu */}
 					{showMobileNav && (
-						<div className="duration-200 ease-out border-t lg:hidden border-border bg-background/95 backdrop-blur-md animate-in slide-in-from-top-2 fade-in-0">
+						<div className="border-t lg:hidden border-border bg-background/95 backdrop-blur-md">
 							<div className="grid grid-cols-2 gap-2 p-3 sm:p-4">
 								{navigationItems.map((item, index) => {
 									const Icon = item.icon;
@@ -1419,18 +1093,11 @@ export default function BizProfile({ params }) {
 										<button
 											key={item.id}
 											onClick={() => scrollToSection(item.id)}
-											className={`flex items-center space-x-2 p-2.5 rounded-lg text-xs transition-all duration-200 sm:text-sm hover:scale-105 active:scale-95 animate-in slide-in-from-top-1 fade-in-0 ${
-												isCertification
-													? activeSection === item.id
-														? "bg-gradient-to-r from-blue-600 to-green-600 text-white shadow-lg"
-														: "bg-gradient-to-r from-blue-50 to-green-50 dark:from-blue-950/30 dark:to-green-950/30 text-blue-600 hover:from-blue-100 hover:to-green-100 dark:hover:from-blue-900/40 dark:hover:to-green-900/40 border border-blue-200/50 font-semibold"
-													: activeSection === item.id
-													? "bg-primary/10 text-primary"
-													: "text-muted-foreground hover:text-foreground hover:bg-muted"
+											className={`flex items-center space-x-2 p-2.5 rounded-lg text-xs transition-all duration-200 sm:text-sm hover:scale-105 active:scale-95 ${
+												isCertification ? (activeSection === item.id ? "bg-gradient-to-r from-blue-600 to-green-600 text-white shadow-lg" : "bg-gradient-to-r from-blue-500 to-green-500 text-white shadow-md hover:from-blue-600 hover:to-green-600 hover:shadow-lg font-semibold") : activeSection === item.id ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground hover:bg-muted"
 											}`}
-											style={{ animationDelay: `${index * 50}ms`, animationDuration: "300ms" }}
 										>
-											<Icon className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isCertification ? "animate-pulse" : ""}`} />
+											<Icon className={`w-3.5 h-3.5 sm:w-4 sm:h-4`} />
 											<span className="truncate">
 												{item.label}
 												{isCertification && <span className="ml-1 text-xs opacity-75">NEW</span>}
@@ -1449,158 +1116,214 @@ export default function BizProfile({ params }) {
 				{/* Main Content - Full Width */}
 				<div className="space-y-6 sm:space-y-8">
 					{/* Business Header */}
-					<div className="p-4 border bg-gradient-to-r from-card/50 to-card/30 backdrop-blur-sm border-border rounded-xl sm:p-6 lg:p-8 sm:rounded-2xl">
-						{/* Business Name & Type */}
-						<div className="mb-6 space-y-2 sm:space-y-3">
-							<h1 className="text-xl font-bold leading-tight tracking-tight break-words sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl text-foreground">{business.name}</h1>
-							<p className="text-sm font-medium leading-normal break-words sm:text-base md:text-lg lg:text-xl text-muted-foreground">{business.type}</p>
-						</div>
-
-						{/* Rating Section */}
-						<div className="p-3 mb-4 border bg-card/40 rounded-xl border-border/50 sm:p-4 md:p-6 sm:mb-6">
-							<div className="space-y-3 sm:space-y-4">
-								{/* Star Rating & Score */}
-								<div className="flex flex-col items-start gap-2 sm:gap-3 sm:flex-row sm:items-center">
-									<div className="flex items-center space-x-2">
-										<div className="flex items-center space-x-0.5 sm:space-x-1">
-											{[...Array(5)].map((_, i) => (
-												<Star key={i} className={`w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 ${i < Math.floor(business.rating) ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground"}`} />
-											))}
-										</div>
-										<span className="text-xl font-bold sm:text-2xl md:text-3xl text-foreground">{business.rating}</span>
-									</div>
-									<div className="text-xs font-medium sm:text-sm md:text-base text-muted-foreground">Based on {business.reviewCount.toLocaleString()} reviews</div>
-								</div>
-
-								{/* Status Badges */}
-								<div className="flex flex-wrap gap-1.5 sm:gap-2">
-									<Badge variant="outline" className="border-primary/30 text-primary bg-primary/10 font-medium text-xs px-2 py-1 sm:text-sm sm:px-2.5 sm:py-1">
-										{business.priceLevel}
-									</Badge>
-
-									{business.license.verified && (
-										<Badge variant="secondary" className="bg-blue-500/10 text-blue-400 border-blue-500/20 font-medium text-xs px-2 py-1 sm:text-sm sm:px-2.5 sm:py-1">
-											<Verified className="w-3 h-3 mr-1 sm:w-3.5 sm:h-3.5 sm:mr-1" />
-											<span className="truncate">Verified</span>
-										</Badge>
-									)}
-
-									<Badge variant="secondary" className={`font-medium text-xs px-2 py-1 sm:text-sm sm:px-2.5 sm:py-1 ${business.status === "Open" ? "bg-green-500/10 text-green-400 border-green-500/20" : "bg-red-500/10 text-red-400 border-red-500/20"}`}>
-										<div className={`w-1.5 h-1.5 rounded-full mr-1 sm:w-2 sm:h-2 sm:mr-1.5 ${business.status === "Open" ? "bg-green-400" : "bg-red-400"}`} />
-										<span className="truncate">{business.status}</span>
-									</Badge>
-								</div>
-							</div>
-						</div>
-
-						{/* Quick Actions */}
-						<div className="mb-4 space-y-2 sm:mb-6 sm:space-y-0 sm:flex sm:gap-3">
-							<Button size="default" className="w-full font-semibold transition-all duration-200 shadow-lg h-11 sm:w-auto sm:h-10 bg-primary hover:bg-primary/90 text-primary-foreground hover:shadow-xl" onClick={() => setShowReviewModal(true)}>
-								<Edit className="w-4 h-4 mr-2" />
-								<span className="text-sm truncate sm:text-base">Write Review</span>
-							</Button>
-							<Button variant="outline" size="default" className="w-full font-semibold transition-all duration-200 shadow-sm h-11 sm:w-auto sm:h-10 border-border hover:bg-muted hover:shadow-md" onClick={() => scrollToSection("reviews")}>
-								<Star className="w-4 h-4 mr-2" />
-								<span className="text-sm truncate sm:text-base">View Reviews</span>
-							</Button>
-						</div>
-
-						{/* Business Details */}
-						<div className="mb-4 space-y-2 text-xs sm:mb-6 sm:space-y-3 sm:text-sm md:text-base text-muted-foreground">
-							<div className="flex items-center space-x-2">
-								<Users className="flex-shrink-0 w-4 h-4" />
-								<span className="font-medium truncate">{business.employees} employees</span>
-							</div>
-							<div className="flex items-center space-x-2">
-								<Calendar className="flex-shrink-0 w-4 h-4" />
-								<span className="font-medium truncate">Established {business.established}</span>
-							</div>
-							<div className="flex items-center space-x-2">
-								<MapPin className="flex-shrink-0 w-4 h-4" />
-								<span className="font-medium break-words">Serving {business.serviceArea.primary}</span>
-							</div>
-						</div>
-
-						{/* Trust Score & Key Stats */}
-						<div className="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
-							<div className="p-3 text-center transition-colors border rounded-lg bg-card/40 border-border/50 hover:bg-card/60">
-								<div className="mb-0.5 text-lg font-bold sm:text-xl md:text-2xl text-primary">{business.trustScore}%</div>
-								<div className="text-xs font-medium leading-tight sm:text-sm text-muted-foreground">Trust Score</div>
-							</div>
-							<div className="p-3 text-center transition-colors border rounded-lg bg-card/40 border-border/50 hover:bg-card/60">
-								<div className="mb-0.5 text-lg font-bold text-green-400 sm:text-xl md:text-2xl">{business.responseRate}%</div>
-								<div className="text-xs font-medium leading-tight sm:text-sm text-muted-foreground">Response Rate</div>
-							</div>
-							<div className="p-3 text-center transition-colors border rounded-lg bg-card/40 border-border/50 hover:bg-card/60">
-								<div className="mb-0.5 text-lg font-bold text-blue-400 sm:text-xl md:text-2xl">{business.stats.monthlyViews.toLocaleString()}</div>
-								<div className="text-xs font-medium leading-tight sm:text-sm text-muted-foreground">Monthly Views</div>
-							</div>
-							<div className="p-3 text-center transition-colors border rounded-lg bg-card/40 border-border/50 hover:bg-card/60">
-								<div className="mb-0.5 text-lg font-bold text-purple-400 sm:text-xl md:text-2xl">{business.stats.repeatCustomers}%</div>
-								<div className="text-xs font-medium leading-tight sm:text-sm text-muted-foreground">Repeat Customers</div>
-							</div>
-						</div>
-
-						{/* Contact & Hours - Visible when not scrolled */}
-						<div className="grid grid-cols-1 gap-6 mt-6 md:grid-cols-3">
-							{/* Contact Card */}
-							<div className="p-4 border bg-card/50 border-border rounded-xl">
-								<div className="space-y-3">
-									<Button className="w-full font-semibold bg-primary hover:bg-primary/90 text-primary-foreground">
-										<Phone className="w-4 h-4 mr-2" />
-										<span className="truncate">Call {business.phone}</span>
-									</Button>
-
-									<div className="grid grid-cols-2 gap-2">
-										<Button variant="outline" size="sm" className="border-border hover:bg-muted">
-											<MapPin className="w-3 h-3 mr-1" />
-											<span className="truncate">Directions</span>
-										</Button>
-										<Button variant="outline" size="sm" className="border-border hover:bg-muted">
-											<Globe className="w-3 h-3 mr-1" />
-											<span className="truncate">Website</span>
-										</Button>
-									</div>
-
-									<div className="pt-3 space-y-2 text-xs border-t border-border">
-										<div className="flex items-center space-x-2 text-muted-foreground">
-											<Mail className="flex-shrink-0 w-3 h-3" />
-											<span className="truncate">Responds {business.responseTime}</span>
-										</div>
-										<div className="flex items-start space-x-2 text-muted-foreground">
-											<MapPin className="flex-shrink-0 w-3 h-3 mt-0.5" />
-											<span className="break-words">{business.address}</span>
-										</div>
-									</div>
-								</div>
-							</div>
-
-							{/* Hours */}
-							<div className="p-4 border bg-card/50 border-border rounded-xl">
-								<h3 className="flex items-center mb-3 text-sm font-semibold text-foreground">
-									<Clock className="w-4 h-4 mr-2" />
-									Hours
-								</h3>
-								<div className="space-y-2 text-xs">
-									{Object.entries(business.hours).map(([day, hours]) => (
-										<div key={day} className="flex justify-between">
-											<span className="capitalize text-muted-foreground">{day}</span>
-											<span className="text-foreground">{hours}</span>
-										</div>
-									))}
-								</div>
-							</div>
-
-							{/* Amenities */}
-							<div className="p-4 border bg-card/50 border-border rounded-xl">
-								<h3 className="mb-3 text-sm font-semibold text-foreground">What This Place Offers</h3>
+					{/* Clean Minimalistic Business Header */}
+					<div className="space-y-8">
+						{/* Business Name & Status Row */}
+						<div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:items-start sm:justify-between">
+							<div className="space-y-3">
 								<div className="space-y-2">
-									{business.amenities.map((amenity, index) => (
-										<div key={index} className="flex items-center space-x-2">
-											<amenity.icon className="flex-shrink-0 w-4 h-4 text-muted-foreground" />
-											<span className={`text-xs break-words ${amenity.available ? "text-foreground" : "text-muted-foreground line-through"}`}>{amenity.name}</span>
+									<h1 className="text-3xl font-bold leading-tight text-foreground sm:text-4xl md:text-5xl">{business.name}</h1>
+									<div className="flex items-center space-x-3 text-muted-foreground">
+										<p className="text-lg">{business.type}</p>
+										<span>•</span>
+										<div className="flex items-center space-x-1 text-sm">
+											<MapPin className="w-4 h-4" />
+											<span>{business.serviceArea.primary}</span>
 										</div>
-									))}
+									</div>
+								</div>
+
+								{/* Quick Business Details - More Spaced */}
+								<div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
+									<div className="flex items-center space-x-2">
+										<Calendar className="w-4 h-4" />
+										<span>Since {business.established}</span>
+									</div>
+									<div className="flex items-center space-x-2">
+										<Users className="w-4 h-4" />
+										<span>{business.employees} employees</span>
+									</div>
+									<div className="flex items-center space-x-2">
+										<Shield className="w-4 h-4 text-green-500" />
+										<span className="text-green-600">Licensed & Insured</span>
+									</div>
+								</div>
+							</div>
+
+							{/* Verification & Status */}
+							<div className="flex flex-col items-start space-y-3 sm:items-end">
+								<div className="flex items-center px-4 py-2 space-x-2 rounded-full shadow-lg bg-gradient-to-r from-blue-500 to-green-500">
+									<Award className="w-4 h-4 text-white" />
+									<span className="text-sm font-semibold text-white">Thorbis Verified</span>
+								</div>
+								<div className={`flex items-center px-3 py-1.5 space-x-2 rounded-full ${business.status === "Open" ? "bg-green-500/10 text-green-600 border border-green-500/20" : "bg-red-500/10 text-red-600 border border-red-500/20"}`}>
+									<div className={`w-2 h-2 rounded-full ${business.status === "Open" ? "bg-green-500" : "bg-red-500"}`} />
+									<span className="text-sm font-medium">{business.status}</span>
+									{business.status === "Open" && <span className="text-xs text-green-500/70">• Closes 6 PM</span>}
+								</div>
+							</div>
+						</div>
+
+						{/* Rating & Actions Row - Cleaner Layout */}
+						<div className="flex flex-col space-y-6 lg:flex-row lg:space-y-0 lg:items-center lg:justify-between">
+							{/* Rating Section */}
+							<div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:items-center sm:space-x-8">
+								<div className="flex items-center space-x-4">
+									<div className="flex items-center space-x-2">
+										{[...Array(5)].map((_, i) => (
+											<Star key={i} className={`w-6 h-6 ${i < Math.floor(business.rating) ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground"}`} />
+										))}
+									</div>
+									<div className="text-2xl font-bold text-foreground">{business.rating}</div>
+								</div>
+								<div className="flex items-center space-x-4 text-muted-foreground">
+									<span>({business.reviewCount.toLocaleString()} reviews)</span>
+									<div className="flex items-center px-3 py-1 text-sm font-medium border rounded-full text-primary bg-primary/10 border-primary/20">{business.priceLevel}</div>
+								</div>
+							</div>
+
+							{/* Action Buttons */}
+							<div className="flex items-center space-x-3">
+								<Button variant="outline" size="sm" className="border-border hover:bg-muted">
+									<Share className="w-4 h-4 mr-2" />
+									Share
+								</Button>
+								<Button variant="outline" size="sm" className="border-border hover:bg-muted">
+									<Heart className="w-4 h-4 mr-2" />
+									Save
+								</Button>
+								<Button variant="outline" size="sm" className="border-border hover:bg-muted">
+									<Flag className="w-4 h-4 mr-2" />
+									Report
+								</Button>
+							</div>
+						</div>
+
+						{/* Key Performance Stats - Improved Visual Hierarchy */}
+						<div className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">
+							<div className="p-4 text-center transition-all duration-200 border rounded-xl bg-card/50 border-border/50 hover:bg-card/70 hover:shadow-md lg:p-6">
+								<div className="text-2xl font-bold text-primary lg:text-3xl">{business.trustScore}%</div>
+								<div className="mt-1 text-sm font-medium text-muted-foreground">Trust Score</div>
+								<div className="mt-1 text-xs text-muted-foreground lg:mt-2">Industry leading</div>
+							</div>
+							<div className="p-4 text-center transition-all duration-200 border rounded-xl bg-card/50 border-border/50 hover:bg-card/70 hover:shadow-md lg:p-6">
+								<div className="text-2xl font-bold text-green-500 lg:text-3xl">{business.responseRate}%</div>
+								<div className="mt-1 text-sm font-medium text-muted-foreground">Response Rate</div>
+								<div className="mt-1 text-xs text-muted-foreground lg:mt-2">Responds {business.responseTime}</div>
+							</div>
+							<div className="p-4 text-center transition-all duration-200 border rounded-xl bg-card/50 border-border/50 hover:bg-card/70 hover:shadow-md lg:p-6">
+								<div className="text-2xl font-bold text-blue-500 lg:text-3xl">{business.stats.monthlyViews.toLocaleString()}</div>
+								<div className="mt-1 text-sm font-medium text-muted-foreground">Monthly Views</div>
+								<div className="mt-1 text-xs text-muted-foreground lg:mt-2">Top 5% in area</div>
+							</div>
+							<div className="p-4 text-center transition-all duration-200 border rounded-xl bg-card/50 border-border/50 hover:bg-card/70 hover:shadow-md lg:p-6">
+								<div className="text-2xl font-bold text-purple-500 lg:text-3xl">{business.stats.repeatCustomers}%</div>
+								<div className="mt-1 text-sm font-medium text-muted-foreground">Repeat Customers</div>
+								<div className="mt-1 text-xs text-muted-foreground lg:mt-2">Customer loyalty</div>
+							</div>
+						</div>
+
+						{/* Contact & Information Grid - Better Organization */}
+						<div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+							{/* Contact Section - Streamlined */}
+							<div className="space-y-4">
+								<h3 className="text-lg font-semibold text-foreground">Contact</h3>
+								<div className="space-y-3">
+									<Button className="w-full h-12 font-semibold transition-all duration-200 bg-primary hover:bg-primary/90 text-primary-foreground hover:shadow-lg">
+										<Phone className="w-5 h-5 mr-3" />
+										Call {business.phone}
+									</Button>
+									<div className="grid grid-cols-2 gap-3">
+										<Button variant="outline" className="h-10 border-border hover:bg-muted hover:border-primary">
+											<MapPin className="w-4 h-4 mr-2" />
+											Directions
+										</Button>
+										<Button variant="outline" className="h-10 border-border hover:bg-muted hover:border-primary">
+											<Globe className="w-4 h-4 mr-2" />
+											Website
+										</Button>
+									</div>
+									<div className="grid grid-cols-2 gap-3">
+										<Button variant="outline" className="h-10 border-border hover:bg-muted hover:border-primary">
+											<Mail className="w-4 h-4 mr-2" />
+											Message
+										</Button>
+										<Button variant="outline" className="h-10 border-border hover:bg-muted hover:border-primary">
+											<Calendar className="w-4 h-4 mr-2" />
+											Book Now
+										</Button>
+									</div>
+								</div>
+
+								{/* Contact Details - Cleaner */}
+								<div className="pt-4 space-y-3 text-sm border-t text-muted-foreground border-border">
+									<div className="flex items-start space-x-2">
+										<MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
+										<span className="leading-relaxed">{business.address}</span>
+									</div>
+									<div className="flex items-center space-x-2">
+										<Clock className="w-4 h-4 flex-shrink-0" />
+										<span className="font-medium text-green-600">Open until 6:00 PM</span>
+									</div>
+								</div>
+							</div>
+
+							{/* Hours Section - More Concise */}
+							<div className="space-y-4">
+								<h3 className="text-lg font-semibold text-foreground">Hours</h3>
+								<div className="space-y-2 text-sm">
+									{Object.entries(business.hours).map(([day, hours]) => {
+										const today = new Date().toLocaleDateString("en-US", { weekday: "long" }).toLowerCase();
+										const isToday = day.toLowerCase() === today;
+										return (
+											<div key={day} className="flex items-center justify-between py-1">
+												<span className="font-medium capitalize text-muted-foreground">{day.slice(0, 3)}</span>
+												<span className={`font-medium text-right ${isToday ? "text-primary" : "text-foreground"}`}>{hours}</span>
+											</div>
+										);
+									})}
+								</div>
+								<div className="pt-3 mt-4 space-y-2 border-t border-border">
+									<Button variant="ghost" size="sm" className="h-8 p-0 text-primary hover:text-primary/80">
+										View special hours
+									</Button>
+								</div>
+							</div>
+
+							{/* Reviews & Services - Simplified */}
+							<div className="space-y-4">
+								<h3 className="text-lg font-semibold text-foreground">Quick Actions</h3>
+								<div className="space-y-3">
+									<Button size="default" className="w-full h-12 font-semibold transition-all duration-200 bg-primary hover:bg-primary/90 text-primary-foreground hover:shadow-lg" onClick={() => setShowReviewModal(true)}>
+										<Edit className="w-5 h-5 mr-3" />
+										Write Review
+									</Button>
+									<div className="grid grid-cols-1 gap-2">
+										<Button variant="outline" size="default" className="h-10 font-medium border-border hover:bg-muted hover:border-primary" onClick={() => scrollToSection("reviews")}>
+											<Star className="w-4 h-4 mr-2" />
+											{business.reviewCount} Reviews
+										</Button>
+										<Button variant="outline" size="default" className="h-10 font-medium border-border hover:bg-muted hover:border-primary" onClick={() => scrollToSection("services")}>
+											<Building className="w-4 h-4 mr-2" />
+											View Services
+										</Button>
+									</div>
+								</div>
+
+								{/* Popular Services - More Compact */}
+								<div className="pt-4 space-y-3 border-t border-border">
+									<h4 className="text-sm font-medium text-foreground">What&apos;s Available</h4>
+									<div className="space-y-2">
+										{business.amenities.slice(0, 3).map((amenity, index) => (
+											<div key={index} className="flex items-center space-x-2 text-sm">
+												<CheckCircle className="w-3.5 h-3.5 text-green-500 flex-shrink-0" />
+												<span className="text-foreground">{amenity.name}</span>
+											</div>
+										))}
+									</div>
+									<Button variant="ghost" size="sm" className="h-8 p-0 mt-2 text-primary hover:text-primary/80">
+										View all amenities
+									</Button>
 								</div>
 							</div>
 						</div>
@@ -1736,48 +1459,77 @@ export default function BizProfile({ params }) {
 								</div>
 							</section>
 
-							{/* 2. GET THORBIS CERTIFIED SECTION - Trust Building */}
+							{/* 2. THORBIS CERTIFIED ELITE STATUS - Trust Validation */}
 							<section ref={sectionRefs.certification} className="scroll-mt-20 sm:scroll-mt-24 lg:scroll-mt-32">
 								<div className="mb-6 sm:mb-8 md:mb-12">
 									<h2 className="flex items-center mb-3 text-2xl font-bold sm:text-3xl md:text-4xl text-foreground">
 										<Award className="w-6 h-6 mr-3 sm:w-8 sm:h-8 sm:mr-4 text-primary" />
-										Get Thorbis Certified
+										Thorbis Certified Elite Business
 									</h2>
 									<div className="w-20 h-1 rounded-full sm:w-24 sm:h-1.5 bg-gradient-to-r from-primary to-primary/50"></div>
 								</div>
 
 								<div className="space-y-6 sm:space-y-8">
-									{/* Certification Hero */}
-									<div className="p-6 border bg-gradient-to-r from-blue-50 to-green-50 dark:from-blue-950/20 dark:to-green-950/20 rounded-xl border-blue-200/50 sm:p-8">
+									{/* Elite Status Hero */}
+									<div className="p-6 border bg-gradient-to-r from-amber-50 via-yellow-50 to-orange-50 dark:from-amber-950/20 dark:via-yellow-950/20 dark:to-orange-950/20 rounded-xl border-amber-200/50 sm:p-8">
 										<div className="flex items-start space-x-4">
-											<div className="flex items-center justify-center flex-shrink-0 w-12 h-12 bg-blue-500 rounded-full">
-												<Award className="w-6 h-6 text-white" />
+											<div className="flex items-center justify-center flex-shrink-0 w-16 h-16 rounded-full shadow-lg bg-gradient-to-br from-amber-400 to-orange-500">
+												<Award className="w-8 h-8 text-white" />
 											</div>
 											<div className="space-y-4">
 												<div>
-													<h3 className="text-xl font-bold sm:text-2xl text-foreground">Join the Elite Network of Verified Businesses</h3>
-													<p className="text-sm leading-relaxed sm:text-base text-muted-foreground">Thorbis Certified businesses are independently rated for Highest Quality and Helpful Expertise. Our rigorous certification process ensures only the best businesses earn this prestigious recognition.</p>
+													<div className="flex items-center gap-3 mb-2">
+														<h3 className="text-xl font-bold sm:text-2xl text-foreground">Elite Business Recognition</h3>
+														<Badge className="text-amber-800 bg-amber-100 border-amber-300">🏆 1 in 125,000</Badge>
+													</div>
+													<p className="text-sm leading-relaxed sm:text-base text-muted-foreground">
+														This business has achieved Thorbis Certified status - an elite recognition earned by fewer than <strong>1 in 125,000 businesses</strong>. Like a Michelin star for service excellence, this certification represents the highest standards of quality, reliability, and expertise in the industry.
+													</p>
 												</div>
-												<div className="flex flex-wrap gap-3">
-													<Button className="text-white bg-blue-600 hover:bg-blue-700">
-														<Award className="w-4 h-4 mr-2" />
-														Apply for Certification
-													</Button>
-													<Button variant="outline" className="text-blue-700 border-blue-200 bg-blue-50 hover:bg-blue-100">
-														<ExternalLink className="w-4 h-4 mr-2" />
-														Learn More
-													</Button>
+												<div className="flex items-center gap-2 p-3 rounded-lg bg-amber-100/50 dark:bg-amber-950/30">
+													<Shield className="w-5 h-5 text-amber-600" />
+													<span className="text-sm font-medium text-amber-800 dark:text-amber-200">Protected by Thorbis Performance Guarantee</span>
 												</div>
 											</div>
 										</div>
 									</div>
 
-									{/* Certification Benefits */}
+									{/* Exclusivity Stats */}
+									<div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+										<div className="p-6 text-center border bg-gradient-to-br from-red-50 to-pink-50 dark:from-red-950/20 dark:to-pink-950/20 rounded-xl border-red-200/50">
+											<div className="flex items-center justify-center w-12 h-12 mx-auto mb-3 bg-red-500 rounded-full">
+												<TrendingUp className="w-6 h-6 text-white" />
+											</div>
+											<div className="text-3xl font-bold text-red-600">0.0008%</div>
+											<div className="text-sm text-muted-foreground">Business Acceptance Rate</div>
+											<div className="mt-2 text-xs text-red-600">Rarer than Harvard admission</div>
+										</div>
+
+										<div className="p-6 text-center border bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950/20 dark:to-cyan-950/20 rounded-xl border-blue-200/50">
+											<div className="flex items-center justify-center w-12 h-12 mx-auto mb-3 bg-blue-500 rounded-full">
+												<Clock className="w-6 h-6 text-white" />
+											</div>
+											<div className="text-3xl font-bold text-blue-600">6-9</div>
+											<div className="text-sm text-muted-foreground">Month Vetting Process</div>
+											<div className="mt-2 text-xs text-blue-600">Rigorous evaluation period</div>
+										</div>
+
+										<div className="p-6 text-center border bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 rounded-xl border-green-200/50">
+											<div className="flex items-center justify-center w-12 h-12 mx-auto mb-3 bg-green-500 rounded-full">
+												<Users className="w-6 h-6 text-white" />
+											</div>
+											<div className="text-3xl font-bold text-green-600">400+</div>
+											<div className="text-sm text-muted-foreground">Customer Interviews</div>
+											<div className="mt-2 text-xs text-green-600">Independent verification</div>
+										</div>
+									</div>
+
+									{/* What This Means for You */}
 									<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
 										<div className="space-y-4">
-											<h3 className="text-xl font-semibold sm:text-2xl text-foreground">Certification Benefits</h3>
+											<h3 className="text-xl font-semibold sm:text-2xl text-foreground">What This Certification Means for You</h3>
 											<div className="space-y-3">
-												{["Premium business listing with verified badge", "Higher search ranking and visibility", "Customer trust score boost up to 40%", "Priority customer support and resources", "Performance guarantee backing", "Ongoing monitoring and quality assurance"].map((benefit, index) => (
+												{["Guaranteed highest quality workmanship and service", "Verified financial stability and proper licensing", "Independently confirmed customer satisfaction scores", "Ongoing performance monitoring and quality assurance", "Protected by comprehensive performance guarantee", "Priority dispute resolution and mediation services"].map((benefit, index) => (
 													<div key={index} className="flex items-start space-x-3">
 														<CheckCircle className="flex-shrink-0 w-5 h-5 mt-0.5 text-green-400" />
 														<span className="text-sm leading-relaxed sm:text-base text-foreground">{benefit}</span>
@@ -1787,12 +1539,12 @@ export default function BizProfile({ params }) {
 										</div>
 
 										<div className="space-y-4">
-											<h3 className="text-xl font-semibold sm:text-2xl text-foreground">Requirements</h3>
+											<h3 className="text-xl font-semibold sm:text-2xl text-foreground">The Elite Vetting Process</h3>
 											<div className="space-y-3">
-												{["Valid business license and insurance", "Minimum 4.5-star customer rating", "Pass comprehensive background check", "Complete quality and expertise assessment", "Maintain ongoing customer satisfaction", "Commit to performance guarantee standards"].map((requirement, index) => (
+												{["Comprehensive 400+ customer interview process", "Independent financial stability assessment", "Rigorous background and licensing verification", "Technical expertise and quality evaluation", "On-site inspection and equipment review", "Ongoing annual re-certification requirements"].map((requirement, index) => (
 													<div key={index} className="flex items-start space-x-3">
-														<div className="flex-shrink-0 w-5 h-5 mt-0.5 rounded-full bg-blue-500/20 flex items-center justify-center">
-															<div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+														<div className="flex-shrink-0 w-5 h-5 mt-0.5 rounded-full bg-amber-500/20 flex items-center justify-center">
+															<div className="w-2 h-2 rounded-full bg-amber-500"></div>
 														</div>
 														<span className="text-sm leading-relaxed sm:text-base text-foreground">{requirement}</span>
 													</div>
@@ -1801,68 +1553,89 @@ export default function BizProfile({ params }) {
 										</div>
 									</div>
 
-									{/* Certification Process */}
+									{/* Rigorous 12-Stage Evaluation */}
 									<div className="space-y-6">
-										<h3 className="text-xl font-semibold sm:text-2xl text-foreground">12-Step Certification Process</h3>
+										<div className="space-y-2 text-center">
+											<h3 className="text-xl font-semibold sm:text-2xl text-foreground">12-Stage Elite Evaluation Process</h3>
+											<p className="text-sm text-muted-foreground">This business survived our industry&apos;s most rigorous certification process</p>
+										</div>
 										<div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
 											{[
-												{ step: 1, title: "Application", description: "Submit initial application with business details" },
-												{ step: 2, title: "License Verification", description: "Verify all required licenses and permits" },
-												{ step: 3, title: "Insurance Check", description: "Confirm adequate insurance coverage" },
-												{ step: 4, title: "Background Review", description: "Comprehensive background and history check" },
-												{ step: 5, title: "Customer Survey", description: "Independent customer satisfaction survey" },
-												{ step: 6, title: "Reference Check", description: "Contact and verify customer references" },
-												{ step: 7, title: "Financial Review", description: "Assess business financial stability" },
-												{ step: 8, title: "Quality Assessment", description: "Evaluate work quality and standards" },
-												{ step: 9, title: "Expertise Test", description: "Test technical knowledge and expertise" },
-												{ step: 10, title: "Site Inspection", description: "Physical location and equipment review" },
-												{ step: 11, title: "Final Review", description: "Comprehensive evaluation of all criteria" },
-												{ step: 12, title: "Certification", description: "Award Thorbis Certified status" },
+												{ stage: 1, title: "Initial Screening", description: "Basic qualifications and eligibility review", difficulty: "Standard" },
+												{ stage: 2, title: "License Audit", description: "Comprehensive licensing and permit verification", difficulty: "Moderate" },
+												{ stage: 3, title: "Insurance Validation", description: "Coverage adequacy and claims history review", difficulty: "Moderate" },
+												{ stage: 4, title: "Background Investigation", description: "Complete business and owner background check", difficulty: "Intensive" },
+												{ stage: 5, title: "Customer Deep Dive", description: "400+ independent customer interviews", difficulty: "Intensive" },
+												{ stage: 6, title: "Reference Verification", description: "Extensive reference checking and validation", difficulty: "Intensive" },
+												{ stage: 7, title: "Financial Analysis", description: "Complete financial stability assessment", difficulty: "Expert" },
+												{ stage: 8, title: "Quality Evaluation", description: "Work samples and quality standards review", difficulty: "Expert" },
+												{ stage: 9, title: "Expertise Assessment", description: "Technical knowledge and skill testing", difficulty: "Expert" },
+												{ stage: 10, title: "Facility Inspection", description: "Physical location and equipment audit", difficulty: "Expert" },
+												{ stage: 11, title: "Final Review Board", description: "Executive committee comprehensive evaluation", difficulty: "Elite" },
+												{ stage: 12, title: "Elite Certification", description: "Award of Thorbis Certified Elite status", difficulty: "Elite" },
 											].map((item, index) => (
-												<div key={index} className="p-4 border rounded-lg bg-card/30 border-border">
+												<div
+													key={index}
+													className={`p-4 border rounded-lg ${
+														item.difficulty === "Elite"
+															? "bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 border-amber-200/50"
+															: item.difficulty === "Expert"
+															? "bg-gradient-to-br from-red-50 to-pink-50 dark:from-red-950/20 dark:to-pink-950/20 border-red-200/50"
+															: item.difficulty === "Intensive"
+															? "bg-gradient-to-br from-orange-50 to-yellow-50 dark:from-orange-950/20 dark:to-yellow-950/20 border-orange-200/50"
+															: "bg-card/30 border-border"
+													}`}
+												>
 													<div className="flex items-center mb-2">
-														<div className="flex items-center justify-center flex-shrink-0 w-6 h-6 text-xs font-bold text-white rounded-full bg-primary">{item.step}</div>
+														<div className={`flex items-center justify-center flex-shrink-0 w-6 h-6 text-xs font-bold text-white rounded-full ${item.difficulty === "Elite" ? "bg-gradient-to-r from-amber-500 to-orange-500" : item.difficulty === "Expert" ? "bg-gradient-to-r from-red-500 to-pink-500" : item.difficulty === "Intensive" ? "bg-gradient-to-r from-orange-500 to-yellow-500" : "bg-primary"}`}>{item.stage}</div>
 														<h4 className="ml-2 text-sm font-semibold text-foreground">{item.title}</h4>
 													</div>
-													<p className="text-xs leading-relaxed text-muted-foreground">{item.description}</p>
+													<p className="mb-2 text-xs leading-relaxed text-muted-foreground">{item.description}</p>
+													<Badge variant="outline" className={`text-xs ${item.difficulty === "Elite" ? "text-amber-700 border-amber-300" : item.difficulty === "Expert" ? "text-red-700 border-red-300" : item.difficulty === "Intensive" ? "text-orange-700 border-orange-300" : "text-blue-700 border-blue-300"}`}>
+														{item.difficulty}
+													</Badge>
 												</div>
 											))}
 										</div>
 									</div>
 
-									{/* Performance Guarantee */}
-									<div className="p-6 border bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-950/20 dark:to-blue-950/20 rounded-xl border-green-200/50">
+									{/* Elite Performance Guarantee */}
+									<div className="p-6 border bg-gradient-to-r from-emerald-50 via-teal-50 to-cyan-50 dark:from-emerald-950/20 dark:via-teal-950/20 dark:to-cyan-950/20 rounded-xl border-emerald-200/50">
 										<div className="flex items-start space-x-4">
-											<div className="flex items-center justify-center flex-shrink-0 w-10 h-10 bg-green-500 rounded-full">
-												<Shield className="w-5 h-5 text-white" />
+											<div className="flex items-center justify-center flex-shrink-0 w-12 h-12 rounded-full shadow-lg bg-gradient-to-br from-emerald-500 to-teal-500">
+												<Shield className="w-6 h-6 text-white" />
 											</div>
-											<div className="space-y-2">
-												<h3 className="text-lg font-semibold text-foreground">Performance Guarantee</h3>
-												<p className="text-sm leading-relaxed text-muted-foreground">All Thorbis Certified businesses are backed by our Performance Guarantee. If you&apos;re not satisfied with the service, we&apos;ll work to make it right through mediation and resolution services.</p>
+											<div className="space-y-3">
+												<h3 className="text-lg font-semibold text-foreground">Elite Performance Guarantee</h3>
+												<p className="text-sm leading-relaxed text-muted-foreground">Every Thorbis Certified business is backed by our industry-leading Elite Performance Guarantee. This isn&apos;t just insurance - it&apos;s a commitment to excellence that includes dedicated mediation services, satisfaction guarantee protocols, and quality assurance monitoring.</p>
 												<div className="flex flex-wrap gap-2 mt-3">
-													<Badge className="text-white bg-green-500">100% Satisfaction</Badge>
-													<Badge className="text-white bg-blue-500">Mediation Backed</Badge>
-													<Badge className="text-white bg-purple-500">Quality Assured</Badge>
+													<Badge className="text-emerald-800 bg-emerald-100 border-emerald-300">🛡️ 100% Satisfaction</Badge>
+													<Badge className="text-teal-800 bg-teal-100 border-teal-300">⚖️ Expert Mediation</Badge>
+													<Badge className="text-cyan-800 bg-cyan-100 border-cyan-300">🔍 Ongoing Monitoring</Badge>
+													<Badge className="text-blue-800 bg-blue-100 border-blue-300">📞 24/7 Resolution</Badge>
 												</div>
 											</div>
 										</div>
 									</div>
 
-									{/* Call to Action */}
-									<div className="p-6 text-center border bg-gradient-to-r from-primary/5 to-blue/5 rounded-xl border-primary/20">
+									{/* Trust with Confidence */}
+									<div className="p-6 text-center border bg-gradient-to-r from-primary/5 to-purple/5 rounded-xl border-primary/20">
 										<div className="space-y-4">
+											<div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-full shadow-lg bg-gradient-to-br from-primary to-purple-500">
+												<Award className="w-8 h-8 text-white" />
+											</div>
 											<div>
-												<h3 className="mb-2 text-xl font-semibold text-foreground">Ready to Get Certified?</h3>
-												<p className="text-sm text-muted-foreground">Join thousands of verified businesses in the Thorbis network</p>
+												<h3 className="mb-2 text-xl font-semibold text-foreground">You&apos;re Choosing Excellence</h3>
+												<p className="max-w-2xl mx-auto text-sm text-muted-foreground">By selecting this Thorbis Certified business, you&apos;re working with a company that has proven itself among the top 0.0008% of businesses in the industry. This level of certification is rarer than admission to Harvard and represents an unwavering commitment to quality that you can trust.</p>
 											</div>
 											<div className="flex flex-col justify-center gap-3 sm:flex-row">
-												<Button className="bg-primary hover:bg-primary/90">
-													<Award className="w-4 h-4 mr-2" />
-													Start Application
+												<Button className="text-white shadow-lg bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90">
+													<Shield className="w-4 h-4 mr-2" />
+													View Certification Details
 												</Button>
-												<Button variant="outline" className="border-border hover:bg-muted">
-													<Phone className="w-4 h-4 mr-2" />
-													Call (555) 123-CERT
+												<Button variant="outline" className="border-primary/20 hover:bg-primary/5">
+													<ExternalLink className="w-4 h-4 mr-2" />
+													Learn About Certification Process
 												</Button>
 											</div>
 										</div>
@@ -3471,90 +3244,94 @@ export default function BizProfile({ params }) {
 			{/* Enhanced Floating Scroll Spy Navigation - Desktop Only */}
 			{showScrollSpy && (
 				<div
-					className="fixed z-30 hidden lg:block left-6 ease-out animate-in slide-in-from-left-4 fade-in-0 duration-400"
+					className="fixed z-30 hidden lg:block left-6"
 					style={{
 						top: `${headerHeight + 16}px`,
 						bottom: "2em",
 					}}
 				>
-					<div className="flex flex-col border shadow-lg bg-card/90 backdrop-blur-md border-border rounded-xl overflow-visible w-20">
+					<div className="flex flex-col border shadow-lg w-fit bg-card/90 backdrop-blur-md border-border rounded-xl" style={{ overflow: "visible" }}>
 						{/* Error State */}
-						{scrollSpyError && <div className="p-2 text-xs text-red-500 bg-red-50 dark:bg-red-950/30 border-b border-red-200 dark:border-red-800">⚠️ {scrollSpyError}</div>}
+						{scrollSpyError && <div className="p-2 text-xs text-red-500 border-b border-red-200 bg-red-50 dark:bg-red-950/30 dark:border-red-800">⚠️ {scrollSpyError}</div>}
 
 						{/* Previous Section Arrow */}
-						{navigationItems.length > 1 && (
-							<Button variant="ghost" size="sm" onClick={() => handleScrollSpyScroll("up")} className={`group relative flex-shrink-0 h-10 px-3 border-b border-border rounded-none transition-all duration-200 flex items-center justify-center ${!canNavigateUp() || isNavigating ? "opacity-40 cursor-not-allowed bg-muted/20" : "opacity-100 hover:bg-primary/10 hover:text-primary active:bg-primary/20"}`} disabled={!canNavigateUp() || isNavigating} title="Previous section">
-								<ChevronUp className={`w-4 h-4 transition-transform duration-200 ${isNavigating ? "animate-pulse" : "group-hover:scale-110"}`} />
+						{shouldShowArrows && navigationItems.length > 1 && (
+							<Button variant="ghost" size="sm" onClick={() => handleScrollSpyScroll("up")} className={`group relative flex-shrink-0 h-8 px-2 border-b border-border rounded-none transition-all duration-200 flex items-center justify-center ${!canNavigateUp() ? "opacity-40 cursor-not-allowed bg-muted/20" : "opacity-100 hover:bg-primary/10 hover:text-primary active:bg-primary/20"}`} disabled={!canNavigateUp()} title="Previous section">
+								<ChevronUp className="w-3.5 h-3.5 transition-transform duration-200 group-hover:scale-110" />
 							</Button>
 						)}
 
 						{/* Navigation Items Container */}
 						<div
 							ref={scrollSpyContainerRef}
-							className="relative overflow-hidden"
-							style={{
-								maxHeight: `min(400px, calc(100vh - ${headerHeight + 120}px))`,
-								minHeight: "200px",
-							}}
+							className={`relative ${shouldShowArrows ? "overflow-hidden" : ""}`}
+							style={
+								shouldShowArrows
+									? {
+											height: `${scrollSpyContainerHeight}px`,
+											maxHeight: `${scrollSpyContainerHeight}px`,
+											overflow: "hidden",
+									  }
+									: { overflow: "visible" }
+							}
 						>
-							<div ref={scrollSpyContentRef} className="p-2 space-y-1 transition-transform duration-200 ease-out cursor-grab active:cursor-grabbing" style={{ transform: `translateY(-${scrollSpyScrollPosition}px)` }} onMouseDown={handleMouseDown} onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
+							<div ref={scrollSpyContentRef} className="p-2 space-y-1 transition-transform duration-200 ease-out" style={shouldShowArrows ? { transform: `translateY(-${scrollSpyScrollPosition}px)` } : {}}>
 								{navigationItems.map((item, index) => {
 									const Icon = item.icon;
 									const isActive = activeSection === item.id;
 									const isCertification = item.id === "certification";
 
 									return (
-										<button
-											key={item.id}
-											onClick={() => scrollToSection(item.id)}
-											onKeyDown={(e) => {
-												if (e.key === "Enter" || e.key === " ") {
-													e.preventDefault();
-													scrollToSection(item.id);
-												}
-											}}
-											className={`group relative flex items-center justify-center p-2 rounded-lg transition-all duration-200 hover:scale-105 active:scale-95 w-10 h-10 animate-in slide-in-from-left-2 fade-in-0 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
-												isCertification
-													? isActive
-														? "bg-gradient-to-r from-blue-600 to-green-600 text-white shadow-lg shadow-blue-500/25"
-														: "bg-gradient-to-r from-blue-50 to-green-50 dark:from-blue-950/30 dark:to-green-950/30 text-blue-600 hover:from-blue-100 hover:to-green-100 dark:hover:from-blue-900/40 dark:hover:to-green-900/40 border border-blue-200/50 shadow-md"
-													: isActive
-													? "bg-primary text-primary-foreground shadow-md ring-2 ring-primary/20"
-													: "text-muted-foreground hover:text-foreground hover:bg-muted"
-											} ${isNavigating ? "pointer-events-none opacity-75" : ""}`}
-											style={{ animationDelay: `${index * 50 + 200}ms`, animationDuration: "300ms" }}
-											title={item.label}
-											aria-label={`Navigate to ${item.label} section`}
-											aria-current={isActive ? "page" : undefined}
-											disabled={isNavigating}
-										>
-											<Icon className={`w-5 h-5 transition-transform duration-200 ${isCertification ? "animate-pulse" : ""} ${isActive ? "scale-110" : "group-hover:scale-105"}`} />
+										<div key={item.id} className="relative" style={{ overflow: "visible", zIndex: 10 }}>
+											<button
+												onClick={() => scrollToSection(item.id)}
+												onKeyDown={(e) => {
+													if (e.key === "Enter" || e.key === " ") {
+														e.preventDefault();
+														scrollToSection(item.id);
+													}
+												}}
+												className={`group relative flex items-center justify-center p-1.5 rounded-lg transition-all duration-200 hover:scale-105 active:scale-95 w-9 h-9 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
+													isCertification ? (isActive ? "bg-gradient-to-r from-blue-600 to-green-600 text-white shadow-lg shadow-blue-500/25" : "bg-gradient-to-r from-blue-500 to-green-500 text-white shadow-md hover:from-blue-600 hover:to-green-600 hover:shadow-lg") : isActive ? "bg-primary text-primary-foreground shadow-md ring-2 ring-primary/20" : "text-muted-foreground hover:text-foreground hover:bg-muted"
+												}`}
+												title={item.label}
+												aria-label={`Navigate to ${item.label} section`}
+												aria-current={isActive ? "page" : undefined}
+											>
+												<Icon className={`w-4.5 h-4.5 transition-transform duration-200 ${isActive ? "scale-110" : "group-hover:scale-105"}`} />
 
-											{/* Enhanced Tooltip */}
-											<div className={`absolute left-full ml-3 px-3 py-2 bg-popover text-popover-foreground text-sm rounded-md shadow-lg whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-all duration-200 scale-95 group-hover:scale-100 z-50 ${isCertification ? "bg-gradient-to-r from-blue-600 to-green-600 text-white border border-blue-500/50 shadow-xl" : isActive ? "bg-primary text-primary-foreground border border-primary/20" : ""}`}>
-												{isCertification ? (
-													<div className="flex items-center space-x-2">
-														<Award className="w-4 h-4" />
-														<span className="font-semibold">{item.label}</span>
-														<div className="px-2 py-0.5 bg-white/20 rounded text-xs">NEW</div>
-													</div>
-												) : (
-													<div className="flex items-center space-x-2">
-														<span>{item.label}</span>
-														{isActive && <span className="text-xs opacity-75">(Current)</span>}
-													</div>
-												)}
-											</div>
-										</button>
+												{/* Enhanced Tooltip */}
+												<div
+													className={`absolute left-full ml-3 px-3 py-2 bg-popover text-popover-foreground text-sm rounded-md shadow-lg whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-all duration-200 scale-95 group-hover:scale-100 z-[9999] ${isCertification ? "bg-gradient-to-r from-blue-600 to-green-600 text-white border border-blue-500/50 shadow-xl" : isActive ? "bg-primary text-primary-foreground border border-primary/20" : ""}`}
+													style={{
+														top: "50%",
+														transform: "translateY(-50%)",
+													}}
+												>
+													{isCertification ? (
+														<div className="flex items-center space-x-2">
+															<Award className="w-4 h-4" />
+															<span className="font-semibold">{item.label}</span>
+															<div className="px-2 py-0.5 bg-white/20 rounded text-xs">NEW</div>
+														</div>
+													) : (
+														<div className="flex items-center space-x-2">
+															<span>{item.label}</span>
+															{isActive && <span className="text-xs opacity-75">(Current)</span>}
+														</div>
+													)}
+												</div>
+											</button>
+										</div>
 									);
 								})}
 							</div>
 						</div>
 
 						{/* Next Section Arrow */}
-						{navigationItems.length > 1 && (
-							<Button variant="ghost" size="sm" onClick={() => handleScrollSpyScroll("down")} className={`group relative flex-shrink-0 h-10 px-3 border-t border-border rounded-none transition-all duration-200 flex items-center justify-center ${!canNavigateDown() || isNavigating ? "opacity-40 cursor-not-allowed bg-muted/20" : "opacity-100 hover:bg-primary/10 hover:text-primary active:bg-primary/20"}`} disabled={!canNavigateDown() || isNavigating} title="Next section">
-								<ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isNavigating ? "animate-pulse" : "group-hover:scale-110"}`} />
+						{shouldShowArrows && navigationItems.length > 1 && (
+							<Button variant="ghost" size="sm" onClick={() => handleScrollSpyScroll("down")} className={`group relative flex-shrink-0 h-8 px-2 border-t border-border rounded-none transition-all duration-200 flex items-center justify-center ${!canNavigateDown() ? "opacity-40 cursor-not-allowed bg-muted/20" : "opacity-100 hover:bg-primary/10 hover:text-primary active:bg-primary/20"}`} disabled={!canNavigateDown()} title="Next section">
+								<ChevronDown className="w-3.5 h-3.5 transition-transform duration-200 group-hover:scale-110" />
 							</Button>
 						)}
 					</div>

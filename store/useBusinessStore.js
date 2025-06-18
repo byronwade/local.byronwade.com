@@ -179,6 +179,9 @@ const useBusinessStore = create((set, get) => ({
 				results = results.filter((business) => business.name.toLowerCase().includes(searchTerm) || business.description.toLowerCase().includes(searchTerm) || business.categories.some((cat) => cat.toLowerCase().includes(searchTerm)));
 			}
 
+			// For now, don't filter by location since we're using mock data
+			// Just return all businesses that match the query (or all if no query)
+
 			// Sort results by relevance (sponsored first, then by rating)
 			const sortedResults = results.sort((a, b) => {
 				if (a.isSponsored && !b.isSponsored) return -1;
@@ -215,6 +218,7 @@ const useBusinessStore = create((set, get) => ({
 			// For now, use mock data immediately to avoid loading issues
 			console.log("Using mock business data for immediate display");
 
+			// Always show mock businesses regardless of search
 			set({
 				allBusinesses: mockBusinesses,
 				filteredBusinesses: mockBusinesses,

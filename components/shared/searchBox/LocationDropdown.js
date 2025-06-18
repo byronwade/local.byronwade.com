@@ -2,10 +2,9 @@
 import React, { useEffect, Suspense, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@components/ui/dropdown-menu";
-import { X, Search, ChevronDown } from "react-feather";
+import { X, ChevronDown, MapPin } from "react-feather";
 import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
-import { Crosshair2Icon } from "@radix-ui/react-icons";
 import { Loader2 } from "lucide-react";
 import useSearchStore from "@store/useSearchStore";
 import useMapStore from "@store/useMapStore";
@@ -16,7 +15,7 @@ const LocationDropdown = ({ className }) => {
 	const router = useRouter();
 	const inputRef = useRef(null);
 	const { setActiveBusinessId } = useBusinessStore();
-	const { location, setLocation, fetchCurrentLocation, fetchAutocompleteSuggestions, fetchPlaceDetails, fetchCoordinatesFromCityAndState, fetchCityAndStateFromCoordinates } = useSearchStore();
+	const { location, setLocation, fetchCurrentLocation, fetchAutocompleteSuggestions, fetchPlaceDetails, fetchCoordinatesFromCityAndState, fetchCityAndStateFromCoordinates, activeDropdown, setActiveDropdown } = useSearchStore();
 	const { centerOn } = useMapStore();
 
 	useEffect(() => {
@@ -55,35 +54,66 @@ const LocationDropdown = ({ className }) => {
 	};
 
 	const handleGetLocationClick = async () => {
-		setLocation({ loading: true });
-		try {
-			const location = await new Promise((resolve, reject) => {
-				fetchCurrentLocation(resolve, reject);
-			});
-			console.log("Location:", location);
-			if (location?.lat && location.lng) {
-				const { lat, lng } = location;
+		setLocation({ loading: true, error: false });
 
-				// Validate coordinates before using them
-				if (typeof lat === "number" && typeof lng === "number" && !isNaN(lat) && !isNaN(lng) && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
-					const { city, state } = await fetchCityAndStateFromCoordinates(lat, lng);
-					const locationString = `${city}, ${state}`;
-					console.log("Location string:", locationString);
-					setLocation({ lat, lng, value: locationString, city: locationString, error: false });
-					setActiveBusinessId(null);
-					updateURL({ location: locationString });
-					centerOn(lat, lng);
-				} else {
-					console.error("Invalid coordinates from getCurrentLocation:", { lat, lng });
-					throw new Error("Invalid coordinates received");
-				}
+		try {
+			// Check if geolocation is supported
+			if (!navigator.geolocation) {
+				throw new Error("Geolocation is not supported by this browser");
+			}
+
+			// Get current position with high accuracy
+			const position = await new Promise((resolve, reject) => {
+				navigator.geolocation.getCurrentPosition(resolve, reject, {
+					enableHighAccuracy: true,
+					timeout: 10000,
+					maximumAge: 300000, // 5 minutes
+				});
+			});
+
+			const lat = position.coords.latitude;
+			const lng = position.coords.longitude;
+
+			console.log("Got coordinates:", { lat, lng });
+
+			// Validate coordinates
+			if (typeof lat === "number" && typeof lng === "number" && !isNaN(lat) && !isNaN(lng) && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
+				// Reverse geocode to get address
+				const { city, state } = await fetchCityAndStateFromCoordinates(lat, lng);
+				const locationString = `${city}, ${state}`;
+
+				console.log("Location string:", locationString);
+				setLocation({
+					lat,
+					lng,
+					value: locationString,
+					city: locationString,
+					error: false,
+					loading: false,
+				});
+				setActiveBusinessId(null);
+				updateURL({ location: locationString });
+				centerOn(lat, lng);
 			} else {
-				throw new Error("Location is undefined");
+				throw new Error("Invalid coordinates received");
 			}
 		} catch (error) {
-			setLocation({ error: true });
-		} finally {
-			setLocation({ loading: false });
+			console.error("Geolocation error:", error);
+			let errorMessage = "Unable to get your location";
+
+			if (error.code === 1) {
+				errorMessage = "Location access denied. Please enable location services.";
+			} else if (error.code === 2) {
+				errorMessage = "Location unavailable. Please try again.";
+			} else if (error.code === 3) {
+				errorMessage = "Location request timed out. Please try again.";
+			}
+
+			setLocation({
+				error: true,
+				loading: false,
+				errorMessage,
+			});
 		}
 	};
 
@@ -95,12 +125,12 @@ const LocationDropdown = ({ className }) => {
 			} catch (error) {
 				setLocation({ filteredSuggestions: [], error: true });
 			}
-		}, 300), // Adjust the debounce delay as needed
+		}, 300),
 		[fetchAutocompleteSuggestions, setLocation]
 	);
 
 	const handleInputChange = (event) => {
-		const value = event.target.value || ""; // Ensure value is always defined
+		const value = event.target.value || "";
 		setLocation({ value });
 		if (value) {
 			debouncedFetchSuggestions(value);
@@ -135,65 +165,96 @@ const LocationDropdown = ({ className }) => {
 		}
 	};
 
-	const clearLocation = () => {
+	const clearLocation = (e) => {
+		e.preventDefault();
+		e.stopPropagation();
 		setLocation({ value: "", city: "", filteredSuggestions: [], lat: null, lng: null, error: true });
 		updateURL({ location: "" });
 	};
 
-	return (
-		<DropdownMenu>
-			<div className="relative flex items-center">
-				<DropdownMenuTrigger asChild>
-					<Button
-						className={`flex items-center justify-center h-8 gap-2 px-2 py-2 text-sm font-medium transition-colors ${
-							location.error ? "bg-red-500 hover:!bg-red-500 focus-visible:!bg-red-500 focus-within:!bg-red-500" : "bg-gray-800"
-						} rounded-md select-none shrink-0 whitespace-nowrap focus-visible:outline-none focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 focus-visible:bg-gray-800 focus-visible:ring-0 hover:bg-gray-700/70 text-white/70 focus-within:bg-gray-700 hover:text-white sm:px-3`}
-						type="button"
-					>
-						{location.loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Crosshair2Icon className="w-4 h-4" />}
-						<span className="block truncate max-w-10 sm:max-w-24 text-ellipsis">{location.city || "Enter a location"}</span>
-						<ChevronDown className="w-4 h-4" />
-					</Button>
-				</DropdownMenuTrigger>
-				{location.city && (
-					<div className="absolute right-0 flex items-center justify-center h-full pr-1.5">
-						<Button size="icon" className="w-5 h-5" onClick={clearLocation}>
-							<X className="w-4 h-4" />
-						</Button>
-					</div>
-				)}
-			</div>
+	// Get status color based on location state
+	const getStatusColor = () => {
+		if (location.error) return "border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground";
+		if (location.city) return "border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground hover:border-primary";
+		return "border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground hover:border-primary";
+	};
 
-			<DropdownMenuContent className="mt-2 bg-black rounded-md w-80">
-				<div className="flex items-center px-2 py-1">
-					<Search className="w-4 h-4 mr-2 text-gray-400" />
-					<Input ref={inputRef} placeholder="Search by city..." className={`w-full h-6 p-0 text-white bg-transparent border-none placeholder:text-zinc-400 ${location.error ? "text-red-500 placeholder:text-red-500" : "text-white"}`} value={location.value || ""} onChange={(e) => handleInputChange(e)} onKeyDown={handleInputKeyDown} />
-					<Button
-						size="icon"
-						className="flex items-center justify-center h-8 gap-2 px-2 py-2 ml-2 text-sm font-medium transition-colors bg-gray-800 rounded-md select-none shrink-0 whitespace-nowrap focus-visible:outline-none focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 focus-visible:bg-gray-800 focus-visible:ring-0 hover:bg-gray-700/70 text-white/70 focus-within:bg-gray-700 hover:text-white sm:px-3"
-						type="button"
-						disabled={location.loading}
-						onClick={handleGetLocationClick}
-					>
-						{location.loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Crosshair2Icon className="w-4 h-4" />}
-					</Button>
-				</div>
-				<DropdownMenuSeparator />
-				<DropdownMenuGroup>
-					{location.filteredSuggestions && location.filteredSuggestions.length > 0 ? (
-						location.filteredSuggestions.map((loc) => (
-							<DropdownMenuItem key={loc.place_id} onClick={() => handleSelectLocation(loc)}>
-								<span>{loc.description}</span>
-							</DropdownMenuItem>
-						))
-					) : (
-						<DropdownMenuItem disabled>
-							<span>No data found</span>
-						</DropdownMenuItem>
+	// Get status icon
+	const getStatusIcon = () => {
+		if (location.loading) return <Loader2 className="w-3 h-3 animate-spin text-primary" />;
+		if (location.city) return <div className="w-2 h-2 rounded-full bg-primary" />;
+		return null;
+	};
+
+	return (
+		<div className="relative">
+			<DropdownMenu
+				open={activeDropdown === "location"}
+				onOpenChange={(open) => {
+					setActiveDropdown(open ? "location" : null);
+				}}
+			>
+				{/* Main Button Container */}
+				<div className={`flex items-center h-6 border rounded-md transition-all duration-200 ${getStatusColor()}`}>
+					{/* Status Icon Section - only show when there's an icon */}
+					{getStatusIcon() && <div className="flex items-center justify-center px-2">{getStatusIcon()}</div>}
+
+					{/* Dropdown Trigger Section */}
+					<DropdownMenuTrigger asChild>
+						<button className={`flex items-center gap-1 py-1 text-xs font-medium focus:outline-none focus-visible:ring-1 focus-visible:ring-ring flex-1 transition-colors ${getStatusIcon() ? "px-1" : "px-2"}`} type="button" title={location.error ? location.errorMessage || "Click to set your location" : location.city ? `Current location: ${location.city}` : "📍 Click here to set your location"}>
+							<span className="truncate max-w-20 sm:max-w-28">{location.city || "📍 Set Location"}</span>
+							<ChevronDown className="w-3 h-3 flex-shrink-0" />
+						</button>
+					</DropdownMenuTrigger>
+
+					{/* Clear Button Section */}
+					{location.city && (
+						<button onClick={clearLocation} className="flex items-center justify-center w-5 h-full border-l border-border hover:bg-destructive/10 hover:text-destructive text-muted-foreground transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-ring" title="Clear location" type="button">
+							<X className="w-3 h-3" />
+						</button>
 					)}
-				</DropdownMenuGroup>
-			</DropdownMenuContent>
-		</DropdownMenu>
+				</div>
+
+				{/* Dropdown Content */}
+				<DropdownMenuContent className="w-72 bg-background border border-border rounded-lg shadow-lg z-[100]" side="top" align="center" sideOffset={12} avoidCollisions={true} collisionPadding={20}>
+					{/* Current Location Button */}
+					<DropdownMenuItem asChild>
+						<Button onClick={handleGetLocationClick} disabled={location.loading} variant="ghost" className="w-full justify-start gap-3 h-12 hover:bg-accent hover:text-accent-foreground">
+							{location.loading ? <Loader2 className="w-5 h-5 animate-spin text-primary" /> : <MapPin className="w-5 h-5 text-primary" />}
+							<div className="flex flex-col items-start">
+								<span className="font-medium">{location.loading ? "Getting your location..." : "📍 Use My Current Location"}</span>
+								<span className="text-xs text-muted-foreground">Help us find businesses near you!</span>
+							</div>
+						</Button>
+					</DropdownMenuItem>
+
+					<DropdownMenuSeparator />
+
+					{/* Manual Input Section */}
+					<div className="p-3">
+						<div className="space-y-2">
+							<label className="text-sm font-medium text-muted-foreground">Or enter a city name:</label>
+							<Input ref={inputRef} placeholder="e.g., Atlanta, GA" value={location.value || ""} onChange={handleInputChange} onKeyDown={handleInputKeyDown} className="w-full" />
+						</div>
+
+						{/* Suggestions */}
+						{location.filteredSuggestions && location.filteredSuggestions.length > 0 && (
+							<div className="mt-3 space-y-1 max-h-40 overflow-y-auto">
+								<div className="text-xs font-medium text-muted-foreground mb-2">Suggestions:</div>
+								{location.filteredSuggestions.slice(0, 4).map((loc) => (
+									<button key={loc.place_id} onClick={() => handleSelectLocation(loc)} className="w-full text-left p-2 hover:bg-muted rounded text-sm transition-colors block">
+										{loc.description}
+									</button>
+								))}
+							</div>
+						)}
+
+						{/* Error Message */}
+						{location.error && location.errorMessage && <div className="mt-3 p-2 bg-destructive/10 border border-destructive/20 rounded text-xs text-destructive">{location.errorMessage}</div>}
+					</div>
+				</DropdownMenuContent>
+			</DropdownMenu>
+		</div>
 	);
 };
 
@@ -204,3 +265,4 @@ const LocationDropdownWithSuspense = () => (
 );
 
 export default LocationDropdownWithSuspense;
+
