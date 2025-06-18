@@ -8,7 +8,13 @@ import { Badge } from "@components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 import { ArrowLeft, MapPin, Clock, DollarSign, Users, Eye, Phone, MessageSquare, TrendingUp, Star, Calendar, Edit, Share2, MoreHorizontal, CheckCircle, AlertCircle, ThumbsUp, Award, X, AlertTriangle, Camera, Zap, Info, Upload, Trash2, CreditCard, Shield, Mail } from "lucide-react";
 import { Alert, AlertDescription } from "@components/ui/alert";
-import { Input, Textarea, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Label, Checkbox, Switch, Progress } from "@components/ui";
+import { Input } from "@components/ui/input";
+import { Textarea } from "@components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@components/ui/select";
+import { Label } from "@components/ui/label";
+import { Checkbox } from "@components/ui/checkbox";
+import { Switch } from "@components/ui/switch";
+import { Progress } from "@components/ui/progress";
 import { ALL_CATEGORIES } from "@components/site/categories/AllCategoriesPage";
 
 // Mock job data - in real app this would come from API based on job ID
@@ -155,7 +161,7 @@ export default function JobDetailPage({ params }) {
 							</div>
 							<div>
 								<Label>Description</Label>
-								<div className="mt-1 text-base text-muted-foreground whitespace-pre-line">{job.description}</div>
+								<div className="mt-1 text-base whitespace-pre-line text-muted-foreground">{job.description}</div>
 							</div>
 						</CardContent>
 					</Card>
@@ -193,7 +199,7 @@ export default function JobDetailPage({ params }) {
 							</div>
 							<div>
 								<Label>Urgency Level</Label>
-								<div className="mt-1 text-base font-medium text-foreground capitalize">{job.urgency}</div>
+								<div className="mt-1 text-base font-medium capitalize text-foreground">{job.urgency}</div>
 							</div>
 						</CardContent>
 					</Card>
@@ -206,11 +212,11 @@ export default function JobDetailPage({ params }) {
 						<CardContent className="space-y-4">
 							<div>
 								<Label>Project Size</Label>
-								<div className="mt-1 text-base font-medium text-foreground capitalize">{job.projectSize}</div>
+								<div className="mt-1 text-base font-medium capitalize text-foreground">{job.projectSize}</div>
 							</div>
 							<div>
 								<Label>Experience Level</Label>
-								<div className="mt-1 text-base font-medium text-foreground capitalize">{job.experienceLevel}</div>
+								<div className="mt-1 text-base font-medium capitalize text-foreground">{job.experienceLevel}</div>
 							</div>
 							<div className="space-y-2">
 								<Label>Professional Requirements</Label>
@@ -222,7 +228,7 @@ export default function JobDetailPage({ params }) {
 							</div>
 							<div>
 								<Label>Additional Requirements</Label>
-								<ul className="mt-1 text-base text-muted-foreground list-disc list-inside">{job.requirements && job.requirements.length > 0 ? job.requirements.map((req, i) => <li key={i}>{req}</li>) : <li>-</li>}</ul>
+								<ul className="mt-1 text-base list-disc list-inside text-muted-foreground">{job.requirements && job.requirements.length > 0 ? job.requirements.map((req, i) => <li key={i}>{req}</li>) : <li>-</li>}</ul>
 							</div>
 						</CardContent>
 					</Card>
@@ -257,7 +263,7 @@ export default function JobDetailPage({ params }) {
 						</CardHeader>
 						<CardContent>
 							<Label>How should professionals contact you?</Label>
-							<div className="mt-2 text-base font-medium text-foreground capitalize">{job.preferredContact}</div>
+							<div className="mt-2 text-base font-medium capitalize text-foreground">{job.preferredContact}</div>
 							<p className="mt-2 text-xs text-muted-foreground">We never sell your data. Your contact information is only shared with the professional you connect with.</p>
 						</CardContent>
 					</Card>
