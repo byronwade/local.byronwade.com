@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import InitialSearch from "@components/site/search/InitialSearch";
 import SearchContainer from "@components/site/map/SearchContainer";
 import Script from "next/script";
@@ -86,7 +86,18 @@ export default function Search() {
 		<>
 			<div>
 				{/* <InitialSearch /> */}
-				<SearchContainer />
+				<Suspense
+					fallback={
+						<div className="h-screen w-full flex items-center justify-center">
+							<div className="flex items-center gap-3">
+								<div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+								<span className="text-sm font-medium">Loading search...</span>
+							</div>
+						</div>
+					}
+				>
+					<SearchContainer />
+				</Suspense>
 			</div>
 			<Script data-testid="ldjson" id="json" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd, null, "\t") }} />
 		</>

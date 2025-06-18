@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import { ArrowRight, ChevronLeft, ChevronRight } from "react-feather";
 import { Button } from "@components/ui/button";
 
@@ -16,19 +16,7 @@ export default function ScrollSection({ title, link, children, subtitle, categor
 		}
 	};
 
-	const handleScroll = () => {
-		const scrollContainer = scrollContainerRef.current;
-		if (scrollContainer) {
-			const maxScrollLeft = scrollContainer.scrollWidth - scrollContainer.clientWidth;
-			const atEnd = scrollContainer.scrollLeft >= maxScrollLeft - 1;
-			const atStart = scrollContainer.scrollLeft <= 0;
-			setCanScrollLeft(!atStart);
-			setCanScrollRight(!atEnd);
-			checkPartialVisibility();
-		}
-	};
-
-	const checkPartialVisibility = () => {
+	const checkPartialVisibility = useCallback(() => {
 		const scrollContainer = scrollContainerRef.current;
 		if (scrollContainer) {
 			const containerRect = scrollContainer.getBoundingClientRect();
@@ -42,17 +30,29 @@ export default function ScrollSection({ title, link, children, subtitle, categor
 				}));
 			});
 		}
-	};
+	}, []);
+
+	const handleScroll = useCallback(() => {
+		const scrollContainer = scrollContainerRef.current;
+		if (scrollContainer) {
+			const maxScrollLeft = scrollContainer.scrollWidth - scrollContainer.clientWidth;
+			const atEnd = scrollContainer.scrollLeft >= maxScrollLeft - 1;
+			const atStart = scrollContainer.scrollLeft <= 0;
+			setCanScrollLeft(!atStart);
+			setCanScrollRight(!atEnd);
+			checkPartialVisibility();
+		}
+	}, [checkPartialVisibility]);
 
 	useEffect(() => {
 		handleScroll();
-	}, [children]);
+	}, [children, handleScroll]);
 
 	useEffect(() => {
 		const handleResize = () => handleScroll();
 		window.addEventListener("resize", handleResize);
 		return () => window.removeEventListener("resize", handleResize);
-	}, []);
+	}, [handleScroll]);
 
 	const getScrollDistance = () => {
 		const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);

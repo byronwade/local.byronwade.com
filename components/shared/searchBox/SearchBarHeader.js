@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import LocationDropdown from "@components/shared/searchBox/LocationDropdown";
 import { ArrowRight, ChevronDown, Search, X, Clock, Mic, MicOff, Send, User } from "react-feather";
 import { Button } from "@components/ui/button";
@@ -83,12 +83,12 @@ const SearchBarOnly = () => {
 	};
 
 	// AI Mode Functions
-	const toggleAiMode = () => {
+	const toggleAiMode = useCallback(() => {
 		setAiMode(!aiMode);
 		setAutocompleteOpen(!aiMode); // Open when entering AI mode
 		setActiveDropdown(!aiMode ? "ai" : null);
 		setSearchQuery("");
-	};
+	}, [aiMode, setActiveDropdown, setSearchQuery]);
 
 	// Click outside handler
 	useEffect(() => {
@@ -126,7 +126,7 @@ const SearchBarOnly = () => {
 
 		document.addEventListener("keydown", handleGlobalKeyDown);
 		return () => document.removeEventListener("keydown", handleGlobalKeyDown);
-	}, [aiMode]);
+	}, [aiMode, setActiveDropdown, toggleAiMode]);
 
 	// Fetch business suggestions from Algolia
 	const fetchBusinessSuggestions = async (query) => {

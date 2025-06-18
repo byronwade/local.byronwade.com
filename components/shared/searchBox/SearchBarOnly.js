@@ -39,7 +39,7 @@ const SearchBarOnly = () => {
 
 		setErrors(validationErrors);
 		setIsFormValid(isValid);
-	}, [searchQuery, location]);
+	}, [searchQuery, location, setErrors]);
 
 	const handleInputChange = (e) => {
 		const value = e.target.value;

@@ -42,8 +42,8 @@ export default function Header() {
 	];
 
 	return (
-		<div className="sticky top-0 z-[60] bg-card/95 backdrop-blur-md border-b border-border/50">
-			<div className="flex items-center justify-between w-full gap-6 py-3 mx-auto px-4 lg:px-24">
+		<div className="sticky top-0 z-[60] bg-card/95 backdrop-blur-md border-b border-border/50 w-full">
+			<div className="flex items-center justify-between w-full gap-6 py-3 px-6">
 				{/* Left Section - Logo and Business Info */}
 				<div className="flex flex-row items-center w-full space-x-6">
 					<Link href="/" className="flex items-center space-x-3 text-xl font-bold group">

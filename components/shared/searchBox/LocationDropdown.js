@@ -117,23 +117,23 @@ const LocationDropdown = ({ className }) => {
 		}
 	};
 
-	const debouncedFetchSuggestions = useCallback(
-		debounce(async (value) => {
+	const debouncedFetchSuggestions = useCallback(() => {
+		const debouncedFn = debounce(async (value) => {
 			try {
 				const suggestions = await fetchAutocompleteSuggestions(value);
 				setLocation({ filteredSuggestions: suggestions, error: false });
 			} catch (error) {
 				setLocation({ filteredSuggestions: [], error: true });
 			}
-		}, 300),
-		[fetchAutocompleteSuggestions, setLocation]
-	);
+		}, 300);
+		return debouncedFn;
+	}, [fetchAutocompleteSuggestions, setLocation]);
 
 	const handleInputChange = (event) => {
 		const value = event.target.value || "";
 		setLocation({ value });
 		if (value) {
-			debouncedFetchSuggestions(value);
+			debouncedFetchSuggestions()(value);
 		} else {
 			setLocation({ filteredSuggestions: [] });
 		}

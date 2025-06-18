@@ -239,7 +239,7 @@ BusinessCard.displayName = "BusinessCard";
 
 const BusinessCardList = ({ businesses, activeBusinessId, activeCardRef, onAIClick, onBusinessSelect, loading }) => {
 	const { setActiveBusinessId, selectedBusiness } = useBusinessStore();
-	const filteredBusinesses = businesses || [];
+	const filteredBusinesses = useMemo(() => businesses || [], [businesses]);
 	const { searchQuery, searchLocation } = useSearchStore();
 	const { centerOn, loadingBusinessId } = useMapStore();
 	const listRef = useRef(null);

@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarSeparator } from "@components/ui/sidebar";
+import { cn } from "@lib/utils";
 
 const sidebarLinks = {
 	"/admin": [
@@ -124,13 +125,13 @@ const sidebarLinks = {
 	],
 };
 
-export function AppSidebar() {
+export function AppSidebar({ className, ...props }) {
 	const pathname = usePathname();
 	const currentPath = pathname.split("/").slice(0, 3).join("/");
 	const currentSections = sidebarLinks[currentPath];
 
 	return (
-		<Sidebar variant="inset" collapsible="icon">
+		<Sidebar variant="sidebar" collapsible="offcanvas" className={cn("border-0 transition-transform duration-200 ease-linear", className)} {...props}>
 			<SidebarContent>
 				{currentSections?.map((section, index) => (
 					<div key={index}>

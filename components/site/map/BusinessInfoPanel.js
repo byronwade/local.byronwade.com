@@ -45,7 +45,7 @@ const BusinessInfoPanel = () => {
 				centerOn(lat, lng);
 			}
 		}
-	}, [business, centerOn]);
+	}, [business, filteredBusinesses, centerOn]);
 
 	const handlePrev = () => {
 		if (businessIndex > 0) {

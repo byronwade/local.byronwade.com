@@ -93,17 +93,17 @@ const FullSearchBox = () => {
 		router.replace(`?${queryParams.toString()}`, undefined, { shallow: true });
 	}, [searchQuery, location, router]);
 
-	const debouncedFetchFilteredBusinesses = useCallback(
-		debounce(async () => {
+	const debouncedFetchFilteredBusinesses = useCallback(() => {
+		const debouncedFn = debounce(async () => {
 			const bounds = await getMapBounds();
 			console.log("Map bounds:", bounds);
 			const zoom = await getMapZoom();
 			if (bounds && zoom !== null) {
 				await fetchFilteredBusinesses(bounds, zoom, searchQuery);
 			}
-		}, 300),
-		[getMapBounds, getMapZoom, fetchFilteredBusinesses, searchQuery]
-	);
+		}, 300);
+		return debouncedFn();
+	}, [getMapBounds, getMapZoom, fetchFilteredBusinesses, searchQuery]);
 
 	const handleInputChange = async (e) => {
 		const value = e.target.value;
@@ -246,7 +246,7 @@ const FullSearchBox = () => {
 			router.push(`/search?${params.toString()}`);
 			setShowSuggestions(false);
 		},
-		[query, location, recentSearches, setSearchQuery, setLocation, router]
+		[query, location, recentSearches, setSearchQuery, setLocation, setTouched, router]
 	);
 
 	const handleSuggestionClick = (suggestion) => {

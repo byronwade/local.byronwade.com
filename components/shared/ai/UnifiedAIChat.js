@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { X, Send, ArrowLeft, Loader2, Plus, Paperclip, Mic, MoreHorizontal, Settings, Bot } from "lucide-react";
 import { Button } from "@components/ui/button";
 import { ScrollArea } from "@components/ui/scroll-area";
@@ -71,146 +71,118 @@ export default function UnifiedAIChat({
 		}
 	}, [input]);
 
-	const generateAIResponse = (userInput) => {
-		// Enhanced AI analysis and business recommendations
-		const input = userInput.toLowerCase();
-		let response = "";
-		let businesses = [];
+	const generateAIResponse = useCallback(
+		(userInput) => {
+			// Enhanced AI response generation with business recommendations
+			let response = "";
+			let businesses = [];
 
-		if (input.includes("plumber") || input.includes("plumbing")) {
-			response = "I found several excellent plumbers in your area! Based on ratings, reviews, and availability, here are my top recommendations:\n\n";
-			businesses = filteredBusinesses.filter((b) => b.categories?.some((cat) => cat.toLowerCase().includes("plumb")) || b.name.toLowerCase().includes("plumb")).slice(0, 3);
+			const input = userInput.toLowerCase();
 
-			businesses.forEach((business, index) => {
-				response += `${index + 1}. **${business.name}**\n`;
-				response += `   ${business.categories?.[0] || "Plumbing Service"}\n`;
-				response += `   Rating: ${business.ratings?.overall?.toFixed(1) || "New"} ⭐ (${business.ratings?.count || 0} reviews)\n\n`;
-			});
-		} else if (input.includes("restaurant") || input.includes("food") || input.includes("eat")) {
-			response = "Great! I've found some highly-rated restaurants that match your preferences. Here are my top picks:\n\n";
-			businesses = filteredBusinesses.filter((b) => b.categories?.some((cat) => cat.toLowerCase().includes("restaurant") || cat.toLowerCase().includes("food"))).slice(0, 3);
+			// Business type detection with enhanced matching
+			const businessTypes = {
+				restaurants: ["restaurant", "food", "eat", "dining", "pizza", "burger", "sushi", "cafe", "coffee"],
+				plumbing: ["plumber", "plumbing", "pipe", "leak", "water", "drain", "toilet", "faucet"],
+				automotive: ["mechanic", "auto", "car", "tire", "oil change", "brake", "transmission"],
+				health: ["doctor", "dentist", "medical", "health", "clinic", "hospital", "pharmacy"],
+				beauty: ["salon", "hair", "nails", "spa", "massage", "barber"],
+				home: ["contractor", "electrician", "hvac", "roofing", "painting", "cleaning"],
+			};
 
-			businesses.forEach((business, index) => {
-				response += `${index + 1}. **${business.name}**\n`;
-				response += `   ${business.categories?.[0] || "Restaurant"}\n`;
-				response += `   Rating: ${business.ratings?.overall?.toFixed(1) || "New"} ⭐ (${business.ratings?.count || 0} reviews)\n\n`;
-			});
-		} else if (input.includes("auto") || input.includes("car") || input.includes("repair")) {
-			response = "I've identified the best auto repair shops in your area based on customer reviews and service quality:\n\n";
-			businesses = filteredBusinesses.filter((b) => b.categories?.some((cat) => cat.toLowerCase().includes("auto") || cat.toLowerCase().includes("repair"))).slice(0, 3);
+			let detectedType = null;
+			for (const [type, keywords] of Object.entries(businessTypes)) {
+				if (keywords.some((keyword) => input.includes(keyword))) {
+					detectedType = type;
+					break;
+				}
+			}
 
-			businesses.forEach((business, index) => {
-				response += `${index + 1}. **${business.name}**\n`;
-				response += `   ${business.categories?.[0] || "Auto Repair"}\n`;
-				response += `   Rating: ${business.ratings?.overall?.toFixed(1) || "New"} ⭐ (${business.ratings?.count || 0} reviews)\n\n`;
-			});
-		} else if (input.includes("near me") || input.includes("nearby")) {
-			response = "I'll show you the closest businesses to your location. Here are the top-rated options nearby:\n\n";
-			businesses = filteredBusinesses.slice(0, 5);
-			businesses.forEach((business, index) => {
-				response += `${index + 1}. **${business.name}**\n`;
-				response += `   ${business.categories?.[0] || "Business"}\n`;
-				response += `   Distance: ${business.distance || "< 1 mile"}\n\n`;
-			});
-		} else if (input.includes("open") || input.includes("hours")) {
-			response = "Here are the businesses that are currently open:\n\n";
-			businesses = filteredBusinesses.filter((b) => b.isOpenNow).slice(0, 5);
-			businesses.forEach((business, index) => {
-				response += `${index + 1}. **${business.name}**\n`;
-				response += `   ${business.categories?.[0] || "Business"}\n`;
-				response += `   Status: Open Now ✅\n\n`;
-			});
-		} else {
-			response = "I understand you're looking for local businesses. Let me search through our database and find the best options for you. Could you be more specific about what type of business or service you need?\n\nFor example, you could ask me about:\n- Restaurants and food\n- Auto repair shops\n- Plumbers and contractors\n- Hair salons and beauty services\n- Medical and healthcare providers";
-			businesses = filteredBusinesses.slice(0, 3);
-		}
+			// Location detection
+			const hasLocation = input.includes("near me") || input.includes("nearby") || input.includes("in ");
 
-		return { response, businesses };
-	};
+			// Response generation based on intent
+			if (input.includes("open") || input.includes("hours")) {
+				response = "Here are businesses that are currently open or have extended hours:";
+				businesses = filteredBusinesses.filter((b) => b.hours?.isOpen).slice(0, 3);
+			} else if (input.includes("rated") || input.includes("best") || input.includes("top")) {
+				response = "I found the highest-rated businesses in your area:";
+				businesses = filteredBusinesses.sort((a, b) => (b.ratings?.overall || 0) - (a.ratings?.overall || 0)).slice(0, 3);
+			} else if (input.includes("delivery") || input.includes("deliver")) {
+				response = "These businesses offer delivery services:";
+				businesses = filteredBusinesses.filter((b) => b.services?.includes("Delivery")).slice(0, 3);
+			} else if (detectedType) {
+				response = `I found great ${detectedType} businesses${hasLocation ? " near you" : ""}:`;
+				businesses = filteredBusinesses.filter((b) => b.categories?.some((cat) => cat.toLowerCase().includes(detectedType)) || businessTypes[detectedType].some((keyword) => b.name.toLowerCase().includes(keyword) || b.description?.toLowerCase().includes(keyword))).slice(0, 3);
+			} else if (hasLocation) {
+				response = "Here are popular businesses in your area:";
+				businesses = filteredBusinesses.slice(0, 3);
+			} else {
+				response = "I can help you find local businesses. Here are some popular options:";
+				businesses = filteredBusinesses.slice(0, 3);
+			}
 
-	const handleSubmit = async (e) => {
-		e.preventDefault();
-		if (!input.trim() || isLoading) return;
+			return { response, businesses };
+		},
+		[filteredBusinesses]
+	);
 
-		const userMessage = {
-			id: Date.now(),
-			role: "user",
-			content: input.trim(),
-			timestamp: new Date(),
-		};
+	const handleSubmit = useCallback(
+		async (e) => {
+			e.preventDefault();
+			if (!input.trim() || isLoading) return;
 
-		setMessages((prev) => [...prev, userMessage]);
-		const currentInput = input;
-		setInput("");
-		setIsLoading(true);
-
-		// Simulate AI processing
-		setTimeout(() => {
-			const { response, businesses } = generateAIResponse(currentInput);
-
-			const aiMessage = {
-				id: Date.now() + 1,
-				role: "assistant",
-				content: response,
+			const userMessage = {
+				id: Date.now(),
+				role: "user",
+				content: input.trim(),
 				timestamp: new Date(),
 			};
 
-			setMessages((prev) => [...prev, aiMessage]);
-			setIsLoading(false);
+			setMessages((prev) => [...prev, userMessage]);
+			const currentInput = input;
+			setInput("");
+			setIsLoading(true);
 
-			// Highlight recommended businesses on map
-			if (setHighlightedBusinesses && businesses.length > 0) {
-				setHighlightedBusinesses(businesses.map((b) => b.id));
-			}
+			// Simulate AI processing
+			setTimeout(() => {
+				const { response, businesses } = generateAIResponse(currentInput);
 
-			// Center map on first recommended business
-			if (businesses.length > 0 && businesses[0].coordinates) {
-				const { lat, lng } = businesses[0].coordinates;
-				centerOn(lat, lng);
-			}
-		}, 1500 + Math.random() * 1000);
-	};
+				const aiMessage = {
+					id: Date.now() + 1,
+					role: "assistant",
+					content: response,
+					timestamp: new Date(),
+				};
 
-	// Function to handle external input (from search bar)
-	const handleExternalInput = (inputText) => {
-		if (!inputText.trim() || isLoading) return;
+				setMessages((prev) => [...prev, aiMessage]);
+				setIsLoading(false);
 
-		const userMessage = {
-			id: Date.now(),
-			role: "user",
-			content: inputText.trim(),
-			timestamp: new Date(),
-		};
+				// Highlight recommended businesses on map
+				if (setHighlightedBusinesses && businesses.length > 0) {
+					setHighlightedBusinesses(businesses.map((b) => b.id));
+				}
 
-		setMessages((prev) => [...prev, userMessage]);
-		setIsLoading(true);
+				// Center map on first recommended business
+				if (businesses.length > 0 && businesses[0].coordinates) {
+					const { lat, lng } = businesses[0].coordinates;
+					centerOn(lat, lng);
+				}
+			}, 1500 + Math.random() * 1000);
+		},
+		[input, isLoading, generateAIResponse, setHighlightedBusinesses, centerOn]
+	);
 
-		// Simulate AI processing
-		setTimeout(() => {
-			const { response, businesses } = generateAIResponse(inputText);
+	const handleExternalInput = useCallback(
+		(inputText) => {
+			setInput(inputText);
 
-			const aiMessage = {
-				id: Date.now() + 1,
-				role: "assistant",
-				content: response,
-				timestamp: new Date(),
-			};
-
-			setMessages((prev) => [...prev, aiMessage]);
-			setIsLoading(false);
-
-			// Highlight recommended businesses on map
-			if (setHighlightedBusinesses && businesses.length > 0) {
-				setHighlightedBusinesses(businesses.map((b) => b.id));
-			}
-
-			// Center map on first recommended business
-			if (businesses.length > 0 && businesses[0].coordinates) {
-				const { lat, lng } = businesses[0].coordinates;
-				centerOn(lat, lng);
-			}
-		}, 1500 + Math.random() * 1000);
-	};
+			// Auto-submit when the input comes from external source
+			setTimeout(() => {
+				handleSubmit({ preventDefault: () => {} });
+			}, 100);
+		},
+		[handleSubmit]
+	);
 
 	// Expose the function for external use
 	useEffect(() => {
@@ -222,7 +194,7 @@ export default function UnifiedAIChat({
 				delete window.handleAIInput;
 			}
 		};
-	}, [mode]);
+	}, [mode, handleExternalInput]);
 
 	const handleKeyPress = (e) => {
 		if (e.key === "Enter" && !e.shiftKey) {

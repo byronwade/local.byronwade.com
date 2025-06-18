@@ -538,7 +538,7 @@ const BusinessMarkers = () => {
 			} else {
 				console.error("Invalid cluster coordinates:", cluster);
 			}
-		}, [cluster.coordinates]);
+		}, [cluster]);
 
 		return (
 			<div
