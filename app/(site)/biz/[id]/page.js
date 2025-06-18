@@ -962,7 +962,7 @@ export default function BizProfile({ params }) {
 		<div className="min-h-screen bg-background">
 			{/* Header */}
 			<header className={`sticky top-0 z-40 border-b bg-background/95 backdrop-blur-md border-border transition-all duration-300 ease-out ${showHeaderSection ? "lg:block" : "block"}`}>
-				<div className="px-4 mx-auto max-w-7xl lg:px-24">
+				<div className="px-3 mx-auto max-w-7xl sm:px-4 lg:px-8">
 					{/* Desktop Header - Always Visible */}
 					<div className={`${showHeaderSection ? "hidden lg:flex" : "flex"} items-center justify-between h-14 sm:h-16 transition-all duration-300 ease-out`}>
 						<div className="flex items-center space-x-2 sm:space-x-4">
@@ -1121,25 +1121,25 @@ export default function BizProfile({ params }) {
 			</header>
 
 			{/* Main Content */}
-			<div className="px-4 py-6 mx-auto max-w-7xl lg:px-24 sm:py-8 lg:py-12">
+			<div className="px-3 py-4 mx-auto max-w-7xl sm:px-4 sm:py-6 lg:px-8 lg:py-8">
 				{/* Main Content - Full Width */}
-				<div className="space-y-8 sm:space-y-12 lg:space-y-16">
+				<div className="space-y-6 sm:space-y-8">
 					{/* Minimalistic Business Header */}
 					<div className="space-y-6">
 						{/* Business Name & Basic Info */}
-						<div className="space-y-6">
+						<div className="space-y-4">
 							<div className="flex items-start justify-between">
-								<div className="flex-1 min-w-0 space-y-4">
-									<h1 className="text-3xl font-bold leading-tight break-words text-foreground sm:text-4xl md:text-5xl lg:text-6xl">{business.name}</h1>
+								<div className="flex-1 space-y-3">
+									<h1 className="text-3xl font-bold text-foreground sm:text-4xl lg:text-5xl">{business.name}</h1>
 									<div className="flex items-center space-x-2 text-muted-foreground">
-										<span className="text-base sm:text-lg">{business.type}</span>
+										<span className="text-lg">{business.type}</span>
 										<span>•</span>
-										<MapPin className="flex-shrink-0 w-4 h-4" />
-										<span className="break-words">{business.serviceArea.primary}</span>
+										<MapPin className="w-4 h-4" />
+										<span>{business.serviceArea.primary}</span>
 									</div>
 								</div>
 								{business.verified && (
-									<div className="flex items-center flex-shrink-0 px-3 py-2 space-x-2 border rounded-full bg-primary/10 text-primary border-primary/20">
+									<div className="flex items-center px-3 py-1.5 space-x-2 rounded-full bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-950/20 dark:text-blue-400 dark:border-blue-800/50">
 										<Shield className="w-4 h-4" />
 										<span className="text-sm font-medium">Verified</span>
 									</div>
@@ -1147,27 +1147,27 @@ export default function BizProfile({ params }) {
 							</div>
 
 							{/* Rating & Status Row */}
-							<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-								<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:space-x-6">
-									<div className="flex items-center space-x-3">
+							<div className="flex items-center justify-between">
+								<div className="flex items-center space-x-6">
+									<div className="flex items-center space-x-2">
 										<div className="flex items-center space-x-1">
 											{[...Array(5)].map((_, i) => (
 												<Star key={i} className={`w-5 h-5 ${i < Math.floor(business.rating) ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground"}`} />
 											))}
 										</div>
-										<span className="text-lg font-semibold text-foreground">{business.rating}</span>
-										<span className="text-muted-foreground">({business.reviewCount} reviews)</span>
+										<span className="text-lg font-semibold">{business.rating}</span>
+										<span className="text-muted-foreground">({business.reviewCount})</span>
 									</div>
-									<div className={`flex items-center px-3 py-2 space-x-2 text-sm rounded-lg font-medium ${business.status === "Open" ? "bg-green-500/10 text-green-600 border border-green-500/20" : "bg-red-500/10 text-red-600 border border-red-500/20"}`}>
+									<div className={`flex items-center px-2 py-1 space-x-1.5 text-sm rounded-lg ${business.status === "Open" ? "bg-green-50 text-green-700 dark:bg-green-950/20 dark:text-green-400" : "bg-red-50 text-red-700 dark:bg-red-950/20 dark:text-red-400"}`}>
 										<div className={`w-2 h-2 rounded-full ${business.status === "Open" ? "bg-green-500" : "bg-red-500"}`} />
-										<span>{business.status}</span>
+										<span className="font-medium">{business.status}</span>
 									</div>
 								</div>
 								<div className="flex items-center space-x-2">
-									<Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground hover:bg-muted">
+									<Button variant="ghost" size="sm">
 										<Share className="w-4 h-4" />
 									</Button>
-									<Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground hover:bg-muted">
+									<Button variant="ghost" size="sm">
 										<Heart className="w-4 h-4" />
 									</Button>
 								</div>
@@ -1175,62 +1175,60 @@ export default function BizProfile({ params }) {
 						</div>
 
 						{/* Essential Info Grid */}
-						<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+						<div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
 							{/* Contact */}
 							<div className="space-y-4">
 								<div className="space-y-3">
-									<Button className="w-full h-12 text-base font-semibold bg-primary hover:bg-primary/90 text-primary-foreground">
+									<Button className="w-full h-12 text-base font-semibold">
 										<Phone className="w-5 h-5 mr-2" />
 										{business.phone}
 									</Button>
 									<div className="grid grid-cols-2 gap-2">
-										<Button variant="outline" className="h-10 border-border hover:bg-muted text-foreground">
+										<Button variant="outline" className="h-10">
 											<MapPin className="w-4 h-4 mr-2" />
 											Directions
 										</Button>
-										<Button variant="outline" className="h-10 border-border hover:bg-muted text-foreground">
+										<Button variant="outline" className="h-10">
 											<Globe className="w-4 h-4 mr-2" />
 											Website
 										</Button>
 									</div>
 								</div>
-								<div className="p-3 border rounded-lg bg-muted/30 border-border">
-									<div className="flex items-start space-x-2 text-sm text-muted-foreground">
+								<div className="text-sm text-muted-foreground">
+									<div className="flex items-start space-x-2">
 										<MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
-										<span className="break-words">{business.address}</span>
+										<span>{business.address}</span>
 									</div>
 								</div>
 							</div>
 
 							{/* Hours */}
 							<div className="space-y-4">
-								<h3 className="font-semibold text-foreground">Hours</h3>
-								<div className="p-3 border rounded-lg bg-muted/30 border-border">
-									<div className="space-y-3">
-										{business.isOpenNow && (
-											<div className="flex items-center space-x-2">
-												<div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-												<span className="text-sm font-medium text-green-600">Open Now</span>
-											</div>
-										)}
-										<div className="text-sm text-foreground">{business.hours || "Hours not available"}</div>
-									</div>
+								<h3 className="font-semibold">Hours</h3>
+								<div className="space-y-2 text-sm">
+									{business.isOpenNow && (
+										<div className="flex items-center mb-2 space-x-2">
+											<div className="w-2 h-2 bg-green-500 rounded-full"></div>
+											<span className="text-sm font-medium text-green-600">Open Now</span>
+										</div>
+									)}
+									<div className="text-foreground">{business.hours || "Hours not available"}</div>
 								</div>
 							</div>
 
 							{/* Quick Actions */}
 							<div className="space-y-4">
-								<h3 className="font-semibold text-foreground">Quick Actions</h3>
-								<div className="space-y-3">
-									<Button variant="outline" className="justify-start w-full h-10 border-border hover:bg-muted text-foreground" onClick={() => setShowReviewModal(true)}>
+								<h3 className="font-semibold">Quick Actions</h3>
+								<div className="space-y-2">
+									<Button variant="outline" className="justify-start w-full h-10" onClick={() => setShowReviewModal(true)}>
 										<Edit className="w-4 h-4 mr-2" />
 										Write Review
 									</Button>
-									<Button variant="outline" className="justify-start w-full h-10 border-border hover:bg-muted text-foreground" onClick={() => scrollToSection("reviews")}>
+									<Button variant="outline" className="justify-start w-full h-10" onClick={() => scrollToSection("reviews")}>
 										<Star className="w-4 h-4 mr-2" />
 										View Reviews
 									</Button>
-									<Button variant="outline" className="justify-start w-full h-10 border-border hover:bg-muted text-foreground" onClick={() => scrollToSection("services")}>
+									<Button variant="outline" className="justify-start w-full h-10" onClick={() => scrollToSection("services")}>
 										<Settings className="w-4 h-4 mr-2" />
 										Services
 									</Button>
@@ -1240,74 +1238,111 @@ export default function BizProfile({ params }) {
 					</div>
 
 					{/* Left Column - Main Content */}
-					<div className="space-y-8 sm:space-y-12 lg:space-y-16">
-						{/* Photo Gallery - Airbnb Style */}
+					<div className="space-y-6 sm:space-y-8 lg:col-span-2">
+						{/* Photo Gallery - Modern Style */}
 						<div className="space-y-4 sm:space-y-6">
 							<div className="flex items-center justify-between">
-								<h2 className="text-xl font-semibold sm:text-2xl md:text-3xl text-foreground">Photos</h2>
+								<h2 className="text-lg font-semibold sm:text-xl md:text-2xl text-foreground">Photos</h2>
 								<div className="flex items-center space-x-2 text-sm text-muted-foreground">
 									<Camera className="w-4 h-4" />
 									<span>{allImages.length} photos</span>
 									<span>•</span>
-									<span className="font-medium text-primary">Professional</span>
+									<Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
+										Professional
+									</Badge>
 								</div>
 							</div>
 
-							{/* Airbnb-style Photo Grid */}
-							<div className="grid grid-cols-4 gap-2 overflow-hidden h-96 rounded-xl">
+							{/* Modern Photo Grid */}
+							<div className="grid grid-cols-4 gap-2 overflow-hidden h-80 sm:h-96 rounded-xl">
 								{/* Main large photo - left side */}
 								<div
-									className="relative col-span-2 row-span-2 overflow-hidden cursor-pointer group"
+									className="relative col-span-2 row-span-2 overflow-hidden cursor-pointer group bg-muted"
 									onClick={() => {
 										setSelectedImageIndex(0);
 										setShowAllPhotos(true);
 									}}
 								>
-									<img src={allImages[0]} alt={`${business.name} main photo`} className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105" />
+									<img
+										src={allImages[0]}
+										alt={`${business.name} main photo`}
+										className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
+										onError={(e) => {
+											e.target.src = "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300&fit=crop";
+										}}
+									/>
 									<div className="absolute inset-0 transition-opacity duration-300 opacity-0 bg-black/20 group-hover:opacity-100" />
 								</div>
 
 								{/* Top right photos */}
 								<div
-									className="relative overflow-hidden cursor-pointer group"
+									className="relative overflow-hidden cursor-pointer group bg-muted"
 									onClick={() => {
 										setSelectedImageIndex(1);
 										setShowAllPhotos(true);
 									}}
 								>
-									<img src={allImages[1]} alt={`${business.name} photo 2`} className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105" />
+									<img
+										src={allImages[1]}
+										alt={`${business.name} photo 2`}
+										className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
+										onError={(e) => {
+											e.target.src = "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop";
+										}}
+									/>
 									<div className="absolute inset-0 transition-opacity duration-300 opacity-0 bg-black/20 group-hover:opacity-100" />
 								</div>
 								<div
-									className="relative overflow-hidden cursor-pointer group"
+									className="relative overflow-hidden cursor-pointer group bg-muted"
 									onClick={() => {
 										setSelectedImageIndex(2);
 										setShowAllPhotos(true);
 									}}
 								>
-									<img src={allImages[2]} alt={`${business.name} photo 3`} className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105" />
+									<img
+										src={allImages[2]}
+										alt={`${business.name} photo 3`}
+										className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
+										onError={(e) => {
+											e.target.src = "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&h=300&fit=crop";
+										}}
+									/>
 									<div className="absolute inset-0 transition-opacity duration-300 opacity-0 bg-black/20 group-hover:opacity-100" />
 								</div>
 
 								{/* Bottom right photos */}
 								<div
-									className="relative overflow-hidden cursor-pointer group"
+									className="relative overflow-hidden cursor-pointer group bg-muted"
 									onClick={() => {
 										setSelectedImageIndex(3);
 										setShowAllPhotos(true);
 									}}
 								>
-									<img src={allImages[3]} alt={`${business.name} photo 4`} className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105" />
+									<img
+										src={allImages[3]}
+										alt={`${business.name} photo 4`}
+										className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
+										onError={(e) => {
+											e.target.src = "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&h=300&fit=crop";
+										}}
+									/>
 									<div className="absolute inset-0 transition-opacity duration-300 opacity-0 bg-black/20 group-hover:opacity-100" />
 								</div>
 								<div
-									className="relative overflow-hidden cursor-pointer group"
+									className="relative overflow-hidden cursor-pointer group bg-muted"
 									onClick={() => {
 										setSelectedImageIndex(4);
 										setShowAllPhotos(true);
 									}}
 								>
-									<img src={allImages[4]} alt={`${business.name} photo 5`} className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105" />
+									<img
+										src={allImages[4]}
+										alt={`${business.name} photo 5`}
+										className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
+										onError={(e) => {
+											e.target.src = "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=400&h=300&fit=crop";
+										}}
+									/>
 									<div className="absolute inset-0 transition-opacity duration-300 opacity-0 bg-black/20 group-hover:opacity-100" />
 									{/* Show all photos overlay on last visible image */}
 									{allImages.length > 5 && (
@@ -1322,32 +1357,32 @@ export default function BizProfile({ params }) {
 							</div>
 
 							{/* Show all photos button */}
-							<Button variant="outline" className="w-full transition-all duration-200 border-border hover:bg-muted text-foreground" onClick={() => setShowAllPhotos(true)}>
+							<Button variant="outline" className="w-full border-border hover:bg-muted/50 text-foreground" onClick={() => setShowAllPhotos(true)}>
 								<Camera className="w-4 h-4 mr-2" />
 								Show all {allImages.length} photos
 							</Button>
 						</div>
 
 						{/* Main Content Sections */}
-						<div className="space-y-16 sm:space-y-20 md:space-y-24 lg:space-y-32">
+						<div className="space-y-20 sm:space-y-24 md:space-y-32 lg:space-y-40">
 							{/* 1. BUSINESS OVERVIEW SECTION - First Impression */}
 							<section ref={sectionRefs.overview} className="scroll-mt-20 sm:scroll-mt-24 lg:scroll-mt-32">
-								<div className="mb-8 sm:mb-10 md:mb-12">
-									<h2 className="flex items-center mb-4 text-2xl font-bold sm:text-3xl md:text-4xl text-foreground">
+								<div className="mb-6 sm:mb-8 md:mb-12">
+									<h2 className="flex items-center mb-3 text-2xl font-bold sm:text-3xl md:text-4xl text-foreground">
 										<Building className="w-6 h-6 mr-3 sm:w-8 sm:h-8 sm:mr-4 text-primary" />
 										Business Overview
 									</h2>
 									<div className="w-20 h-1 rounded-full sm:w-24 sm:h-1.5 bg-gradient-to-r from-primary to-primary/50"></div>
 								</div>
 
-								<div className="space-y-8 sm:space-y-10">
+								<div className="space-y-6 sm:space-y-8">
 									{/* AI Insights */}
-									<div className="p-6 transition-shadow duration-200 border shadow-sm bg-card/50 backdrop-blur-sm border-border rounded-xl sm:p-8 hover:shadow-md">
+									<div className="p-6 border bg-card/50 backdrop-blur-sm border-border rounded-xl sm:p-8">
 										<div className="flex items-start space-x-4">
-											<div className="flex items-center justify-center flex-shrink-0 w-10 h-10 border rounded-full bg-primary/10 border-primary/20">
-												<Sparkles className="w-5 h-5 text-primary" />
+											<div className="flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-primary/10">
+												<Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
 											</div>
-											<div className="space-y-3">
+											<div className="space-y-2 sm:space-y-3">
 												<h3 className="text-lg font-semibold sm:text-xl text-foreground">AI Insights</h3>
 												<p className="text-sm leading-relaxed sm:text-base text-muted-foreground">This business has consistently high ratings for quality work and customer service. Customers frequently mention their professionalism, reliability, and quick response times for emergency services.</p>
 											</div>
@@ -1355,12 +1390,12 @@ export default function BizProfile({ params }) {
 									</div>
 
 									{/* Business Highlights */}
-									<div className="space-y-6">
+									<div className="space-y-4 sm:space-y-6">
 										<h3 className="text-xl font-semibold sm:text-2xl text-foreground">Business Highlights</h3>
-										<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+										<div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 md:grid-cols-3">
 											{business.businessHighlights.map((highlight, index) => (
-												<div key={index} className="flex items-start p-4 space-x-3 transition-colors duration-200 border rounded-lg bg-card/30 border-border hover:bg-card/50">
-													<CheckCircle className="flex-shrink-0 w-5 h-5 mt-0.5 text-green-500" />
+												<div key={index} className="flex items-start p-4 space-x-3 border rounded-lg bg-card/30 border-border sm:p-5">
+													<CheckCircle className="flex-shrink-0 w-4 h-4 mt-0.5 sm:w-5 sm:h-5 sm:mt-0 text-green-400" />
 													<span className="text-sm leading-relaxed break-words sm:text-base text-foreground">{highlight}</span>
 												</div>
 											))}
@@ -1371,66 +1406,118 @@ export default function BizProfile({ params }) {
 
 							{/* 2. THORBIS CERTIFIED ELITE STATUS - Trust Validation */}
 							<section ref={sectionRefs.certification} className="scroll-mt-20 sm:scroll-mt-24 lg:scroll-mt-32">
-								<div className="mb-8 sm:mb-10 md:mb-12">
-									<h2 className="flex items-center mb-4 text-2xl font-bold sm:text-3xl md:text-4xl text-foreground">
+								<div className="mb-6 sm:mb-8 md:mb-12">
+									<h2 className="flex items-center mb-3 text-2xl font-bold sm:text-3xl md:text-4xl text-foreground">
 										<Award className="w-6 h-6 mr-3 sm:w-8 sm:h-8 sm:mr-4 text-primary" />
 										Thorbis Certified Elite Business
 									</h2>
 									<div className="w-20 h-1 rounded-full sm:w-24 sm:h-1.5 bg-gradient-to-r from-primary to-primary/50"></div>
 								</div>
 
-								<div className="space-y-8 sm:space-y-10">
-									{/* Elite Status Hero */}
-									<div className="p-6 transition-shadow duration-300 border shadow-lg bg-gradient-to-r from-amber-50/80 via-yellow-50/80 to-orange-50/80 dark:from-amber-950/30 dark:via-yellow-950/30 dark:to-orange-950/30 rounded-xl border-amber-200/60 dark:border-amber-800/40 sm:p-8 hover:shadow-xl">
-										<div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4 sm:items-start">
-											<div className="flex items-center justify-center flex-shrink-0 w-16 h-16 mx-auto rounded-full shadow-lg sm:mx-0 bg-gradient-to-br from-amber-400 to-orange-500">
-												<Award className="w-8 h-8 text-white" />
-											</div>
-											<div className="space-y-4 text-center sm:text-left">
-												<div>
-													<div className="flex flex-col items-center gap-3 mb-3 sm:flex-row sm:mb-2">
-														<h3 className="text-xl font-bold sm:text-2xl text-foreground">Elite Business Recognition</h3>
-														<Badge className="text-amber-800 bg-amber-100/80 border-amber-300/60 dark:text-amber-200 dark:bg-amber-900/50 dark:border-amber-700/50">🏆 1 in 125,000</Badge>
+								<div className="space-y-6 sm:space-y-8">
+									{/* Elite Status Hero - Redesigned */}
+									<div className="relative overflow-hidden border shadow-2xl bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-600 isolate rounded-2xl lg:rounded-3xl border-emerald-400/20">
+										<svg viewBox="0 0 1024 1024" aria-hidden="true" className="absolute left-1/2 top-1/2 -z-10 h-[64rem] w-[64rem] -translate-y-1/2 [mask-image:radial-gradient(closest-side,white,transparent)]">
+											<circle r={512} cx={512} cy={512} fill="url(#cert-gradient)" fillOpacity="0.3" />
+											<defs>
+												<radialGradient id="cert-gradient">
+													<stop stopColor="#10B981" />
+													<stop offset={1} stopColor="#06B6D4" />
+												</radialGradient>
+											</defs>
+										</svg>
+
+										<div className="relative px-6 py-8 sm:px-8 sm:py-12 lg:px-12 lg:py-16">
+											<div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
+												{/* Left Content */}
+												<div className="space-y-6">
+													<div className="inline-flex items-center px-4 py-2 text-sm font-bold text-white border rounded-full bg-white/20 border-white/30 backdrop-blur-sm">🏆 Elite Recognition</div>
+
+													<div className="space-y-4">
+														<h3 className="text-2xl font-bold tracking-tight text-white sm:text-3xl lg:text-4xl">Certified Elite Business</h3>
+														<p className="text-lg leading-relaxed text-white/90 sm:text-xl">
+															This business has achieved our highest certification level - earned by fewer than <span className="font-bold text-yellow-300">1 in 125,000 businesses</span>. Like a Michelin star for service excellence.
+														</p>
 													</div>
-													<p className="text-sm leading-relaxed sm:text-base text-muted-foreground">
-														This business has achieved Thorbis Certified status - an elite recognition earned by fewer than <strong className="text-foreground">1 in 125,000 businesses</strong>. Like a Michelin star for service excellence, this certification represents the highest standards of quality, reliability, and expertise in the industry.
-													</p>
+
+													<div className="flex items-center gap-3 p-4 border bg-white/10 backdrop-blur-sm rounded-xl border-white/20">
+														<div className="flex items-center justify-center flex-shrink-0 w-10 h-10 rounded-full bg-emerald-400">
+															<Shield className="w-5 h-5 text-emerald-900" />
+														</div>
+														<div>
+															<div className="font-semibold text-white">Protected by Performance Guarantee</div>
+															<div className="text-sm text-white/80">100% satisfaction backed by our elite standards</div>
+														</div>
+													</div>
 												</div>
-												<div className="flex items-center justify-center gap-2 p-3 border rounded-lg sm:justify-start bg-amber-100/60 dark:bg-amber-950/40 border-amber-200/50 dark:border-amber-800/50">
-													<Shield className="w-5 h-5 text-amber-600 dark:text-amber-400" />
-													<span className="text-sm font-medium text-amber-800 dark:text-amber-200">Protected by Thorbis Performance Guarantee</span>
+
+												{/* Right Stats */}
+												<div className="grid grid-cols-2 gap-4 lg:gap-6">
+													<div className="p-4 text-center border bg-white/10 backdrop-blur-sm rounded-xl border-white/20 lg:p-6">
+														<div className="text-2xl font-bold text-white lg:text-3xl">0.0008%</div>
+														<div className="text-sm text-white/80">Acceptance Rate</div>
+														<div className="mt-1 text-xs text-emerald-200">Rarer than Harvard</div>
+													</div>
+													<div className="p-4 text-center border bg-white/10 backdrop-blur-sm rounded-xl border-white/20 lg:p-6">
+														<div className="text-2xl font-bold text-white lg:text-3xl">6-9</div>
+														<div className="text-sm text-white/80">Month Process</div>
+														<div className="mt-1 text-xs text-cyan-200">Rigorous vetting</div>
+													</div>
+													<div className="p-4 text-center border bg-white/10 backdrop-blur-sm rounded-xl border-white/20 lg:p-6">
+														<div className="text-2xl font-bold text-white lg:text-3xl">400+</div>
+														<div className="text-sm text-white/80">Customer Interviews</div>
+														<div className="mt-1 text-xs text-teal-200">Independent verification</div>
+													</div>
+													<div className="p-4 text-center border bg-white/10 backdrop-blur-sm rounded-xl border-white/20 lg:p-6">
+														<div className="text-2xl font-bold text-white lg:text-3xl">100%</div>
+														<div className="text-sm text-white/80">Satisfaction</div>
+														<div className="mt-1 text-xs text-yellow-200">Performance guarantee</div>
+													</div>
 												</div>
 											</div>
 										</div>
 									</div>
 
-									{/* Exclusivity Stats */}
-									<div className="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
-										<div className="p-6 text-center transition-shadow duration-200 border shadow-sm bg-gradient-to-br from-red-50/80 to-pink-50/80 dark:from-red-950/30 dark:to-pink-950/30 rounded-xl border-red-200/60 dark:border-red-800/40 hover:shadow-md">
-											<div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-500 rounded-full shadow-md">
-												<TrendingUp className="w-6 h-6 text-white" />
+									{/* What This Means for You - Clean Cards */}
+									<div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+										<div className="p-6 border bg-card border-border rounded-xl sm:p-8">
+											<div className="flex items-start space-x-4">
+												<div className="flex items-center justify-center flex-shrink-0 w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30">
+													<CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+												</div>
+												<div className="space-y-3">
+													<h3 className="text-lg font-semibold text-foreground">What This Means for You</h3>
+													<div className="space-y-2">
+														{["Guaranteed highest quality workmanship", "Verified financial stability and licensing", "Independently confirmed customer satisfaction", "Ongoing performance monitoring", "Comprehensive performance guarantee", "Priority dispute resolution services"].map((benefit, index) => (
+															<div key={index} className="flex items-start space-x-2">
+																<CheckCircle className="flex-shrink-0 w-4 h-4 mt-0.5 text-emerald-500 dark:text-emerald-400" />
+																<span className="text-sm text-muted-foreground">{benefit}</span>
+															</div>
+														))}
+													</div>
+												</div>
 											</div>
-											<div className="text-2xl font-bold text-red-600 sm:text-3xl dark:text-red-400">0.0008%</div>
-											<div className="text-sm font-medium text-muted-foreground">Business Acceptance Rate</div>
-											<div className="mt-2 text-xs font-medium text-red-600 dark:text-red-400">Rarer than Harvard admission</div>
 										</div>
 
-										<div className="p-6 text-center transition-shadow duration-200 border shadow-sm bg-gradient-to-br from-blue-50/80 to-cyan-50/80 dark:from-blue-950/30 dark:to-cyan-950/30 rounded-xl border-blue-200/60 dark:border-blue-800/40 hover:shadow-md">
-											<div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-blue-500 rounded-full shadow-md">
-												<Clock className="w-6 h-6 text-white" />
+										<div className="p-6 border bg-card border-border rounded-xl sm:p-8">
+											<div className="flex items-start space-x-4">
+												<div className="flex items-center justify-center flex-shrink-0 w-10 h-10 bg-blue-100 rounded-full dark:bg-blue-900/30">
+													<Award className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+												</div>
+												<div className="space-y-3">
+													<h3 className="text-lg font-semibold text-foreground">The Elite Vetting Process</h3>
+													<div className="space-y-2">
+														{["Comprehensive 400+ customer interviews", "Independent financial stability assessment", "Rigorous background and licensing verification", "Technical expertise evaluation", "On-site inspection and equipment review", "Ongoing annual re-certification requirements"].map((requirement, index) => (
+															<div key={index} className="flex items-start space-x-2">
+																<div className="flex-shrink-0 w-4 h-4 mt-0.5 rounded-full bg-blue-500/20 dark:bg-blue-400/20 flex items-center justify-center">
+																	<div className="w-2 h-2 bg-blue-500 rounded-full dark:bg-blue-400"></div>
+																</div>
+																<span className="text-sm text-muted-foreground">{requirement}</span>
+															</div>
+														))}
+													</div>
+												</div>
 											</div>
-											<div className="text-2xl font-bold text-blue-600 sm:text-3xl dark:text-blue-400">6-9</div>
-											<div className="text-sm font-medium text-muted-foreground">Month Vetting Process</div>
-											<div className="mt-2 text-xs font-medium text-blue-600 dark:text-blue-400">Rigorous evaluation period</div>
-										</div>
-
-										<div className="p-6 text-center transition-shadow duration-200 border shadow-sm bg-gradient-to-br from-green-50/80 to-emerald-50/80 dark:from-green-950/30 dark:to-emerald-950/30 rounded-xl border-green-200/60 dark:border-green-800/40 hover:shadow-md sm:col-span-2 lg:col-span-1">
-											<div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-green-500 rounded-full shadow-md">
-												<Users className="w-6 h-6 text-white" />
-											</div>
-											<div className="text-2xl font-bold text-green-600 sm:text-3xl dark:text-green-400">400+</div>
-											<div className="text-sm font-medium text-muted-foreground">Customer Interviews</div>
-											<div className="mt-2 text-xs font-medium text-green-600 dark:text-green-400">Independent verification</div>
 										</div>
 									</div>
 
@@ -1881,99 +1968,133 @@ export default function BizProfile({ params }) {
 							<section ref={sectionRefs.availability} className="scroll-mt-20 sm:scroll-mt-24 lg:scroll-mt-32">
 								<div className="mb-6 sm:mb-8 md:mb-12">
 									<h2 className="flex items-center mb-3 text-2xl font-bold sm:text-3xl md:text-4xl text-foreground">
-										<Zap className="w-6 h-6 mr-3 sm:w-8 sm:h-8 sm:mr-4 text-primary" />⚡ Live Availability & Booking
+										<Zap className="w-6 h-6 mr-3 sm:w-8 sm:h-8 sm:mr-4 text-primary" />
+										Live Availability & Booking
 									</h2>
 									<div className="w-20 h-1 rounded-full sm:w-24 sm:h-1.5 bg-gradient-to-r from-primary to-primary/50"></div>
 								</div>
 
-								<div className="space-y-8">
-									{/* Live Availability */}
-									<div className="p-6 border bg-card/30 rounded-xl border-border">
-										<div className="flex items-center gap-2 mb-4">
-											<Badge className="text-white bg-green-500 animate-pulse">LIVE</Badge>
-											<span className="text-sm font-medium text-green-600">{business.realTimeAvailability.currentStatus}</span>
+								<div className="space-y-6 sm:space-y-8">
+									{/* Live Status Hero */}
+									<div className="relative overflow-hidden border shadow-xl bg-gradient-to-br from-green-500 via-emerald-500 to-teal-500 rounded-2xl border-green-400/20">
+										<div className="absolute inset-0 opacity-20">
+											<svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none" stroke="rgba(255,255,255,0.1)">
+												<path d="m0 0 32 32M0 32 32 0"></path>
+											</svg>
 										</div>
 
-										<div className="grid gap-6 md:grid-cols-2">
-											{/* Current Status */}
-											<div className="p-4 border rounded-lg bg-card/30 border-border">
-												<h3 className="mb-2 font-semibold text-foreground">Current Status</h3>
-												<div className="flex items-center space-x-3">
-													<div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
-													<div>
-														<p className="font-medium text-green-600">{business.realTimeAvailability.currentStatus}</p>
-														<p className="text-sm text-muted-foreground">GPS tracking • {business.realTimeAvailability.avgResponseTime} avg response</p>
+										<div className="relative px-6 py-8 sm:px-8 lg:px-12">
+											<div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+												{/* Status */}
+												<div className="text-center lg:text-left">
+													<div className="flex items-center justify-center gap-2 mb-4 lg:justify-start">
+														<div className="w-3 h-3 bg-white rounded-full shadow-lg animate-pulse shadow-white/50"></div>
+														<Badge className="font-bold text-green-800 bg-white/90 border-white/20">LIVE STATUS</Badge>
+													</div>
+													<h3 className="mb-2 text-2xl font-bold text-white sm:text-3xl">{business.realTimeAvailability.currentStatus}</h3>
+													<p className="text-white/90">GPS tracking • {business.realTimeAvailability.avgResponseTime} average response</p>
+												</div>
+
+												{/* Next Available */}
+												<div className="text-center">
+													<div className="p-6 border bg-white/10 backdrop-blur-sm rounded-xl border-white/20">
+														<div className="mb-2 text-sm text-white/80">Next Available</div>
+														<div className="mb-4 text-xl font-bold text-white">{business.realTimeAvailability.nextAvailable}</div>
+														<Button className="w-full font-semibold text-green-600 bg-white hover:bg-white/90">
+															<Calendar className="w-4 h-4 mr-2" />
+															Book Instantly
+														</Button>
 													</div>
 												</div>
-											</div>
 
-											{/* Next Available */}
-											<div className="p-4 border rounded-lg bg-card/30 border-border">
-												<h3 className="mb-2 font-semibold text-foreground">Next Available</h3>
-												<p className="text-xl font-bold text-primary">{business.realTimeAvailability.nextAvailable}</p>
-												<Button size="sm" className="mt-2 bg-green-600 hover:bg-green-700">
-													Book Now
-												</Button>
-											</div>
-										</div>
-
-										{/* Time Slots */}
-										<div className="mt-4">
-											<h3 className="mb-3 font-semibold text-foreground">Available Today</h3>
-											<div className="grid grid-cols-3 gap-2 md:grid-cols-6">
-												{business.realTimeAvailability.todaySlots.map((slot, index) => (
-													<button key={index} className={`p-2 text-sm border rounded-lg transition-all ${slot.available ? "border-green-200 bg-green-50 text-green-700 hover:bg-green-100" : "border-gray-200 bg-gray-50 text-gray-400"}`} disabled={!slot.available}>
-														{slot.time}
-													</button>
-												))}
+												{/* Emergency */}
+												<div className="text-center">
+													<div className="p-6 border bg-red-500/20 backdrop-blur-sm rounded-xl border-red-400/20">
+														<div className="mb-2 text-sm text-white/80">Emergency Service</div>
+														<div className="mb-4 text-xl font-bold text-white">Available 24/7</div>
+														<Button variant="outline" className="w-full font-semibold text-white border-white/30 hover:bg-white/10 backdrop-blur-sm">
+															<Phone className="w-4 h-4 mr-2" />
+															Emergency Call
+														</Button>
+													</div>
+												</div>
 											</div>
 										</div>
 									</div>
 
+									{/* Available Time Slots */}
+									<div className="p-6 border bg-card border-border rounded-xl sm:p-8">
+										<h3 className="mb-4 text-lg font-semibold text-foreground">Available Today</h3>
+										<div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+											{business.realTimeAvailability.todaySlots.map((slot, index) => (
+												<button key={index} className={`p-3 text-sm font-medium rounded-lg transition-all ${slot.available ? "border-2 border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-900/30 hover:border-green-300 dark:hover:border-green-700" : "border border-border bg-muted text-muted-foreground cursor-not-allowed"}`} disabled={!slot.available}>
+													{slot.time}
+													{slot.type === "emergency" && <div className="mt-1 text-xs text-red-600 dark:text-red-400">Emergency</div>}
+												</button>
+											))}
+										</div>
+
+										<div className="p-4 mt-6 rounded-lg bg-muted/50">
+											<div className="flex items-center gap-2 mb-2">
+												<Clock className="w-4 h-4 text-muted-foreground" />
+												<span className="text-sm font-medium text-foreground">Booking Information</span>
+											</div>
+											<p className="text-sm text-muted-foreground">Click any available time slot to book instantly. Emergency slots are available 24/7 with premium pricing.</p>
+										</div>
+									</div>
+
 									{/* Video Consultation Option */}
-									<div className="p-6 border bg-card/30 rounded-xl border-border">
-										<div className="flex items-center gap-2 mb-4">
-											<Badge variant="outline" className="text-blue-600 border-blue-200">
-												HD Quality
-											</Badge>
-											<span className="text-sm font-medium text-blue-600">{business.videoConsultation.pricePerSession}</span>
+									<div className="p-6 border bg-card border-border rounded-xl sm:p-8">
+										<div className="flex items-center gap-3 mb-6">
+											<div className="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full dark:bg-blue-900/30">
+												<Video className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+											</div>
+											<div>
+												<h3 className="text-lg font-semibold text-foreground">Video Consultation</h3>
+												<div className="flex items-center gap-2">
+													<Badge variant="outline" className="text-blue-600 border-blue-200 dark:text-blue-400 dark:border-blue-800">
+														HD Quality
+													</Badge>
+													<span className="text-sm font-medium text-blue-600 dark:text-blue-400">{business.videoConsultation.pricePerSession}</span>
+												</div>
+											</div>
 										</div>
 
 										<div className="grid gap-6 md:grid-cols-2">
 											{/* Service Details */}
 											<div className="space-y-4">
 												<div className="grid grid-cols-2 gap-4">
-													<div className="p-4 border rounded-lg bg-card/30 border-border">
+													<div className="p-4 border rounded-lg bg-muted/50 border-border">
 														<p className="text-sm text-muted-foreground">Price</p>
 														<p className="text-xl font-bold text-primary">{business.videoConsultation.pricePerSession}</p>
 													</div>
-													<div className="p-4 border rounded-lg bg-card/30 border-border">
+													<div className="p-4 border rounded-lg bg-muted/50 border-border">
 														<p className="text-sm text-muted-foreground">Duration</p>
 														<p className="text-xl font-bold text-foreground">{business.videoConsultation.duration}</p>
 													</div>
 												</div>
-												<Button className="w-full bg-blue-600 hover:bg-blue-700">
+												<Button className="w-full text-white bg-blue-600 dark:bg-blue-700 hover:bg-blue-700 dark:hover:bg-blue-800">
 													<Video className="w-4 h-4 mr-2" />
 													Schedule Video Call
 												</Button>
 											</div>
 
 											{/* What's Included */}
-											<div>
-												<h3 className="mb-3 font-semibold text-foreground">📹 Video Consultation</h3>
-												<div className="space-y-2">
+											<div className="space-y-4">
+												<h4 className="font-semibold text-foreground">What&apos;s Included</h4>
+												<div className="space-y-3">
 													{business.videoConsultation.specialties.map((specialty, index) => (
-														<div key={index} className="flex items-center space-x-2">
-															<CheckCircle className="w-4 h-4 text-green-500" />
+														<div key={index} className="flex items-center space-x-3">
+															<CheckCircle className="flex-shrink-0 w-4 h-4 text-green-500 dark:text-green-400" />
 															<span className="text-sm text-foreground">{specialty}</span>
 														</div>
 													))}
 												</div>
-												<div className="mt-3">
-													<p className="mb-2 text-sm text-muted-foreground">Languages:</p>
-													<div className="flex gap-2">
+												<div className="pt-3 border-t border-border">
+													<p className="mb-2 text-sm text-muted-foreground">Available Languages:</p>
+													<div className="flex flex-wrap gap-2">
 														{business.videoConsultation.languages.map((lang, index) => (
-															<Badge key={index} variant="secondary">
+															<Badge key={index} variant="secondary" className="bg-muted text-foreground">
 																{lang}
 															</Badge>
 														))}
