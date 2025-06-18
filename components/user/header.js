@@ -1,98 +1,34 @@
 "use client";
-import Image from "next/image";
+import React, { useState } from "react";
 import Link from "next/link";
-import { useEffect, useState, useRef } from "react";
-import { Bell, Plus } from "react-feather";
-import { RxSlash } from "react-icons/rx";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { Button } from "@components/ui/button";
 import { Badge } from "@components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
-import { Card } from "@components/ui/card";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuRadioGroup, DropdownMenuRadioItem } from "@components/ui/dropdown-menu";
-import { LuChevronsUpDown } from "react-icons/lu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuLabel, DropdownMenuGroup, DropdownMenuRadioGroup, DropdownMenuRadioItem } from "@components/ui/dropdown-menu";
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@components/ui/sheet";
+import { ChevronDown, Menu, Bell, Settings, Briefcase, CreditCard, HelpCircle, User, Users, Activity } from "react-feather";
+import { BarChart3, Zap } from "lucide-react";
 import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
 import { RiComputerFill } from "react-icons/ri";
 import { useTheme } from "next-themes";
-import { useRouter } from "next/navigation";
 import useAuthStore from "@store/useAuthStore";
 
 export default function Header() {
-	const [activeIndex, setActiveIndex] = useState(0);
-	const [underlineStyle, setUnderlineStyle] = useState({});
-	const containerRef = useRef(null);
+	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+	const pathname = usePathname();
 	const { setTheme, theme, resolvedTheme } = useTheme();
-	const router = useRouter();
 	const { user, userRoles, logout } = useAuthStore();
 	const [primaryColor, setPrimaryColor] = useState("theme-default");
 
-	const menuItems = [
-		{ label: "Overview", href: "/user", segment: "(overview)" },
-		{ label: "Jobs", href: "/user/jobs", segment: "/user/jobs" },
-		{ label: "Activity", href: "/user/activity", segment: "/user/activity" },
-		{ label: "Boosts", href: "/user/boosts", segment: "/user/boosts" },
-		{ label: "Referral", href: "/user/referral", segment: "/user/referral" },
-		{ label: "Pro", href: "/user/pro", segment: "/user/pro" },
-		{ label: "Settings", href: "/user/settings", segment: "/user/settings" },
-	];
-
-	useEffect(() => {
-		const path = router.pathname;
-		const currentIndex = menuItems.findIndex((item) => item.href === path);
-		if (currentIndex !== -1) {
-			setActiveIndex(currentIndex);
+	const handleLogout = async () => {
+		try {
+			await logout();
+			console.log("Logout successful");
+		} catch (error) {
+			console.error("Logout failed:", error);
 		}
-	}, [router.pathname]);
-
-    useEffect(() => {
-		const handleScroll = () => {
-			const container = containerRef.current;
-			if (container) {
-				const activeButton = container.children[activeIndex];
-				if (activeButton) {
-					const { offsetLeft, offsetWidth } = activeButton;
-					setUnderlineStyle({
-						left: offsetLeft - container.scrollLeft,
-						width: offsetWidth,
-					});
-				}
-			}
-		};
-
-		const container = containerRef.current;
-		if (container) {
-			handleScroll(); // Initial call to set the underline position
-			container.addEventListener("scroll", handleScroll);
-		}
-
-		return () => {
-			if (container) {
-				container.removeEventListener("scroll", handleScroll);
-			}
-		};
-	}, [activeIndex]);
-
-	useEffect(() => {
-		const handleRouteChange = () => {
-			const container = containerRef.current;
-			if (container) {
-				const activeButton = container.children[activeIndex];
-				if (activeButton) {
-					const { offsetLeft, offsetWidth } = activeButton;
-					setUnderlineStyle({
-						left: offsetLeft - container.scrollLeft,
-						width: offsetWidth,
-					});
-				}
-			}
-		};
-
-		// Trigger handleRouteChange on initial render
-		handleRouteChange();
-	}, [activeIndex, router.events]);
-
-	const handleModeChange = (mode) => {
-		setTheme(mode);
-		document.documentElement.className = `${mode} ${primaryColor}`;
 	};
 
 	const handlePrimaryColorChange = (color) => {
@@ -100,275 +36,231 @@ export default function Header() {
 		document.documentElement.className = `${resolvedTheme} ${color}`;
 	};
 
+	const userNavItems = [
+		{ href: "/user", text: "Overview", icon: BarChart3 },
+		{ href: "/user/jobs", text: "Jobs", icon: Briefcase },
+		{ href: "/user/activity", text: "Activity", icon: Activity },
+		{ href: "/user/boosts", text: "Boosts", icon: Zap },
+		{ href: "/user/referral", text: "Referral", icon: Users },
+		{ href: "/user/pro", text: "Pro", icon: CreditCard },
+		{ href: "/user/settings", text: "Settings", icon: Settings },
+	];
+
 	return (
-		<header className="sticky top-0 z-50 border-b bg-card border-border">
-			<div className="flex items-center justify-between px-4 py-2 md:pl-8 sm:px-12 lg:px-24">
-				<div className="flex items-center">
-					<Link href="/" passHref legacyBehavior>
-						<Button variant="outline" size="icon" className="hidden md:block hover:!border-primary mr-2">
-							<Image src="/ThorbisLogo.webp" alt="Byron Wade" width={24} height={24} className="object-cover w-full h-full p-1" />
-						</Button>
+		<div className="sticky top-0 z-[60] bg-card/95 backdrop-blur-md border-b border-border/50">
+			<div className="flex items-center justify-between w-full gap-6 py-3 mx-auto px-4 lg:px-24">
+				{/* Left Section - Logo and User Info */}
+				<div className="flex flex-row items-center w-full space-x-6">
+					<Link href="/" className="flex items-center space-x-3 text-xl font-bold group">
+						<div className="relative">
+							<Image src="/ThorbisLogo.webp" alt="Thorbis User" width={50} height={50} className="w-12 h-12 transition-transform duration-200 group-hover:scale-105" />
+							<div className="absolute inset-0 transition-opacity duration-200 rounded-full opacity-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 group-hover:opacity-100" />
+						</div>
+						<div className="hidden sm:block">
+							<h1 className="text-lg font-bold leading-none text-foreground">Thorbis</h1>
+							<p className="text-xs text-muted-foreground">User Dashboard</p>
+						</div>
 					</Link>
-					<nav className="flex items-center space-x-6">
-						<ul className="flex items-center space-x-2 md:space-x-4">
-							<li className="flex items-center space-x-2">
-								<RxSlash className="hidden w-6 h-6 md:block text-muted-foreground" />
-								<Card variant="outline" className="flex items-center h-10 p-2 space-x-2 cursor-default">
-									<Avatar className="w-6 h-6">
-										<AvatarImage src="https://vercel.com/api/www/avatar?u=bcw1995&s=64" alt="@shadcn" />
-										<AvatarFallback>BW</AvatarFallback>
-									</Avatar>
-									<p className="hidden text-sm font-medium truncate md:block">
-										{user?.user_metadata.first_name} {user?.user_metadata.last_name}
-									</p>
-									<Badge className="hidden md:block bg-primary hover:bg-primary-dark">Pro</Badge>
-								</Card>
-							</li>
-							<li className="flex items-center space-x-2">
-								<RxSlash className="w-6 h-6 text-muted-foreground" />
-								<DropdownMenu>
-									<DropdownMenuTrigger asChild>
-										<Button variant="outline" className="flex items-center space-x-2 hover:!border-primary">
-											<p className="w-24 text-sm font-medium truncate overflow-ellipsis">Im looking for a professional webdesigner</p>
-											<span>
-												<LuChevronsUpDown className="w-4 h-4" />
-											</span>
-										</Button>
-									</DropdownMenuTrigger>
-									<DropdownMenuContent align="start" className="w-56">
-										<DropdownMenuLabel>My Account</DropdownMenuLabel>
-										<DropdownMenuSeparator />
-										<DropdownMenuGroup>
-											<DropdownMenuItem>Profile</DropdownMenuItem>
-											<DropdownMenuItem>Billing</DropdownMenuItem>
-											<DropdownMenuItem>Settings</DropdownMenuItem>
-											<DropdownMenuItem>Keyboard shortcuts</DropdownMenuItem>
-										</DropdownMenuGroup>
-										<DropdownMenuSeparator />
-										<DropdownMenuGroup>
-											<DropdownMenuItem>Team</DropdownMenuItem>
-											<DropdownMenuSub>
-												<DropdownMenuSubTrigger>Invite users</DropdownMenuSubTrigger>
-												<DropdownMenuPortal>
-													<DropdownMenuSubContent>
-														<DropdownMenuItem>Email</DropdownMenuItem>
-														<DropdownMenuItem>Message</DropdownMenuItem>
-														<DropdownMenuSeparator />
-														<DropdownMenuItem>More...</DropdownMenuItem>
-													</DropdownMenuSubContent>
-												</DropdownMenuPortal>
-											</DropdownMenuSub>
-											<DropdownMenuItem>New Team</DropdownMenuItem>
-										</DropdownMenuGroup>
-										<DropdownMenuSeparator />
-										<DropdownMenuItem>GitHub</DropdownMenuItem>
-										<DropdownMenuItem>Support</DropdownMenuItem>
-										<DropdownMenuItem disabled>API</DropdownMenuItem>
-										<DropdownMenuSeparator />
-										<DropdownMenuItem>Log out</DropdownMenuItem>
-									</DropdownMenuContent>
-								</DropdownMenu>
-							</li>
-						</ul>
-					</nav>
-				</div>
-				<div className="flex items-center space-x-7">
-					<ul className="items-center hidden space-x-4 md:flex">
-						<li>
-							<Button variant="outline" size="sm" className="font-normal hover:!border-primary">
-								Feedback
-							</Button>
-						</li>
-						<li>
-							<Link href="/changelog" className="text-sm text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-400">
-								Changelog
-							</Link>
-						</li>
-						<li>
-							<Link href="/support" className="text-sm text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-400">
-								Support
-							</Link>
-						</li>
-					</ul>
-					<div className="flex items-center space-x-2">
+
+					{/* Current Job/Project Dropdown */}
+					<div className="hidden lg:flex flex-row space-x-3">
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
-								<Button size="icon" variant="ghost" className="relative p-2 text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-400">
-									<Bell className="w-5 h-5" />
-									<span className="absolute top-1 right-1 w-2.5 h-2.5 bg-blue-500 border-2 border-white dark:border-gray-800 rounded-full" />
-								</Button>
-							</DropdownMenuTrigger>
-							<DropdownMenuContent align="end" className="px-4 py-8 w-96">
-								<div>
-									<div className="flex gap-x-3">
-										<div className="w-16 text-end">
-											<span className="text-xs text-muted-foreground">12:05PM</span>
-										</div>
-										<div className="relative last:after:hidden after:absolute after:top-7 after:bottom-0 after:start-3.5 after:w-px after:-translate-x-[0.5px] after:bg-gray-200 dark:after:bg-neutral-700">
-											<div className="relative z-10 flex items-center justify-center size-7">
-												<div className="bg-gray-400 rounded-full size-2 dark:bg-neutral-600" />
-											</div>
-										</div>
-										<div className="grow pt-0.5 pb-8">
-											<h3 className="flex gap-x-1.5 font-semibold">
-												<svg className="mt-1 shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-													<path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
-													<polyline points="14 2 14 8 20 8" />
-													<line x1={16} x2={8} y1={13} y2={13} />
-													<line x1={16} x2={8} y1={17} y2={17} />
-													<line x1={10} x2={8} y1={9} y2={9} />
-												</svg>
-												Created &quot;Preline in React&quot; task
-											</h3>
-											<p className="mt-1 text-sm text-muted-foreground">Find more detailed instructions here.</p>
-											<Button variant="secondary" size="xs" className="mt-1 text-muted-foreground">
-												<img className="mr-2 rounded-full shrink-0 size-4" src="https://images.unsplash.com/photo-1659482633369-9fe69af50bfb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=3&w=320&h=320&q=80" alt="Avatar" />
-												James Collins
-											</Button>
-										</div>
+								<div className="flex items-center p-2 px-3 space-x-2 transition-colors bg-card/80 backdrop-blur-sm border border-border/50 rounded-lg hover:bg-accent/50 cursor-pointer">
+									<div className="text-xs max-w-[200px]">
+										<div className="font-medium text-foreground truncate">Current Request</div>
+										<div className="text-muted-foreground truncate">Looking for a professional webdesigner</div>
 									</div>
-									<div className="flex gap-x-3">
-										<div className="w-16 text-end">
-											<span className="text-xs text-muted-foreground">12:05PM</span>
-										</div>
-										<div className="relative last:after:hidden after:absolute after:top-7 after:bottom-0 after:start-3.5 after:w-px after:-translate-x-[0.5px] after:bg-gray-200 dark:after:bg-neutral-700">
-											<div className="relative z-10 flex items-center justify-center size-7">
-												<div className="bg-gray-400 rounded-full size-2 dark:bg-neutral-600" />
-											</div>
-										</div>
-										<div className="grow pt-0.5 pb-8">
-											<h3 className="flex gap-x-1.5 font-semibold">Release v5.2.0 quick bug fix 🐞</h3>
-											<Button variant="secondary" size="xs" className="mt-1 text-muted-foreground">
-												<img className="mr-2 rounded-full shrink-0 size-4" src="https://images.unsplash.com/photo-1659482633369-9fe69af50bfb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8MHx8&auto=format&fit=facearea&facepad=3&w=320&h=320&q=80" alt="Avatar" />
-												James Collins
-											</Button>
-										</div>
-									</div>
-									<div className="flex gap-x-3">
-										<div className="w-16 text-end">
-											<span className="text-xs text-muted-foreground">12:05PM</span>
-										</div>
-										<div className="relative last:after:hidden after:absolute after:top-7 after:bottom-0 after:start-3.5 after:w-px after:-translate-x-[0.5px] after:bg-gray-200 dark:after:bg-neutral-700">
-											<div className="relative z-10 flex items-center justify-center size-7">
-												<div className="bg-gray-400 rounded-full size-2 dark:bg-neutral-600" />
-											</div>
-										</div>
-										<div className="grow pt-0.5 pb-8">
-											<h3 className="flex gap-x-1.5 font-semibold">Marked &quot;Install Charts&quot; completed</h3>
-											<p className="mt-1 text-sm text-muted-foreground">Finally! You can check it out here.</p>
-											<Button variant="secondary" size="xs" className="mt-1 text-muted-foreground">
-												<img className="mr-2 rounded-full shrink-0 size-4" src="https://images.unsplash.com/photo-1659482633369-9fe69af50bfb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fMHx8&auto=format&fit=facearea&facepad=3&w=320&h=320&q=80" alt="Avatar" />
-												James Collins
-											</Button>
-										</div>
-									</div>
-									<div className="flex gap-x-3">
-										<div className="w-16 text-end">
-											<span className="text-xs text-muted-foreground">12:05PM</span>
-										</div>
-										<div className="relative last:after:hidden after:absolute after:top-7 after:bottom-0 after:start-3.5 after:w-px after:-translate-x-[0.5px] after:bg-gray-200 dark:after:bg-neutral-700">
-											<div className="relative z-10 flex items-center justify-center size-7">
-												<div className="bg-gray-400 rounded-full size-2 dark:bg-neutral-600" />
-											</div>
-										</div>
-										<div className="grow pt-0.5 pb-8">
-											<h3 className="flex gap-x-1.5 font-semibold">Take a break ⛳️</h3>
-											<p className="mt-1 text-sm text-muted-foreground">Just chill for now... 😉</p>
-										</div>
-									</div>
+									<ChevronDown className="w-4 h-4 text-muted-foreground" />
 								</div>
-							</DropdownMenuContent>
-						</DropdownMenu>
-						<DropdownMenu>
-							<DropdownMenuTrigger asChild>
-								<Button variant="outline" size="icon" aria-label="Menu" className="rounded-full block hover:!border-primary">
-									<Avatar className="w-8 h-8 mx-auto">
-										<AvatarImage src="https://vercel.com/api/www/avatar?u=bcw1995&s=64" alt="@shadcn" />
-										<AvatarFallback>BW</AvatarFallback>
-									</Avatar>
-								</Button>
 							</DropdownMenuTrigger>
-							<DropdownMenuContent align="end" className="w-56">
-								<DropdownMenuLabel>My Account</DropdownMenuLabel>
+							<DropdownMenuContent className="w-64 z-[90] bg-card/95 backdrop-blur-md border border-border/50">
+								<DropdownMenuLabel>Recent Requests</DropdownMenuLabel>
 								<DropdownMenuSeparator />
-								<DropdownMenuGroup>
-									<Link href="/business" passHref legacyBehavior>
-										<DropdownMenuItem>Switch to Business Account</DropdownMenuItem>
-									</Link>
-								</DropdownMenuGroup>
-								<DropdownMenuSeparator />
-								<DropdownMenuGroup>
-									<DropdownMenuItem>Profile</DropdownMenuItem>
-									<DropdownMenuItem>Billing</DropdownMenuItem>
-									<DropdownMenuItem>Settings</DropdownMenuItem>
-									<DropdownMenuItem>Keyboard shortcuts</DropdownMenuItem>
-								</DropdownMenuGroup>
-								<DropdownMenuSeparator />
-								<DropdownMenuGroup>
-									<DropdownMenuItem>Team</DropdownMenuItem>
-									<DropdownMenuSub>
-										<DropdownMenuSubTrigger>Invite users</DropdownMenuSubTrigger>
-										<DropdownMenuPortal>
-											<DropdownMenuSubContent>
-												<DropdownMenuItem>Email</DropdownMenuItem>
-												<DropdownMenuItem>Message</DropdownMenuItem>
-												<DropdownMenuSeparator />
-												<DropdownMenuItem>More...</DropdownMenuItem>
-											</DropdownMenuSubContent>
-										</DropdownMenuPortal>
-									</DropdownMenuSub>
-									<DropdownMenuItem>New Team</DropdownMenuItem>
-								</DropdownMenuGroup>
-								<DropdownMenuSeparator />
-								<DropdownMenuItem onClick={() => handleModeChange("light")}>
-									<SunIcon className="w-4 h-4 mr-2 text-yellow-500" />
-									Light
+								<DropdownMenuItem>
+									<div className="flex flex-col">
+										<span className="font-medium">Looking for a professional webdesigner</span>
+										<span className="text-xs text-muted-foreground">Active • 5 applications</span>
+									</div>
 								</DropdownMenuItem>
-								<DropdownMenuItem onClick={() => handleModeChange("dark")}>
-									<MoonIcon className="w-4 h-4 mr-2 text-indigo-500" />
-									Dark
+								<DropdownMenuItem>
+									<div className="flex flex-col">
+										<span className="font-medium">Need plumbing repair</span>
+										<span className="text-xs text-muted-foreground">Completed</span>
+									</div>
 								</DropdownMenuItem>
-								<DropdownMenuItem onClick={() => handleModeChange("system")}>
-									<RiComputerFill className="w-4 h-4 mr-2 text-slate-500" />
-									System
-								</DropdownMenuItem>
-								<DropdownMenuSub>
-									<DropdownMenuSubTrigger>Theme Colors</DropdownMenuSubTrigger>
-									<DropdownMenuPortal>
-										<DropdownMenuSubContent>
-											<DropdownMenuRadioGroup value={primaryColor} onValueChange={handlePrimaryColorChange}>
-												<DropdownMenuRadioItem value="theme-default">Default</DropdownMenuRadioItem>
-												<DropdownMenuRadioItem value="theme-green">Green</DropdownMenuRadioItem>
-												<DropdownMenuRadioItem value="theme-blue">Blue</DropdownMenuRadioItem>
-												<DropdownMenuRadioItem value="theme-red">Red</DropdownMenuRadioItem>
-											</DropdownMenuRadioGroup>
-										</DropdownMenuSubContent>
-									</DropdownMenuPortal>
-								</DropdownMenuSub>
 								<DropdownMenuSeparator />
-								<DropdownMenuItem onClick={logout}>Log out</DropdownMenuItem>
+								<DropdownMenuItem asChild>
+									<Link href="/user/jobs">View all requests</Link>
+								</DropdownMenuItem>
 							</DropdownMenuContent>
 						</DropdownMenu>
 					</div>
 				</div>
-			</div>
-			<nav className="relative flex justify-center">
-				<div className="flex overflow-x-scroll no-scrollbar" ref={containerRef}>
-					{menuItems.map((item, index) => (
-						<button
-							key={index}
-							className={`relative py-2 px-4 text-sm font-medium ${activeIndex === index ? "text-primary" : "text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-400"}`}
-							onClick={() => {
-								setActiveIndex(index);
-								router.push(item.href);
-							}}
-						>
-							{item.label}
-						</button>
-					))}
-					<span className="absolute bottom-0 h-[2px] bg-primary transition-all duration-300 ease-in-out" style={underlineStyle} />
+
+				{/* Right Section - Navigation and User Menu */}
+				<div className="hidden space-x-1 lg:flex xl:space-x-2">
+					{userNavItems.map((item) => {
+						const isActive = pathname === item.href || (item.href !== "/user" && pathname.startsWith(item.href));
+						return (
+							<Link key={item.href} href={item.href} passHref legacyBehavior>
+								<Button variant={isActive ? "default" : "ghost"} size="sm" className={`text-sm font-medium transition-colors hover:text-primary ${isActive ? "bg-primary text-primary-foreground" : ""}`}>
+									{item.text}
+								</Button>
+							</Link>
+						);
+					})}
 				</div>
-			</nav>
-		</header>
+
+				{/* User Controls */}
+				<div className="flex items-center space-x-2">
+					{/* Notifications */}
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<Button variant="ghost" size="sm" className="relative p-2 h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-accent">
+								<Bell className="w-5 h-5" />
+								<span className="absolute top-1 right-1 w-2.5 h-2.5 bg-blue-500 border-2 border-white dark:border-gray-800 rounded-full"></span>
+							</Button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent className="w-80 z-[80] bg-card/95 backdrop-blur-md border border-border/50">
+							<div className="flex items-center justify-between p-3 border-b border-border/50">
+								<h3 className="font-semibold text-foreground">Notifications</h3>
+								<Badge variant="secondary" className="text-xs">
+									4 new
+								</Badge>
+							</div>
+							<div className="overflow-y-auto max-h-96">
+								<DropdownMenuItem className="flex items-start p-4 space-x-3">
+									<div className="flex-shrink-0 w-2 h-2 mt-2 bg-blue-500 rounded-full"></div>
+									<div className="flex-1 min-w-0">
+										<p className="text-sm font-medium text-foreground">New application received</p>
+										<p className="mt-1 text-xs text-muted-foreground">John D. applied for your web design request</p>
+										<p className="text-xs text-muted-foreground">10 minutes ago</p>
+									</div>
+								</DropdownMenuItem>
+								<DropdownMenuItem className="flex items-start p-4 space-x-3">
+									<div className="flex-shrink-0 w-2 h-2 mt-2 bg-green-500 rounded-full"></div>
+									<div className="flex-1 min-w-0">
+										<p className="text-sm font-medium text-foreground">Job completed</p>
+										<p className="mt-1 text-xs text-muted-foreground">Your plumbing repair has been completed</p>
+										<p className="text-xs text-muted-foreground">2 hours ago</p>
+									</div>
+								</DropdownMenuItem>
+							</div>
+						</DropdownMenuContent>
+					</DropdownMenu>
+
+					{/* User Avatar Menu */}
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<Button variant="outline" size="sm" className="p-0 border rounded-full shadow-sm h-9 w-9 border-input bg-background hover:bg-accent hover:text-accent-foreground hover:border-primary">
+								<Avatar className="w-8 h-8">
+									<AvatarImage src={`https://vercel.com/api/www/avatar?u=${user?.email?.split("@")[0] || "user"}&s=64`} />
+									<AvatarFallback>{user?.user_metadata?.first_name?.[0] || user?.email?.[0]?.toUpperCase() || "U"}</AvatarFallback>
+								</Avatar>
+							</Button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent className="w-56 z-[80] bg-card/95 backdrop-blur-md border border-border/50">
+							<div className="flex items-center p-3 space-x-3 border-b border-border/50">
+								<Avatar className="w-8 h-8">
+									<AvatarImage src={`https://vercel.com/api/www/avatar?u=${user?.email?.split("@")[0] || "user"}&s=64`} />
+									<AvatarFallback>{user?.user_metadata?.first_name?.[0] || user?.email?.[0]?.toUpperCase() || "U"}</AvatarFallback>
+								</Avatar>
+								<div className="flex-1 min-w-0">
+									<p className="text-sm font-medium truncate text-foreground">{user?.user_metadata?.first_name || user?.email?.split("@")[0] || "User"}</p>
+									<p className="text-xs truncate text-muted-foreground">{user?.email}</p>
+								</div>
+							</div>
+							<DropdownMenuGroup>
+								<DropdownMenuItem asChild>
+									<Link href="/user/settings">
+										<Settings className="w-4 h-4 mr-2" />
+										<span>Settings</span>
+									</Link>
+								</DropdownMenuItem>
+								<DropdownMenuItem asChild>
+									<Link href="/user/billing">
+										<CreditCard className="w-4 h-4 mr-2" />
+										<span>Billing</span>
+									</Link>
+								</DropdownMenuItem>
+								<DropdownMenuItem asChild>
+									<Link href="/support">
+										<HelpCircle className="w-4 h-4 mr-2" />
+										<span>Support</span>
+									</Link>
+								</DropdownMenuItem>
+							</DropdownMenuGroup>
+							<DropdownMenuSeparator />
+							<DropdownMenuGroup>
+								<DropdownMenuLabel>Theme</DropdownMenuLabel>
+								<DropdownMenuItem onClick={() => setTheme("light")}>
+									<SunIcon className="w-4 h-4 mr-2 text-yellow-500" />
+									Light
+								</DropdownMenuItem>
+								<DropdownMenuItem onClick={() => setTheme("dark")}>
+									<MoonIcon className="w-4 h-4 mr-2 text-indigo-500" />
+									Dark
+								</DropdownMenuItem>
+								<DropdownMenuItem onClick={() => setTheme("system")}>
+									<RiComputerFill className="w-4 h-4 mr-2 text-slate-500" />
+									System
+								</DropdownMenuItem>
+							</DropdownMenuGroup>
+							<DropdownMenuSeparator />
+							<DropdownMenuGroup>
+								<DropdownMenuLabel>Color Scheme</DropdownMenuLabel>
+								<DropdownMenuRadioGroup value={primaryColor} onValueChange={handlePrimaryColorChange}>
+									<DropdownMenuRadioItem value="theme-default">Default</DropdownMenuRadioItem>
+									<DropdownMenuRadioItem value="theme-blue">Blue</DropdownMenuRadioItem>
+									<DropdownMenuRadioItem value="theme-green">Green</DropdownMenuRadioItem>
+									<DropdownMenuRadioItem value="theme-purple">Purple</DropdownMenuRadioItem>
+								</DropdownMenuRadioGroup>
+							</DropdownMenuGroup>
+							<DropdownMenuSeparator />
+							<DropdownMenuItem asChild>
+								<Link href="/">
+									<span>Back to Main Site</span>
+								</Link>
+							</DropdownMenuItem>
+							<DropdownMenuSeparator />
+							<DropdownMenuItem onClick={handleLogout} className="text-red-600 focus:text-red-600">
+								<span>Logout</span>
+							</DropdownMenuItem>
+						</DropdownMenuContent>
+					</DropdownMenu>
+
+					{/* Mobile Menu */}
+					<Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+						<SheetTrigger asChild>
+							<Button variant="outline" size="icon" className="flex lg:hidden">
+								<Menu className="w-4 h-4" />
+							</Button>
+						</SheetTrigger>
+						<SheetContent className="bg-card/95 backdrop-blur-md">
+							<SheetHeader>
+								<SheetTitle>User Menu</SheetTitle>
+							</SheetHeader>
+							<nav className="mt-6">
+								<ul className="space-y-2">
+									{userNavItems.map((item) => {
+										const isActive = pathname === item.href || (item.href !== "/user" && pathname.startsWith(item.href));
+										return (
+											<li key={item.href}>
+												<Link href={item.href} onClick={() => setMobileMenuOpen(false)}>
+													<Button variant={isActive ? "default" : "ghost"} className={`w-full justify-start ${isActive ? "bg-primary text-primary-foreground" : ""}`}>
+														{item.text}
+													</Button>
+												</Link>
+											</li>
+										);
+									})}
+								</ul>
+							</nav>
+						</SheetContent>
+					</Sheet>
+				</div>
+			</div>
+		</div>
 	);
 }

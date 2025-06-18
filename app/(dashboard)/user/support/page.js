@@ -12,28 +12,27 @@ const menuItems = [{ label: "Dashboard" }, { label: "Kanban", badge: "Pro" }, { 
 
 export default function Support() {
 	return (
-		<>
-			<div className="w-full mx-auto my-16 space-y-16">
-				<div className="flex items-center justify-between space-x-6">
-					<h1 className="text-4xl">Support</h1>
-					<div className="flex items-center gap-x-3">
-						<Button variant="outline" size="sm">
-							Claim a Business
-						</Button>
-						<DropdownMenu>
-							<DropdownMenuTrigger>
-								<Button variant="outline" size="sm">
-									Add new... <ChevronDown className="w-4 h-4 ml-2" />
-								</Button>
-							</DropdownMenuTrigger>
-							<DropdownMenuContent align="end" className="bg-white border border-gray-300 rounded-md dark:border-neutral-800 dark:bg-neutral-900">
-								<DropdownMenuItem>Job</DropdownMenuItem>
-								<DropdownMenuItem>Buisiness</DropdownMenuItem>
-							</DropdownMenuContent>
-						</DropdownMenu>
-					</div>
+		<div className="w-full px-4 lg:px-24 py-16 space-y-8">
+			<div className="flex items-center justify-between space-x-6">
+				<h1 className="text-4xl">Support</h1>
+				<div className="flex items-center gap-x-3">
+					<Button variant="outline" size="sm">
+						Claim a Business
+					</Button>
+					<DropdownMenu>
+						<DropdownMenuTrigger>
+							<Button variant="outline" size="sm">
+								Add new... <ChevronDown className="w-4 h-4 ml-2" />
+							</Button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent align="end" className="bg-white border border-gray-300 rounded-md dark:border-neutral-800 dark:bg-neutral-900">
+							<DropdownMenuItem>Job</DropdownMenuItem>
+							<DropdownMenuItem>Buisiness</DropdownMenuItem>
+						</DropdownMenuContent>
+					</DropdownMenu>
 				</div>
 			</div>
+			<p className="text-muted-foreground">Get help and support for your account.</p>
 			<div className="mx-auto grid w-full items-start gap-4 md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr]">
 				<aside className="mr-4 min-w-60">
 					<div className="h-full p-2 overflow-y-auto bg-white border border-gray-300 rounded-md dark:border-neutral-800 dark:bg-neutral-900">
@@ -150,6 +149,6 @@ export default function Support() {
 					</Card>
 				</div>
 			</div>
-		</>
+		</div>
 	);
 }

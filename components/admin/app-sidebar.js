@@ -1,10 +1,8 @@
-// components/Sidebar.js
+"use client";
+
 import { usePathname } from "next/navigation";
-import { Card } from "@components/ui/card";
-import { ScrollArea } from "@components/ui/scroll-area";
-import { Separator } from "@components/ui/separator";
-import SidebarSection from "./sidebar-section";
-import SidebarItem from "./sidebar-item";
+import Link from "next/link";
+import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarSeparator } from "components/ui/sidebar";
 
 const sidebarLinks = {
 	"/admin": [
@@ -126,29 +124,37 @@ const sidebarLinks = {
 	],
 };
 
-export default function Sidebar() {
+export function AppSidebar() {
 	const pathname = usePathname();
 	const currentPath = pathname.split("/").slice(0, 3).join("/");
+	const currentSections = sidebarLinks[currentPath];
 
 	return (
-		<aside className="w-56">
-			<Card className="h-full border-r border-l-0 border-t-0 border-b-0 rounded-none bg-card/50 backdrop-blur-sm">
-				<ScrollArea className="h-full p-4">
-					<nav className="space-y-6">
-						{sidebarLinks[currentPath]?.map((section, index) => (
-							<div key={index}>
-								<SidebarSection title={section.section} />
-								<div className="space-y-1">
-									{section.links.map((link) => (
-										<SidebarItem key={link.href} href={link.href} text={link.text} className={section.section} />
-									))}
-								</div>
-								{index < sidebarLinks[currentPath].length - 1 && <Separator className="mt-4 mb-2" />}
-							</div>
-						))}
-					</nav>
-				</ScrollArea>
-			</Card>
-		</aside>
+		<Sidebar variant="inset" collapsible="icon">
+			<SidebarContent>
+				{currentSections?.map((section, index) => (
+					<div key={index}>
+						<SidebarGroup>
+							<SidebarGroupLabel>{section.section}</SidebarGroupLabel>
+							<SidebarGroupContent>
+								<SidebarMenu>
+									{section.links.map((link) => {
+										const isActive = pathname === link.href;
+										return (
+											<SidebarMenuItem key={link.href}>
+												<SidebarMenuButton asChild isActive={isActive}>
+													<Link href={link.href}>{link.text}</Link>
+												</SidebarMenuButton>
+											</SidebarMenuItem>
+										);
+									})}
+								</SidebarMenu>
+							</SidebarGroupContent>
+						</SidebarGroup>
+						{index < currentSections.length - 1 && <SidebarSeparator />}
+					</div>
+				))}
+			</SidebarContent>
+		</Sidebar>
 	);
 }

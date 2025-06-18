@@ -19,12 +19,11 @@ export default function Referral() {
 	};
 
 	return (
-		<>
-			<div className="w-full mx-auto my-16 space-y-16">
-				<div className="flex items-center justify-between space-x-6">
-					<h1 className="text-4xl">Referrals</h1>
-				</div>
+		<div className="w-full px-4 py-16 space-y-8 lg:px-24">
+			<div className="flex items-center justify-between space-x-6">
+				<h1 className="text-4xl">Referrals</h1>
 			</div>
+			<p className="text-muted-foreground">Refer friends and earn rewards for every successful signup.</p>
 
 			<div className="space-y-6">
 				<div>
@@ -153,6 +152,6 @@ export default function Referral() {
 					</div>
 				</div>
 			</div>
-		</>
+		</div>
 	);
 }

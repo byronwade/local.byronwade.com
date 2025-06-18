@@ -43,7 +43,7 @@ const recentSales = [
 
 export default function BusinessDashboard() {
 	return (
-		<main className="flex flex-col flex-1 gap-4 p-4 md:gap-8">
+		<div className="w-full px-4 lg:px-24 py-16 space-y-8">
 			<div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
 				{stats.map((stat, index) => (
 					<Card key={index} x-chunk={`dashboard-01-chunk-${index}`}>
@@ -125,6 +125,6 @@ export default function BusinessDashboard() {
 					</CardContent>
 				</Card>
 			</div>
-		</main>
+		</div>
 	);
 }

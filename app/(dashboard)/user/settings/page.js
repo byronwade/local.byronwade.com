@@ -6,11 +6,9 @@ import { Input } from "@components/ui/input";
 
 export default function Settings() {
 	return (
-		<>
-			<div className="w-full mx-auto my-16 space-y-16">
-				<div className="flex items-center justify-between space-x-6">
-					<h1 className="text-4xl">Settings</h1>
-				</div>
+		<div className="w-full px-4 lg:px-24 py-16 space-y-16">
+			<div className="flex items-center justify-between space-x-6">
+				<h1 className="text-4xl">Settings</h1>
 			</div>
 
 			<div className="space-y-10">
@@ -225,6 +223,6 @@ export default function Settings() {
 					</Card>
 				</div>
 			</div>
-		</>
+		</div>
 	);
 }

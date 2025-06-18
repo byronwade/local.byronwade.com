@@ -51,7 +51,7 @@ const adminItems = [
 
 export default function Admin() {
 	return (
-		<div className="w-full mx-auto my-16 space-y-8">
+		<div className="space-y-8">
 			<div className="flex items-center justify-between">
 				<h1 className="text-4xl">Admin Dashboard</h1>
 			</div>
