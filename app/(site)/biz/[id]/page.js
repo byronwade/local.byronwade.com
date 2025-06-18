@@ -1478,7 +1478,7 @@ export default function BizProfile({ params }) {
 										</div>
 									</div>
 
-									{/* What This Means for You - Clean Cards */}
+									{/* Key Benefits Grid */}
 									<div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
 										<div className="p-6 border bg-card border-border rounded-xl sm:p-8">
 											<div className="flex items-start space-x-4">
@@ -1517,35 +1517,6 @@ export default function BizProfile({ params }) {
 														))}
 													</div>
 												</div>
-											</div>
-										</div>
-									</div>
-
-									{/* What This Means for You */}
-									<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-										<div className="space-y-4">
-											<h3 className="text-xl font-semibold sm:text-2xl text-foreground">What This Certification Means for You</h3>
-											<div className="space-y-3">
-												{["Guaranteed highest quality workmanship and service", "Verified financial stability and proper licensing", "Independently confirmed customer satisfaction scores", "Ongoing performance monitoring and quality assurance", "Protected by comprehensive performance guarantee", "Priority dispute resolution and mediation services"].map((benefit, index) => (
-													<div key={index} className="flex items-start space-x-3">
-														<CheckCircle className="flex-shrink-0 w-5 h-5 mt-0.5 text-green-400" />
-														<span className="text-sm leading-relaxed sm:text-base text-foreground">{benefit}</span>
-													</div>
-												))}
-											</div>
-										</div>
-
-										<div className="space-y-4">
-											<h3 className="text-xl font-semibold sm:text-2xl text-foreground">The Elite Vetting Process</h3>
-											<div className="space-y-3">
-												{["Comprehensive 400+ customer interview process", "Independent financial stability assessment", "Rigorous background and licensing verification", "Technical expertise and quality evaluation", "On-site inspection and equipment review", "Ongoing annual re-certification requirements"].map((requirement, index) => (
-													<div key={index} className="flex items-start space-x-3">
-														<div className="flex-shrink-0 w-5 h-5 mt-0.5 rounded-full bg-amber-500/20 flex items-center justify-center">
-															<div className="w-2 h-2 rounded-full bg-amber-500"></div>
-														</div>
-														<span className="text-sm leading-relaxed sm:text-base text-foreground">{requirement}</span>
-													</div>
-												))}
 											</div>
 										</div>
 									</div>
@@ -1651,47 +1622,57 @@ export default function BizProfile({ params }) {
 								</div>
 
 								<div className="space-y-8">
-									{/* Review Summary with Neighborhood Stats */}
-									<div className="p-6 border bg-card/30 rounded-xl border-border">
-										<h3 className="mb-4 text-lg font-semibold text-foreground">Review Overview</h3>
-										<div className="grid grid-cols-1 gap-6 md:grid-cols-4">
-											<div className="text-center">
-												<div className="text-3xl font-bold text-foreground">{business.rating}</div>
-												<div className="flex items-center justify-center mt-1 space-x-1">
-													{[...Array(5)].map((_, i) => (
-														<Star key={i} className={`w-4 h-4 ${i < Math.floor(business.rating) ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground"}`} />
-													))}
+									{/* Modern Review Overview */}
+									<div className="relative overflow-hidden border bg-gradient-to-br from-yellow-50 via-orange-50 to-red-50 dark:from-yellow-950/20 dark:via-orange-950/20 dark:to-red-950/20 border-yellow-200/50 dark:border-yellow-800/50 rounded-2xl">
+										<div className="absolute inset-0 bg-gradient-to-r from-yellow-400/5 to-orange-400/5"></div>
+										<div className="relative p-6 sm:p-8">
+											<div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+												{/* Left: Main Rating */}
+												<div className="text-center lg:text-left">
+													<div className="flex items-center justify-center gap-4 lg:justify-start">
+														<div className="text-4xl font-bold text-foreground sm:text-5xl">{business.rating}</div>
+														<div className="space-y-2">
+															<div className="flex items-center space-x-1">
+																{[...Array(5)].map((_, i) => (
+																	<Star key={i} className={`w-5 h-5 ${i < Math.floor(business.rating) ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground"}`} />
+																))}
+															</div>
+															<div className="text-sm text-muted-foreground">{business.reviewCount} reviews</div>
+														</div>
+													</div>
+													<div className="mt-4 lg:mt-6">
+														<h3 className="mb-2 text-lg font-semibold text-foreground">Community Trust</h3>
+														<div className="flex items-center justify-center gap-3 lg:justify-start">
+															<div className="flex items-center gap-2 px-3 py-1 bg-orange-100 rounded-full dark:bg-orange-900/30">
+																<Home className="w-4 h-4 text-orange-600 dark:text-orange-400" />
+																<span className="text-sm font-medium text-orange-800 dark:text-orange-200">{business.peerRecommendations.length} Neighbors</span>
+															</div>
+															<div className="flex items-center gap-2 px-3 py-1 bg-green-100 rounded-full dark:bg-green-900/30">
+																<CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
+																<span className="text-sm font-medium text-green-800 dark:text-green-200">{business.responseRate}% Response</span>
+															</div>
+														</div>
+													</div>
 												</div>
-												<div className="mt-1 text-sm text-muted-foreground">{business.reviewCount} total reviews</div>
-											</div>
-											<div className="text-center">
-												<div className="text-3xl font-bold text-orange-500">{business.peerRecommendations.length}</div>
-												<div className="text-sm text-muted-foreground">Neighbor Reviews</div>
-											</div>
-											<div className="text-center">
-												<div className="text-3xl font-bold text-primary">{business.trustScore}%</div>
-												<div className="text-sm text-muted-foreground">Trust Score</div>
-											</div>
-											<div className="text-center">
-												<div className="text-3xl font-bold text-green-400">{business.responseRate}%</div>
-												<div className="text-sm text-muted-foreground">Response Rate</div>
-											</div>
-										</div>
 
-										{/* Neighborhood Trust Indicators */}
-										<div className="p-4 mt-6 border rounded-lg bg-orange-50/50 dark:bg-orange-950/20 border-orange-200/50">
-											<div className="flex items-center gap-2 mb-3">
-												<Home className="w-5 h-5 text-orange-500" />
-												<h4 className="font-semibold text-foreground">Neighborhood Trust</h4>
-											</div>
-											<div className="grid grid-cols-2 gap-4 text-sm">
-												<div className="flex items-center justify-between">
-													<span className="text-muted-foreground">Verified Neighbors</span>
-													<Badge className="text-orange-700 bg-orange-100">{business.peerRecommendations.length}</Badge>
-												</div>
-												<div className="flex items-center justify-between">
-													<span className="text-muted-foreground">Within 2 blocks</span>
-													<Badge className="text-green-700 bg-green-100">{business.peerRecommendations.filter((p) => p.relationship === "Neighbor").length}</Badge>
+												{/* Right: Quick Stats */}
+												<div className="grid grid-cols-2 gap-4">
+													<div className="p-4 border bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm rounded-xl border-white/20">
+														<div className="text-2xl font-bold text-primary">{business.trustScore}%</div>
+														<div className="text-sm text-muted-foreground">Trust Score</div>
+													</div>
+													<div className="p-4 border bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm rounded-xl border-white/20">
+														<div className="text-2xl font-bold text-emerald-600">{business.peerRecommendations.length}</div>
+														<div className="text-sm text-muted-foreground">Local Reviews</div>
+													</div>
+													<div className="p-4 border bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm rounded-xl border-white/20">
+														<div className="text-2xl font-bold text-blue-600">24h</div>
+														<div className="text-sm text-muted-foreground">Avg Response</div>
+													</div>
+													<div className="p-4 border bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm rounded-xl border-white/20">
+														<div className="text-2xl font-bold text-purple-600">98%</div>
+														<div className="text-sm text-muted-foreground">Satisfaction</div>
+													</div>
 												</div>
 											</div>
 										</div>
@@ -1975,71 +1956,101 @@ export default function BizProfile({ params }) {
 								</div>
 
 								<div className="space-y-6 sm:space-y-8">
-									{/* Live Status Hero */}
-									<div className="relative overflow-hidden border shadow-xl bg-gradient-to-br from-green-500 via-emerald-500 to-teal-500 rounded-2xl border-green-400/20">
-										<div className="absolute inset-0 opacity-20">
-											<svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none" stroke="rgba(255,255,255,0.1)">
-												<path d="m0 0 32 32M0 32 32 0"></path>
-											</svg>
-										</div>
-
+									{/* Modern Live Status Hero */}
+									<div className="relative overflow-hidden bg-gradient-to-br from-emerald-600 via-green-600 to-teal-600 rounded-2xl">
+										<div className="absolute inset-0 bg-black/5"></div>
 										<div className="relative px-6 py-8 sm:px-8 lg:px-12">
-											<div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-												{/* Status */}
-												<div className="text-center lg:text-left">
-													<div className="flex items-center justify-center gap-2 mb-4 lg:justify-start">
-														<div className="w-3 h-3 bg-white rounded-full shadow-lg animate-pulse shadow-white/50"></div>
-														<Badge className="font-bold text-green-800 bg-white/90 border-white/20">LIVE STATUS</Badge>
+											<div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+												{/* Live Status */}
+												<div className="flex items-center gap-4 lg:col-span-2">
+													<div className="flex items-center justify-center w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm">
+														<div className="w-4 h-4 bg-white rounded-full animate-pulse"></div>
 													</div>
-													<h3 className="mb-2 text-2xl font-bold text-white sm:text-3xl">{business.realTimeAvailability.currentStatus}</h3>
-													<p className="text-white/90">GPS tracking • {business.realTimeAvailability.avgResponseTime} average response</p>
-												</div>
-
-												{/* Next Available */}
-												<div className="text-center">
-													<div className="p-6 border bg-white/10 backdrop-blur-sm rounded-xl border-white/20">
-														<div className="mb-2 text-sm text-white/80">Next Available</div>
-														<div className="mb-4 text-xl font-bold text-white">{business.realTimeAvailability.nextAvailable}</div>
-														<Button className="w-full font-semibold text-green-600 bg-white hover:bg-white/90">
-															<Calendar className="w-4 h-4 mr-2" />
-															Book Instantly
-														</Button>
+													<div>
+														<div className="flex items-center gap-2 mb-1">
+															<Badge className="text-xs font-bold text-green-800 bg-white/90">🟢 LIVE</Badge>
+															<span className="text-sm text-white/80">GPS Tracked</span>
+														</div>
+														<h3 className="text-xl font-bold text-white sm:text-2xl">{business.realTimeAvailability.currentStatus}</h3>
+														<p className="text-sm text-white/80">{business.realTimeAvailability.avgResponseTime} response time</p>
 													</div>
 												</div>
 
-												{/* Emergency */}
-												<div className="text-center">
-													<div className="p-6 border bg-red-500/20 backdrop-blur-sm rounded-xl border-red-400/20">
-														<div className="mb-2 text-sm text-white/80">Emergency Service</div>
-														<div className="mb-4 text-xl font-bold text-white">Available 24/7</div>
-														<Button variant="outline" className="w-full font-semibold text-white border-white/30 hover:bg-white/10 backdrop-blur-sm">
-															<Phone className="w-4 h-4 mr-2" />
-															Emergency Call
-														</Button>
-													</div>
+												{/* Quick Action */}
+												<div className="flex items-center justify-center lg:justify-end">
+													<Button size="lg" className="w-full font-semibold text-green-700 bg-white lg:w-auto hover:bg-white/95">
+														<Calendar className="w-4 h-4 mr-2" />
+														Book Now
+													</Button>
 												</div>
 											</div>
 										</div>
 									</div>
 
-									{/* Available Time Slots */}
-									<div className="p-6 border bg-card border-border rounded-xl sm:p-8">
-										<h3 className="mb-4 text-lg font-semibold text-foreground">Available Today</h3>
-										<div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-											{business.realTimeAvailability.todaySlots.map((slot, index) => (
-												<button key={index} className={`p-3 text-sm font-medium rounded-lg transition-all ${slot.available ? "border-2 border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-900/30 hover:border-green-300 dark:hover:border-green-700" : "border border-border bg-muted text-muted-foreground cursor-not-allowed"}`} disabled={!slot.available}>
-													{slot.time}
-													{slot.type === "emergency" && <div className="mt-1 text-xs text-red-600 dark:text-red-400">Emergency</div>}
-												</button>
-											))}
+									{/* Booking Options Grid */}
+									<div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+										{/* Available Time Slots */}
+										<div className="p-6 border bg-card border-border rounded-xl">
+											<div className="flex items-center justify-between mb-4">
+												<h3 className="text-lg font-semibold text-foreground">Available Today</h3>
+												<Badge variant="secondary" className="text-green-800 bg-green-100 dark:bg-green-900/30 dark:text-green-400">
+													{business.realTimeAvailability.todaySlots.filter((slot) => slot.available).length} slots
+												</Badge>
+											</div>
+
+											<div className="grid grid-cols-3 gap-3 mb-6">
+												{business.realTimeAvailability.todaySlots.slice(0, 6).map((slot, index) => (
+													<button key={index} className={`p-3 text-sm font-medium rounded-lg transition-all text-center ${slot.available ? "bg-green-50 dark:bg-green-900/20 border-2 border-green-200 dark:border-green-800 text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-900/30" : "bg-muted border border-border text-muted-foreground cursor-not-allowed"}`} disabled={!slot.available}>
+														{slot.time}
+														{slot.type === "emergency" && <div className="mt-1 text-xs text-red-600 dark:text-red-400">Emergency</div>}
+													</button>
+												))}
+											</div>
+
+											<div className="p-4 rounded-lg bg-muted/50">
+												<div className="flex items-center gap-2 mb-2">
+													<Clock className="w-4 h-4 text-blue-600" />
+													<span className="text-sm font-medium text-foreground">Instant Booking</span>
+												</div>
+												<p className="text-sm text-muted-foreground">Select any available time for immediate confirmation</p>
+											</div>
 										</div>
 
-										<div className="p-4 mt-6 rounded-lg bg-muted/50">
-											<div className="flex items-center gap-2 mb-2">
-												<Clock className="w-4 h-4 text-muted-foreground" />
-												<span className="text-sm font-medium text-foreground">Booking Information</span>
+										{/* Emergency & Special Services */}
+										<div className="space-y-4">
+											{/* Emergency Service */}
+											<div className="p-6 border bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-950/20 dark:to-orange-950/20 border-red-200/50 dark:border-red-800/50 rounded-xl">
+												<div className="flex items-center gap-3 mb-4">
+													<div className="flex items-center justify-center w-10 h-10 bg-red-100 rounded-full dark:bg-red-900/30">
+														<Phone className="w-5 h-5 text-red-600 dark:text-red-400" />
+													</div>
+													<div>
+														<h4 className="font-semibold text-foreground">Emergency Service</h4>
+														<p className="text-sm text-muted-foreground">24/7 immediate response</p>
+													</div>
+												</div>
+												<Button className="w-full text-white bg-red-600 hover:bg-red-700">
+													<Phone className="w-4 h-4 mr-2" />
+													Call Emergency: {business.phone}
+												</Button>
 											</div>
-											<p className="text-sm text-muted-foreground">Click any available time slot to book instantly. Emergency slots are available 24/7 with premium pricing.</p>
+
+											{/* Next Available */}
+											<div className="p-6 border bg-card border-border rounded-xl">
+												<div className="flex items-center gap-3 mb-4">
+													<div className="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full dark:bg-blue-900/30">
+														<Calendar className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+													</div>
+													<div>
+														<h4 className="font-semibold text-foreground">Next Available</h4>
+														<p className="text-sm font-medium text-blue-600 dark:text-blue-400">{business.realTimeAvailability.nextAvailable}</p>
+													</div>
+												</div>
+												<Button variant="outline" className="w-full border-blue-200 dark:border-blue-800 hover:bg-blue-50 dark:hover:bg-blue-900/20">
+													<Calendar className="w-4 h-4 mr-2" />
+													Schedule Appointment
+												</Button>
+											</div>
 										</div>
 									</div>
 
