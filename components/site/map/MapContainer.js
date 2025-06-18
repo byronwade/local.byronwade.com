@@ -100,16 +100,17 @@ const MapContainer = React.forwardRef((props, ref) => {
 		};
 
 		const resizeObserver = new ResizeObserver(handleResize);
+		const currentContainer = containerRef.current;
 
-		if (containerRef.current) {
-			resizeObserver.observe(containerRef.current);
+		if (currentContainer) {
+			resizeObserver.observe(currentContainer);
 		}
 
 		window.addEventListener("resize", handleResize);
 
 		return () => {
-			if (containerRef.current) {
-				resizeObserver.unobserve(containerRef.current);
+			if (currentContainer) {
+				resizeObserver.unobserve(currentContainer);
 			}
 			window.removeEventListener("resize", handleResize);
 		};
@@ -146,7 +147,7 @@ const MapContainer = React.forwardRef((props, ref) => {
 				map.off("zoomend", handleZoomEnd);
 			};
 		}
-	}, [setMapRef, setActiveBusinessId]);
+	}, [setMapRef, setActiveBusinessId, handleMoveStart, handleMapMoveEnd, handleZoomEnd]);
 
 	// Debounced map move handler for better performance
 	const handleMapMoveEnd = useCallback(async () => {

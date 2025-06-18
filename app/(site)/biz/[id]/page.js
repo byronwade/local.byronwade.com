@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import {
 	ArrowLeft,
 	Share,
@@ -97,26 +97,29 @@ export default function BizProfile({ params }) {
 	const navigationTimeoutRef = useRef(null);
 	const intersectionObserverRef = useRef(null);
 
-	// Section navigation items - defined early to avoid initialization errors
-	const navigationItems = [
-		{ id: "overview", label: "Overview", icon: Building },
-		{ id: "certification", label: "Get Certified", icon: Award },
-		{ id: "reviews", label: "Reviews", icon: Star },
-		{ id: "credentials", label: "Credentials", icon: Shield },
-		{ id: "availability", label: "Live Availability", icon: Zap },
-		{ id: "services", label: "Services & Showcase", icon: Settings },
-		{ id: "expertise", label: "Expertise & Team", icon: Target },
-		{ id: "pricing", label: "Pricing & Policies", icon: DollarSign },
-		{ id: "videoConsult", label: "Video Consult", icon: Video },
-		{ id: "emergencyServices", label: "Emergency Services", icon: Phone },
-		{ id: "information", label: "Business Info", icon: FileText },
-		{ id: "businessTransparency", label: "Business Operations", icon: Eye },
-		{ id: "recognition", label: "Recognition", icon: Award },
-		{ id: "warrantyTracker", label: "Warranty Tracker", icon: ClipboardCheck },
-		{ id: "faq", label: "FAQ & Support", icon: MessageCircle },
-		{ id: "careers", label: "Careers", icon: Users },
-		{ id: "partnerships", label: "Partnerships", icon: Handshake },
-	];
+	// Section navigation items - memoized to avoid re-creation
+	const navigationItems = useMemo(
+		() => [
+			{ id: "overview", label: "Overview", icon: Building },
+			{ id: "certification", label: "Get Certified", icon: Award },
+			{ id: "reviews", label: "Reviews", icon: Star },
+			{ id: "credentials", label: "Credentials", icon: Shield },
+			{ id: "availability", label: "Live Availability", icon: Zap },
+			{ id: "services", label: "Services & Showcase", icon: Settings },
+			{ id: "expertise", label: "Expertise & Team", icon: Target },
+			{ id: "pricing", label: "Pricing & Policies", icon: DollarSign },
+			{ id: "videoConsult", label: "Video Consult", icon: Video },
+			{ id: "emergencyServices", label: "Emergency Services", icon: Phone },
+			{ id: "information", label: "Business Info", icon: FileText },
+			{ id: "businessTransparency", label: "Business Operations", icon: Eye },
+			{ id: "recognition", label: "Recognition", icon: Award },
+			{ id: "warrantyTracker", label: "Warranty Tracker", icon: ClipboardCheck },
+			{ id: "faq", label: "FAQ & Support", icon: MessageCircle },
+			{ id: "careers", label: "Careers", icon: Users },
+			{ id: "partnerships", label: "Partnerships", icon: Handshake },
+		],
+		[]
+	);
 
 	// Refs for sections
 	const sectionRefs = {
@@ -149,8 +152,8 @@ export default function BizProfile({ params }) {
 		}
 	};
 
-	const canNavigateUp = () => getCurrentSectionIndex() > 0;
-	const canNavigateDown = () => getCurrentSectionIndex() < navigationItems.length - 1;
+	const canNavigateUp = useCallback(() => getCurrentSectionIndex() > 0, [navigationItems, activeSection]);
+	const canNavigateDown = useCallback(() => getCurrentSectionIndex() < navigationItems.length - 1, [navigationItems, activeSection]);
 
 	const validateSection = (sectionId) => {
 		return navigationItems.some((item) => item.id === sectionId) && sectionRefs[sectionId] && sectionRefs[sectionId].current;
@@ -559,7 +562,7 @@ export default function BizProfile({ params }) {
 
 		window.addEventListener("keydown", handleKeyDown);
 		return () => window.removeEventListener("keydown", handleKeyDown);
-	}, [showAllPhotos, showScrollSpy, showReviewModal, showMobileNav, activeSection, business?.photos, business?.portfolioPhotos]);
+	}, [showAllPhotos, showScrollSpy, showReviewModal, showMobileNav, activeSection, business?.photos, business?.portfolioPhotos, allImages.length, canNavigateUp, canNavigateDown, handleScrollSpyScroll, navigationItems, scrollToSection]);
 
 	// Enhanced header height calculation with error handling
 	useEffect(() => {
@@ -707,7 +710,7 @@ export default function BizProfile({ params }) {
 			const timer = setTimeout(measureContent, 100);
 			return () => clearTimeout(timer);
 		}
-	}, [showScrollSpy, navigationItems.length, scrollSpyContainerHeight]);
+	}, [showScrollSpy, navigationItems.length, scrollSpyContainerHeight, scrollSpyError]);
 
 	// No longer needed since we're not scrolling the container
 
@@ -739,7 +742,7 @@ export default function BizProfile({ params }) {
 				scrollSpyContentRef.current.style.transform = `translateY(-${newPosition}px)`;
 			}
 		}
-	}, [activeSection, navigationItems]);
+	}, [activeSection, navigationItems, scrollSpyScrollPosition]);
 
 	// Enhanced scroll spy with Intersection Observer
 	useEffect(() => {
@@ -852,76 +855,82 @@ export default function BizProfile({ params }) {
 				intersectionObserverRef.current.disconnect();
 			}
 		};
-	}, [headerHeight, activeSection]); // Dependencies for observer recreation
+	}, [headerHeight, activeSection, sectionRefs]); // Dependencies for observer recreation
 
 	// Enhanced scroll spy navigation with error handling and features
-	const handleScrollSpyScroll = (direction) => {
-		try {
-			const nextSection = getNextSection(direction);
-			if (!nextSection) {
-				return;
-			}
+	const handleScrollSpyScroll = useCallback(
+		(direction) => {
+			try {
+				const nextSection = getNextSection(direction);
+				if (!nextSection) {
+					return;
+				}
 
-			if (nextSection.id === activeSection) {
-				return;
-			}
+				if (nextSection.id === activeSection) {
+					return;
+				}
 
-			// Add haptic feedback if available
-			if (navigator.vibrate) {
-				navigator.vibrate(50);
-			}
+				// Add haptic feedback if available
+				if (navigator.vibrate) {
+					navigator.vibrate(50);
+				}
 
-			scrollToSection(nextSection.id);
-		} catch (error) {
-			console.error("Navigation error:", error);
-			setScrollSpyError("Navigation failed");
-		}
-	};
+				scrollToSection(nextSection.id);
+			} catch (error) {
+				console.error("Navigation error:", error);
+				setScrollSpyError("Navigation failed");
+			}
+		},
+		[getNextSection, activeSection, setScrollSpyError]
+	);
 
 	// Enhanced section navigation with validation and error handling
-	const scrollToSection = (sectionId, options = {}) => {
-		try {
-			// Validate section exists
-			if (!validateSection(sectionId)) {
-				console.warn(`Invalid section: ${sectionId}`);
-				setScrollSpyError(`Section "${sectionId}" not found`);
+	const scrollToSection = useCallback(
+		(sectionId, options = {}) => {
+			try {
+				// Validate section exists
+				if (!validateSection(sectionId)) {
+					console.warn(`Invalid section: ${sectionId}`);
+					setScrollSpyError(`Section "${sectionId}" not found`);
+					return false;
+				}
+
+				const ref = sectionRefs[sectionId];
+				const element = ref.current;
+
+				// Enhanced scroll behavior
+				const scrollOptions = {
+					behavior: options.smooth !== false ? "smooth" : "auto",
+					block: options.block || "start",
+					inline: "nearest",
+					...options,
+				};
+
+				console.log(`📍 Scrolling to section: ${sectionId}`, scrollOptions);
+
+				// Perform scroll
+				element.scrollIntoView(scrollOptions);
+
+				// Update active section immediately for responsive UI
+				if (sectionId !== activeSection) {
+					setActiveSection(sectionId);
+				}
+
+				// Close mobile nav
+				setShowMobileNav(false);
+
+				// Clear any existing error
+				setScrollSpyError(null);
+
+				return true;
+			} catch (error) {
+				console.error(`Failed to scroll to section ${sectionId}:`, error);
+				setScrollSpyError(`Failed to navigate to ${sectionId}`);
 				return false;
 			}
-
-			const ref = sectionRefs[sectionId];
-			const element = ref.current;
-
-			// Enhanced scroll behavior
-			const scrollOptions = {
-				behavior: options.smooth !== false ? "smooth" : "auto",
-				block: options.block || "start",
-				inline: "nearest",
-				...options,
-			};
-
-			console.log(`📍 Scrolling to section: ${sectionId}`, scrollOptions);
-
-			// Perform scroll
-			element.scrollIntoView(scrollOptions);
-
-			// Update active section immediately for responsive UI
-			if (sectionId !== activeSection) {
-				setActiveSection(sectionId);
-			}
-
-			// Close mobile nav
-			setShowMobileNav(false);
-
-			// Clear any existing error
-			setScrollSpyError(null);
-
-			return true;
-		} catch (error) {
-			console.error(`Failed to scroll to section ${sectionId}:`, error);
-			setScrollSpyError(`Failed to navigate to ${sectionId}`);
-			return false;
-		}
-	};
+		},
+		[validateSection, sectionRefs, activeSection, setActiveSection, setShowMobileNav, setScrollSpyError]
+	);
 
 	// Submit review
 	const handleSubmitReview = () => {

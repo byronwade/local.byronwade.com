@@ -198,12 +198,14 @@ const SearchBarOnly = () => {
 			// Add to recent searches
 			addRecentSearch(validatedData.searchQuery);
 
-			// Simulate search
-			setTimeout(() => {
-				setLoading(false);
-				setAutocompleteOpen(false);
-				setActiveDropdown(null);
-			}, 1000);
+			// Navigate to search results
+			const queryString = new URLSearchParams({
+				q: validatedData.searchQuery,
+				location: location.value || "",
+			}).toString();
+
+			// Navigate to search page
+			window.location.href = `/search?${queryString}`;
 		} catch (error) {
 			if (error instanceof z.ZodError) {
 				const fieldErrors = {};
@@ -212,6 +214,7 @@ const SearchBarOnly = () => {
 				});
 				setErrors(fieldErrors);
 			}
+			setLoading(false);
 		}
 	};
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Button } from "@components/ui/button";
 import { Badge } from "@components/ui/badge";
 import { Card, CardContent } from "@components/ui/card";
@@ -9,16 +9,19 @@ const EnhancedBusinessHeader = ({ businesses = [], activeBusinessId, onFilterCli
 	const [personalizedSuggestions, setPersonalizedSuggestions] = useState([]);
 
 	// Calculate business insights
-	const insights = {
-		total: businesses.length,
-		openNow: businesses.filter((b) => b.isOpenNow).length,
-		verified: businesses.filter((b) => b.isVerified).length,
-		freeQuotes: businesses.filter((b) => b.offers_free_consultation).length,
-		highRated: businesses.filter((b) => b.ratings?.overall >= 4.5).length,
-		sameDayService: businesses.filter((b) => b.same_day_service).length,
-		insured: businesses.filter((b) => b.isInsured).length,
-		avgRating: businesses.reduce((sum, b) => sum + (b.ratings?.overall || 0), 0) / businesses.length,
-	};
+	const insights = useMemo(
+		() => ({
+			total: businesses.length,
+			openNow: businesses.filter((b) => b.isOpenNow).length,
+			verified: businesses.filter((b) => b.isVerified).length,
+			freeQuotes: businesses.filter((b) => b.offers_free_consultation).length,
+			highRated: businesses.filter((b) => b.ratings?.overall >= 4.5).length,
+			sameDayService: businesses.filter((b) => b.same_day_service).length,
+			insured: businesses.filter((b) => b.isInsured).length,
+			avgRating: businesses.reduce((sum, b) => sum + (b.ratings?.overall || 0), 0) / businesses.length,
+		}),
+		[businesses]
+	);
 
 	// Generate smart filter suggestions based on search context
 	useEffect(() => {
@@ -61,7 +64,7 @@ const EnhancedBusinessHeader = ({ businesses = [], activeBusinessId, onFilterCli
 		}
 
 		setPersonalizedSuggestions(suggestions.slice(0, 3));
-	}, [businesses]);
+	}, [insights.openNow, insights.freeQuotes, insights.total, insights.highRated, insights.sameDayService]);
 
 	const getSearchContext = () => {
 		if (!searchQuery) return null;

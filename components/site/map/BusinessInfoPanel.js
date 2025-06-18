@@ -33,7 +33,7 @@ const BusinessInfoPanel = () => {
 		} else {
 			console.log("BusinessInfoPanel - No business to show, panel hidden");
 		}
-	}, [activeBusinessId, business?.name, filteredBusinesses.length]);
+	}, [activeBusinessId, business, filteredBusinesses]);
 
 	const allImages = [business?.image || "https://picsum.photos/400/300", "https://picsum.photos/400/301", "https://picsum.photos/400/302", "https://picsum.photos/400/303"];
 
@@ -45,7 +45,7 @@ const BusinessInfoPanel = () => {
 				centerOn(lat, lng);
 			}
 		}
-	}, [business, filteredBusinesses, centerOn]);
+	}, [business?.coordinates, centerOn]);
 
 	const handlePrev = () => {
 		if (businessIndex > 0) {

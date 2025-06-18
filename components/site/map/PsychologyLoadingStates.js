@@ -22,7 +22,7 @@ const SmartLoadingCard = ({ message, progress = 0, stage = "searching" }) => {
 			setCurrentTip((prev) => (prev + 1) % loadingTips.length);
 		}, 2500);
 		return () => clearInterval(tipInterval);
-	}, []);
+	}, [loadingTips.length]);
 
 	const stageConfig = {
 		searching: {
