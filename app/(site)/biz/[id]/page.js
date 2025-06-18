@@ -962,7 +962,7 @@ export default function BizProfile({ params }) {
 		<div className="min-h-screen bg-background">
 			{/* Header */}
 			<header className={`sticky top-0 z-40 border-b bg-background/95 backdrop-blur-md border-border transition-all duration-300 ease-out ${showHeaderSection ? "lg:block" : "block"}`}>
-				<div className="px-3 mx-auto max-w-7xl sm:px-4 lg:px-8">
+				<div className="px-4 mx-auto max-w-7xl lg:px-24">
 					{/* Desktop Header - Always Visible */}
 					<div className={`${showHeaderSection ? "hidden lg:flex" : "flex"} items-center justify-between h-14 sm:h-16 transition-all duration-300 ease-out`}>
 						<div className="flex items-center space-x-2 sm:space-x-4">
@@ -1066,9 +1066,9 @@ export default function BizProfile({ params }) {
 									</h4>
 									<div className="text-xs text-foreground">
 										{business.isOpenNow && (
-											<div className="flex items-center space-x-1 mb-1">
+											<div className="flex items-center mb-1 space-x-1">
 												<div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
-												<span className="text-green-600 font-medium">Open</span>
+												<span className="font-medium text-green-600">Open</span>
 											</div>
 										)}
 										<div className="text-muted-foreground">{business?.hours || "Hours not available"}</div>
@@ -1121,25 +1121,25 @@ export default function BizProfile({ params }) {
 			</header>
 
 			{/* Main Content */}
-			<div className="px-3 py-4 mx-auto max-w-7xl sm:px-4 sm:py-6 lg:px-8 lg:py-8">
+			<div className="px-4 py-6 mx-auto max-w-7xl lg:px-24 sm:py-8 lg:py-12">
 				{/* Main Content - Full Width */}
-				<div className="space-y-6 sm:space-y-8">
+				<div className="space-y-8 sm:space-y-12 lg:space-y-16">
 					{/* Minimalistic Business Header */}
 					<div className="space-y-6">
 						{/* Business Name & Basic Info */}
-						<div className="space-y-4">
+						<div className="space-y-6">
 							<div className="flex items-start justify-between">
-								<div className="space-y-3 flex-1">
-									<h1 className="text-3xl font-bold text-foreground sm:text-4xl lg:text-5xl">{business.name}</h1>
+								<div className="flex-1 min-w-0 space-y-4">
+									<h1 className="text-3xl font-bold leading-tight break-words text-foreground sm:text-4xl md:text-5xl lg:text-6xl">{business.name}</h1>
 									<div className="flex items-center space-x-2 text-muted-foreground">
-										<span className="text-lg">{business.type}</span>
+										<span className="text-base sm:text-lg">{business.type}</span>
 										<span>•</span>
-										<MapPin className="w-4 h-4" />
-										<span>{business.serviceArea.primary}</span>
+										<MapPin className="flex-shrink-0 w-4 h-4" />
+										<span className="break-words">{business.serviceArea.primary}</span>
 									</div>
 								</div>
 								{business.verified && (
-									<div className="flex items-center px-3 py-1.5 space-x-2 rounded-full bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-950/20 dark:text-blue-400 dark:border-blue-800/50">
+									<div className="flex items-center flex-shrink-0 px-3 py-2 space-x-2 border rounded-full bg-primary/10 text-primary border-primary/20">
 										<Shield className="w-4 h-4" />
 										<span className="text-sm font-medium">Verified</span>
 									</div>
@@ -1147,27 +1147,27 @@ export default function BizProfile({ params }) {
 							</div>
 
 							{/* Rating & Status Row */}
-							<div className="flex items-center justify-between">
-								<div className="flex items-center space-x-6">
-									<div className="flex items-center space-x-2">
+							<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+								<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:space-x-6">
+									<div className="flex items-center space-x-3">
 										<div className="flex items-center space-x-1">
 											{[...Array(5)].map((_, i) => (
 												<Star key={i} className={`w-5 h-5 ${i < Math.floor(business.rating) ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground"}`} />
 											))}
 										</div>
-										<span className="text-lg font-semibold">{business.rating}</span>
-										<span className="text-muted-foreground">({business.reviewCount})</span>
+										<span className="text-lg font-semibold text-foreground">{business.rating}</span>
+										<span className="text-muted-foreground">({business.reviewCount} reviews)</span>
 									</div>
-									<div className={`flex items-center px-2 py-1 space-x-1.5 text-sm rounded-lg ${business.status === "Open" ? "bg-green-50 text-green-700 dark:bg-green-950/20 dark:text-green-400" : "bg-red-50 text-red-700 dark:bg-red-950/20 dark:text-red-400"}`}>
+									<div className={`flex items-center px-3 py-2 space-x-2 text-sm rounded-lg font-medium ${business.status === "Open" ? "bg-green-500/10 text-green-600 border border-green-500/20" : "bg-red-500/10 text-red-600 border border-red-500/20"}`}>
 										<div className={`w-2 h-2 rounded-full ${business.status === "Open" ? "bg-green-500" : "bg-red-500"}`} />
-										<span className="font-medium">{business.status}</span>
+										<span>{business.status}</span>
 									</div>
 								</div>
 								<div className="flex items-center space-x-2">
-									<Button variant="ghost" size="sm">
+									<Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground hover:bg-muted">
 										<Share className="w-4 h-4" />
 									</Button>
-									<Button variant="ghost" size="sm">
+									<Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground hover:bg-muted">
 										<Heart className="w-4 h-4" />
 									</Button>
 								</div>
@@ -1175,60 +1175,62 @@ export default function BizProfile({ params }) {
 						</div>
 
 						{/* Essential Info Grid */}
-						<div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+						<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
 							{/* Contact */}
 							<div className="space-y-4">
 								<div className="space-y-3">
-									<Button className="w-full h-12 text-base font-semibold">
+									<Button className="w-full h-12 text-base font-semibold bg-primary hover:bg-primary/90 text-primary-foreground">
 										<Phone className="w-5 h-5 mr-2" />
 										{business.phone}
 									</Button>
 									<div className="grid grid-cols-2 gap-2">
-										<Button variant="outline" className="h-10">
+										<Button variant="outline" className="h-10 border-border hover:bg-muted text-foreground">
 											<MapPin className="w-4 h-4 mr-2" />
 											Directions
 										</Button>
-										<Button variant="outline" className="h-10">
+										<Button variant="outline" className="h-10 border-border hover:bg-muted text-foreground">
 											<Globe className="w-4 h-4 mr-2" />
 											Website
 										</Button>
 									</div>
 								</div>
-								<div className="text-sm text-muted-foreground">
-									<div className="flex items-start space-x-2">
+								<div className="p-3 border rounded-lg bg-muted/30 border-border">
+									<div className="flex items-start space-x-2 text-sm text-muted-foreground">
 										<MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
-										<span>{business.address}</span>
+										<span className="break-words">{business.address}</span>
 									</div>
 								</div>
 							</div>
 
 							{/* Hours */}
 							<div className="space-y-4">
-								<h3 className="font-semibold">Hours</h3>
-								<div className="space-y-2 text-sm">
-									{business.isOpenNow && (
-										<div className="flex items-center space-x-2 mb-2">
-											<div className="w-2 h-2 bg-green-500 rounded-full"></div>
-											<span className="text-green-600 font-medium text-sm">Open Now</span>
-										</div>
-									)}
-									<div className="text-foreground">{business.hours || "Hours not available"}</div>
+								<h3 className="font-semibold text-foreground">Hours</h3>
+								<div className="p-3 border rounded-lg bg-muted/30 border-border">
+									<div className="space-y-3">
+										{business.isOpenNow && (
+											<div className="flex items-center space-x-2">
+												<div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+												<span className="text-sm font-medium text-green-600">Open Now</span>
+											</div>
+										)}
+										<div className="text-sm text-foreground">{business.hours || "Hours not available"}</div>
+									</div>
 								</div>
 							</div>
 
 							{/* Quick Actions */}
 							<div className="space-y-4">
-								<h3 className="font-semibold">Quick Actions</h3>
-								<div className="space-y-2">
-									<Button variant="outline" className="w-full justify-start h-10" onClick={() => setShowReviewModal(true)}>
+								<h3 className="font-semibold text-foreground">Quick Actions</h3>
+								<div className="space-y-3">
+									<Button variant="outline" className="justify-start w-full h-10 border-border hover:bg-muted text-foreground" onClick={() => setShowReviewModal(true)}>
 										<Edit className="w-4 h-4 mr-2" />
 										Write Review
 									</Button>
-									<Button variant="outline" className="w-full justify-start h-10" onClick={() => scrollToSection("reviews")}>
+									<Button variant="outline" className="justify-start w-full h-10 border-border hover:bg-muted text-foreground" onClick={() => scrollToSection("reviews")}>
 										<Star className="w-4 h-4 mr-2" />
 										View Reviews
 									</Button>
-									<Button variant="outline" className="w-full justify-start h-10" onClick={() => scrollToSection("services")}>
+									<Button variant="outline" className="justify-start w-full h-10 border-border hover:bg-muted text-foreground" onClick={() => scrollToSection("services")}>
 										<Settings className="w-4 h-4 mr-2" />
 										Services
 									</Button>
@@ -1238,16 +1240,16 @@ export default function BizProfile({ params }) {
 					</div>
 
 					{/* Left Column - Main Content */}
-					<div className="space-y-6 sm:space-y-8 lg:col-span-2">
+					<div className="space-y-8 sm:space-y-12 lg:space-y-16">
 						{/* Photo Gallery - Airbnb Style */}
-						<div className="space-y-3 sm:space-y-4">
+						<div className="space-y-4 sm:space-y-6">
 							<div className="flex items-center justify-between">
-								<h2 className="text-lg font-semibold sm:text-xl md:text-2xl text-foreground">Photos</h2>
-								<div className="flex items-center space-x-1.5 text-xs sm:space-x-2 sm:text-sm text-muted-foreground">
-									<Camera className="w-3 h-3 sm:w-4 sm:h-4" />
+								<h2 className="text-xl font-semibold sm:text-2xl md:text-3xl text-foreground">Photos</h2>
+								<div className="flex items-center space-x-2 text-sm text-muted-foreground">
+									<Camera className="w-4 h-4" />
 									<span>{allImages.length} photos</span>
 									<span>•</span>
-									<span className="text-primary">Professional</span>
+									<span className="font-medium text-primary">Professional</span>
 								</div>
 							</div>
 
@@ -1320,32 +1322,32 @@ export default function BizProfile({ params }) {
 							</div>
 
 							{/* Show all photos button */}
-							<Button variant="outline" className="w-full border-border hover:bg-muted" onClick={() => setShowAllPhotos(true)}>
+							<Button variant="outline" className="w-full transition-all duration-200 border-border hover:bg-muted text-foreground" onClick={() => setShowAllPhotos(true)}>
 								<Camera className="w-4 h-4 mr-2" />
 								Show all {allImages.length} photos
 							</Button>
 						</div>
 
 						{/* Main Content Sections */}
-						<div className="space-y-20 sm:space-y-24 md:space-y-32 lg:space-y-40">
+						<div className="space-y-16 sm:space-y-20 md:space-y-24 lg:space-y-32">
 							{/* 1. BUSINESS OVERVIEW SECTION - First Impression */}
 							<section ref={sectionRefs.overview} className="scroll-mt-20 sm:scroll-mt-24 lg:scroll-mt-32">
-								<div className="mb-6 sm:mb-8 md:mb-12">
-									<h2 className="flex items-center mb-3 text-2xl font-bold sm:text-3xl md:text-4xl text-foreground">
+								<div className="mb-8 sm:mb-10 md:mb-12">
+									<h2 className="flex items-center mb-4 text-2xl font-bold sm:text-3xl md:text-4xl text-foreground">
 										<Building className="w-6 h-6 mr-3 sm:w-8 sm:h-8 sm:mr-4 text-primary" />
 										Business Overview
 									</h2>
 									<div className="w-20 h-1 rounded-full sm:w-24 sm:h-1.5 bg-gradient-to-r from-primary to-primary/50"></div>
 								</div>
 
-								<div className="space-y-6 sm:space-y-8">
+								<div className="space-y-8 sm:space-y-10">
 									{/* AI Insights */}
-									<div className="p-6 border bg-card/50 backdrop-blur-sm border-border rounded-xl sm:p-8">
+									<div className="p-6 transition-shadow duration-200 border shadow-sm bg-card/50 backdrop-blur-sm border-border rounded-xl sm:p-8 hover:shadow-md">
 										<div className="flex items-start space-x-4">
-											<div className="flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-primary/10">
-												<Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+											<div className="flex items-center justify-center flex-shrink-0 w-10 h-10 border rounded-full bg-primary/10 border-primary/20">
+												<Sparkles className="w-5 h-5 text-primary" />
 											</div>
-											<div className="space-y-2 sm:space-y-3">
+											<div className="space-y-3">
 												<h3 className="text-lg font-semibold sm:text-xl text-foreground">AI Insights</h3>
 												<p className="text-sm leading-relaxed sm:text-base text-muted-foreground">This business has consistently high ratings for quality work and customer service. Customers frequently mention their professionalism, reliability, and quick response times for emergency services.</p>
 											</div>
@@ -1353,12 +1355,12 @@ export default function BizProfile({ params }) {
 									</div>
 
 									{/* Business Highlights */}
-									<div className="space-y-4 sm:space-y-6">
+									<div className="space-y-6">
 										<h3 className="text-xl font-semibold sm:text-2xl text-foreground">Business Highlights</h3>
-										<div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 md:grid-cols-3">
+										<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
 											{business.businessHighlights.map((highlight, index) => (
-												<div key={index} className="flex items-start p-4 space-x-3 border rounded-lg bg-card/30 border-border sm:p-5">
-													<CheckCircle className="flex-shrink-0 w-4 h-4 mt-0.5 sm:w-5 sm:h-5 sm:mt-0 text-green-400" />
+												<div key={index} className="flex items-start p-4 space-x-3 transition-colors duration-200 border rounded-lg bg-card/30 border-border hover:bg-card/50">
+													<CheckCircle className="flex-shrink-0 w-5 h-5 mt-0.5 text-green-500" />
 													<span className="text-sm leading-relaxed break-words sm:text-base text-foreground">{highlight}</span>
 												</div>
 											))}
@@ -1369,33 +1371,33 @@ export default function BizProfile({ params }) {
 
 							{/* 2. THORBIS CERTIFIED ELITE STATUS - Trust Validation */}
 							<section ref={sectionRefs.certification} className="scroll-mt-20 sm:scroll-mt-24 lg:scroll-mt-32">
-								<div className="mb-6 sm:mb-8 md:mb-12">
-									<h2 className="flex items-center mb-3 text-2xl font-bold sm:text-3xl md:text-4xl text-foreground">
+								<div className="mb-8 sm:mb-10 md:mb-12">
+									<h2 className="flex items-center mb-4 text-2xl font-bold sm:text-3xl md:text-4xl text-foreground">
 										<Award className="w-6 h-6 mr-3 sm:w-8 sm:h-8 sm:mr-4 text-primary" />
 										Thorbis Certified Elite Business
 									</h2>
 									<div className="w-20 h-1 rounded-full sm:w-24 sm:h-1.5 bg-gradient-to-r from-primary to-primary/50"></div>
 								</div>
 
-								<div className="space-y-6 sm:space-y-8">
+								<div className="space-y-8 sm:space-y-10">
 									{/* Elite Status Hero */}
-									<div className="p-6 border bg-gradient-to-r from-amber-50 via-yellow-50 to-orange-50 dark:from-amber-950/20 dark:via-yellow-950/20 dark:to-orange-950/20 rounded-xl border-amber-200/50 sm:p-8">
-										<div className="flex items-start space-x-4">
-											<div className="flex items-center justify-center flex-shrink-0 w-16 h-16 rounded-full shadow-lg bg-gradient-to-br from-amber-400 to-orange-500">
+									<div className="p-6 transition-shadow duration-300 border shadow-lg bg-gradient-to-r from-amber-50/80 via-yellow-50/80 to-orange-50/80 dark:from-amber-950/30 dark:via-yellow-950/30 dark:to-orange-950/30 rounded-xl border-amber-200/60 dark:border-amber-800/40 sm:p-8 hover:shadow-xl">
+										<div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4 sm:items-start">
+											<div className="flex items-center justify-center flex-shrink-0 w-16 h-16 mx-auto rounded-full shadow-lg sm:mx-0 bg-gradient-to-br from-amber-400 to-orange-500">
 												<Award className="w-8 h-8 text-white" />
 											</div>
-											<div className="space-y-4">
+											<div className="space-y-4 text-center sm:text-left">
 												<div>
-													<div className="flex items-center gap-3 mb-2">
+													<div className="flex flex-col items-center gap-3 mb-3 sm:flex-row sm:mb-2">
 														<h3 className="text-xl font-bold sm:text-2xl text-foreground">Elite Business Recognition</h3>
-														<Badge className="text-amber-800 bg-amber-100 border-amber-300">🏆 1 in 125,000</Badge>
+														<Badge className="text-amber-800 bg-amber-100/80 border-amber-300/60 dark:text-amber-200 dark:bg-amber-900/50 dark:border-amber-700/50">🏆 1 in 125,000</Badge>
 													</div>
 													<p className="text-sm leading-relaxed sm:text-base text-muted-foreground">
-														This business has achieved Thorbis Certified status - an elite recognition earned by fewer than <strong>1 in 125,000 businesses</strong>. Like a Michelin star for service excellence, this certification represents the highest standards of quality, reliability, and expertise in the industry.
+														This business has achieved Thorbis Certified status - an elite recognition earned by fewer than <strong className="text-foreground">1 in 125,000 businesses</strong>. Like a Michelin star for service excellence, this certification represents the highest standards of quality, reliability, and expertise in the industry.
 													</p>
 												</div>
-												<div className="flex items-center gap-2 p-3 rounded-lg bg-amber-100/50 dark:bg-amber-950/30">
-													<Shield className="w-5 h-5 text-amber-600" />
+												<div className="flex items-center justify-center gap-2 p-3 border rounded-lg sm:justify-start bg-amber-100/60 dark:bg-amber-950/40 border-amber-200/50 dark:border-amber-800/50">
+													<Shield className="w-5 h-5 text-amber-600 dark:text-amber-400" />
 													<span className="text-sm font-medium text-amber-800 dark:text-amber-200">Protected by Thorbis Performance Guarantee</span>
 												</div>
 											</div>
@@ -1403,32 +1405,32 @@ export default function BizProfile({ params }) {
 									</div>
 
 									{/* Exclusivity Stats */}
-									<div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-										<div className="p-6 text-center border bg-gradient-to-br from-red-50 to-pink-50 dark:from-red-950/20 dark:to-pink-950/20 rounded-xl border-red-200/50">
-											<div className="flex items-center justify-center w-12 h-12 mx-auto mb-3 bg-red-500 rounded-full">
+									<div className="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
+										<div className="p-6 text-center transition-shadow duration-200 border shadow-sm bg-gradient-to-br from-red-50/80 to-pink-50/80 dark:from-red-950/30 dark:to-pink-950/30 rounded-xl border-red-200/60 dark:border-red-800/40 hover:shadow-md">
+											<div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-500 rounded-full shadow-md">
 												<TrendingUp className="w-6 h-6 text-white" />
 											</div>
-											<div className="text-3xl font-bold text-red-600">0.0008%</div>
-											<div className="text-sm text-muted-foreground">Business Acceptance Rate</div>
-											<div className="mt-2 text-xs text-red-600">Rarer than Harvard admission</div>
+											<div className="text-2xl font-bold text-red-600 sm:text-3xl dark:text-red-400">0.0008%</div>
+											<div className="text-sm font-medium text-muted-foreground">Business Acceptance Rate</div>
+											<div className="mt-2 text-xs font-medium text-red-600 dark:text-red-400">Rarer than Harvard admission</div>
 										</div>
 
-										<div className="p-6 text-center border bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950/20 dark:to-cyan-950/20 rounded-xl border-blue-200/50">
-											<div className="flex items-center justify-center w-12 h-12 mx-auto mb-3 bg-blue-500 rounded-full">
+										<div className="p-6 text-center transition-shadow duration-200 border shadow-sm bg-gradient-to-br from-blue-50/80 to-cyan-50/80 dark:from-blue-950/30 dark:to-cyan-950/30 rounded-xl border-blue-200/60 dark:border-blue-800/40 hover:shadow-md">
+											<div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-blue-500 rounded-full shadow-md">
 												<Clock className="w-6 h-6 text-white" />
 											</div>
-											<div className="text-3xl font-bold text-blue-600">6-9</div>
-											<div className="text-sm text-muted-foreground">Month Vetting Process</div>
-											<div className="mt-2 text-xs text-blue-600">Rigorous evaluation period</div>
+											<div className="text-2xl font-bold text-blue-600 sm:text-3xl dark:text-blue-400">6-9</div>
+											<div className="text-sm font-medium text-muted-foreground">Month Vetting Process</div>
+											<div className="mt-2 text-xs font-medium text-blue-600 dark:text-blue-400">Rigorous evaluation period</div>
 										</div>
 
-										<div className="p-6 text-center border bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 rounded-xl border-green-200/50">
-											<div className="flex items-center justify-center w-12 h-12 mx-auto mb-3 bg-green-500 rounded-full">
+										<div className="p-6 text-center transition-shadow duration-200 border shadow-sm bg-gradient-to-br from-green-50/80 to-emerald-50/80 dark:from-green-950/30 dark:to-emerald-950/30 rounded-xl border-green-200/60 dark:border-green-800/40 hover:shadow-md sm:col-span-2 lg:col-span-1">
+											<div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-green-500 rounded-full shadow-md">
 												<Users className="w-6 h-6 text-white" />
 											</div>
-											<div className="text-3xl font-bold text-green-600">400+</div>
-											<div className="text-sm text-muted-foreground">Customer Interviews</div>
-											<div className="mt-2 text-xs text-green-600">Independent verification</div>
+											<div className="text-2xl font-bold text-green-600 sm:text-3xl dark:text-green-400">400+</div>
+											<div className="text-sm font-medium text-muted-foreground">Customer Interviews</div>
+											<div className="mt-2 text-xs font-medium text-green-600 dark:text-green-400">Independent verification</div>
 										</div>
 									</div>
 
