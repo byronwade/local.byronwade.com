@@ -268,7 +268,7 @@ export default function ExploreBusinessPage() {
 									</div>
 								</div>
 							</div>
-							<p className="mb-4 italic text-foreground">"{story.quote}"</p>
+							<p className="mb-4 italic text-foreground">&ldquo;{story.quote}&rdquo;</p>
 							<div className="pt-4 border-t border-border">
 								<Badge className="text-green-700 bg-green-100 border-green-200">{story.growth}</Badge>
 							</div>

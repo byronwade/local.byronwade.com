@@ -246,7 +246,7 @@ export default function LocalHubPage() {
 									</div>
 								</CardHeader>
 								<CardContent className="space-y-4">
-									<p className="text-foreground italic">"{testimonial.content}"</p>
+									<p className="text-foreground italic">&ldquo;{testimonial.content}&rdquo;</p>
 									<div>
 										<div className="font-semibold text-foreground">{testimonial.name}</div>
 										<div className="text-sm text-muted-foreground">{testimonial.role}</div>

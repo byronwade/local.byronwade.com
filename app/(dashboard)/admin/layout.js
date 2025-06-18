@@ -2,8 +2,8 @@
 import Image from "next/image";
 import { useEffect } from "react";
 import Header from "@components/admin/header";
-import { AppSidebar } from "components/admin/app-sidebar";
-import { SidebarProvider, SidebarInset, SidebarTrigger } from "components/ui/sidebar";
+import { AppSidebar } from "@components/admin/app-sidebar";
+import { SidebarProvider, SidebarInset, SidebarTrigger } from "@components/ui/sidebar";
 import { redirect } from "next/navigation";
 import useAuthStore from "@store/useAuthStore";
 
