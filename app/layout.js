@@ -1,4 +1,4 @@
-import "../styles/globals.css";
+import "./globals.css";
 import { Inter as FontSans } from "next/font/google";
 import { ThemeProvider } from "@context/ThemeContext";
 import { Toaster } from "@components/ui/toaster";

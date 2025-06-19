@@ -63,7 +63,7 @@ const dashboardItems = [
 export default function Dashboard() {
 	const { user } = useAuthStore();
 	return (
-		<div className="w-full px-4 lg:px-24 py-16 space-y-8">
+		<div className="w-full px-4 py-16 space-y-8 lg:px-24">
 			<div className="flex items-center justify-between">
 				<h1 className="text-4xl">Hi {user?.user_metadata.first_name || "there"}!</h1>
 				<div className="flex items-center gap-x-3">

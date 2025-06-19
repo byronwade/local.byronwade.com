@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useMemo, useCallback, Suspense } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback, Suspense, use, lazy } from "react";
 import {
 	ArrowLeft,
 	Share,
@@ -60,13 +60,75 @@ import {
 	TrendingUp,
 	Calculator,
 	Quote,
+	Utensils,
+	Carrot,
+	Wine,
+	ChefHat,
+	Pizza,
+	IceCream,
+	Beer,
+	Fish,
+	Bread,
+	Apple,
+	BookOpen,
+	Cpu,
+	Music,
+	PawPrint,
 } from "lucide-react";
 import { Button } from "@components/ui/button";
 import { Badge } from "@components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 import { generateBusinesses, searchBusinessesByQuery } from "@lib/businessDataGenerator";
 
+// Lazy load section components for better performance
+const BusinessOverview = lazy(() => import("./sections/BusinessOverview"));
+const CertifiedElite = lazy(() => import("./sections/CertifiedElite"));
+const Reviews = lazy(() => import("./sections/Reviews"));
+const Credentials = lazy(() => import("./sections/Credentials"));
+const Availability = lazy(() => import("./sections/Availability"));
+const Services = lazy(() => import("./sections/Services"));
+const Expertise = lazy(() => import("./sections/Expertise"));
+const Pricing = lazy(() => import("./sections/Pricing"));
+const BusinessOperations = lazy(() => import("./sections/BusinessOperations"));
+const WarrantyTracker = lazy(() => import("./sections/WarrantyTracker"));
+const FAQ = lazy(() => import("./sections/FAQ"));
+const Careers = lazy(() => import("./sections/Careers"));
+const Partnerships = lazy(() => import("./sections/Partnerships"));
+
+// New industry-specific sections
+const MenuSection = lazy(() => import("./sections/MenuSection"));
+const AutomotiveServices = lazy(() => import("./sections/AutomotiveServices"));
+// TODO: Create these sections when needed
+// const HealthWellness = lazy(() => import("./sections/HealthWellness"));
+// const BeautySalon = lazy(() => import("./sections/BeautySalon"));
+// const RealEstate = lazy(() => import("./sections/RealEstate"));
+// const LegalServices = lazy(() => import("./sections/LegalServices"));
+// const EducationTraining = lazy(() => import("./sections/EducationTraining"));
+// const TechnologyIT = lazy(() => import("./sections/TechnologyIT"));
+// const FinancialServices = lazy(() => import("./sections/FinancialServices"));
+// const EntertainmentEvents = lazy(() => import("./sections/EntertainmentEvents"));
+// const PetServices = lazy(() => import("./sections/PetServices"));
+
+// Performance optimization: Memoized loading component
+const LoadingSpinner = () => (
+	<div className="flex items-center justify-center p-8">
+		<div className="w-8 h-8 border-b-2 rounded-full animate-spin border-primary"></div>
+	</div>
+);
+
+// Performance optimization: Memoized section wrapper
+const SectionWrapper = React.memo(({ children, ref }) => (
+	<div ref={ref} className="performance-container">
+		<Suspense fallback={<LoadingSpinner />}>{children}</Suspense>
+	</div>
+));
+
+SectionWrapper.displayName = "SectionWrapper";
+
 export default function BizProfile({ params }) {
+	// Unwrap params Promise using React.use()
+	const resolvedParams = use(params);
+
 	const [business, setBusiness] = useState(null);
 	const [showAllPhotos, setShowAllPhotos] = useState(false);
 	const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -150,6 +212,19 @@ export default function BizProfile({ params }) {
 			{ id: "faq", label: "FAQ & Support", icon: MessageCircle },
 			{ id: "careers", label: "Careers", icon: Users },
 			{ id: "partnerships", label: "Partnerships", icon: Handshake },
+			// Industry-specific sections (only include created ones)
+			{ id: "menu", label: "Menu", icon: Utensils, industry: "restaurant" },
+			{ id: "automotive", label: "Auto Services", icon: Car, industry: "automotive" },
+			// TODO: Add these when sections are created
+			// { id: "healthWellness", label: "Health & Wellness", icon: Heart, industry: "health" },
+			// { id: "beautySalon", label: "Beauty Services", icon: Sparkles, industry: "beauty" },
+			// { id: "realEstate", label: "Real Estate", icon: Home, industry: "realestate" },
+			// { id: "legalServices", label: "Legal Services", icon: Shield, industry: "legal" },
+			// { id: "educationTraining", label: "Education", icon: BookOpen, industry: "education" },
+			// { id: "technologyIT", label: "Technology", icon: Cpu, industry: "technology" },
+			// { id: "financialServices", label: "Financial", icon: DollarSign, industry: "financial" },
+			// { id: "entertainmentEvents", label: "Entertainment", icon: Music, industry: "entertainment" },
+			// { id: "petServices", label: "Pet Services", icon: PawPrint, industry: "pets" },
 		],
 		[]
 	);
@@ -169,6 +244,19 @@ export default function BizProfile({ params }) {
 	const faqRef = useRef(null);
 	const careersRef = useRef(null);
 	const partnershipsRef = useRef(null);
+	// New industry-specific refs (only include created ones)
+	const menuRef = useRef(null);
+	const automotiveRef = useRef(null);
+	// TODO: Add these when sections are created
+	// const healthWellnessRef = useRef(null);
+	// const beautySalonRef = useRef(null);
+	// const realEstateRef = useRef(null);
+	// const legalServicesRef = useRef(null);
+	// const educationTrainingRef = useRef(null);
+	// const technologyITRef = useRef(null);
+	// const financialServicesRef = useRef(null);
+	// const entertainmentEventsRef = useRef(null);
+	// const petServicesRef = useRef(null);
 
 	// Create refs object with useMemo to prevent recreation
 	const sectionRefs = useMemo(
@@ -187,6 +275,19 @@ export default function BizProfile({ params }) {
 			faq: faqRef,
 			careers: careersRef,
 			partnerships: partnershipsRef,
+			// New industry-specific refs (only include created ones)
+			menu: menuRef,
+			automotive: automotiveRef,
+			// TODO: Add these when sections are created
+			// healthWellness: healthWellnessRef,
+			// beautySalon: beautySalonRef,
+			// realEstate: realEstateRef,
+			// legalServices: legalServicesRef,
+			// educationTraining: educationTrainingRef,
+			// technologyIT: technologyITRef,
+			// financialServices: financialServicesRef,
+			// entertainmentEvents: entertainmentEventsRef,
+			// petServices: petServicesRef,
 		}),
 		[]
 	);
@@ -318,11 +419,11 @@ export default function BizProfile({ params }) {
 				let foundBusiness = null;
 
 				// Try to find by slug first
-				if (isNaN(params.id)) {
-					foundBusiness = businesses.find((b) => b.slug === params.id);
+				if (isNaN(resolvedParams.id)) {
+					foundBusiness = businesses.find((b) => b.slug === resolvedParams.id);
 				} else {
 					// Find by ID (ensure string comparison)
-					foundBusiness = businesses.find((b) => b.id === params.id.toString());
+					foundBusiness = businesses.find((b) => b.id === resolvedParams.id.toString());
 				}
 
 				// If not found, use the first business as fallback
@@ -333,6 +434,30 @@ export default function BizProfile({ params }) {
 				// Transform the business data to match our component expectations
 				const transformedBusiness = {
 					...foundBusiness,
+					// Add industry field for conditional section rendering
+					industry: foundBusiness.categories[0]?.toLowerCase().includes("restaurant")
+						? "restaurant"
+						: foundBusiness.categories[0]?.toLowerCase().includes("automotive")
+						? "automotive"
+						: foundBusiness.categories[0]?.toLowerCase().includes("health")
+						? "health"
+						: foundBusiness.categories[0]?.toLowerCase().includes("beauty")
+						? "beauty"
+						: foundBusiness.categories[0]?.toLowerCase().includes("real estate")
+						? "realestate"
+						: foundBusiness.categories[0]?.toLowerCase().includes("legal")
+						? "legal"
+						: foundBusiness.categories[0]?.toLowerCase().includes("education")
+						? "education"
+						: foundBusiness.categories[0]?.toLowerCase().includes("technology")
+						? "technology"
+						: foundBusiness.categories[0]?.toLowerCase().includes("financial")
+						? "financial"
+						: foundBusiness.categories[0]?.toLowerCase().includes("entertainment")
+						? "entertainment"
+						: foundBusiness.categories[0]?.toLowerCase().includes("pet")
+						? "pets"
+						: "general",
 					// Add missing fields that our component expects
 					trustScore: Math.floor(foundBusiness.ratings.overall * 20), // Convert 5-star to 100-point scale
 					responseRate: Math.floor(Math.random() * 10) + 90, // 90-100%
@@ -371,6 +496,57 @@ export default function BizProfile({ params }) {
 							claimHistory: [],
 						},
 					],
+					warrantyTracker: {
+						warranties: [
+							{
+								type: "Workmanship",
+								duration: "2 Years",
+								coverage: "Full coverage for defects",
+							},
+							{
+								type: "Materials",
+								duration: "1 Year",
+								coverage: "Manufacturer warranty",
+							},
+							{
+								type: "Labor",
+								duration: "90 Days",
+								coverage: "Free repairs",
+							},
+						],
+						activeWarranties: [
+							{
+								service: "Plumbing Repair",
+								description: "Kitchen sink installation and repair",
+								startDate: "2024-01-15",
+								expiryDate: "2026-01-15",
+								status: "Active",
+							},
+							{
+								service: "Electrical Work",
+								description: "Outlet installation and wiring",
+								startDate: "2024-02-20",
+								expiryDate: "2025-02-20",
+								status: "Active",
+							},
+						],
+						claims: [
+							{
+								title: "Leak Repair",
+								description: "Fixed bathroom sink leak under warranty",
+								filedDate: "2024-03-10",
+								resolvedDate: "2024-03-12",
+								status: "Resolved",
+							},
+							{
+								title: "Electrical Issue",
+								description: "Replaced faulty outlet connection",
+								filedDate: "2024-04-05",
+								resolvedDate: "2024-04-07",
+								status: "Resolved",
+							},
+						],
+					},
 					peerRecommendations: [
 						{
 							recommenderName: "Sarah Johnson",
@@ -465,6 +641,54 @@ export default function BizProfile({ params }) {
 							author: foundBusiness.name,
 							date: "1 week ago",
 							helpful: 8,
+						},
+					],
+					faq: [
+						{
+							question: "What areas do you serve?",
+							answer: `We serve ${foundBusiness.address.split(",").slice(-2).join(",").trim()} and surrounding areas.`,
+						},
+						{
+							question: "Are you licensed and insured?",
+							answer: "Yes, we are fully licensed and insured for your protection.",
+						},
+						{
+							question: "Do you offer emergency services?",
+							answer: "Yes, we provide 24/7 emergency services with rapid response times.",
+						},
+						{
+							question: "What is your typical response time?",
+							answer: "We typically respond within 2 hours for standard requests and within 30-60 minutes for emergencies.",
+						},
+						{
+							question: "Do you provide free estimates?",
+							answer: "Yes, we provide free, no-obligation estimates for all our services.",
+						},
+						{
+							question: "What payment methods do you accept?",
+							answer: "We accept cash, checks, credit cards, and digital payments including Apple Pay and Google Pay.",
+						},
+					],
+					supportInfo: [
+						{
+							title: "Customer Service",
+							description: "Our dedicated customer service team is available to assist you with any questions or concerns.",
+							contact: "Call us at " + (foundBusiness.phone || "(555) 123-4567"),
+						},
+						{
+							title: "Technical Support",
+							description: "For technical questions about our services or equipment, our experts are here to help.",
+							contact: "Email: support@" + foundBusiness.name.toLowerCase().replace(/\s+/g, "") + ".com",
+						},
+						{
+							title: "Emergency Support",
+							description: "24/7 emergency support for urgent situations requiring immediate attention.",
+							contact: "Emergency: " + (foundBusiness.phone || "(555) 123-4567"),
+						},
+						{
+							title: "Warranty Claims",
+							description: "For warranty claims and service guarantees, contact our warranty department.",
+							contact: "Warranty: warranty@" + foundBusiness.name.toLowerCase().replace(/\s+/g, "") + ".com",
 						},
 					],
 					pricing: {
@@ -606,8 +830,22 @@ export default function BizProfile({ params }) {
 							{ category: "Insurance & Bonding", importance: "Critical", description: "Full liability protection" },
 						],
 						whyQualityMatters: [
-							{ factor: "Licensed Professionals", impact: "Ensures work meets safety standards" },
-							{ factor: "Proper Insurance", impact: "Protects your property" },
+							{ title: "Licensed Professionals", description: "Ensures work meets safety standards" },
+							{ title: "Proper Insurance", description: "Protects your property" },
+							{ title: "Quality Equipment", description: "Delivers better results" },
+							{ title: "Professional Training", description: "Keeps up with industry standards" },
+						],
+						costBreakdown: [
+							{ category: "Labor & Expertise", percentage: "40%" },
+							{ category: "Materials & Equipment", percentage: "25%" },
+							{ category: "Insurance & Licensing", percentage: "15%" },
+							{ category: "Overhead & Administration", percentage: "20%" },
+						],
+						qualityAssurance: [
+							{ title: "Pre-Service Inspection", description: "Thorough assessment before work begins" },
+							{ title: "Quality Control Checks", description: "Multiple checkpoints during service" },
+							{ title: "Post-Service Verification", description: "Final inspection and customer approval" },
+							{ title: "Follow-up Support", description: "Ongoing support after service completion" },
 						],
 						industryInsights: {
 							commonCosts: "Professional businesses invest in staff, equipment, and training",
@@ -638,23 +876,9 @@ export default function BizProfile({ params }) {
 							description: "Active in local community initiatives",
 						},
 					],
-					faq: [
-						{
-							question: "What areas do you serve?",
-							answer: `We serve ${foundBusiness.address.split(",").slice(-2).join(",").trim()} and surrounding areas.`,
-						},
-						{
-							question: "Are you licensed and insured?",
-							answer: "Yes, we are fully licensed and insured for your protection.",
-						},
-					],
 					accessibility: ["Professional service approach", "Clear communication", "Flexible scheduling"],
 					careers: {
-						isHiring: Math.random() > 0.7, // More likely to be hiring
-						companySize: foundBusiness.employees || "1-5 employees",
-						culture: "We foster a collaborative and supportive work environment where team members can grow their careers while delivering exceptional service to our community.",
-						benefits: ["Health Insurance", "Paid Time Off", "401(k) Retirement Plan", "Professional Development", "Performance Bonuses", "Continuing Education Support"],
-						openPositions:
+						jobOpenings:
 							Math.random() > 0.7
 								? [
 										{
@@ -663,9 +887,8 @@ export default function BizProfile({ params }) {
 											experience: "2+ years",
 											salary: foundBusiness.categories[0] === "Professional Services" ? "$65,000 - $85,000" : foundBusiness.categories[0] === "Health & Medical" ? "$55,000 - $75,000" : foundBusiness.categories[0] === "Home Services" ? "$45,000 - $65,000" : "$35,000 - $50,000",
 											location: foundBusiness.address.split(",")[1]?.trim() || "Local",
-											posted: "1 week ago",
+											status: "Open",
 											description: "Join our growing team and help us deliver excellent service to our customers. We're looking for a motivated professional to contribute to our success.",
-											requirements: ["Valid professional license (if applicable)", "2+ years relevant experience", "Strong communication skills", "Reliable transportation", "Clean background check", "Customer service oriented"],
 										},
 										...(Math.random() > 0.8
 											? [
@@ -675,97 +898,94 @@ export default function BizProfile({ params }) {
 														experience: "Entry level",
 														salary: "$15 - $20/hour",
 														location: foundBusiness.address.split(",")[1]?.trim() || "Local",
-														posted: "3 days ago",
+														status: "Open",
 														description: "Support our team by providing excellent customer service and administrative assistance.",
-														requirements: ["High school diploma or equivalent", "Strong communication skills", "Basic computer skills", "Customer service experience preferred", "Flexible schedule availability"],
 													},
 											  ]
 											: []),
 								  ]
 								: [],
-						perks: ["Flexible Work Schedule", "Professional Development", "Team Building Activities", "Recognition Programs", "Employee Discounts", "Modern Work Environment"],
-						testimonials: [
+						culture: [
 							{
-								employee: "Maria Rodriguez",
-								tenure: "2 years",
-								quote: "Great place to work with supportive management and opportunities for growth. The team really cares about each other and our customers.",
+								title: "Collaborative Environment",
+								description: "We foster a collaborative and supportive work environment where team members can grow their careers while delivering exceptional service to our community.",
 							},
 							{
-								employee: "David Chen",
-								tenure: "3 years",
-								quote: "I've learned so much here and feel valued as an employee. The work-life balance is excellent and the benefits are competitive.",
+								title: "Professional Growth",
+								description: "Continuous learning and development opportunities to help you advance in your career.",
+							},
+							{
+								title: "Work-Life Balance",
+								description: "Flexible scheduling and understanding management that values your personal time.",
+							},
+							{
+								title: "Team Recognition",
+								description: "Regular recognition programs and team building activities to celebrate our successes together.",
 							},
 						],
+						benefits: ["Health Insurance", "Paid Time Off", "401(k) Retirement Plan", "Professional Development", "Performance Bonuses", "Continuing Education Support", "Flexible Work Schedule", "Employee Discounts", "Modern Work Environment"],
 					},
 					partnerships: {
-						supplierPartners: [
+						description: "We collaborate with trusted partners to deliver exceptional service and value to our customers.",
+						categories: [
 							{
-								name: foundBusiness.categories[0] === "Home Services" ? "Professional Supply Co" : foundBusiness.categories[0] === "Automotive" ? "Quality Auto Parts" : foundBusiness.categories[0] === "Restaurants" ? "Fresh Food Distributors" : "Industry Supply Group",
-								type: "Primary Supplier",
-								relationship: "Authorized Dealer",
-								logo: "https://via.placeholder.com/64x64?text=PS",
-								benefits: "Access to professional-grade materials and equipment at competitive prices, ensuring quality service delivery.",
+								name: "Supplier Partners",
+								partners: [
+									{
+										name: foundBusiness.categories[0] === "Home Services" ? "Professional Supply Co" : foundBusiness.categories[0] === "Automotive" ? "Quality Auto Parts" : foundBusiness.categories[0] === "Restaurants" ? "Fresh Food Distributors" : "Industry Supply Group",
+										description: "Authorized dealer providing professional-grade materials and equipment at competitive prices.",
+										website: "https://example.com",
+									},
+									{
+										name: foundBusiness.categories[0] === "Home Services" ? "Builder's Choice Materials" : foundBusiness.categories[0] === "Automotive" ? "Premium Parts Direct" : foundBusiness.categories[0] === "Restaurants" ? "Restaurant Equipment Co" : "Professional Tools & Equipment",
+										description: "Preferred partner for specialized equipment and tools to handle complex projects.",
+										website: "https://example.com",
+									},
+								],
 							},
 							{
-								name: foundBusiness.categories[0] === "Home Services" ? "Builder's Choice Materials" : foundBusiness.categories[0] === "Automotive" ? "Premium Parts Direct" : foundBusiness.categories[0] === "Restaurants" ? "Restaurant Equipment Co" : "Professional Tools & Equipment",
-								type: "Equipment Partner",
-								relationship: "Preferred Partner",
-								logo: "https://via.placeholder.com/64x64?text=BC",
-								benefits: "Specialized equipment and tools to handle complex projects with professional results.",
+								name: "Service Partners",
+								partners: [
+									{
+										name: foundBusiness.categories[0] === "Home Services" ? "Emergency Response Network" : foundBusiness.categories[0] === "Health & Medical" ? "Medical Billing Services" : foundBusiness.categories[0] === "Automotive" ? "Towing & Recovery Services" : "Professional Support Services",
+										description: "Strategic alliance providing extended service capabilities and emergency support.",
+									},
+									{
+										name: foundBusiness.categories[0] === "Restaurants" ? "Delivery Network Partners" : foundBusiness.categories[0] === "Beauty & Spas" ? "Wellness Services Network" : "Customer Service Enhancement",
+										description: "Enhanced customer experience through coordinated service delivery and shared best practices.",
+									},
+								],
+							},
+							{
+								name: "Community Partners",
+								partners: [
+									{
+										name: `${foundBusiness.address.split(",")[1]?.trim() || "Local"} Chamber of Commerce`,
+										description: "Active member supporting local economic development and community business initiatives.",
+									},
+									{
+										name: foundBusiness.categories[0] === "Home Services" ? "Habitat for Humanity" : foundBusiness.categories[0] === "Health & Medical" ? "Community Health Coalition" : foundBusiness.categories[0] === "Education" ? "Local School District" : "Community Development Fund",
+										description: "Contributing professional services and expertise to support community development and charitable initiatives.",
+									},
+								],
 							},
 						],
-						servicePartners: [
+						benefits: [
 							{
-								name: foundBusiness.categories[0] === "Home Services" ? "Emergency Response Network" : foundBusiness.categories[0] === "Health & Medical" ? "Medical Billing Services" : foundBusiness.categories[0] === "Automotive" ? "Towing & Recovery Services" : "Professional Support Services",
-								type: "Service Partner",
-								relationship: "Strategic Alliance",
-								description: "Collaborative partnership providing extended service capabilities and emergency support when needed.",
+								title: "Quality Assurance",
+								description: "Partner with industry leaders to ensure the highest quality materials and service standards.",
 							},
 							{
-								name: foundBusiness.categories[0] === "Restaurants" ? "Delivery Network Partners" : foundBusiness.categories[0] === "Beauty & Spas" ? "Wellness Services Network" : "Customer Service Enhancement",
-								type: "Customer Experience",
-								relationship: "Preferred Partner",
-								description: "Enhanced customer experience through coordinated service delivery and shared best practices.",
-							},
-						],
-						communityPartners: [
-							{
-								name: `${foundBusiness.address.split(",")[1]?.trim() || "Local"} Chamber of Commerce`,
-								type: "Business Organization",
-								involvement: "Active Member",
-								description: "Supporting local economic development and community business initiatives.",
+								title: "Extended Capabilities",
+								description: "Access to specialized resources and expertise through our network of trusted partners.",
 							},
 							{
-								name: foundBusiness.categories[0] === "Home Services" ? "Habitat for Humanity" : foundBusiness.categories[0] === "Health & Medical" ? "Community Health Coalition" : foundBusiness.categories[0] === "Education" ? "Local School District" : "Community Development Fund",
-								type: "Non-Profit Partnership",
-								involvement: "Volunteer Support",
-								description: "Contributing professional services and expertise to support community development and charitable initiatives.",
-							},
-						],
-						certifications: [
-							{
-								name: foundBusiness.categories[0] === "Home Services" ? "Better Business Bureau" : foundBusiness.categories[0] === "Automotive" ? "ASE Certified Shop" : foundBusiness.categories[0] === "Restaurants" ? "Food Safety Certified" : foundBusiness.categories[0] === "Health & Medical" ? "Healthcare Quality Alliance" : "Professional Association Member",
-								grade: foundBusiness.ratings.overall >= 4.5 ? "A+" : foundBusiness.ratings.overall >= 4.0 ? "A" : "B+",
-								year: "2024",
-								since: "2020",
-								achievement: foundBusiness.ratings.overall >= 4.5 ? "Excellence Award" : "Quality Recognition",
-								benefits: "Demonstrates commitment to industry standards, customer satisfaction, and professional excellence in service delivery.",
+								title: "Cost Efficiency",
+								description: "Competitive pricing and bulk purchasing benefits passed on to our customers.",
 							},
 							{
-								name: `${foundBusiness.address.split(",").slice(-1)[0]?.trim() || "State"} Licensed Professional`,
-								grade: "Certified",
-								year: "2023",
-								since: "2018",
-								achievement: "Licensed & Insured",
-								benefits: "Full professional licensing and insurance coverage providing customer protection and service quality assurance.",
-							},
-							{
-								name: "Customer Service Excellence",
-								grade: foundBusiness.reviewCount > 100 ? "Gold" : foundBusiness.reviewCount > 50 ? "Silver" : "Bronze",
-								year: "2024",
-								since: "2021",
-								achievement: `${foundBusiness.reviewCount}+ Customer Reviews`,
-								benefits: "Proven track record of customer satisfaction with consistently high ratings and positive feedback from our community.",
+								title: "Community Support",
+								description: "Active involvement in local community initiatives and charitable organizations.",
 							},
 						],
 					},
@@ -787,6 +1007,42 @@ export default function BizProfile({ params }) {
 						verified: foundBusiness.verified,
 						expires: "12/31/2025",
 					},
+					// Add menu data for restaurants
+					menu: foundBusiness.categories[0]?.toLowerCase().includes("restaurant")
+						? {
+								categories: [
+									{
+										name: "Appetizers",
+										items: [
+											{ name: "Bruschetta", description: "Fresh tomatoes, basil, and garlic on toasted bread", price: "$8.99", popular: true },
+											{ name: "Spinach Artichoke Dip", description: "Creamy dip served with tortilla chips", price: "$10.99" },
+											{ name: "Calamari", description: "Crispy fried squid with marinara sauce", price: "$12.99" },
+										],
+									},
+									{
+										name: "Main Courses",
+										items: [
+											{ name: "Grilled Salmon", description: "Fresh Atlantic salmon with seasonal vegetables", price: "$24.99", popular: true },
+											{ name: "Beef Tenderloin", description: "8oz tenderloin with garlic mashed potatoes", price: "$28.99" },
+											{ name: "Pasta Primavera", description: "Fresh vegetables in light cream sauce", price: "$18.99" },
+										],
+									},
+									{
+										name: "Desserts",
+										items: [
+											{ name: "Tiramisu", description: "Classic Italian dessert with coffee and mascarpone", price: "$8.99", popular: true },
+											{ name: "Chocolate Lava Cake", description: "Warm chocolate cake with vanilla ice cream", price: "$9.99" },
+										],
+									},
+								],
+								specials: [
+									{ name: "Chef's Special", description: "Daily creation featuring fresh local ingredients", price: "$22.99", available: "Today Only" },
+									{ name: "Happy Hour", description: "50% off appetizers and drinks", price: "4-6 PM Daily" },
+								],
+								dietaryOptions: ["Vegetarian", "Vegan", "Gluten-Free", "Dairy-Free"],
+								seasonalItems: [{ name: "Fall Harvest Salad", description: "Seasonal vegetables with maple vinaigrette", price: "$14.99", available: "Fall Only" }],
+						  }
+						: null,
 				};
 
 				setBusiness(transformedBusiness);
@@ -794,7 +1050,7 @@ export default function BizProfile({ params }) {
 				console.error("Error loading business data:", error);
 				// Fallback to a default business
 				setBusiness({
-					id: params.id,
+					id: resolvedParams.id,
 					name: "Local Business",
 					type: "Professional Services",
 					rating: 4.5,
@@ -805,7 +1061,7 @@ export default function BizProfile({ params }) {
 		};
 
 		loadBusinessData();
-	}, [params.id]);
+	}, [resolvedParams.id]);
 
 	// Enhanced keyboard navigation with scroll spy support
 	useEffect(() => {
@@ -1183,8 +1439,8 @@ export default function BizProfile({ params }) {
 	// Show loading state while business data is being generated
 	if (!business) {
 		return (
-			<div className="flex justify-center items-center min-h-screen bg-background">
-				<div className="w-12 h-12 rounded-full border-b-2 animate-spin border-primary"></div>
+			<div className="flex items-center justify-center min-h-screen bg-background">
+				<div className="w-12 h-12 border-b-2 rounded-full animate-spin border-primary"></div>
 			</div>
 		);
 	}
@@ -1197,26 +1453,26 @@ export default function BizProfile({ params }) {
 					{/* Desktop Header - Always Visible */}
 					<div className={`${showHeaderSection ? "hidden lg:flex" : "flex"} items-center justify-between h-14 sm:h-16 transition-all duration-300 ease-out`}>
 						<div className="flex items-center space-x-2 sm:space-x-4">
-							<Button variant="ghost" size="sm" className="px-2 h-8 text-muted-foreground hover:text-foreground sm:h-9 sm:px-3">
-								<ArrowLeft className="mr-1 w-4 h-4 sm:mr-2" />
+							<Button variant="ghost" size="sm" className="h-8 px-2 text-muted-foreground hover:text-foreground sm:h-9 sm:px-3">
+								<ArrowLeft className="w-4 h-4 mr-1 sm:mr-2" />
 								<span className="text-sm">Back</span>
 							</Button>
 
 							{/* Mobile Navigation Toggle */}
-							<Button variant="ghost" size="sm" className="px-2 h-8 lg:hidden text-muted-foreground hover:text-foreground sm:h-9 sm:px-3" onClick={() => setShowMobileNav(!showMobileNav)}>
-								<Menu className="mr-1 w-4 h-4 sm:mr-2" />
+							<Button variant="ghost" size="sm" className="h-8 px-2 lg:hidden text-muted-foreground hover:text-foreground sm:h-9 sm:px-3" onClick={() => setShowMobileNav(!showMobileNav)}>
+								<Menu className="w-4 h-4 mr-1 sm:mr-2" />
 								<span className="text-sm">Sections</span>
 							</Button>
 						</div>
 
 						{/* Header Actions */}
 						<div className="flex items-center space-x-1 sm:space-x-2">
-							<Button variant="ghost" size="sm" className="px-2 h-8 text-muted-foreground hover:text-foreground sm:h-9 sm:px-3">
-								<Share className="mr-1 w-4 h-4 sm:mr-2" />
+							<Button variant="ghost" size="sm" className="h-8 px-2 text-muted-foreground hover:text-foreground sm:h-9 sm:px-3">
+								<Share className="w-4 h-4 mr-1 sm:mr-2" />
 								<span className="hidden text-sm sm:inline">Share</span>
 							</Button>
-							<Button variant="ghost" size="sm" className="px-2 h-8 text-muted-foreground hover:text-foreground sm:h-9 sm:px-3">
-								<Heart className="mr-1 w-4 h-4 sm:mr-2" />
+							<Button variant="ghost" size="sm" className="h-8 px-2 text-muted-foreground hover:text-foreground sm:h-9 sm:px-3">
+								<Heart className="w-4 h-4 mr-1 sm:mr-2" />
 								<span className="hidden text-sm sm:inline">Save</span>
 							</Button>
 						</div>
@@ -1224,7 +1480,7 @@ export default function BizProfile({ params }) {
 
 					{/* Mobile Scroll Header - Replaces main header on scroll */}
 					{showHeaderSection && (
-						<div className="flex justify-between items-center py-2 lg:hidden sm:py-3">
+						<div className="flex items-center justify-between py-2 lg:hidden sm:py-3">
 							{/* Business Name & Rating */}
 							<div className="flex-1 min-w-0">
 								<h1 className="text-sm font-bold truncate text-foreground sm:text-base">{business?.name}</h1>
@@ -1243,13 +1499,13 @@ export default function BizProfile({ params }) {
 							{/* Primary Action Buttons */}
 							<div className="flex space-x-2">
 								<Button size="sm" className="h-8 text-xs font-semibold transition-all duration-200 bg-primary hover:bg-primary/90 hover:scale-105 active:scale-95">
-									<Phone className="mr-1 w-3 h-3" />
+									<Phone className="w-3 h-3 mr-1" />
 									Call
 								</Button>
-								<Button variant="outline" size="sm" className="px-2 h-8 transition-all duration-200 border-border hover:bg-muted hover:scale-105 active:scale-95">
+								<Button variant="outline" size="sm" className="h-8 px-2 transition-all duration-200 border-border hover:bg-muted hover:scale-105 active:scale-95">
 									<MapPin className="w-3 h-3" />
 								</Button>
-								<Button variant="ghost" size="sm" className="px-2 h-8 transition-all duration-200 hover:scale-105 active:scale-95" onClick={() => setShowMobileNav(!showMobileNav)}>
+								<Button variant="ghost" size="sm" className="h-8 px-2 transition-all duration-200 hover:scale-105 active:scale-95" onClick={() => setShowMobileNav(!showMobileNav)}>
 									<Menu className="w-3 h-3" />
 								</Button>
 							</div>
@@ -1262,7 +1518,7 @@ export default function BizProfile({ params }) {
 							<div className="grid grid-cols-3 gap-6">
 								{/* Contact Info */}
 								<div className="space-y-4">
-									<div className="flex justify-between items-center">
+									<div className="flex items-center justify-between">
 										<div className="flex items-center space-x-4">
 											<div className="text-center">
 												<div className="text-lg font-bold text-primary">{business?.trustScore}%</div>
@@ -1277,7 +1533,7 @@ export default function BizProfile({ params }) {
 									</div>
 									<div className="flex space-x-2">
 										<Button size="sm" className="flex-1 transition-all duration-200 bg-primary hover:bg-primary/90 hover:scale-105 active:scale-95">
-											<Phone className="mr-2 w-4 h-4" />
+											<Phone className="w-4 h-4 mr-2" />
 											<span className="truncate">{business?.phone}</span>
 										</Button>
 										<Button variant="outline" size="sm" className="transition-all duration-200 border-border hover:bg-muted hover:scale-105 active:scale-95">
@@ -1292,7 +1548,7 @@ export default function BizProfile({ params }) {
 								{/* Hours */}
 								<div className="space-y-3">
 									<h4 className="flex items-center text-sm font-semibold text-foreground">
-										<Clock className="mr-2 w-3 h-3" />
+										<Clock className="w-3 h-3 mr-2" />
 										Hours
 									</h4>
 									<div className="text-xs text-foreground">
@@ -1359,7 +1615,7 @@ export default function BizProfile({ params }) {
 					<div className="space-y-6">
 						{/* Business Name & Basic Info */}
 						<div className="space-y-4">
-							<div className="flex justify-between items-start">
+							<div className="flex items-start justify-between">
 								<div className="flex-1 space-y-3">
 									<h1 className="text-3xl font-bold text-foreground sm:text-4xl lg:text-5xl">{business.name}</h1>
 									<div className="flex items-center space-x-2 text-muted-foreground">
@@ -1378,7 +1634,7 @@ export default function BizProfile({ params }) {
 							</div>
 
 							{/* Rating & Status Row */}
-							<div className="flex justify-between items-center">
+							<div className="flex items-center justify-between">
 								<div className="flex items-center space-x-6">
 									<div className="flex items-center space-x-2">
 										<div className="flex items-center space-x-1">
@@ -1411,16 +1667,16 @@ export default function BizProfile({ params }) {
 							<div className="space-y-4">
 								<div className="space-y-3">
 									<Button className="w-full h-12 text-base font-semibold">
-										<Phone className="mr-2 w-5 h-5" />
+										<Phone className="w-5 h-5 mr-2" />
 										{business.phone}
 									</Button>
 									<div className="grid grid-cols-2 gap-2">
 										<Button variant="outline" className="h-10">
-											<MapPin className="mr-2 w-4 h-4" />
+											<MapPin className="w-4 h-4 mr-2" />
 											Directions
 										</Button>
 										<Button variant="outline" className="h-10">
-											<Globe className="mr-2 w-4 h-4" />
+											<Globe className="w-4 h-4 mr-2" />
 											Website
 										</Button>
 									</div>
@@ -1452,15 +1708,15 @@ export default function BizProfile({ params }) {
 								<h3 className="font-semibold">Quick Actions</h3>
 								<div className="space-y-2">
 									<Button variant="outline" className="justify-start w-full h-10" onClick={() => setShowReviewModal(true)}>
-										<Edit className="mr-2 w-4 h-4" />
+										<Edit className="w-4 h-4 mr-2" />
 										Write Review
 									</Button>
 									<Button variant="outline" className="justify-start w-full h-10" onClick={() => scrollToSection("reviews")}>
-										<Star className="mr-2 w-4 h-4" />
+										<Star className="w-4 h-4 mr-2" />
 										View Reviews
 									</Button>
 									<Button variant="outline" className="justify-start w-full h-10" onClick={() => scrollToSection("services")}>
-										<Settings className="mr-2 w-4 h-4" />
+										<Settings className="w-4 h-4 mr-2" />
 										Services
 									</Button>
 								</div>
@@ -1472,7 +1728,7 @@ export default function BizProfile({ params }) {
 					<div className="space-y-6 sm:space-y-8 lg:col-span-2">
 						{/* Photo Gallery - Modern Style */}
 						<div className="space-y-4 sm:space-y-6">
-							<div className="flex justify-between items-center">
+							<div className="flex items-center justify-between">
 								<h2 className="text-lg font-semibold sm:text-xl md:text-2xl text-foreground">Photos</h2>
 								<div className="flex items-center space-x-2 text-sm text-muted-foreground">
 									<Camera className="w-4 h-4" />
@@ -1485,10 +1741,10 @@ export default function BizProfile({ params }) {
 							</div>
 
 							{/* Modern Photo Grid */}
-							<div className="grid overflow-hidden grid-cols-4 gap-2 h-80 rounded-xl sm:h-96">
+							<div className="grid grid-cols-4 gap-2 overflow-hidden h-80 rounded-xl sm:h-96">
 								{/* Main large photo - left side */}
 								<div
-									className="overflow-hidden relative col-span-2 row-span-2 cursor-pointer group bg-muted"
+									className="relative col-span-2 row-span-2 overflow-hidden cursor-pointer group bg-muted"
 									onClick={() => {
 										setSelectedImageIndex(0);
 										setShowAllPhotos(true);
@@ -1502,12 +1758,12 @@ export default function BizProfile({ params }) {
 											e.target.src = "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300&fit=crop";
 										}}
 									/>
-									<div className="absolute inset-0 opacity-0 transition-opacity duration-300 bg-black/20 group-hover:opacity-100" />
+									<div className="absolute inset-0 transition-opacity duration-300 opacity-0 bg-black/20 group-hover:opacity-100" />
 								</div>
 
 								{/* Top right photos */}
 								<div
-									className="overflow-hidden relative cursor-pointer group bg-muted"
+									className="relative overflow-hidden cursor-pointer group bg-muted"
 									onClick={() => {
 										setSelectedImageIndex(1);
 										setShowAllPhotos(true);
@@ -1521,10 +1777,10 @@ export default function BizProfile({ params }) {
 											e.target.src = "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop";
 										}}
 									/>
-									<div className="absolute inset-0 opacity-0 transition-opacity duration-300 bg-black/20 group-hover:opacity-100" />
+									<div className="absolute inset-0 transition-opacity duration-300 opacity-0 bg-black/20 group-hover:opacity-100" />
 								</div>
 								<div
-									className="overflow-hidden relative cursor-pointer group bg-muted"
+									className="relative overflow-hidden cursor-pointer group bg-muted"
 									onClick={() => {
 										setSelectedImageIndex(2);
 										setShowAllPhotos(true);
@@ -1538,12 +1794,12 @@ export default function BizProfile({ params }) {
 											e.target.src = "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&h=300&fit=crop";
 										}}
 									/>
-									<div className="absolute inset-0 opacity-0 transition-opacity duration-300 bg-black/20 group-hover:opacity-100" />
+									<div className="absolute inset-0 transition-opacity duration-300 opacity-0 bg-black/20 group-hover:opacity-100" />
 								</div>
 
 								{/* Bottom right photos */}
 								<div
-									className="overflow-hidden relative cursor-pointer group bg-muted"
+									className="relative overflow-hidden cursor-pointer group bg-muted"
 									onClick={() => {
 										setSelectedImageIndex(3);
 										setShowAllPhotos(true);
@@ -1557,10 +1813,10 @@ export default function BizProfile({ params }) {
 											e.target.src = "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&h=300&fit=crop";
 										}}
 									/>
-									<div className="absolute inset-0 opacity-0 transition-opacity duration-300 bg-black/20 group-hover:opacity-100" />
+									<div className="absolute inset-0 transition-opacity duration-300 opacity-0 bg-black/20 group-hover:opacity-100" />
 								</div>
 								<div
-									className="overflow-hidden relative cursor-pointer group bg-muted"
+									className="relative overflow-hidden cursor-pointer group bg-muted"
 									onClick={() => {
 										setSelectedImageIndex(4);
 										setShowAllPhotos(true);
@@ -1574,10 +1830,10 @@ export default function BizProfile({ params }) {
 											e.target.src = "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=400&h=300&fit=crop";
 										}}
 									/>
-									<div className="absolute inset-0 opacity-0 transition-opacity duration-300 bg-black/20 group-hover:opacity-100" />
+									<div className="absolute inset-0 transition-opacity duration-300 opacity-0 bg-black/20 group-hover:opacity-100" />
 									{/* Show all photos overlay on last visible image */}
 									{allImages.length > 5 && (
-										<div className="flex absolute inset-0 justify-center items-center transition-opacity duration-300 bg-black/60 group-hover:bg-black/80">
+										<div className="absolute inset-0 flex items-center justify-center transition-opacity duration-300 bg-black/60 group-hover:bg-black/80">
 											<div className="text-center text-white">
 												<div className="text-lg font-semibold">+{allImages.length - 5}</div>
 												<div className="text-sm">more photos</div>
@@ -1589,1783 +1845,91 @@ export default function BizProfile({ params }) {
 
 							{/* Show all photos button */}
 							<Button variant="outline" className="w-full border-border hover:bg-muted/50 text-foreground" onClick={() => setShowAllPhotos(true)}>
-								<Camera className="mr-2 w-4 h-4" />
+								<Camera className="w-4 h-4 mr-2" />
 								Show all {allImages.length} photos
 							</Button>
 						</div>
 
 						{/* Main Content Sections */}
 						<div className="space-y-20 sm:space-y-24 md:space-y-32 lg:space-y-40">
-							{/* 1. BUSINESS OVERVIEW SECTION - First Impression */}
-							<section ref={overviewRef} className="scroll-mt-20 sm:scroll-mt-24 lg:scroll-mt-32">
-								<div className="mb-6 sm:mb-8 md:mb-12">
-									<h2 className="flex items-center mb-3 text-2xl font-bold sm:text-3xl md:text-4xl text-foreground">
-										<Building className="mr-3 w-6 h-6 sm:w-8 sm:h-8 sm:mr-4 text-primary" />
-										Business Overview
-									</h2>
-									<div className="w-20 h-1 bg-gradient-to-r rounded-full sm:w-24 sm:h-1.5 from-primary to-primary/50"></div>
-								</div>
-
-								<div className="space-y-6 sm:space-y-8">
-									{/* AI Insights */}
-									<div className="p-6 rounded-xl border backdrop-blur-sm bg-card/50 border-border sm:p-8">
-										<div className="flex items-start space-x-4">
-											<div className="flex flex-shrink-0 justify-center items-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-primary/10">
-												<Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-											</div>
-											<div className="space-y-2 sm:space-y-3">
-												<h3 className="text-lg font-semibold sm:text-xl text-foreground">AI Insights</h3>
-												<p className="text-sm leading-relaxed sm:text-base text-muted-foreground">This business has consistently high ratings for quality work and customer service. Customers frequently mention their professionalism, reliability, and quick response times for emergency services.</p>
-											</div>
-										</div>
-									</div>
-
-									{/* Business Details & Service Area */}
-									<div className="space-y-6">
-										<h3 className="text-xl font-semibold sm:text-2xl text-foreground">About This Business</h3>
-										<p className="text-base leading-relaxed text-muted-foreground sm:text-lg">{business.description}</p>
-
-										{/* Quick Business Facts */}
-										<div className="grid grid-cols-2 gap-4 p-6 rounded-xl border lg:grid-cols-4 bg-card/30 border-border">
-											<div className="text-center">
-												<div className="text-2xl font-bold text-foreground">{business.established}</div>
-												<div className="text-sm text-muted-foreground">Established</div>
-											</div>
-											<div className="text-center">
-												<div className="text-2xl font-bold text-foreground">{business.employees}</div>
-												<div className="text-sm text-muted-foreground">Team Size</div>
-											</div>
-											<div className="text-center">
-												<div className="text-2xl font-bold text-foreground">{business.responseTime}</div>
-												<div className="text-sm text-muted-foreground">Response Time</div>
-											</div>
-											<div className="text-center">
-												<div className="text-2xl font-bold text-foreground">{business.responseRate}%</div>
-												<div className="text-sm text-muted-foreground">Response Rate</div>
-											</div>
-										</div>
-
-										{/* Service Area */}
-										<div className="p-4 rounded-lg border bg-card/30 border-border">
-											<h4 className="mb-3 font-medium text-foreground">Service Area</h4>
-											<div className="space-y-2">
-												<p className="text-sm text-muted-foreground">
-													Primary: <span className="font-medium text-foreground">{business.serviceArea.primary}</span>
-												</p>
-												<p className="text-sm text-muted-foreground">
-													Coverage: <span className="font-medium text-foreground">{business.serviceArea.coverage}</span>
-												</p>
-												<div className="flex flex-wrap gap-2 mt-3">
-													{business.serviceArea.cities.map((city, index) => (
-														<Badge key={index} variant="secondary" className="bg-muted text-foreground">
-															{city}
-														</Badge>
-													))}
-												</div>
-											</div>
-										</div>
-									</div>
-
-									{/* Business Highlights */}
-									<div className="space-y-4 sm:space-y-6">
-										<h3 className="text-xl font-semibold sm:text-2xl text-foreground">Why Choose Us</h3>
-										<div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 md:grid-cols-3">
-											{business.businessHighlights.map((highlight, index) => (
-												<div key={index} className="flex items-start p-4 space-x-3 rounded-lg border bg-card/30 border-border sm:p-5">
-													<CheckCircle className="flex-shrink-0 mt-0.5 w-4 h-4 text-green-400 sm:w-5 sm:h-5 sm:mt-0" />
-													<span className="text-sm leading-relaxed break-words sm:text-base text-foreground">{highlight}</span>
-												</div>
-											))}
-										</div>
-									</div>
-								</div>
-							</section>
-
-							{/* 2. THORBIS CERTIFIED ELITE STATUS - Trust Validation */}
-							<section ref={certificationRef} className="scroll-mt-20 sm:scroll-mt-24 lg:scroll-mt-32">
-								<div className="mb-6 sm:mb-8 md:mb-12">
-									<h2 className="flex items-center mb-3 text-2xl font-bold sm:text-3xl md:text-4xl text-foreground">
-										<Award className="mr-3 w-6 h-6 sm:w-8 sm:h-8 sm:mr-4 text-primary" />
-										Thorbis Certified Elite Business
-									</h2>
-									<div className="w-20 h-1 bg-gradient-to-r rounded-full sm:w-24 sm:h-1.5 from-primary to-primary/50"></div>
-								</div>
-
-								<div className="space-y-6 sm:space-y-8">
-									{/* Elite Status Hero - Redesigned */}
-									<div className="isolate overflow-hidden relative bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-600 rounded-2xl border shadow-2xl lg:rounded-3xl border-emerald-400/20">
-										<svg viewBox="0 0 1024 1024" aria-hidden="true" className="absolute left-1/2 top-1/2 -z-10 h-[64rem] w-[64rem] -translate-y-1/2 [mask-image:radial-gradient(closest-side,white,transparent)]">
-											<circle r={512} cx={512} cy={512} fill="url(#cert-gradient)" fillOpacity="0.3" />
-											<defs>
-												<radialGradient id="cert-gradient">
-													<stop stopColor="#10B981" />
-													<stop offset={1} stopColor="#06B6D4" />
-												</radialGradient>
-											</defs>
-										</svg>
-
-										<div className="relative px-6 py-8 sm:px-8 sm:py-12 lg:px-12 lg:py-16">
-											<div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
-												{/* Left Content */}
-												<div className="space-y-6">
-													<div className="inline-flex items-center px-4 py-2 text-sm font-bold text-white rounded-full border backdrop-blur-sm bg-white/20 border-white/30">🏆 Elite Recognition</div>
-
-													<div className="space-y-4">
-														<h3 className="text-2xl font-bold tracking-tight text-white sm:text-3xl lg:text-4xl">Certified Elite Business</h3>
-														<p className="text-lg leading-relaxed text-white/90 sm:text-xl">
-															This business has achieved our highest certification level - earned by fewer than <span className="font-bold text-yellow-300">1 in 125,000 businesses</span>. Like a Michelin star for service excellence.
-														</p>
-													</div>
-
-													<div className="flex gap-3 items-center p-4 rounded-xl border backdrop-blur-sm bg-white/10 border-white/20">
-														<div className="flex flex-shrink-0 justify-center items-center w-10 h-10 bg-emerald-400 rounded-full">
-															<Shield className="w-5 h-5 text-emerald-900" />
-														</div>
-														<div>
-															<div className="font-semibold text-white">Protected by Performance Guarantee</div>
-															<div className="text-sm text-white/80">100% satisfaction backed by our elite standards</div>
-														</div>
-													</div>
-												</div>
-
-												{/* Right Stats */}
-												<div className="grid grid-cols-2 gap-4 lg:gap-6">
-													<div className="p-4 text-center rounded-xl border backdrop-blur-sm bg-white/10 border-white/20 lg:p-6">
-														<div className="text-2xl font-bold text-white lg:text-3xl">0.0008%</div>
-														<div className="text-sm text-white/80">Acceptance Rate</div>
-														<div className="mt-1 text-xs text-emerald-200">Rarer than Harvard</div>
-													</div>
-													<div className="p-4 text-center rounded-xl border backdrop-blur-sm bg-white/10 border-white/20 lg:p-6">
-														<div className="text-2xl font-bold text-white lg:text-3xl">6-9</div>
-														<div className="text-sm text-white/80">Month Process</div>
-														<div className="mt-1 text-xs text-cyan-200">Rigorous vetting</div>
-													</div>
-													<div className="p-4 text-center rounded-xl border backdrop-blur-sm bg-white/10 border-white/20 lg:p-6">
-														<div className="text-2xl font-bold text-white lg:text-3xl">400+</div>
-														<div className="text-sm text-white/80">Customer Interviews</div>
-														<div className="mt-1 text-xs text-teal-200">Independent verification</div>
-													</div>
-													<div className="p-4 text-center rounded-xl border backdrop-blur-sm bg-white/10 border-white/20 lg:p-6">
-														<div className="text-2xl font-bold text-white lg:text-3xl">100%</div>
-														<div className="text-sm text-white/80">Satisfaction</div>
-														<div className="mt-1 text-xs text-yellow-200">Performance guarantee</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-
-									{/* Key Benefits Grid */}
-									<div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-										<div className="p-6 rounded-xl border bg-card border-border sm:p-8">
-											<div className="flex items-start space-x-4">
-												<div className="flex flex-shrink-0 justify-center items-center w-10 h-10 bg-emerald-100 rounded-full dark:bg-emerald-900/30">
-													<CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-												</div>
-												<div className="space-y-3">
-													<h3 className="text-lg font-semibold text-foreground">What This Means for You</h3>
-													<div className="space-y-2">
-														{["Guaranteed highest quality workmanship", "Verified financial stability and licensing", "Independently confirmed customer satisfaction", "Ongoing performance monitoring", "Comprehensive performance guarantee", "Priority dispute resolution services"].map((benefit, index) => (
-															<div key={index} className="flex items-start space-x-2">
-																<CheckCircle className="flex-shrink-0 mt-0.5 w-4 h-4 text-emerald-500 dark:text-emerald-400" />
-																<span className="text-sm text-muted-foreground">{benefit}</span>
-															</div>
-														))}
-													</div>
-												</div>
-											</div>
-										</div>
-
-										<div className="p-6 rounded-xl border bg-card border-border sm:p-8">
-											<div className="flex items-start space-x-4">
-												<div className="flex flex-shrink-0 justify-center items-center w-10 h-10 bg-blue-100 rounded-full dark:bg-blue-900/30">
-													<Award className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-												</div>
-												<div className="space-y-3">
-													<h3 className="text-lg font-semibold text-foreground">The Elite Vetting Process</h3>
-													<div className="space-y-2">
-														{["Comprehensive 400+ customer interviews", "Independent financial stability assessment", "Rigorous background and licensing verification", "Technical expertise evaluation", "On-site inspection and equipment review", "Ongoing annual re-certification requirements"].map((requirement, index) => (
-															<div key={index} className="flex items-start space-x-2">
-																<div className="flex flex-shrink-0 justify-center items-center mt-0.5 w-4 h-4 rounded-full bg-blue-500/20 dark:bg-blue-400/20">
-																	<div className="w-2 h-2 bg-blue-500 rounded-full dark:bg-blue-400"></div>
-																</div>
-																<span className="text-sm text-muted-foreground">{requirement}</span>
-															</div>
-														))}
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</section>
-
-							{/* 3. REVIEWS & NEIGHBORHOOD INSIGHTS SECTION - Social Proof */}
-							<section ref={reviewsRef} className="scroll-mt-20 sm:scroll-mt-24 lg:scroll-mt-32">
-								<div className="mb-8 sm:mb-12">
-									<h2 className="flex items-center mb-3 text-2xl font-bold sm:text-3xl md:text-4xl text-foreground">
-										<Star className="mr-3 w-6 h-6 sm:w-8 sm:h-8 sm:mr-4 text-primary" />
-										Reviews & Neighborhood Insights
-									</h2>
-									<div className="w-20 h-1 bg-gradient-to-r rounded-full sm:w-24 sm:h-1.5 from-primary to-primary/50"></div>
-								</div>
-
-								<div className="space-y-8">
-									{/* Modern Review Overview */}
-									<div className="overflow-hidden relative bg-gradient-to-br from-yellow-50 via-orange-50 to-red-50 rounded-2xl border dark:from-yellow-950/20 dark:via-orange-950/20 dark:to-red-950/20 border-yellow-200/50 dark:border-yellow-800/50">
-										<div className="absolute inset-0 bg-gradient-to-r from-yellow-400/5 to-orange-400/5"></div>
-										<div className="relative p-6 sm:p-8">
-											<div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-												{/* Left: Main Rating */}
-												<div className="text-center lg:text-left">
-													<div className="flex gap-4 justify-center items-center lg:justify-start">
-														<div className="text-4xl font-bold text-foreground sm:text-5xl">{business.rating}</div>
-														<div className="space-y-2">
-															<div className="flex items-center space-x-1">
-																{[...Array(5)].map((_, i) => (
-																	<Star key={i} className={`w-5 h-5 ${i < Math.floor(business.rating) ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground"}`} />
-																))}
-															</div>
-															<div className="text-sm text-muted-foreground">{business.reviewCount} reviews</div>
-														</div>
-													</div>
-													<div className="mt-4 lg:mt-6">
-														<h3 className="mb-2 text-lg font-semibold text-foreground">Community Trust</h3>
-														<div className="flex gap-3 justify-center items-center lg:justify-start">
-															<div className="flex gap-2 items-center px-3 py-1 bg-orange-100 rounded-full dark:bg-orange-900/30">
-																<Home className="w-4 h-4 text-orange-600 dark:text-orange-400" />
-																<span className="text-sm font-medium text-orange-800 dark:text-orange-200">{business.peerRecommendations.length} Neighbors</span>
-															</div>
-															<div className="flex gap-2 items-center px-3 py-1 bg-green-100 rounded-full dark:bg-green-900/30">
-																<CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
-																<span className="text-sm font-medium text-green-800 dark:text-green-200">{business.responseRate}% Response</span>
-															</div>
-														</div>
-													</div>
-												</div>
-
-												{/* Right: Quick Stats */}
-												<div className="grid grid-cols-2 gap-4">
-													<div className="p-4 rounded-xl border backdrop-blur-sm bg-white/60 dark:bg-gray-800/60 border-white/20">
-														<div className="text-2xl font-bold text-primary">{business.trustScore}%</div>
-														<div className="text-sm text-muted-foreground">Trust Score</div>
-													</div>
-													<div className="p-4 rounded-xl border backdrop-blur-sm bg-white/60 dark:bg-gray-800/60 border-white/20">
-														<div className="text-2xl font-bold text-emerald-600">{business.peerRecommendations.length}</div>
-														<div className="text-sm text-muted-foreground">Local Reviews</div>
-													</div>
-													<div className="p-4 rounded-xl border backdrop-blur-sm bg-white/60 dark:bg-gray-800/60 border-white/20">
-														<div className="text-2xl font-bold text-blue-600">24h</div>
-														<div className="text-sm text-muted-foreground">Avg Response</div>
-													</div>
-													<div className="p-4 rounded-xl border backdrop-blur-sm bg-white/60 dark:bg-gray-800/60 border-white/20">
-														<div className="text-2xl font-bold text-purple-600">98%</div>
-														<div className="text-sm text-muted-foreground">Satisfaction</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-
-									{/* Community Reviews - Better Spacing */}
-									<div className="space-y-6">
-										<div className="flex justify-between items-center">
-											<h3 className="text-lg font-semibold text-foreground">Community Reviews</h3>
-											<div className="flex gap-2">
-												<Button variant="outline" size="sm">
-													Neighbors
-												</Button>
-												<Button variant="outline" size="sm">
-													All
-												</Button>
-												<Button variant="outline" size="sm">
-													Recent
-												</Button>
-											</div>
-										</div>
-
-										{/* Neighbor Reviews */}
-										<div className="space-y-4">
-											<div className="flex gap-2 items-center">
-												<Home className="w-5 h-5 text-orange-500" />
-												<span className="font-medium text-foreground">Your Neighbors</span>
-												<Badge variant="secondary">Verified</Badge>
-											</div>
-
-											{business.peerRecommendations.map((neighbor, index) => (
-												<div key={index} className="p-4 rounded-lg border bg-card border-border">
-													<div className="flex gap-4 items-start">
-														<Avatar className="w-10 h-10">
-															<AvatarImage src={`https://i.pravatar.cc/150?img=${index + 10}`} />
-															<AvatarFallback>{neighbor.recommenderName.charAt(0)}</AvatarFallback>
-														</Avatar>
-														<div className="flex-1 space-y-2 min-w-0">
-															<div className="flex gap-2 items-center">
-																<span className="font-medium text-foreground">{neighbor.recommenderName}</span>
-																<span className="text-muted-foreground">•</span>
-																<span className="text-sm text-muted-foreground">{neighbor.date}</span>
-																<div className="flex items-center ml-2">
-																	{[...Array(5)].map((_, i) => (
-																		<Star key={i} className={`w-4 h-4 ${i < neighbor.rating ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground"}`} />
-																	))}
-																</div>
-															</div>
-															<p className="text-foreground">&ldquo;{neighbor.comment}&rdquo;</p>
-															<div className="text-sm text-muted-foreground">{neighbor.serviceUsed}</div>
-														</div>
-													</div>
-												</div>
-											))}
-										</div>
-
-										{/* All Reviews */}
-										<div className="space-y-4">
-											<div className="flex gap-2 items-center">
-												<Star className="w-5 h-5 text-primary" />
-												<span className="font-medium text-foreground">All Customer Reviews</span>
-											</div>
-
-											{business.reviews.map((review) => (
-												<div key={review.id} className="p-4 rounded-lg border bg-card border-border">
-													<div className="flex gap-4 items-start">
-														<Avatar className="w-10 h-10">
-															<AvatarImage src={review.avatar} />
-															<AvatarFallback>{review.author.charAt(0)}</AvatarFallback>
-														</Avatar>
-														<div className="flex-1 space-y-2 min-w-0">
-															<div className="flex gap-2 items-center">
-																<span className="font-medium text-foreground">{review.author}</span>
-																{review.verified && <Badge variant="secondary">Verified</Badge>}
-																<span className="text-muted-foreground">•</span>
-																<span className="text-sm text-muted-foreground">{review.date}</span>
-																<div className="flex items-center ml-2">
-																	{[...Array(5)].map((_, i) => (
-																		<Star key={i} className={`w-4 h-4 ${i < review.rating ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground"}`} />
-																	))}
-																</div>
-															</div>
-															<p className="text-foreground">{review.text}</p>
-															<div className="flex gap-4 items-center text-sm text-muted-foreground">
-																<button className="hover:text-foreground">Helpful ({review.helpful})</button>
-																<button className="hover:text-foreground">Reply</button>
-															</div>
-														</div>
-													</div>
-												</div>
-											))}
-										</div>
-
-										{/* Write Review */}
-										<div className="flex gap-3">
-											<Button onClick={() => setShowReviewModal(true)} className="flex-1">
-												Write Review
-											</Button>
-											<Button variant="outline" className="flex-1">
-												Verify as Neighbor
-											</Button>
-										</div>
-									</div>
-								</div>
-							</section>
-
-							{/* 4. CREDENTIALS, LICENSING & RECOGNITION SECTION - Trust Building */}
-							<section ref={credentialsRef} className="scroll-mt-20 sm:scroll-mt-24 lg:scroll-mt-32">
-								<div className="mb-6 sm:mb-8 md:mb-12">
-									<h2 className="flex items-center mb-3 text-2xl font-bold sm:text-3xl md:text-4xl text-foreground">
-										<Shield className="mr-3 w-6 h-6 sm:w-8 sm:h-8 sm:mr-4 text-primary" />
-										Credentials, Licensing & Recognition
-									</h2>
-									<div className="w-20 h-1 bg-gradient-to-r rounded-full sm:w-24 sm:h-1.5 from-primary to-primary/50"></div>
-								</div>
-
-								<div className="space-y-8">
-									{/* Verified License */}
-									{business.license.verified && (
-										<div className="space-y-4">
-											<h3 className="text-lg font-semibold text-foreground">Certifications & Licenses</h3>
-											<div className="p-6 rounded-xl border bg-card/30 border-border">
-												<div className="flex items-start space-x-3">
-													<div className="flex flex-shrink-0 justify-center items-center w-8 h-8 rounded-full bg-blue-500/10">
-														<Shield className="w-4 h-4 text-blue-400" />
-													</div>
-													<div className="space-y-2">
-														<h4 className="flex items-center font-semibold text-foreground">
-															Professional License
-															<Badge variant="secondary" className="ml-2 text-blue-400 bg-blue-500/10 border-blue-500/20">
-																<Verified className="mr-1 w-3 h-3" />
-																Verified
-															</Badge>
-														</h4>
-														<div className="space-y-1 text-sm">
-															<p className="text-muted-foreground">
-																License: <span className="text-foreground">{business.license.number}</span>
-															</p>
-															<p className="text-muted-foreground">
-																Issuer: <span className="text-foreground">State Licensing Board</span>
-															</p>
-															<p className="text-muted-foreground">
-																Expires: <span className="text-foreground">{business.license.expires}</span>
-															</p>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									)}
-
-									{/* Awards & Recognition */}
-									<div className="space-y-4">
-										<h3 className="text-lg font-semibold text-foreground">Awards & Recognition</h3>
-										<div className="space-y-3">
-											{business.awards && business.awards.length > 0 ? (
-												business.awards.map((award, index) => (
-													<div key={index} className="flex items-center p-4 space-x-3 rounded-xl border bg-card/30 border-border">
-														<div className="p-2 rounded-full bg-yellow-500/10">
-															<Award className="w-4 h-4 text-yellow-500" />
-														</div>
-														<div>
-															<h5 className="font-medium text-foreground">{award.title}</h5>
-															<p className="text-sm text-muted-foreground">
-																{award.issuer} • {award.year}
-															</p>
-														</div>
-													</div>
-												))
-											) : (
-												<div className="flex items-center p-4 space-x-3 rounded-xl border bg-card/30 border-border">
-													<div className="p-2 rounded-full bg-yellow-500/10">
-														<Award className="w-4 h-4 text-yellow-500" />
-													</div>
-													<div>
-														<h5 className="font-medium text-foreground">Verified Business</h5>
-														<p className="text-sm text-muted-foreground">Thorbis • 2024</p>
-													</div>
-												</div>
-											)}
-										</div>
-									</div>
-								</div>
-							</section>
-
-							{/* 4. ⚡ LIVE AVAILABILITY & BOOKING SECTION - Immediate Action */}
-							<section ref={availabilityRef} className="scroll-mt-20 sm:scroll-mt-24 lg:scroll-mt-32">
-								<div className="mb-8">
-									<h2 className="flex items-center mb-2 text-2xl font-bold text-foreground">
-										<Zap className="mr-3 w-6 h-6 text-primary" />
-										Live Availability & Booking
-									</h2>
-									<div className="w-20 h-1 bg-gradient-to-r rounded-full from-primary to-primary/50"></div>
-								</div>
-
-								<div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-									{/* Left Panel - Business Info & Status */}
-									<div className="lg:col-span-1">
-										<div className="p-6 space-y-6 rounded-xl border bg-card border-border">
-											{/* Business Avatar & Info */}
-											<div className="flex gap-4 items-center">
-												<div className="overflow-hidden w-16 h-16 bg-blue-600 rounded-lg">
-													<div className="flex justify-center items-center w-full h-full text-xl font-bold text-white">
-														{business?.name
-															? business.name
-																	.split(" ")
-																	.map((word) => word[0])
-																	.join("")
-																	.slice(0, 2)
-															: "AC"}
-													</div>
-												</div>
-												<div>
-													<h3 className="font-semibold text-foreground">{business.name}</h3>
-													<p className="text-sm text-muted-foreground">Client Check-in</p>
-												</div>
-											</div>
-
-											{/* Service Details */}
-											<div className="space-y-3">
-												<div className="flex gap-2 items-center">
-													<Clock className="w-4 h-4 text-muted-foreground" />
-													<span className="text-sm text-muted-foreground">30 min</span>
-												</div>
-												<div className="flex gap-2 items-center">
-													<Video className="w-4 h-4 text-muted-foreground" />
-													<span className="text-sm text-muted-foreground">Zoom</span>
-												</div>
-											</div>
-
-											{/* Live Status */}
-											<div className="p-4 bg-green-50 rounded-lg dark:bg-green-900/20">
-												<div className="flex gap-2 items-center">
-													<div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-													<span className="text-sm font-medium text-green-700 dark:text-green-400">LIVE - Available Now</span>
-												</div>
-												<p className="mt-1 text-xs text-green-600 dark:text-green-500">45 minutes response time</p>
-											</div>
-
-											{/* Emergency Service */}
-											<div className="p-4 bg-red-50 rounded-lg dark:bg-red-900/20">
-												<h4 className="mb-2 text-sm font-semibold text-red-700 dark:text-red-400">Emergency Service</h4>
-												<p className="mb-3 text-xs text-red-600 dark:text-red-500">24/7 immediate response</p>
-												<Button size="sm" className="w-full text-white bg-red-600 hover:bg-red-700">
-													<Phone className="mr-2 w-3 h-3" />
-													Call Emergency: {business?.phone?.replace(/[()]/g, "") || "(706) 555-0123"}
-												</Button>
-											</div>
-										</div>
-									</div>
-
-									{/* Center Panel - Calendar & Time Selection */}
-									<div className="lg:col-span-2">
-										<div className="p-6 rounded-xl border bg-card border-border">
-											{/* Calendar Header */}
-											<div className="flex justify-between items-center mb-6">
-												<h3 className="text-lg font-semibold text-foreground">Select a Date & Time</h3>
-												<div className="flex gap-2 items-center">
-													<button className="p-2 rounded-lg hover:bg-muted">
-														<ChevronLeft className="w-4 h-4 text-muted-foreground" />
-													</button>
-													<span className="px-3 py-1 text-sm font-medium text-foreground">July 2024</span>
-													<button className="p-2 rounded-lg hover:bg-muted">
-														<ChevronRight className="w-4 h-4 text-muted-foreground" />
-													</button>
-												</div>
-											</div>
-
-											<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-												{/* Calendar */}
-												<div>
-													<div className="grid grid-cols-7 gap-1 mb-4">
-														{["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"].map((day) => (
-															<div key={day} className="p-2 text-xs font-medium text-center text-muted-foreground">
-																{day}
-															</div>
-														))}
-													</div>
-													<div className="grid grid-cols-7 gap-1">
-														{[30, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 1, 2, 3].map((date, index) => (
-															<button
-																key={index}
-																className={`
-																	p-2 text-sm font-medium rounded-lg transition-all text-center
-																	${date === 22 ? "bg-blue-600 text-white" : date > 30 ? "text-muted-foreground/50 hover:bg-muted/50" : "text-foreground hover:bg-muted"}
-																	${[16, 17, 19, 23, 24, 25].includes(date) && date <= 30 ? "text-blue-600 font-semibold" : ""}
-																`}
-															>
-																{date}
-															</button>
-														))}
-													</div>
-
-													{/* Time Zone */}
-													<div className="pt-4 mt-4 border-t border-border">
-														<div className="flex gap-2 items-center">
-															<Globe className="w-4 h-4 text-muted-foreground" />
-															<span className="text-sm text-muted-foreground">Eastern time - US & Canada</span>
-														</div>
-													</div>
-												</div>
-
-												{/* Time Slots */}
-												<div>
-													<div className="mb-4">
-														<h4 className="text-sm font-semibold text-foreground">Monday, July 22</h4>
-													</div>
-													<div className="space-y-3">
-														{["10:00am", "1:00pm", "2:30pm", "4:00pm"].map((time, index) => (
-															<button
-																key={time}
-																className={`
-																	w-full p-3 text-left rounded-lg border-2 transition-all
-																	${index === 0 ? "border-blue-600 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300" : "border-border hover:border-blue-300 hover:bg-blue-50/50 dark:hover:bg-blue-900/10"}
-																`}
-															>
-																<div className="text-sm font-medium text-foreground">{time}</div>
-															</button>
-														))}
-
-														{/* Available Slot with Special Styling */}
-														<div className="relative">
-															<button className="p-3 w-full text-left bg-blue-50 rounded-lg border-2 border-blue-600 transition-all dark:bg-blue-900/20">
-																<div className="text-sm font-medium text-blue-700 dark:text-blue-300">11:00am</div>
-															</button>
-															<Button size="sm" className="absolute top-2 right-2 h-7 text-xs text-white bg-blue-600 hover:bg-blue-700">
-																Confirm
-															</Button>
-														</div>
-													</div>
-
-													{/* Video Consultation */}
-													<div className="p-4 mt-6 rounded-lg bg-muted/50">
-														<div className="flex justify-between items-center mb-2">
-															<h4 className="text-sm font-semibold text-foreground">Video Consultation</h4>
-															<Badge variant="outline" className="text-blue-600 border-blue-200 dark:text-blue-400 dark:border-blue-800">
-																HD Quality
-															</Badge>
-														</div>
-														<div className="grid grid-cols-2 gap-3 mb-3">
-															<div>
-																<p className="text-xs text-muted-foreground">Price</p>
-																<p className="font-semibold text-foreground">{business?.videoConsultation?.pricePerSession || "$25"}</p>
-															</div>
-															<div>
-																<p className="text-xs text-muted-foreground">Duration</p>
-																<p className="font-semibold text-foreground">{business?.videoConsultation?.duration || "30 minutes"}</p>
-															</div>
-														</div>
-														<Button size="sm" className="w-full text-white bg-blue-600 hover:bg-blue-700">
-															<Video className="mr-2 w-3 h-3" />
-															Schedule Video Call
-														</Button>
-
-														{/* What's Included */}
-														<div className="pt-3 mt-3 border-t border-border">
-															<p className="mb-2 text-xs font-medium text-foreground">What&apos;s Included</p>
-															<div className="space-y-1">
-																{(business?.videoConsultation?.specialties || ["Initial Assessment", "Quote Estimation", "Problem Diagnosis", "Maintenance Tips"]).slice(0, 4).map((specialty, index) => (
-																	<div key={index} className="flex gap-2 items-center">
-																		<CheckCircle className="w-3 h-3 text-green-500" />
-																		<span className="text-xs text-muted-foreground">{specialty}</span>
-																	</div>
-																))}
-															</div>
-															<div className="mt-2">
-																<p className="mb-1 text-xs text-muted-foreground">Available Languages:</p>
-																<div className="flex gap-1">
-																	{(business?.videoConsultation?.languages || ["English", "Spanish"]).map((lang, index) => (
-																		<Badge key={index} variant="secondary" className="text-xs">
-																			{lang}
-																		</Badge>
-																	))}
-																</div>
-															</div>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</section>
-
-							{/* 5. SERVICES & WORK SHOWCASE SECTION - What They Offer & Proof */}
-							<section ref={servicesRef} className="scroll-mt-20 sm:scroll-mt-24 lg:scroll-mt-32">
-								<div className="mb-8">
-									<h2 className="flex items-center mb-2 text-2xl font-bold text-foreground">
-										<Zap className="mr-3 w-6 h-6 text-primary" />
-										Services & Work Showcase
-									</h2>
-									<div className="w-20 h-1 bg-gradient-to-r rounded-full from-primary to-primary/50"></div>
-								</div>
-
-								<div className="space-y-8">
-									{/* Services Overview */}
-									<div className="space-y-4">
-										<h3 className="text-lg font-semibold text-foreground">Our Services</h3>
-										<div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-											{business.detailedServices.map((service, index) => (
-												<div key={index} className="flex items-start p-3 space-x-3 rounded-lg border bg-card/30 border-border">
-													<CheckCircle className="flex-shrink-0 mt-0.5 w-4 h-4 text-primary" />
-													<span className="text-sm leading-relaxed break-words text-foreground">{service}</span>
-												</div>
-											))}
-										</div>
-									</div>
-
-									{/* Business Updates */}
-									{business.businessUpdates.length > 0 && (
-										<div className="space-y-4">
-											<h3 className="text-lg font-semibold text-foreground">Recent Updates</h3>
-											<div className="space-y-4">
-												{business.businessUpdates.map((update) => (
-													<div key={update.id} className="p-4 rounded-xl border bg-card/30 border-border">
-														<div className="flex flex-col space-y-3 sm:flex-row sm:space-y-0 sm:space-x-4">
-															<img src={update.image} alt={update.title} className="object-cover w-full h-32 rounded-lg sm:w-16 sm:h-16 sm:flex-shrink-0" />
-															<div className="flex-1 space-y-1 min-w-0">
-																<h4 className="font-medium leading-snug break-words text-foreground">{update.title}</h4>
-																<p className="text-sm leading-relaxed break-words text-muted-foreground">{update.content}</p>
-																<p className="text-xs text-muted-foreground">{update.date}</p>
-															</div>
-														</div>
-													</div>
-												))}
-											</div>
-										</div>
-									)}
-
-									{/* Community Involvement */}
-									<div className="space-y-4">
-										<h3 className="text-lg font-semibold text-foreground">Community Involvement</h3>
-										<div className="space-y-2">
-											{business.communityInvolvement.map((involvement, index) => (
-												<div key={index} className="flex items-center space-x-2">
-													<Heart className="flex-shrink-0 w-4 h-4 text-red-400" />
-													<span className="text-sm text-foreground">{involvement.activity}</span>
-												</div>
-											))}
-										</div>
-									</div>
-								</div>
-							</section>
-
-							{/* 6. EXPERTISE & PROFESSIONAL DETAILS SECTION - Deep Dive Capabilities */}
-							<section ref={expertiseRef} className="scroll-mt-20 sm:scroll-mt-24 lg:scroll-mt-32">
-								<div className="mb-8">
-									<h2 className="flex items-center mb-2 text-2xl font-bold text-foreground">
-										<Target className="mr-3 w-6 h-6 text-primary" />
-										Expertise & Professional Details
-									</h2>
-									<div className="w-20 h-1 bg-gradient-to-r rounded-full from-primary to-primary/50"></div>
-								</div>
-
-								<div className="space-y-8">
-									{/* Specializations */}
-									<div className="space-y-4">
-										<h3 className="text-lg font-semibold text-foreground">Our Specializations</h3>
-										<div className="flex flex-wrap gap-2">
-											{business.specializations.map((spec, index) => (
-												<Badge key={index} variant="outline" className="border-primary/20 text-primary bg-primary/5">
-													{spec}
-												</Badge>
-											))}
-										</div>
-									</div>
-
-									{/* Professional Equipment */}
-									<div className="space-y-4">
-										<h3 className="text-lg font-semibold text-foreground">Professional Equipment</h3>
-										<div className="grid grid-cols-1 gap-2 md:grid-cols-2">
-											{business.equipment.map((item, index) => (
-												<div key={index} className="flex items-center space-x-2">
-													<div className="flex-shrink-0 w-2 h-2 rounded-full bg-primary"></div>
-													<span className="text-sm text-foreground">{item}</span>
-												</div>
-											))}
-										</div>
-									</div>
-
-									{/* Trusted Brands */}
-									<div className="space-y-4">
-										<h3 className="text-lg font-semibold text-foreground">Trusted Brands We Work With</h3>
-										<div className="flex flex-wrap gap-2">
-											{business.brands.map((brand, index) => (
-												<Badge key={index} variant="secondary" className="bg-muted text-foreground">
-													{brand}
-												</Badge>
-											))}
-										</div>
-									</div>
-
-									{/* Professional Team */}
-									<div className="space-y-4">
-										<h3 className="text-lg font-semibold text-foreground">Meet Our Team</h3>
-										<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-											{business.team.map((member, index) => (
-												<div key={index} className="p-4 rounded-lg border bg-card/30 border-border">
-													<div className="space-y-3 text-center">
-														<Avatar className="mx-auto w-16 h-16">
-															<AvatarImage src={member.photo} />
-															<AvatarFallback className="text-lg bg-primary/10 text-primary">
-																{member.name
-																	.split(" ")
-																	.map((n) => n[0])
-																	.join("")}
-															</AvatarFallback>
-														</Avatar>
-														<div className="space-y-1">
-															<h5 className="font-medium leading-snug break-words text-foreground">{member.name}</h5>
-															<p className="text-sm leading-relaxed break-words text-muted-foreground">{member.title}</p>
-															<p className="text-xs text-muted-foreground">{member.experience}</p>
-														</div>
-														<div className="flex flex-wrap gap-1 justify-center">
-															{member.specialties.map((specialty, idx) => (
-																<Badge key={idx} variant="secondary" className="text-xs bg-primary/10 text-primary">
-																	<span className="break-words">{specialty}</span>
-																</Badge>
-															))}
-														</div>
-													</div>
-												</div>
-											))}
-										</div>
-									</div>
-								</div>
-							</section>
-
-							{/* 7. PRICING & SERVICE INFORMATION SECTION - Flexible for Different Industries */}
-							<section ref={pricingRef} className="scroll-mt-20 sm:scroll-mt-24 lg:scroll-mt-32">
-								<div className="mb-8">
-									<h2 className="flex items-center mb-2 text-2xl font-bold text-foreground">
-										<DollarSign className="mr-3 w-6 h-6 text-primary" />
-										Service Information & Policies
-									</h2>
-									<div className="w-20 h-1 bg-gradient-to-r rounded-full from-primary to-primary/50"></div>
-								</div>
-
-								<div className="space-y-8">
-									{/* Service Approach & Pricing Philosophy */}
-									<div className="space-y-4">
-										<h3 className="text-lg font-semibold text-foreground">Service Approach & Pricing</h3>
-										<div className="p-6 rounded-lg border bg-card/30 border-border">
-											<div className="space-y-6">
-												{/* Pricing Philosophy */}
-												<div className="p-4 rounded-lg border bg-primary/5 border-primary/20">
-													<div className="flex items-start space-x-3">
-														<Calculator className="flex-shrink-0 mt-1 w-5 h-5 text-primary" />
-														<div>
-															<h4 className="font-medium text-foreground">{business.pricing?.approach || "Custom Service Pricing"}</h4>
-															<p className="mt-1 text-sm text-muted-foreground">{business.pricing?.description || "Each project is unique. Contact us for a personalized quote based on your specific needs and requirements."}</p>
-														</div>
-													</div>
-												</div>
-
-												{/* Service Rates */}
-												{business.pricing?.hourlyRate && (
-													<div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-														<div className="p-4 rounded-lg border bg-card/20 border-border">
-															<div className="text-center">
-																<p className="text-sm text-muted-foreground">Standard Rate</p>
-																<p className="text-lg font-bold text-foreground">{business.pricing.hourlyRate}</p>
-															</div>
-														</div>
-														{business.pricing?.emergencyRate && (
-															<div className="p-4 rounded-lg border bg-red-50/50 border-red-200/50 dark:bg-red-950/20 dark:border-red-900/30">
-																<div className="text-center">
-																	<p className="text-sm text-red-600 dark:text-red-400">Emergency Rate</p>
-																	<p className="text-lg font-bold text-red-700 dark:text-red-300">{business.pricing.emergencyRate}</p>
-																</div>
-															</div>
-														)}
-														{business.pricing?.minimumCharge && (
-															<div className="p-4 rounded-lg border bg-card/20 border-border">
-																<div className="text-center">
-																	<p className="text-sm text-muted-foreground">Minimum Charge</p>
-																	<p className="text-lg font-bold text-foreground">{business.pricing.minimumCharge}</p>
-																</div>
-															</div>
-														)}
-													</div>
-												)}
-
-												{/* Free Services */}
-												{business.pricing?.freeServices && business.pricing.freeServices.length > 0 ? (
-													<div>
-														<h5 className="mb-3 font-medium text-foreground">Complimentary Services</h5>
-														<div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-															{business.pricing.freeServices.map((service, index) => (
-																<div key={index} className="flex items-start p-3 space-x-3 rounded-lg border bg-green-50/50 border-green-200/50 dark:bg-green-950/20 dark:border-green-900/30">
-																	<CheckCircle className="flex-shrink-0 mt-0.5 w-4 h-4 text-green-500" />
-																	<div>
-																		<p className="text-sm font-medium text-foreground">{service.service}</p>
-																		<p className="text-xs text-muted-foreground">{service.description}</p>
-																	</div>
-																</div>
-															))}
-														</div>
-													</div>
-												) : (
-													<div>
-														<h5 className="mb-3 font-medium text-foreground">Complimentary Services</h5>
-														<div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-															<div className="flex items-start p-3 space-x-3 rounded-lg border bg-green-50/50 border-green-200/50 dark:bg-green-950/20 dark:border-green-900/30">
-																<CheckCircle className="flex-shrink-0 mt-0.5 w-4 h-4 text-green-500" />
-																<div>
-																	<p className="text-sm font-medium text-foreground">Initial Consultation</p>
-																	<p className="text-xs text-muted-foreground">No-obligation assessment</p>
-																</div>
-															</div>
-															<div className="flex items-start p-3 space-x-3 rounded-lg border bg-green-50/50 border-green-200/50 dark:bg-green-950/20 dark:border-green-900/30">
-																<CheckCircle className="flex-shrink-0 mt-0.5 w-4 h-4 text-green-500" />
-																<div>
-																	<p className="text-sm font-medium text-foreground">Written Estimates</p>
-																	<p className="text-xs text-muted-foreground">Detailed project quotes</p>
-																</div>
-															</div>
-															<div className="flex items-start p-3 space-x-3 rounded-lg border bg-green-50/50 border-green-200/50 dark:bg-green-950/20 dark:border-green-900/30">
-																<CheckCircle className="flex-shrink-0 mt-0.5 w-4 h-4 text-green-500" />
-																<div>
-																	<p className="text-sm font-medium text-foreground">Basic Diagnostics</p>
-																	<p className="text-xs text-muted-foreground">Problem identification</p>
-																</div>
-															</div>
-															<div className="flex items-start p-3 space-x-3 rounded-lg border bg-green-50/50 border-green-200/50 dark:bg-green-950/20 dark:border-green-900/30">
-																<CheckCircle className="flex-shrink-0 mt-0.5 w-4 h-4 text-green-500" />
-																<div>
-																	<p className="text-sm font-medium text-foreground">Follow-up Inspection</p>
-																	<p className="text-xs text-muted-foreground">30-day post-service check</p>
-																</div>
-															</div>
-														</div>
-													</div>
-												)}
-
-												{/* Available Discounts */}
-												{business.pricing?.discounts && business.pricing.discounts.length > 0 ? (
-													<div>
-														<h5 className="mb-3 font-medium text-foreground">Available Discounts</h5>
-														<div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-															{business.pricing.discounts.map((discount, index) => (
-																<div key={index} className="flex items-center p-3 space-x-3 rounded-lg border bg-blue-50/50 border-blue-200/50 dark:bg-blue-950/20 dark:border-blue-900/30">
-																	<Badge variant="secondary" className="text-blue-700 bg-blue-100 dark:text-blue-300 dark:bg-blue-900/50">
-																		{discount.amount}
-																	</Badge>
-																	<div className="flex-1">
-																		<p className="text-sm font-medium text-foreground">{discount.type}</p>
-																		<p className="text-xs text-muted-foreground">{discount.description}</p>
-																	</div>
-																</div>
-															))}
-														</div>
-													</div>
-												) : (
-													<div>
-														<h5 className="mb-3 font-medium text-foreground">Available Discounts</h5>
-														<div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-															<div className="flex items-center p-3 space-x-3 rounded-lg border bg-blue-50/50 border-blue-200/50 dark:bg-blue-950/20 dark:border-blue-900/30">
-																<Badge variant="secondary" className="text-blue-700 bg-blue-100 dark:text-blue-300 dark:bg-blue-900/50">
-																	10%
-																</Badge>
-																<div className="flex-1">
-																	<p className="text-sm font-medium text-foreground">Senior Discount</p>
-																	<p className="text-xs text-muted-foreground">For customers 65+ years old</p>
-																</div>
-															</div>
-															<div className="flex items-center p-3 space-x-3 rounded-lg border bg-blue-50/50 border-blue-200/50 dark:bg-blue-950/20 dark:border-blue-900/30">
-																<Badge variant="secondary" className="text-blue-700 bg-blue-100 dark:text-blue-300 dark:bg-blue-900/50">
-																	15%
-																</Badge>
-																<div className="flex-1">
-																	<p className="text-sm font-medium text-foreground">Military Discount</p>
-																	<p className="text-xs text-muted-foreground">Active duty and veterans</p>
-																</div>
-															</div>
-															<div className="flex items-center p-3 space-x-3 rounded-lg border bg-blue-50/50 border-blue-200/50 dark:bg-blue-950/20 dark:border-blue-900/30">
-																<Badge variant="secondary" className="text-blue-700 bg-blue-100 dark:text-blue-300 dark:bg-blue-900/50">
-																	5%
-																</Badge>
-																<div className="flex-1">
-																	<p className="text-sm font-medium text-foreground">First-Time Customer</p>
-																	<p className="text-xs text-muted-foreground">New customers only</p>
-																</div>
-															</div>
-															<div className="flex items-center p-3 space-x-3 rounded-lg border bg-blue-50/50 border-blue-200/50 dark:bg-blue-950/20 dark:border-blue-900/30">
-																<Badge variant="secondary" className="text-blue-700 bg-blue-100 dark:text-blue-300 dark:bg-blue-900/50">
-																	10%
-																</Badge>
-																<div className="flex-1">
-																	<p className="text-sm font-medium text-foreground">Repeat Customer</p>
-																	<p className="text-xs text-muted-foreground">Return customers</p>
-																</div>
-															</div>
-														</div>
-													</div>
-												)}
-
-												{/* Payment Terms */}
-												{business.pricing?.paymentTerms && (
-													<div className="p-4 rounded-lg border bg-yellow-50/50 border-yellow-200/50 dark:bg-yellow-950/20 dark:border-yellow-900/30">
-														<h5 className="mb-2 font-medium text-foreground">Payment Terms</h5>
-														<div className="space-y-1 text-sm text-muted-foreground">
-															<p>• {business.pricing.paymentTerms.deposit}</p>
-															<p>• {business.pricing.paymentTerms.completion}</p>
-															<p>• {business.pricing.paymentTerms.largejobs}</p>
-														</div>
-													</div>
-												)}
-
-												{/* Financing Options */}
-												{business.pricing?.financing?.available && (
-													<div className="p-4 rounded-lg border bg-purple-50/50 border-purple-200/50 dark:bg-purple-950/20 dark:border-purple-900/30">
-														<div className="flex items-start space-x-3">
-															<CreditCard className="flex-shrink-0 mt-1 w-5 h-5 text-purple-600" />
-															<div>
-																<h5 className="font-medium text-foreground">Financing Available</h5>
-																<div className="mt-2 space-y-1 text-sm text-muted-foreground">
-																	<p>• Provider: {business.pricing.financing.provider}</p>
-																	<p>• Minimum Amount: {business.pricing.financing.minAmount}</p>
-																	<p>• Terms: {business.pricing.financing.terms}</p>
-																	<p className="text-xs italic">• {business.pricing.financing.approval}</p>
-																</div>
-															</div>
-														</div>
-													</div>
-												)}
-											</div>
-										</div>
-									</div>
-
-									{/* Payment Methods */}
-									<div className="space-y-4">
-										<h3 className="text-lg font-semibold text-foreground">Accepted Payment Methods</h3>
-										<div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
-											{business.paymentMethods && business.paymentMethods.length > 0
-												? business.paymentMethods.map((method, index) => (
-														<div key={index} className="flex items-start p-4 space-x-3 rounded-lg border bg-card/30 border-border">
-															<CreditCard className="flex-shrink-0 mt-1 w-5 h-5 text-primary" />
-															<div className="flex-1">
-																<p className="font-medium text-foreground">{method.name}</p>
-																<p className="text-xs text-muted-foreground">{method.details}</p>
-															</div>
-															{method.accepted && <CheckCircle className="flex-shrink-0 w-4 h-4 text-green-500" />}
-														</div>
-												  ))
-												: [
-														{ name: "Cash", details: "Exact change appreciated" },
-														{ name: "Check", details: "Personal and business checks" },
-														{ name: "Credit Cards", details: "Visa, MasterCard, American Express" },
-														{ name: "Debit Cards", details: "PIN or signature" },
-														{ name: "Digital Payments", details: "Apple Pay, Google Pay, Zelle" },
-														{ name: "Financing", details: "Through approved financing partners" },
-												  ].map((method, index) => (
-														<div key={index} className="flex items-start p-4 space-x-3 rounded-lg border bg-card/30 border-border">
-															<CreditCard className="flex-shrink-0 mt-1 w-5 h-5 text-primary" />
-															<div className="flex-1">
-																<p className="font-medium text-foreground">{method.name}</p>
-																<p className="text-xs text-muted-foreground">{method.details}</p>
-															</div>
-															<CheckCircle className="flex-shrink-0 w-4 h-4 text-green-500" />
-														</div>
-												  ))}
-										</div>
-									</div>
-
-									{/* Service Guarantees */}
-									<div className="space-y-4">
-										<h3 className="text-lg font-semibold text-foreground">Service Guarantees & Warranties</h3>
-										<div className="space-y-3">
-											{business.guarantees && business.guarantees.length > 0
-												? business.guarantees.map((guarantee, index) => (
-														<div key={index} className="p-4 rounded-lg border bg-card/30 border-border">
-															<div className="flex items-start space-x-3">
-																<Award className="flex-shrink-0 mt-1 w-5 h-5 text-green-500" />
-																<div className="flex-1">
-																	<div className="flex justify-between items-center">
-																		<h5 className="font-medium text-foreground">{guarantee.title}</h5>
-																		<Badge variant="outline" className="text-xs text-green-700 bg-green-50 border-green-200 dark:border-green-800 dark:text-green-300 dark:bg-green-950/50">
-																			{guarantee.period}
-																		</Badge>
-																	</div>
-																	<p className="mt-1 text-sm text-muted-foreground">{guarantee.description}</p>
-																</div>
-															</div>
-														</div>
-												  ))
-												: [
-														{ title: "100% Satisfaction Guarantee", description: "We stand behind our work with a complete satisfaction guarantee", period: "Service completion" },
-														{ title: "Workmanship Warranty", description: "All work guaranteed against defects for specified period", period: "1-2 years" },
-														{ title: "Licensed Professionals", description: "All staff properly licensed and background checked", period: "Ongoing" },
-														{ title: "Quality Materials", description: "We use only high-grade, manufacturer-approved materials", period: "Manufacturer warranty" },
-														{ title: "Timely Completion", description: "Projects completed within agreed timeframe or compensation provided", period: "Project duration" },
-														{ title: "Clean Work Areas", description: "We maintain clean and safe work environments", period: "During service" },
-												  ].map((guarantee, index) => (
-														<div key={index} className="p-4 rounded-lg border bg-card/30 border-border">
-															<div className="flex items-start space-x-3">
-																<Award className="flex-shrink-0 mt-1 w-5 h-5 text-green-500" />
-																<div className="flex-1">
-																	<div className="flex justify-between items-center">
-																		<h5 className="font-medium text-foreground">{guarantee.title}</h5>
-																		<Badge variant="outline" className="text-xs text-green-700 bg-green-50 border-green-200 dark:border-green-800 dark:text-green-300 dark:bg-green-950/50">
-																			{guarantee.period}
-																		</Badge>
-																	</div>
-																	<p className="mt-1 text-sm text-muted-foreground">{guarantee.description}</p>
-																</div>
-															</div>
-														</div>
-												  ))}
-										</div>
-									</div>
-
-									{/* Insurance & Coverage Details */}
-									<div className="space-y-4">
-										<h3 className="text-lg font-semibold text-foreground">Insurance & Coverage</h3>
-										<div className="p-6 rounded-lg border bg-card/30 border-border">
-											{/* Primary Coverage */}
-											<div className="space-y-4">
-												<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-													<div className="space-y-3">
-														<div className="flex justify-between items-center">
-															<span className="text-muted-foreground">General Liability</span>
-															<span className="font-bold text-foreground">{business.insurance?.generalLiability || business.insurance?.liability || "$2,000,000"}</span>
-														</div>
-														<div className="flex justify-between items-center">
-															<span className="text-muted-foreground">Workers&apos; Compensation</span>
-															<span className="font-medium text-foreground">{business.insurance?.workersComp || "Full Coverage"}</span>
-														</div>
-														<div className="flex justify-between items-center">
-															<span className="text-muted-foreground">Bonded Amount</span>
-															<span className="font-medium text-foreground">{business.insurance?.bonded || business.insurance?.bonding || "$50,000"}</span>
-														</div>
-													</div>
-													<div className="space-y-3">
-														<div className="flex justify-between items-center">
-															<span className="text-muted-foreground">Insurance Carrier</span>
-															<span className="font-medium text-foreground">{business.insurance?.carrier || business.insurance?.provider || "Commercial Insurance Group"}</span>
-														</div>
-														<div className="flex justify-between items-center">
-															<span className="text-muted-foreground">Policy Expires</span>
-															<span className="font-medium text-foreground">{business.insurance?.expires || "December 31, 2025"}</span>
-														</div>
-														{(business.insurance?.policyNumber || "POL-12345") && (
-															<div className="flex justify-between items-center">
-																<span className="text-muted-foreground">Policy Number</span>
-																<span className="font-mono text-xs text-foreground">{business.insurance?.policyNumber || "POL-12345"}</span>
-															</div>
-														)}
-													</div>
-												</div>
-
-												{/* Additional Coverage */}
-												{business.insurance?.additionalCoverage && business.insurance.additionalCoverage.length > 0 && (
-													<div className="pt-4 border-t border-border">
-														<h5 className="mb-3 font-medium text-foreground">Additional Coverage</h5>
-														<div className="grid grid-cols-1 gap-2 md:grid-cols-3">
-															{business.insurance.additionalCoverage.map((coverage, index) => (
-																<div key={index} className="flex justify-between items-center p-3 rounded-lg border bg-card/50 border-border">
-																	<span className="text-sm text-muted-foreground">{coverage.type}</span>
-																	<span className="text-sm font-medium text-foreground">{coverage.amount}</span>
-																</div>
-															))}
-														</div>
-													</div>
-												)}
-
-												{/* Insurance Verification */}
-												<div className="pt-4 border-t border-border">
-													<div className="flex items-center space-x-2">
-														{business.insurance?.verified ? (
-															<>
-																<Verified className="w-5 h-5 text-green-500" />
-																<span className="text-sm font-medium text-green-600">Insurance Verified</span>
-															</>
-														) : (
-															<>
-																<Clock className="w-5 h-5 text-yellow-500" />
-																<span className="text-sm font-medium text-yellow-600">Verification Pending</span>
-															</>
-														)}
-														{business.insurance?.certificationAvailable && (
-															<Badge variant="outline" className="ml-auto text-xs">
-																Certificate Available Upon Request
-															</Badge>
-														)}
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</section>
-
-							{/* 8. 👁️ BUSINESS OPERATIONS SECTION - Transparency */}
-							<section ref={businessTransparencyRef} className="scroll-mt-20 sm:scroll-mt-24 lg:scroll-mt-32">
-								<div className="mb-8">
-									<h2 className="flex items-center mb-2 text-2xl font-bold text-foreground">
-										<Eye className="mr-3 w-6 h-6 text-primary" />
-										👁️ Business Operations
-									</h2>
-									<div className="w-20 h-1 bg-gradient-to-r rounded-full from-primary to-primary/50"></div>
-								</div>
-
-								<div className="space-y-8">
-									{/* Educational Introduction */}
-									<div className="p-6 bg-gradient-to-r rounded-xl border from-blue-50/50 to-purple-50/50 dark:from-blue-950/20 dark:to-purple-950/20 border-blue-200/50">
-										<div className="space-y-4">
-											<h3 className="text-lg font-semibold text-foreground">Understanding Professional Service Costs</h3>
-											<p className="text-sm leading-relaxed text-muted-foreground">We believe in transparency. Quality service businesses invest in many areas that customers don&apos;t always see. Here&apos;s an educational look at what goes into delivering professional, reliable service.</p>
-										</div>
-									</div>
-
-									{/* Operational Areas */}
-									<div className="space-y-6">
-										<h3 className="text-lg font-semibold text-foreground">Key Investment Areas</h3>
-										<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-											{business.businessTransparency.operationalAreas.map((area, index) => (
-												<div key={index} className="p-4 rounded-lg border bg-card/30 border-border">
-													<div className="flex justify-between items-start mb-3">
-														<h4 className="font-medium text-foreground">{area.category}</h4>
-														<Badge variant="outline" className={`text-xs ${area.importance === "Critical" ? "border-red-200 text-red-600 bg-red-50" : area.importance === "High" ? "border-orange-200 text-orange-600 bg-orange-50" : "border-blue-200 text-blue-600 bg-blue-50"}`}>
-															{area.importance}
-														</Badge>
-													</div>
-													<p className="text-sm text-muted-foreground">{area.description}</p>
-												</div>
-											))}
-										</div>
-									</div>
-
-									{/* Why Quality Matters */}
-									<div className="space-y-4">
-										<h3 className="text-lg font-semibold text-foreground">Why Quality Service Matters</h3>
-										<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-											{business.businessTransparency.whyQualityMatters.map((factor, index) => (
-												<div key={index} className="p-4 rounded-lg border bg-card/30 border-border">
-													<div className="space-y-2">
-														<h4 className="font-medium text-foreground">{factor.factor}</h4>
-														<p className="text-sm text-muted-foreground">{factor.impact}</p>
-													</div>
-												</div>
-											))}
-										</div>
-									</div>
-
-									{/* Industry Insights */}
-									<div className="space-y-4">
-										<h3 className="text-lg font-semibold text-foreground">Industry Insights</h3>
-										<div className="p-6 rounded-xl border bg-green-50/50 dark:bg-green-950/20 border-green-200/50">
-											<div className="space-y-6">
-												<div>
-													<h4 className="mb-3 font-medium text-foreground">Professional Service Standards</h4>
-													<p className="text-sm leading-relaxed text-muted-foreground">{business.businessTransparency.industryInsights.commonCosts}</p>
-												</div>
-
-												<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-													<div className="space-y-3">
-														<h4 className="font-medium text-foreground">Quality Indicators</h4>
-														<div className="space-y-2">
-															{business.businessTransparency.industryInsights.qualityIndicators.map((indicator, index) => (
-																<div key={index} className="flex items-center space-x-2">
-																	<CheckCircle className="flex-shrink-0 w-4 h-4 text-green-500" />
-																	<span className="text-sm text-foreground">{indicator}</span>
-																</div>
-															))}
-														</div>
-													</div>
-
-													<div className="space-y-3">
-														<h4 className="font-medium text-foreground">Professional Investments</h4>
-														<div className="space-y-2">
-															{business.businessTransparency.industryInsights.investmentAreas.map((investment, index) => (
-																<div key={index} className="flex items-center space-x-2">
-																	<div className="w-2 h-2 rounded-full bg-primary"></div>
-																	<span className="text-sm text-foreground">{investment}</span>
-																</div>
-															))}
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</section>
-
-							{/* 9. 🛡️ WARRANTY TRACKER SECTION - Long-term Value */}
-							<section ref={warrantyTrackerRef} className="scroll-mt-20 sm:scroll-mt-24 lg:scroll-mt-32">
-								<div className="mb-8">
-									<h2 className="flex items-center mb-2 text-2xl font-bold text-foreground">
-										<Shield className="mr-3 w-6 h-6 text-primary" />
-										🛡️ Warranty Tracker
-									</h2>
-									<div className="w-20 h-1 bg-gradient-to-r rounded-full from-primary to-primary/50"></div>
-								</div>
-
-								<div className="space-y-8">
-									<div className="p-6 rounded-xl border bg-card/30 border-border">
-										<div className="flex gap-2 items-center mb-4">
-											<Badge className="text-purple-600 bg-purple-100">{business.warranties.length} Active</Badge>
-											<span className="text-sm font-medium text-purple-600">Live Monitoring</span>
-										</div>
-
-										{/* Active Warranties */}
-										<div className="space-y-4">
-											{business.warranties.map((warranty, index) => (
-												<div key={index} className="p-4 rounded-lg border bg-card/30 border-border">
-													<div className="flex justify-between items-start mb-3">
-														<div>
-															<h4 className="font-medium text-foreground">{warranty.service}</h4>
-															<p className="text-sm text-muted-foreground">Started: {warranty.startDate}</p>
-														</div>
-														<Badge variant={warranty.status === "Active" ? "default" : "secondary"} className={warranty.status === "Active" ? "bg-green-500 text-white" : ""}>
-															{warranty.status}
-														</Badge>
-													</div>
-
-													<div className="text-sm">
-														<p className="text-muted-foreground">{warranty.coverageDetails}</p>
-													</div>
-												</div>
-											))}
-										</div>
-
-										<Button className="mt-4 w-full bg-purple-600 hover:bg-purple-700">
-											<FileText className="mr-2 w-4 h-4" />
-											File Warranty Claim
-										</Button>
-									</div>
-								</div>
-							</section>
-
-							{/* 10. FAQ & SUPPORT SECTION - Address Concerns */}
-							<section ref={faqRef} className="scroll-mt-20 sm:scroll-mt-24 lg:scroll-mt-32">
-								<div className="mb-8">
-									<h2 className="flex items-center mb-2 text-2xl font-bold text-foreground">
-										<MessageCircle className="mr-3 w-6 h-6 text-primary" />
-										FAQ & Support
-									</h2>
-									<div className="w-20 h-1 bg-gradient-to-r rounded-full from-primary to-primary/50"></div>
-								</div>
-
-								<div className="space-y-8">
-									{/* Frequently Asked Questions */}
-									<div className="space-y-4">
-										<h3 className="text-lg font-semibold text-foreground">Frequently Asked Questions</h3>
-										<div className="space-y-4">
-											{business.faq.map((faq, index) => (
-												<div key={index} className="p-4 rounded-lg border bg-card/30 border-border">
-													<div className="space-y-2">
-														<h5 className="font-medium text-foreground">{faq.question}</h5>
-														<p className="text-sm text-muted-foreground">{faq.answer}</p>
-													</div>
-												</div>
-											))}
-										</div>
-									</div>
-
-									{/* Q&A Section */}
-									{business.qna.length > 0 && (
-										<div className="space-y-4">
-											<h3 className="text-lg font-semibold text-foreground">Ask the Community</h3>
-											<div className="space-y-4">
-												{business.qna.map((item) => (
-													<div key={item.id} className="p-4 rounded-lg border bg-card/30 border-border">
-														<div className="space-y-3">
-															<div className="flex items-start space-x-2">
-																<MessageCircle className="flex-shrink-0 mt-0.5 w-4 h-4 text-primary" />
-																<div className="space-y-1">
-																	<p className="font-medium text-foreground">{item.question}</p>
-																</div>
-															</div>
-															<div className="ml-6 space-y-2">
-																<p className="text-sm text-muted-foreground">{item.answer}</p>
-																<div className="flex justify-between items-center text-xs text-muted-foreground">
-																	<span>
-																		Answered by {item.author} • {item.date}
-																	</span>
-																	<button className="flex items-center space-x-1 hover:text-foreground">
-																		<ThumbsUp className="w-3 h-3" />
-																		<span>Helpful ({item.helpful})</span>
-																	</button>
-																</div>
-															</div>
-														</div>
-													</div>
-												))}
-											</div>
-										</div>
-									)}
-								</div>
-							</section>
-
-							{/* 11. 💼 CAREERS SECTION - Secondary Interest */}
-							<section ref={careersRef} className="scroll-mt-20 sm:scroll-mt-24 lg:scroll-mt-32">
-								<div className="mb-8">
-									<h2 className="flex items-center mb-2 text-2xl font-bold text-foreground">
-										<Users className="mr-3 w-6 h-6 text-primary" />
-										💼 Join Our Team
-									</h2>
-									<div className="w-20 h-1 bg-gradient-to-r rounded-full from-primary to-primary/50"></div>
-								</div>
-
-								<div className="space-y-8">
-									{/* Hero Section with Status */}
-									<div className="overflow-hidden relative p-8 bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 rounded-2xl border-2 dark:from-green-900/20 dark:via-blue-900/20 dark:to-purple-900/20 border-green-200/50 dark:border-green-800/50">
-										<div className="absolute top-4 right-4">
-											<Badge className={business.careers.isHiring ? "text-white bg-green-500 animate-pulse shadow-lg" : "text-gray-600 bg-gray-100"}>{business.careers.isHiring ? "🔥 Now Hiring" : "Not Currently Hiring"}</Badge>
-										</div>
-
-										<div className="relative z-10">
-											<div className="flex items-center mb-4 space-x-3">
-												<div className="p-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full">
-													<Users className="w-6 h-6 text-white" />
-												</div>
-												<div>
-													<h3 className="text-xl font-bold text-foreground">Join {business.name}</h3>
-													<p className="text-sm text-muted-foreground">{business.careers.companySize} • Growing Team</p>
-												</div>
-											</div>
-											<p className="mb-6 text-foreground">{business.careers.culture}</p>
-
-											{business.careers.isHiring && (
-												<div className="flex gap-3">
-													<Button className="text-white bg-gradient-to-r from-green-500 to-blue-500 shadow-lg hover:from-green-600 hover:to-blue-600">
-														<Users className="mr-2 w-4 h-4" />
-														View Open Positions
-													</Button>
-													<Button variant="outline" className="border-green-300 hover:bg-green-50 dark:border-green-800 dark:hover:bg-green-900/20">
-														<FileText className="mr-2 w-4 h-4" />
-														Submit Resume
-													</Button>
-												</div>
-											)}
-										</div>
-									</div>
-
-									{/* Benefits & Perks Cards */}
-									<div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-										{/* Benefits */}
-										<div className="p-6 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border dark:from-green-900/20 dark:to-emerald-900/20 border-green-200/50 dark:border-green-800/50">
-											<div className="flex items-center mb-4 space-x-3">
-												<div className="p-2 rounded-lg bg-green-500/10">
-													<Heart className="w-5 h-5 text-green-600" />
-												</div>
-												<h4 className="text-lg font-semibold text-foreground">Benefits & Wellness</h4>
-											</div>
-											<div className="space-y-3">
-												{business.careers.benefits.map((benefit, index) => (
-													<div key={index} className="flex items-start p-3 space-x-3 rounded-lg border bg-white/50 dark:bg-white/5 border-green-200/30 dark:border-green-800/30">
-														<CheckCircle className="flex-shrink-0 mt-0.5 w-4 h-4 text-green-500" />
-														<span className="text-sm font-medium text-foreground">{benefit}</span>
-													</div>
-												))}
-											</div>
-										</div>
-
-										{/* Additional Perks */}
-										<div className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border dark:from-blue-900/20 dark:to-indigo-900/20 border-blue-200/50 dark:border-blue-800/50">
-											<div className="flex items-center mb-4 space-x-3">
-												<div className="p-2 rounded-lg bg-blue-500/10">
-													<Star className="w-5 h-5 text-blue-600" />
-												</div>
-												<h4 className="text-lg font-semibold text-foreground">Additional Perks</h4>
-											</div>
-											<div className="space-y-3">
-												{business.careers.perks.map((perk, index) => (
-													<div key={index} className="flex items-start p-3 space-x-3 rounded-lg border bg-white/50 dark:bg-white/5 border-blue-200/30 dark:border-blue-800/30">
-														<Star className="flex-shrink-0 mt-0.5 w-4 h-4 text-blue-500" />
-														<span className="text-sm font-medium text-foreground">{perk}</span>
-													</div>
-												))}
-											</div>
-										</div>
-									</div>
-
-									{/* Open Positions */}
-									{business.careers.isHiring && business.careers.openPositions.length > 0 && (
-										<div className="space-y-6">
-											<div className="flex justify-between items-center">
-												<h3 className="text-xl font-bold text-foreground">Current Openings</h3>
-												<Badge className="text-green-700 bg-green-100 dark:text-green-300 dark:bg-green-900/30">
-													{business.careers.openPositions.length} Position{business.careers.openPositions.length !== 1 ? "s" : ""} Available
-												</Badge>
-											</div>
-
-											<div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-												{business.careers.openPositions.map((position, index) => (
-													<div key={index} className="overflow-hidden relative p-6 bg-gradient-to-br from-white to-gray-50 rounded-xl border-2 transition-all duration-300 group dark:from-gray-900 dark:to-gray-800 border-border hover:border-primary/50 hover:shadow-lg">
-														<div className="relative z-10">
-															<div className="flex justify-between items-start mb-4">
-																<div>
-																	<h4 className="text-lg font-bold transition-colors text-foreground group-hover:text-primary">{position.title}</h4>
-																	<div className="flex flex-wrap gap-2 mt-2">
-																		<Badge variant="secondary" className="text-xs">
-																			{position.type}
-																		</Badge>
-																		<Badge variant="outline" className="text-xs">
-																			{position.experience}
-																		</Badge>
-																		<Badge variant="outline" className="text-xs text-muted-foreground">
-																			{position.posted}
-																		</Badge>
-																	</div>
-																</div>
-																<div className="text-right">
-																	<p className="text-lg font-bold text-green-600">{position.salary}</p>
-																	<p className="text-xs text-muted-foreground">{position.location}</p>
-																</div>
-															</div>
-
-															<p className="mb-4 text-sm leading-relaxed text-muted-foreground">{position.description}</p>
-
-															<div className="mb-4">
-																<h5 className="mb-3 text-sm font-semibold text-foreground">Key Requirements</h5>
-																<div className="space-y-2">
-																	{position.requirements.slice(0, 3).map((req, reqIndex) => (
-																		<div key={reqIndex} className="flex items-start space-x-2">
-																			<div className="flex-shrink-0 mt-1.5 w-1.5 h-1.5 rounded-full bg-primary" />
-																			<span className="text-xs text-foreground">{req}</span>
-																		</div>
-																	))}
-																	{position.requirements.length > 3 && <p className="text-xs text-muted-foreground">+{position.requirements.length - 3} more requirements</p>}
-																</div>
-															</div>
-
-															<div className="flex gap-2">
-																<Button size="sm" className="flex-1 text-white bg-gradient-to-r to-blue-600 from-primary hover:from-primary/90 hover:to-blue-600/90">
-																	Apply Now
-																</Button>
-																<Button variant="outline" size="sm" className="px-3">
-																	<Share className="w-4 h-4" />
-																</Button>
-															</div>
-														</div>
-
-														{/* Hover gradient overlay */}
-														<div className="absolute inset-0 bg-gradient-to-br opacity-0 transition-opacity duration-300 from-primary/5 to-blue-500/5 group-hover:opacity-100" />
-													</div>
-												))}
-											</div>
-										</div>
-									)}
-
-									{/* Employee Testimonials */}
-									<div className="space-y-6">
-										<h3 className="text-xl font-bold text-foreground">What Our Team Says</h3>
-										<div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-											{business.careers.testimonials.map((testimonial, index) => (
-												<div key={index} className="relative p-6 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl border dark:from-purple-900/20 dark:to-pink-900/20 border-purple-200/50 dark:border-purple-800/50">
-													<div className="relative z-10">
-														<div className="mb-4">
-															<Quote className="w-8 h-8 text-purple-400 opacity-20" />
-														</div>
-														<p className="mb-4 italic font-medium leading-relaxed text-foreground">&ldquo;{testimonial.quote}&rdquo;</p>
-														<div className="flex justify-between items-center">
-															<div>
-																<p className="font-semibold text-foreground">{testimonial.employee}</p>
-																<p className="text-xs text-purple-600 dark:text-purple-400">{testimonial.tenure} with company</p>
-															</div>
-															<div className="flex text-yellow-400">
-																{[...Array(5)].map((_, i) => (
-																	<Star key={i} className="w-4 h-4 fill-current" />
-																))}
-															</div>
-														</div>
-													</div>
-												</div>
-											))}
-										</div>
-									</div>
-
-									{/* CTA Section */}
-									<div className="p-8 text-center bg-gradient-to-r rounded-2xl border from-primary/10 via-blue-500/10 to-purple-500/10 border-primary/20">
-										<h3 className="mb-4 text-xl font-bold text-foreground">Ready to Join Our Team?</h3>
-										<p className="mb-6 text-muted-foreground">We&apos;re always looking for talented individuals who share our passion for excellence.</p>
-										<div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
-											<Button className="text-white bg-gradient-to-r from-green-500 to-blue-500 shadow-lg hover:from-green-600 hover:to-blue-600">
-												<Users className="mr-2 w-4 h-4" />
-												View All Opportunities
-											</Button>
-											<Button variant="outline">
-												<FileText className="mr-2 w-4 h-4" />
-												Send Resume
-											</Button>
-											<Button variant="outline">
-												<MessageCircle className="mr-2 w-4 h-4" />
-												Contact HR
-											</Button>
-										</div>
-									</div>
-								</div>
-							</section>
-
-							{/* 12. 🤝 STRATEGIC PARTNERSHIPS SECTION */}
-							<section ref={partnershipsRef} className="scroll-mt-20 sm:scroll-mt-24 lg:scroll-mt-32">
-								<div className="mb-8">
-									<h2 className="flex items-center mb-2 text-2xl font-bold text-foreground">
-										<Handshake className="mr-3 w-6 h-6 text-primary" />
-										🤝 Strategic Partnerships
-									</h2>
-									<div className="w-20 h-1 bg-gradient-to-r rounded-full from-primary to-primary/50"></div>
-								</div>
-
-								<div className="space-y-8">
-									{/* Partnership Overview */}
-									<div className="overflow-hidden relative p-8 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-2xl border-2 dark:from-blue-900/20 dark:via-indigo-900/20 dark:to-purple-900/20 border-blue-200/50 dark:border-blue-800/50">
-										<div className="absolute top-4 right-4">
-											<Badge className="text-blue-700 bg-blue-100 shadow-lg dark:text-blue-300 dark:bg-blue-900/50">Trusted Network</Badge>
-										</div>
-
-										<div className="relative z-10">
-											<div className="flex items-center mb-4 space-x-3">
-												<div className="p-3 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full">
-													<Building className="w-6 h-6 text-white" />
-												</div>
-												<div>
-													<h3 className="text-xl font-bold text-foreground">Quality Partner Network</h3>
-													<p className="text-sm text-muted-foreground">Trusted relationships across the industry</p>
-												</div>
-											</div>
-											<p className="mb-6 text-foreground">Our strategic partnerships ensure we deliver exceptional quality and comprehensive solutions through trusted industry collaborations.</p>
-
-											<div className="flex gap-3">
-												<Button className="text-white bg-gradient-to-r from-blue-500 to-indigo-500 shadow-lg hover:from-blue-600 hover:to-indigo-600">
-													<Building className="mr-2 w-4 h-4" />
-													View Partners
-												</Button>
-												<Button variant="outline" className="border-blue-300 hover:bg-blue-50 dark:border-blue-800 dark:hover:bg-blue-900/20">
-													<Handshake className="mr-2 w-4 h-4" />
-													Partner With Us
-												</Button>
-											</div>
-										</div>
-									</div>
-
-									{/* Partnership Categories */}
-									<div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-										{/* Supplier Partners */}
-										<div className="space-y-6">
-											<div className="flex items-center space-x-3">
-												<div className="p-2 rounded-lg bg-green-500/10">
-													<TrendingUp className="w-5 h-5 text-green-600" />
-												</div>
-												<h3 className="text-lg font-bold text-foreground">Supplier Partners</h3>
-											</div>
-
-											<div className="space-y-4">
-												{business.partnerships.supplierPartners.map((partner, index) => (
-													<div key={index} className="overflow-hidden relative p-5 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border-2 transition-all duration-300 group dark:from-green-900/20 dark:to-emerald-900/20 border-green-200/50 dark:border-green-800/50 hover:border-green-300 hover:shadow-lg">
-														<div className="relative z-10">
-															<div className="flex items-start space-x-4">
-																<div className="overflow-hidden flex-shrink-0 w-16 h-16 bg-white rounded-xl border-2 border-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
-																	<img src={partner.logo} alt={partner.name} className="object-cover w-full h-full" />
-																</div>
-																<div className="flex-1 min-w-0">
-																	<h4 className="text-lg font-bold transition-colors text-foreground group-hover:text-green-700">{partner.name}</h4>
-																	<div className="flex items-center mt-1 space-x-2">
-																		<Badge className="text-green-700 bg-green-100 dark:text-green-300 dark:bg-green-900/50">{partner.type}</Badge>
-																		<span className="text-xs text-muted-foreground">{partner.relationship}</span>
-																	</div>
-																	<p className="mt-3 text-sm leading-relaxed text-foreground">{partner.benefits}</p>
-																</div>
-															</div>
-														</div>
-														<div className="absolute inset-0 bg-gradient-to-br opacity-0 transition-opacity duration-300 from-green-500/5 to-emerald-500/5 group-hover:opacity-100" />
-													</div>
-												))}
-											</div>
-										</div>
-
-										{/* Service Partners */}
-										<div className="space-y-6">
-											<div className="flex items-center space-x-3">
-												<div className="p-2 rounded-lg bg-blue-500/10">
-													<Users className="w-5 h-5 text-blue-600" />
-												</div>
-												<h3 className="text-lg font-bold text-foreground">Service Partners</h3>
-											</div>
-
-											<div className="space-y-4">
-												{business.partnerships.servicePartners.map((partner, index) => (
-													<div key={index} className="overflow-hidden relative p-5 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border-2 transition-all duration-300 group dark:from-blue-900/20 dark:to-indigo-900/20 border-blue-200/50 dark:border-blue-800/50 hover:border-blue-300 hover:shadow-lg">
-														<div className="relative z-10">
-															<div className="flex justify-between items-start mb-3">
-																<div>
-																	<h4 className="text-lg font-bold transition-colors text-foreground group-hover:text-blue-700">{partner.name}</h4>
-																	<div className="flex items-center mt-1 space-x-2">
-																		<Badge className="text-blue-700 bg-blue-100 dark:text-blue-300 dark:bg-blue-900/50">{partner.type}</Badge>
-																		<Badge variant="outline" className="text-xs border-blue-200 dark:border-blue-800">
-																			{partner.relationship}
-																		</Badge>
-																	</div>
-																</div>
-																<div className="flex text-blue-500">
-																	<Star className="w-4 h-4 fill-current" />
-																	<Star className="w-4 h-4 fill-current" />
-																	<Star className="w-4 h-4 fill-current" />
-																	<Star className="w-4 h-4 fill-current" />
-																	<Star className="w-4 h-4 fill-current" />
-																</div>
-															</div>
-															<p className="text-sm leading-relaxed text-foreground">{partner.description}</p>
-														</div>
-														<div className="absolute inset-0 bg-gradient-to-br opacity-0 transition-opacity duration-300 from-blue-500/5 to-indigo-500/5 group-hover:opacity-100" />
-													</div>
-												))}
-											</div>
-										</div>
-
-										{/* Community Partners */}
-										<div className="space-y-6">
-											<div className="flex items-center space-x-3">
-												<div className="p-2 rounded-lg bg-orange-500/10">
-													<Heart className="w-5 h-5 text-orange-600" />
-												</div>
-												<h3 className="text-lg font-bold text-foreground">Community Partners</h3>
-											</div>
-
-											<div className="space-y-4">
-												{business.partnerships.communityPartners.map((partner, index) => (
-													<div key={index} className="overflow-hidden relative p-5 bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl border-2 transition-all duration-300 group dark:from-orange-900/20 dark:to-amber-900/20 border-orange-200/50 dark:border-orange-800/50 hover:border-orange-300 hover:shadow-lg">
-														<div className="relative z-10">
-															<div className="flex justify-between items-start mb-3">
-																<div>
-																	<h4 className="text-lg font-bold transition-colors text-foreground group-hover:text-orange-700">{partner.name}</h4>
-																	<div className="flex items-center mt-1 space-x-2">
-																		<Badge className="text-orange-700 bg-orange-100 dark:text-orange-300 dark:bg-orange-900/50">{partner.type}</Badge>
-																		<Badge variant="secondary" className="text-xs">
-																			{partner.involvement}
-																		</Badge>
-																	</div>
-																</div>
-																<div className="p-2 rounded-full bg-orange-500/10">
-																	<Heart className="w-4 h-4 text-orange-500" />
-																</div>
-															</div>
-															<p className="text-sm leading-relaxed text-foreground">{partner.description}</p>
-														</div>
-														<div className="absolute inset-0 bg-gradient-to-br opacity-0 transition-opacity duration-300 from-orange-500/5 to-amber-500/5 group-hover:opacity-100" />
-													</div>
-												))}
-											</div>
-										</div>
-									</div>
-
-									{/* Partnership Benefits & Recognition */}
-									<div className="space-y-6">
-										<h3 className="text-xl font-bold text-foreground">Partnership Recognition & Certifications</h3>
-										<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-											{business.partnerships.certifications.map((cert, index) => (
-												<div key={index} className="overflow-hidden relative p-6 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl border-2 transition-all duration-300 group dark:from-purple-900/20 dark:to-pink-900/20 border-purple-200/50 dark:border-purple-800/50 hover:border-purple-300 hover:shadow-lg">
-													<div className="relative z-10">
-														<div className="flex justify-between items-start mb-4">
-															<div className="p-3 rounded-full bg-purple-500/10">
-																<Award className="w-6 h-6 text-purple-600" />
-															</div>
-															<div className="flex gap-2">
-																{cert.grade && <Badge className="text-white bg-gradient-to-r from-green-500 to-emerald-500 shadow-lg">{cert.grade}</Badge>}
-																{cert.year && (
-																	<Badge variant="outline" className="border-purple-200 dark:border-purple-800">
-																		{cert.year}
-																	</Badge>
-																)}
-															</div>
-														</div>
-
-														<h4 className="mb-2 text-lg font-bold transition-colors text-foreground group-hover:text-purple-700">{cert.name}</h4>
-
-														{cert.since && <p className="mb-2 text-xs text-purple-600 dark:text-purple-400">Member since {cert.since}</p>}
-
-														{cert.achievement && <p className="mb-3 text-sm font-medium text-purple-700 dark:text-purple-300">{cert.achievement}</p>}
-
-														<p className="text-sm leading-relaxed text-foreground">{cert.benefits}</p>
-													</div>
-													<div className="absolute inset-0 bg-gradient-to-br opacity-0 transition-opacity duration-300 from-purple-500/5 to-pink-500/5 group-hover:opacity-100" />
-												</div>
-											))}
-										</div>
-									</div>
-
-									{/* CTA Section */}
-									<div className="p-8 text-center bg-gradient-to-r rounded-2xl border from-blue-500/10 via-indigo-500/10 to-purple-500/10 border-blue-200/50 dark:border-blue-800/50">
-										<div className="mx-auto max-w-2xl">
-											<h3 className="mb-4 text-xl font-bold text-foreground">Interested in Partnership?</h3>
-											<p className="mb-6 text-muted-foreground">Join our network of trusted partners and grow your business with quality collaborations.</p>
-											<div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
-												<Button className="text-white bg-gradient-to-r from-blue-500 to-indigo-500 shadow-lg hover:from-blue-600 hover:to-indigo-600">
-													<Handshake className="mr-2 w-4 h-4" />
-													Become a Partner
-												</Button>
-												<Button variant="outline">
-													<Building className="mr-2 w-4 h-4" />
-													View Partnership Benefits
-												</Button>
-												<Button variant="outline">
-													<MessageCircle className="mr-2 w-4 h-4" />
-													Contact Partnership Team
-												</Button>
-											</div>
-										</div>
-									</div>
-								</div>
-							</section>
+							{/* 1. BUSINESS OVERVIEW SECTION */}
+							<SectionWrapper ref={overviewRef}>
+								<BusinessOverview business={business} />
+							</SectionWrapper>
+
+							{/* 2. THORBIS CERTIFIED ELITE STATUS */}
+							<SectionWrapper ref={certificationRef}>
+								<CertifiedElite business={business} />
+							</SectionWrapper>
+
+							{/* 3. REVIEWS & NEIGHBORHOOD INSIGHTS */}
+							<SectionWrapper ref={reviewsRef}>
+								<Reviews business={business} setShowReviewModal={setShowReviewModal} />
+							</SectionWrapper>
+
+							{/* 4. CREDENTIALS, LICENSING & RECOGNITION */}
+							<SectionWrapper ref={credentialsRef}>
+								<Credentials business={business} />
+							</SectionWrapper>
+
+							{/* 5. LIVE AVAILABILITY & BOOKING */}
+							<SectionWrapper ref={availabilityRef}>
+								<Availability business={business} />
+							</SectionWrapper>
+
+							{/* 6. SERVICES & WORK SHOWCASE */}
+							<SectionWrapper ref={servicesRef}>
+								<Services business={business} />
+							</SectionWrapper>
+
+							{/* 7. EXPERTISE & PROFESSIONAL DETAILS */}
+							<SectionWrapper ref={expertiseRef}>
+								<Expertise business={business} />
+							</SectionWrapper>
+
+							{/* 8. PRICING & SERVICE INFORMATION */}
+							<SectionWrapper ref={pricingRef}>
+								<Pricing business={business} />
+							</SectionWrapper>
+
+							{/* 9. BUSINESS OPERATIONS */}
+							<SectionWrapper ref={businessTransparencyRef}>
+								<BusinessOperations business={business} />
+							</SectionWrapper>
+
+							{/* 10. WARRANTY TRACKER */}
+							<SectionWrapper ref={warrantyTrackerRef}>
+								<WarrantyTracker business={business} />
+							</SectionWrapper>
+
+							{/* 11. FAQ & SUPPORT */}
+							<SectionWrapper ref={faqRef}>
+								<FAQ business={business} />
+							</SectionWrapper>
+
+							{/* 12. CAREERS */}
+							<SectionWrapper ref={careersRef}>
+								<Careers business={business} />
+							</SectionWrapper>
+
+							{/* 13. STRATEGIC PARTNERSHIPS */}
+							<SectionWrapper ref={partnershipsRef}>
+								<Partnerships business={business} />
+							</SectionWrapper>
+
+							{/* 14. MENU SECTION - Restaurant Industry */}
+							{business.industry === "restaurant" && (
+								<SectionWrapper ref={menuRef}>
+									<MenuSection business={business} />
+								</SectionWrapper>
+							)}
+
+							{/* 15. AUTOMOTIVE SERVICES - Automotive Industry */}
+							{business.industry === "automotive" && (
+								<SectionWrapper ref={automotiveRef}>
+									<AutomotiveServices business={business} />
+								</SectionWrapper>
+							)}
 						</div>
 					</div>
 				</div>
@@ -3374,7 +1938,7 @@ export default function BizProfile({ params }) {
 			{/* Photo Modal */}
 			{showAllPhotos && (
 				<div
-					className="flex fixed inset-0 z-50 justify-center items-center backdrop-blur-sm bg-background/95"
+					className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-background/95"
 					onClick={(e) => {
 						// Close modal when clicking outside the content
 						if (e.target === e.currentTarget) {
@@ -3389,9 +1953,9 @@ export default function BizProfile({ params }) {
 					}}
 					tabIndex={0}
 				>
-					<div className="flex relative flex-col w-full h-full">
+					<div className="relative flex flex-col w-full h-full">
 						{/* Modal Header */}
-						<div className="flex justify-between items-center p-4 border-b backdrop-blur-md bg-background/80 border-border">
+						<div className="flex items-center justify-between p-4 border-b backdrop-blur-md bg-background/80 border-border">
 							<div className="flex items-center space-x-4">
 								<h3 className="font-semibold text-foreground">
 									{selectedImageIndex + 1} / {allImages.length}
@@ -3402,7 +1966,7 @@ export default function BizProfile({ params }) {
 							</div>
 							<div className="flex items-center space-x-2">
 								<Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
-									<Share className="mr-2 w-4 h-4" />
+									<Share className="w-4 h-4 mr-2" />
 									Share
 								</Button>
 								<Button variant="ghost" size="sm" onClick={() => setShowAllPhotos(false)} className="text-muted-foreground hover:text-foreground hover:bg-red-500/10 hover:text-red-500" title="Close (ESC)">
@@ -3412,14 +1976,14 @@ export default function BizProfile({ params }) {
 						</div>
 
 						{/* Modal Content */}
-						<div className="flex flex-1 justify-center items-center p-4">
+						<div className="flex items-center justify-center flex-1 p-4">
 							<div className="relative max-w-4xl max-h-full">
 								{allImages[selectedImageIndex] && (
 									<div className="relative">
 										<img src={allImages[selectedImageIndex].src || allImages[selectedImageIndex]} alt={allImages[selectedImageIndex].title || `${business.name} photo ${selectedImageIndex + 1}`} className="object-contain max-w-full max-h-full rounded-lg" />
 										{/* Image Info Overlay */}
 										{allImages[selectedImageIndex].title && (
-											<div className="absolute right-4 bottom-4 left-4 p-3 rounded-lg border backdrop-blur-md bg-background/80 border-border">
+											<div className="absolute p-3 border rounded-lg right-4 bottom-4 left-4 backdrop-blur-md bg-background/80 border-border">
 												<h4 className="font-medium text-foreground">{allImages[selectedImageIndex].title}</h4>
 												{allImages[selectedImageIndex].description && <p className="mt-1 text-sm text-muted-foreground">{allImages[selectedImageIndex].description}</p>}
 												<div className="mt-2">
@@ -3435,10 +1999,10 @@ export default function BizProfile({ params }) {
 								{/* Navigation Arrows */}
 								{allImages.length > 1 && (
 									<>
-										<Button variant="ghost" size="sm" className="absolute left-4 top-1/2 backdrop-blur-sm -translate-y-1/2 bg-background/80 hover:bg-background/90" onClick={() => setSelectedImageIndex((prev) => (prev > 0 ? prev - 1 : allImages.length - 1))}>
+										<Button variant="ghost" size="sm" className="absolute -translate-y-1/2 left-4 top-1/2 backdrop-blur-sm bg-background/80 hover:bg-background/90" onClick={() => setSelectedImageIndex((prev) => (prev > 0 ? prev - 1 : allImages.length - 1))}>
 											<ChevronLeft className="w-5 h-5" />
 										</Button>
-										<Button variant="ghost" size="sm" className="absolute right-4 top-1/2 backdrop-blur-sm -translate-y-1/2 bg-background/80 hover:bg-background/90" onClick={() => setSelectedImageIndex((prev) => (prev < allImages.length - 1 ? prev + 1 : 0))}>
+										<Button variant="ghost" size="sm" className="absolute -translate-y-1/2 right-4 top-1/2 backdrop-blur-sm bg-background/80 hover:bg-background/90" onClick={() => setSelectedImageIndex((prev) => (prev < allImages.length - 1 ? prev + 1 : 0))}>
 											<ChevronRight className="w-5 h-5" />
 										</Button>
 									</>
@@ -3449,7 +2013,7 @@ export default function BizProfile({ params }) {
 						{/* Thumbnail Navigation */}
 						{allImages.length > 1 && (
 							<div className="p-4 border-t backdrop-blur-md bg-background/80 border-border">
-								<div className="flex overflow-x-auto pb-2 space-x-2">
+								<div className="flex pb-2 space-x-2 overflow-x-auto">
 									{allImages.map((image, index) => (
 										<button key={index} onClick={() => setSelectedImageIndex(index)} className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${index === selectedImageIndex ? "border-primary" : "border-transparent hover:border-muted-foreground"}`}>
 											<img src={image.src || image} alt={image.title || `Thumbnail ${index + 1}`} className="object-cover w-full h-full" />
@@ -3465,15 +2029,15 @@ export default function BizProfile({ params }) {
 			{/* Enhanced Floating Scroll Spy Navigation - Desktop Only */}
 			{showScrollSpy && (
 				<div
-					className="hidden fixed left-6 z-30 lg:block"
+					className="fixed z-30 hidden left-6 lg:block"
 					style={{
 						top: `${headerHeight + 16}px`,
 						bottom: "2em",
 					}}
 				>
-					<div className="flex flex-col rounded-xl border shadow-lg backdrop-blur-md w-fit bg-card/90 border-border" style={{ overflow: "visible" }}>
+					<div className="flex flex-col border shadow-lg rounded-xl backdrop-blur-md w-fit bg-card/90 border-border" style={{ overflow: "visible" }}>
 						{/* Error State */}
-						{scrollSpyError && <div className="p-2 text-xs text-red-500 bg-red-50 border-b border-red-200 dark:bg-red-950/30 dark:border-red-800">⚠️ {scrollSpyError}</div>}
+						{scrollSpyError && <div className="p-2 text-xs text-red-500 border-b border-red-200 bg-red-50 dark:bg-red-950/30 dark:border-red-800">⚠️ {scrollSpyError}</div>}
 
 						{/* Previous Section Arrow */}
 						{shouldShowArrows && navigationItems.length > 1 && (
@@ -3561,11 +2125,11 @@ export default function BizProfile({ params }) {
 
 			{/* Review Modal */}
 			{showReviewModal && (
-				<div className="flex fixed inset-0 z-50 justify-center items-center p-4 backdrop-blur-sm bg-background/80">
+				<div className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm bg-background/80">
 					<div className="bg-card border border-border rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
 						{/* Modal Header */}
 						<div className="p-6 border-b border-border">
-							<div className="flex justify-between items-center">
+							<div className="flex items-center justify-between">
 								<h3 className="text-xl font-semibold text-foreground">Write a Review</h3>
 								<Button variant="ghost" size="sm" onClick={() => setShowReviewModal(false)} className="hover:bg-muted">
 									<X className="w-4 h-4" />
@@ -3593,19 +2157,19 @@ export default function BizProfile({ params }) {
 							{/* Review Title */}
 							<div className="space-y-2">
 								<label className="text-sm font-medium text-foreground">Review Title</label>
-								<input type="text" placeholder="Summarize your experience" value={newReview.title} onChange={(e) => setNewReview((prev) => ({ ...prev, title: e.target.value }))} className="px-3 py-2 w-full rounded-lg border bg-background border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+								<input type="text" placeholder="Summarize your experience" value={newReview.title} onChange={(e) => setNewReview((prev) => ({ ...prev, title: e.target.value }))} className="w-full px-3 py-2 border rounded-lg bg-background border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
 							</div>
 
 							{/* Review Text */}
 							<div className="space-y-2">
 								<label className="text-sm font-medium text-foreground">Your Review</label>
-								<textarea placeholder="Tell others about your experience..." value={newReview.text} onChange={(e) => setNewReview((prev) => ({ ...prev, text: e.target.value }))} rows={5} className="px-3 py-2 w-full rounded-lg border resize-none bg-background border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+								<textarea placeholder="Tell others about your experience..." value={newReview.text} onChange={(e) => setNewReview((prev) => ({ ...prev, text: e.target.value }))} rows={5} className="w-full px-3 py-2 border rounded-lg resize-none bg-background border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
 							</div>
 
 							{/* Author Name */}
 							<div className="space-y-2">
 								<label className="text-sm font-medium text-foreground">Your Name</label>
-								<input type="text" placeholder="Enter your name" value={newReview.author} onChange={(e) => setNewReview((prev) => ({ ...prev, author: e.target.value }))} className="px-3 py-2 w-full rounded-lg border bg-background border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+								<input type="text" placeholder="Enter your name" value={newReview.author} onChange={(e) => setNewReview((prev) => ({ ...prev, author: e.target.value }))} className="w-full px-3 py-2 border rounded-lg bg-background border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
 							</div>
 						</div>
 
@@ -3616,7 +2180,7 @@ export default function BizProfile({ params }) {
 									Cancel
 								</Button>
 								<Button onClick={handleSubmitReview} disabled={!newReview.text.trim() || !newReview.author.trim()} className="bg-primary hover:bg-primary/90 text-primary-foreground">
-									<Send className="mr-2 w-4 h-4" />
+									<Send className="w-4 h-4 mr-2" />
 									Submit Review
 								</Button>
 							</div>
@@ -3627,10 +2191,10 @@ export default function BizProfile({ params }) {
 
 			{/* Video Consultation Modal - REMOVED */}
 			{false && (
-				<div className="flex fixed inset-0 z-50 justify-center items-center p-4 backdrop-blur-sm bg-background/80">
+				<div className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm bg-background/80">
 					<div className="bg-card border border-border rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
 						<div className="p-6 border-b border-border">
-							<div className="flex justify-between items-center">
+							<div className="flex items-center justify-between">
 								<div className="flex items-center space-x-3">
 									<div className="p-2 rounded-lg bg-blue-500/10">
 										<Video className="w-6 h-6 text-blue-500" />
@@ -3649,11 +2213,11 @@ export default function BizProfile({ params }) {
 						<div className="p-6 space-y-6">
 							{/* Service Details */}
 							<div className="grid grid-cols-2 gap-4">
-								<div className="p-4 rounded-lg border bg-card/30">
+								<div className="p-4 border rounded-lg bg-card/30">
 									<p className="text-sm text-muted-foreground">Price</p>
 									<p className="text-xl font-bold text-primary">{business.videoConsultation.pricePerSession}</p>
 								</div>
-								<div className="p-4 rounded-lg border bg-card/30">
+								<div className="p-4 border rounded-lg bg-card/30">
 									<p className="text-sm text-muted-foreground">Duration</p>
 									<p className="text-xl font-bold text-foreground">{business.videoConsultation.duration}</p>
 								</div>
@@ -3673,14 +2237,14 @@ export default function BizProfile({ params }) {
 							</div>
 
 							{/* Next Available */}
-							<div className="p-4 rounded-lg border bg-primary/5 border-primary/20">
-								<div className="flex justify-between items-center">
+							<div className="p-4 border rounded-lg bg-primary/5 border-primary/20">
+								<div className="flex items-center justify-between">
 									<div>
 										<p className="font-semibold text-foreground">Next Available</p>
 										<p className="text-sm text-muted-foreground">{business.videoConsultation.nextSlot}</p>
 									</div>
 									<Button className="text-white bg-blue-500 hover:bg-blue-600">
-										<Video className="mr-2 w-4 h-4" />
+										<Video className="w-4 h-4 mr-2" />
 										Book Session
 									</Button>
 								</div>
@@ -3703,9 +2267,9 @@ export default function BizProfile({ params }) {
 			)}
 
 			{/* Mobile Review FAB - Hidden when main FAB is shown */}
-			<div className="fixed right-4 bottom-4 z-40 lg:hidden sm:bottom-6 sm:right-6">
-				<Button size="default" onClick={() => setShowReviewModal(true)} className="px-4 h-12 rounded-full shadow-xl transition-all duration-200 transform bg-primary hover:bg-primary/90 text-primary-foreground hover:shadow-2xl hover:scale-105 active:scale-95">
-					<Plus className="mr-2 w-4 h-4" />
+			<div className="fixed z-40 right-4 bottom-4 lg:hidden sm:bottom-6 sm:right-6">
+				<Button size="default" onClick={() => setShowReviewModal(true)} className="h-12 px-4 transition-all duration-200 transform rounded-full shadow-xl bg-primary hover:bg-primary/90 text-primary-foreground hover:shadow-2xl hover:scale-105 active:scale-95">
+					<Plus className="w-4 h-4 mr-2" />
 					<span className="text-sm font-semibold">Review</span>
 				</Button>
 			</div>

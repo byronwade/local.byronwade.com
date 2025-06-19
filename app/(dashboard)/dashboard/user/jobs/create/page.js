@@ -369,6 +369,7 @@ export default function CreateJobPage() {
 					<p className="text-muted-foreground">Connect with qualified professionals in your area</p>
 				</div>
 			</div>
+
 			<div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
 				{/* Main Form */}
 				<div className="space-y-6 lg:col-span-2">
@@ -934,4 +935,3 @@ export default function CreateJobPage() {
 		</div>
 	);
 }
-
