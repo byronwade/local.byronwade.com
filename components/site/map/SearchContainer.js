@@ -109,14 +109,13 @@ const SearchContainer = ({ searchParams: propSearchParams }) => {
 	};
 
 	return (
-		<div className="h-screen w-full flex flex-col bg-background overflow-hidden">
-			{/* Main Header from Homepage */}
-			<div className="flex-shrink-0">
+        <div className="h-screen w-full flex flex-col bg-background overflow-hidden">
+            {/* Main Header from Homepage */}
+            <div className="flex-shrink-0">
 				<Header />
 			</div>
-
-			{/* Main Content Area */}
-			<div className="flex-1 min-h-0 relative">
+            {/* Main Content Area */}
+            <div className="flex-1 min-h-0 relative">
 				{showMap ? (
 					<ResizablePanelGroup direction="horizontal" className="h-full" onLayout={handlePanelResize}>
 						{/* Sidebar Panel - Better minimum width for proper header layout */}
@@ -144,8 +143,8 @@ const SearchContainer = ({ searchParams: propSearchParams }) => {
 					</ResizablePanelGroup>
 				) : (
 					/* List-only view - Full width */
-					<div className="h-full w-full transition-all duration-500 ease-in-out bg-background">
-						<div className="h-full overflow-hidden relative">
+					(<div className="h-full w-full transition-all duration-500 ease-in-out bg-background">
+                        <div className="h-full overflow-hidden relative">
 							{/* Business List - Full Width View */}
 							<div className={`absolute inset-0 transition-all duration-500 ease-in-out ${!isAISidebarOpen ? "transform translate-x-0 opacity-100 z-10" : "transform -translate-x-full opacity-0 z-0"}`}>
 								<BusinessCardList businesses={filteredBusinesses} loading={loading} onBusinessSelect={handleBusinessSelect} activeBusinessId={activeBusinessId} activeCardRef={activeCardRef} onAIClick={handleAIClick} showMap={showMap} onMapToggle={handleMapToggle} listMode="full" />
@@ -154,12 +153,11 @@ const SearchContainer = ({ searchParams: propSearchParams }) => {
 							{/* AI Chat Sidebar */}
 							<div className={`absolute inset-0 transition-all duration-500 ease-in-out ${isAISidebarOpen ? "transform translate-x-0 opacity-100 z-10" : "transform translate-x-full opacity-0 z-0"}`}>{isAISidebarOpen && <UnifiedAIChat isOpen={isAISidebarOpen} onClose={handleAIClose} mode="sidebar" />}</div>
 						</div>
-					</div>
+                    </div>)
 				)}
 			</div>
-
-			{/* Loading Overlay */}
-			{loading && (
+            {/* Loading Overlay */}
+            {loading && (
 				<div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 flex items-center justify-center">
 					<div className="bg-card rounded-lg p-6 shadow-2xl flex items-center gap-3 border border-border">
 						<div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
@@ -167,8 +165,8 @@ const SearchContainer = ({ searchParams: propSearchParams }) => {
 					</div>
 				</div>
 			)}
-		</div>
-	);
+        </div>
+    );
 };
 
 export default SearchContainer;

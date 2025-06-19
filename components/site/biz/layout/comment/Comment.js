@@ -124,7 +124,6 @@ const Comment = ({ comment, handleReplyClick, replyBox, replyText, setReplyText,
 					</div>
 				</div>
 			</div>
-
 			{comment.replies && comment.replies.length > 0 && (
 				<div className="w-full pl-4 border-l-2 border-primary">
 					{!showReplies[comment.id] && (
@@ -145,3 +144,4 @@ const Comment = ({ comment, handleReplyClick, replyBox, replyText, setReplyText,
 };
 
 export default Comment;
+

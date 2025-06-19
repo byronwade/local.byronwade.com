@@ -109,6 +109,8 @@
 		"zustand-persist": "^0.4.0"
 	},
 	"devDependencies": {
+		"@next/bundle-analyzer": "^15.3.4",
+		"@next/third-parties": "^15.3.4",
 		"@tailwindcss/typography": "^0.5.13",
 		"@types/react": "18.3.3",
 		"cypress": "^13.13.2",

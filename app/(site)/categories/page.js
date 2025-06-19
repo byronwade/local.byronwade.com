@@ -187,7 +187,6 @@ export default function Categories() {
 					</div>
 				</div>
 			</div>
-
 			{/* Main Content */}
 			<div className="px-4 py-16 lg:px-24">
 				{/* Main Categories Grid */}
@@ -306,7 +305,6 @@ export default function Categories() {
 					</ScrollSection>
 				</div>
 			</div>
-
 			{/* CTA Section - Matching website style */}
 			<div className="relative py-20">
 				<div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-primary/5 to-background" />
@@ -334,3 +332,4 @@ export default function Categories() {
 		</main>
 	);
 }
+

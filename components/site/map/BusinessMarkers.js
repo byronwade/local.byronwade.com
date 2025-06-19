@@ -667,9 +667,9 @@ const BusinessMarkers = () => {
 	const shouldShowPopup = popupBusiness && showPopup && currentZoom >= 10;
 
 	return (
-		<>
-			{markers}
-			{shouldShowPopup && (
+        <>
+            {markers}
+            {shouldShowPopup && (
 				<Popup
 					latitude={popupBusiness.coordinates.lat}
 					longitude={popupBusiness.coordinates.lng}
@@ -933,8 +933,8 @@ const BusinessMarkers = () => {
 					</div>
 				</Popup>
 			)}
-		</>
-	);
+        </>
+    );
 };
 
 export default memo(BusinessMarkers);

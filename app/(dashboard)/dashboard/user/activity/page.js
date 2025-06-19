@@ -10,7 +10,7 @@ export default function Activity() {
 			<div className="flex items-center justify-between space-x-6">
 				<h1 className="text-4xl">Activity</h1>
 				<div className="flex items-center gap-x-3">
-					<Link href="/add-a-business" passHref legacyBehavior>
+					<Link href="/add-a-business" passHref>
 						<Button variant="outline" size="sm">
 							Claim a Business
 						</Button>
@@ -33,3 +33,4 @@ export default function Activity() {
 		</div>
 	);
 }
+

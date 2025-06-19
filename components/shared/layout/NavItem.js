@@ -12,3 +12,4 @@ export default function NavItem({ href, text, className }) {
 		</Link>
 	);
 }
+

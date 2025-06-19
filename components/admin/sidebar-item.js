@@ -13,3 +13,4 @@ export default function SidebarItem({ href, text, className }) {
 		</Link>
 	);
 }
+

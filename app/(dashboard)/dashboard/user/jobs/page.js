@@ -166,7 +166,6 @@ export default function JobsPage() {
 					</Link>
 				</div>
 			</div>
-
 			{/* Filters - Shopify Tab Style */}
 			<div className="border-b border-border">
 				<nav className="flex space-x-8" aria-label="Tabs">
@@ -178,7 +177,6 @@ export default function JobsPage() {
 					))}
 				</nav>
 			</div>
-
 			{/* Search and Filters Toolbar */}
 			<div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
 				<div className="relative flex-1 max-w-md">
@@ -196,7 +194,6 @@ export default function JobsPage() {
 					</Button>
 				</div>
 			</div>
-
 			{/* Bulk Actions */}
 			{selectedJobs.length > 0 && (
 				<div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
@@ -221,7 +218,6 @@ export default function JobsPage() {
 					</div>
 				</div>
 			)}
-
 			{/* Jobs Table - Shopify Style */}
 			<div className="bg-card border border-border rounded-lg shadow-sm">
 				<Table>
@@ -358,7 +354,6 @@ export default function JobsPage() {
 					</TableBody>
 				</Table>
 			</div>
-
 			{/* Pagination */}
 			<div className="flex items-center justify-between">
 				<div className="text-sm text-muted-foreground">
@@ -373,7 +368,6 @@ export default function JobsPage() {
 					</Button>
 				</div>
 			</div>
-
 			{/* Help Section */}
 			<Card className="bg-primary/5 border-primary/20">
 				<CardContent className="p-6">
@@ -396,3 +390,4 @@ export default function JobsPage() {
 		</div>
 	);
 }
+

@@ -96,17 +96,17 @@ export default function Header() {
 					</div>
 				</div>
 				<div className="hidden space-x-1 lg:flex xl:space-x-2">
-					<Link href="/categories" passHref legacyBehavior>
+					<Link href="/categories" passHref>
 						<Button variant="ghost" size="sm" className="text-sm font-medium transition-colors hover:text-primary">
 							Categories
 						</Button>
 					</Link>
-					<Link href="/dashboard/user" passHref legacyBehavior>
+					<Link href="/dashboard/user" passHref>
 						<Button variant="ghost" size="sm" className="text-sm font-medium transition-colors hover:text-primary">
 							Post a Job
 						</Button>
 					</Link>
-					<Link href="/dashboard/user" passHref legacyBehavior>
+					<Link href="/dashboard/user" passHref>
 						<Button variant="ghost" size="sm" className="text-sm font-medium transition-colors hover:text-primary">
 							Write Review
 						</Button>

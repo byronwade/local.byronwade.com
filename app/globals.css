@@ -1,0 +1,829 @@
+/* Performance optimizations */
+/* Reduce layout shifts with font display swap */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300..700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Critical performance enhancements */
+html {
+  /* Improve font rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+
+  /* Enable hardware acceleration */
+  transform: translateZ(0);
+
+  /* Reduce layout thrashing */
+  scroll-behavior: smooth;
+
+  /* Optimize text selection */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  /* Reduce paint operations */
+  will-change: auto;
+
+  /* Optimize compositing */
+  contain: layout style paint;
+
+  /* Font optimization */
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  font-variant-numeric: tabular-nums;
+
+  /* Improve image loading */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* Optimize images for better performance */
+img {
+  /* Reduce layout shifts */
+  height: auto;
+  max-width: 100%;
+
+  /* Better image loading */
+  loading: lazy;
+  decoding: async;
+
+  /* Improve rendering */
+  image-rendering: -webkit-optimize-contrast;
+}
+
+/* Optimize animations for performance */
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Critical resource hints optimization */
+.critical-resource {
+  /* Prioritize critical resources */
+  loading: eager;
+  fetchpriority: high;
+}
+
+/* Performance-optimized layout containers */
+.performance-container {
+  /* Reduce layout recalculations */
+  contain: layout style;
+
+  /* Enable GPU acceleration */
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Optimized grid layouts */
+.grid-performance {
+  /* Improve grid performance */
+  contain: layout;
+
+  /* Reduce paint operations */
+  will-change: contents;
+}
+
+/* High-performance animations */
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+  will-change: opacity;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Intersection Observer optimization */
+.lazy-load {
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.lazy-load.loaded {
+  opacity: 1;
+}
+
+/* Memory-efficient scrolling */
+.scroll-container {
+  /* Enable momentum scrolling on iOS */
+  -webkit-overflow-scrolling: touch;
+
+  /* Optimize scroll performance */
+  scroll-behavior: smooth;
+  overscroll-behavior: contain;
+}
+
+/* Content visibility optimization for large lists */
+.content-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 500px;
+}
+
+/* In your styles.css or any global CSS file */
+.mx-auto.mt-4.h-2.w-\[100px\].rounded-full.bg-muted {
+  background-color: #2f2f2f !important;
+}
+
+.cursor {
+  display: inline-block;
+  width: 1ch;
+  animation: flicker 0.5s infinite;
+  margin-bottom: 4px;
+}
+
+@keyframes flicker {
+  0% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Chat SDK Typing Animation */
+.result-thinking {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 0;
+}
+
+.dot-flashing {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: rgb(156, 163, 175);
+  color: rgb(156, 163, 175);
+  animation: dot-flashing 1.4s infinite linear alternate;
+  animation-delay: 0.5s;
+}
+
+.dot-flashing::before,
+.dot-flashing::after {
+  content: '';
+  display: inline-block;
+  position: absolute;
+  top: 0;
+}
+
+.dot-flashing::before {
+  left: -15px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: rgb(156, 163, 175);
+  color: rgb(156, 163, 175);
+  animation: dot-flashing 1.4s infinite alternate;
+  animation-delay: 0s;
+}
+
+.dot-flashing::after {
+  left: 15px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: rgb(156, 163, 175);
+  color: rgb(156, 163, 175);
+  animation: dot-flashing 1.4s infinite alternate;
+  animation-delay: 1s;
+}
+
+@keyframes dot-flashing {
+  0% {
+    background-color: rgb(156, 163, 175);
+  }
+
+  50%,
+  100% {
+    background-color: rgba(156, 163, 175, 0.2);
+  }
+}
+
+/* Dark mode adjustments for typing animation */
+.dark .dot-flashing,
+.dark .dot-flashing::before,
+.dark .dot-flashing::after {
+  background-color: rgb(107, 114, 128);
+  color: rgb(107, 114, 128);
+}
+
+.dark .dot-flashing {
+  animation: dot-flashing-dark 1.4s infinite linear alternate;
+  animation-delay: 0.5s;
+}
+
+.dark .dot-flashing::before {
+  animation: dot-flashing-dark 1.4s infinite alternate;
+  animation-delay: 0s;
+}
+
+.dark .dot-flashing::after {
+  animation: dot-flashing-dark 1.4s infinite alternate;
+  animation-delay: 1s;
+}
+
+@keyframes dot-flashing-dark {
+  0% {
+    background-color: rgb(107, 114, 128);
+  }
+
+  50%,
+  100% {
+    background-color: rgba(107, 114, 128, 0.2);
+  }
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 7%;
+    --foreground: 210 20% 98%;
+    --card: 0 0% 9%;
+    --card-foreground: 210 20% 98%;
+    --popover: 210 13% 5.1%;
+    --popover-foreground: 210 20% 98%;
+    --primary: 220 90% 46%;
+    --primary-foreground: 210 20% 98%;
+    --secondary: 210 13% 15.1%;
+    --secondary-foreground: 210 20% 98%;
+    --muted: 210 13% 15.1%;
+    --muted-foreground: 0 0% 71%;
+    --accent: 210 13% 15.1%;
+    --accent-foreground: 210 20% 98%;
+    --destructive: 0 72.2% 50.6%;
+    --destructive-foreground: 210 20% 98%;
+    --border: 0 0% 15%;
+    --input: 210 13% 21%;
+    --ring: 220 90% 46%;
+    --radius: 0.5rem;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .light {
+    --background: 0 0% 95%;
+    --foreground: 222.2 47.4% 11.2%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 47.4% 11.2%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 47.4% 11.2%;
+    --primary: 220 90% 56%;
+    --primary-foreground: 60 9.1% 97.8%;
+    --secondary: 0 0% 90%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 60 4.8% 95.9%;
+    --muted-foreground: 25 5.3% 44.7%;
+    --accent: 60 4.8% 95.9%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 60 9.1% 97.8%;
+    --border: 216 12% 84%;
+    --input: 216 12% 84%;
+    --ring: 220 90% 56%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  .dark {
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+.theme-default {
+  --primary: 220 90% 46%;
+  --primary-foreground: 210 20% 98%;
+}
+
+.theme-green {
+  --primary: 142.1 70.6% 45.3%;
+  --primary-foreground: 144.9 80.4% 10%;
+}
+
+.theme-blue {
+  --primary: 197 100% 47%;
+  --primary-foreground: 0 0% 7%;
+}
+
+.theme-red {
+  --primary: 0 78.8% 54%;
+  --primary-foreground: 0 0% 100%;
+}
+
+input,
+textarea,
+select {
+  font-family: inherit;
+}
+
+.last-card {
+  margin-bottom: 100px;
+}
+
+.video-background {
+  background: #000;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -99;
+}
+
+.video-foreground,
+.video-background iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+@media (min-aspect-ratio: 16/9) {
+  .video-foreground {
+    height: 300%;
+    top: -100%;
+  }
+}
+
+@media (max-aspect-ratio: 16/9) {
+  .video-foreground {
+    width: 300%;
+    left: -100%;
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Mapbox styling improvements */
+.mapboxgl-map {
+  font-family: 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #202124;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Map marker enhancements */
+.mapboxgl-marker {
+  font-family: 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
+  font-weight: 500;
+  color: #202124;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.mapboxgl-marker * {
+  font-family: 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  transform: translateZ(0);
+}
+
+/* Popup styling enhancements */
+.mapboxgl-popup {
+  font-family: 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #202124;
+}
+
+/* Remove default popup styling to prevent double backgrounds */
+.mapboxgl-popup-content {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.mapboxgl-popup-tip {
+  display: none !important;
+}
+
+/* Canvas container optimizations */
+.mapboxgl-canvas-container {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* General text rendering improvements for map overlays */
+.map-overlay,
+.map-control,
+.business-popup,
+.map-container * {
+  font-family: 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Line clamping utilities */
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+
+.line-clamp-4 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+}
+
+/* Smooth transitions for business cards */
+.business-card-transition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.business-card-transition:hover {
+  transform: translateY(-4px) scale(1.02);
+}
+
+/* Enhanced backdrop blur for overlays */
+.backdrop-blur-enhanced {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+}
+
+/* Gradient text effects */
+.gradient-text {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Enhanced shadow effects for cards */
+.shadow-card {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.shadow-card-hover {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Smooth scroll behavior */
+.smooth-scroll {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Enhanced focus states for accessibility */
+.focus-enhanced:focus {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+  border-radius: 0.375rem;
+}
+
+/* Loading shimmer effect */
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200px 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.dark .shimmer {
+  background: linear-gradient(90deg, #2a2a2a 25%, #3a3a3a 50%, #2a2a2a 75%);
+  background-size: 200px 100%;
+}
+
+/* Enhanced button hover effects */
+.button-enhanced {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.button-enhanced::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.button-enhanced:hover::before {
+  left: 100%;
+}
+
+/* Category badge styles */
+.category-badge {
+  background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary)) 100%);
+  background-size: 200% 200%;
+  animation: gradient-shift 3s ease infinite;
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* ChatGPT Interface Styles */
+.composer-btn {
+  @apply flex justify-center items-center transition-colors duration-200 focus:outline-none focus:ring-0;
+}
+
+.composer-btn:hover {
+  @apply bg-opacity-80;
+}
+
+.composer-btn:disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+/* ProseMirror Editor Styles */
+.ProseMirror {
+  outline: none !important;
+  border: none !important;
+  background: transparent !important;
+}
+
+.ProseMirror .placeholder {
+  color: rgba(107, 114, 128, 0.7);
+  pointer-events: none;
+}
+
+.ProseMirror .placeholder:empty::before {
+  content: attr(data-placeholder);
+  color: rgba(107, 114, 128, 0.7);
+  pointer-events: none;
+}
+
+.ProseMirror-trailingBreak {
+  display: none;
+}
+
+/* Token-based Design System Colors */
+.bg-token-bg-primary {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.dark .bg-token-bg-primary {
+  background-color: #303030;
+}
+
+.text-token-text-primary {
+  color: rgb(13, 13, 13);
+}
+
+.dark .text-token-text-primary {
+  color: rgb(236, 236, 241);
+}
+
+.text-token-text-tertiary {
+  color: rgba(13, 13, 13, 0.6);
+}
+
+.dark .text-token-text-tertiary {
+  color: rgba(236, 236, 241, 0.6);
+}
+
+.placeholder\:text-token-text-tertiary::placeholder {
+  color: rgba(13, 13, 13, 0.6);
+}
+
+.dark .placeholder\:text-token-text-tertiary::placeholder {
+  color: rgba(236, 236, 241, 0.6);
+}
+
+/* Shadow utilities */
+.shadow-short {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dark .shadow-short {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Container query support */
+@container (min-width: 34rem) {
+  .\@\[34rem\]\:\[--thread-content-max-width\:40rem\] {
+    --thread-content-max-width: 40rem;
+  }
+}
+
+@container (min-width: 64rem) {
+  .\@\[64rem\]\:\[--thread-content-max-width\:48rem\] {
+    --thread-content-max-width: 48rem;
+  }
+}
+
+/* Thread content max width */
+.\[--thread-content-max-width\:32rem\] {
+  --thread-content-max-width: 32rem;
+}
+
+/* Scrollbar styling */
+.default-browser {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+}
+
+.vertical-scroll-fade-mask {
+  mask-image: linear-gradient(to bottom, transparent 0px, black 8px, black calc(100% - 8px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0px, black 8px, black calc(100% - 8px), transparent 100%);
+}
+
+/* Auto-resize support */
+.contain-inline-size {
+  contain: inline-size;
+}
+
+/* View transition names */
+.\[view-transition-name\:var\(--vt-composer\)\] {
+  view-transition-name: var(--vt-composer);
+}
+
+/* Prosemirror parent container */
+._prosemirror-parent {
+  position: relative;
+}
+
+/* Focus states */
+.focus-within\:border-border\/50:focus-within {
+  border-color: rgba(0, 0, 0, 0.5);
+}
+
+.dark .focus-within\:border-border\/50:focus-within {
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Background surface */
+.bg-primary-surface-primary {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.dark .bg-primary-surface-primary {
+  background-color: rgba(48, 48, 48, 0.8);
+}
+
+/* Max height utilities */
+.max-h-\[25dvh\] {
+  max-height: 25dvh;
+}
+
+/* Responsive spacing */
+.ms-1\.5 {
+  margin-inline-start: 0.375rem;
+}
+
+.me-0\.5 {
+  margin-inline-end: 0.125rem;
+}
+
+.ms-2 {
+  margin-inline-start: 0.5rem;
+}
+
+.pe-3 {
+  padding-inline-end: 0.75rem;
+}
+
+/* Utility classes for start/end positioning */
+.start-0 {
+  inset-inline-start: 0;
+}
+
+.end-0 {
+  inset-inline-end: 0;
+}
+
+.start-2\.5 {
+  inset-inline-start: 0.625rem;
+}
+
+.end-2\.5 {
+  inset-inline-end: 0.625rem;
+}

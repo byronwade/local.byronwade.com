@@ -123,12 +123,12 @@ export default function JobDetailPage({ params }) {
 	};
 
 	return (
-		<div className="w-full px-4 py-16 space-y-8 lg:px-24">
+		<div className="px-4 py-16 space-y-8 w-full lg:px-24">
 			{/* Header */}
-			<div className="flex items-center gap-4">
+			<div className="flex gap-4 items-center">
 				<Link href="/dashboard/user/jobs">
 					<Button variant="outline" size="sm">
-						<ArrowLeft className="w-4 h-4 mr-2" />
+						<ArrowLeft className="mr-2 w-4 h-4" />
 						Back to Jobs
 					</Button>
 				</Link>
@@ -137,7 +137,6 @@ export default function JobDetailPage({ params }) {
 					<p className="text-muted-foreground">View your posted job details</p>
 				</div>
 			</div>
-
 			<div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
 				{/* Main Info */}
 				<div className="space-y-6 lg:col-span-2">
@@ -272,13 +271,13 @@ export default function JobDetailPage({ params }) {
 					{job.boosted && (
 						<Card>
 							<CardHeader>
-								<CardTitle className="flex items-center gap-2">
+								<CardTitle className="flex gap-2 items-center">
 									<Shield className="w-5 h-5 text-green-600 dark:text-green-400" />
 									Boosted Job
 								</CardTitle>
 							</CardHeader>
 							<CardContent className="space-y-4">
-								<div className="flex items-center gap-2 p-3 border rounded-lg bg-green-500/5 border-green-500/20">
+								<div className="flex gap-2 items-center p-3 rounded-lg border bg-green-500/5 border-green-500/20">
 									<Shield className="w-5 h-5 text-green-600 dark:text-green-400" />
 									<div>
 										<p className="text-sm font-medium">Secure Payment</p>
@@ -334,7 +333,7 @@ export default function JobDetailPage({ params }) {
 					{/* How It Works */}
 					<Card>
 						<CardHeader>
-							<CardTitle className="flex items-center gap-2">
+							<CardTitle className="flex gap-2 items-center">
 								<Info className="w-5 h-5" />
 								How It Works
 							</CardTitle>
@@ -342,21 +341,21 @@ export default function JobDetailPage({ params }) {
 						<CardContent className="space-y-4">
 							<div className="space-y-3">
 								<div className="flex gap-3">
-									<div className="flex items-center justify-center w-6 h-6 text-sm font-semibold rounded-full bg-primary/10 text-primary">1</div>
+									<div className="flex justify-center items-center w-6 h-6 text-sm font-semibold rounded-full bg-primary/10 text-primary">1</div>
 									<div>
 										<p className="text-sm font-medium">Job Posted</p>
 										<p className="text-xs text-muted-foreground">Your job is sent to 3-6 closest professionals</p>
 									</div>
 								</div>
 								<div className="flex gap-3">
-									<div className="flex items-center justify-center w-6 h-6 text-sm font-semibold rounded-full bg-primary/10 text-primary">2</div>
+									<div className="flex justify-center items-center w-6 h-6 text-sm font-semibold rounded-full bg-primary/10 text-primary">2</div>
 									<div>
 										<p className="text-sm font-medium">Professionals Respond</p>
 										<p className="text-xs text-muted-foreground">Receive quotes and proposals within 24-48 hours</p>
 									</div>
 								</div>
 								<div className="flex gap-3">
-									<div className="flex items-center justify-center w-6 h-6 text-sm font-semibold rounded-full bg-primary/10 text-primary">3</div>
+									<div className="flex justify-center items-center w-6 h-6 text-sm font-semibold rounded-full bg-primary/10 text-primary">3</div>
 									<div>
 										<p className="text-sm font-medium">Choose & Connect</p>
 										<p className="text-xs text-muted-foreground">Compare options and hire the best professional</p>
@@ -369,7 +368,7 @@ export default function JobDetailPage({ params }) {
 					{/* Targeting Info */}
 					<Card className="border-primary/20 bg-primary/5">
 						<CardHeader>
-							<CardTitle className="flex items-center gap-2 text-foreground">
+							<CardTitle className="flex gap-2 items-center text-foreground">
 								<Users className="w-5 h-5" />
 								Professional Targeting
 							</CardTitle>

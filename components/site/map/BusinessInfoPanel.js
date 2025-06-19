@@ -99,7 +99,6 @@ const BusinessInfoPanel = () => {
 					</button>
 				</div>
 			</div>
-
 			<ScrollArea className="flex-1">
 				{/* Image Gallery */}
 				<div className="relative h-64 bg-muted/30">
@@ -296,3 +295,4 @@ const BusinessInfoPanel = () => {
 };
 
 export default BusinessInfoPanel;
+

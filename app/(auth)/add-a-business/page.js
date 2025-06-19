@@ -173,7 +173,7 @@ const AddBusiness = () => {
 				)}
 				{safeCurrentStep === steps.findIndex((step) => step.name === "businessSuccess") && (
 					<div className="flex flex-row justify-between w-full mt-4">
-						<Link href="/claim-a-business" passHref legacyBehavior>
+						<Link href="/claim-a-business" passHref>
 							<Button variant="outline" type="submit">
 								Continue to verify ownership <ArrowRight className="w-4 h-4 ml-2" />
 							</Button>
@@ -186,3 +186,4 @@ const AddBusiness = () => {
 };
 
 export default AddBusiness;
+

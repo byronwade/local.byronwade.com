@@ -264,7 +264,6 @@ const CategoryPage = ({ type, title, subtitle, businesses = [], category, locati
 					</div>
 				</div>
 			</div>
-
 			{/* Controls Bar */}
 			<div className="sticky top-0 z-10 bg-background/95 backdrop-blur-md border-b border-border/50">
 				<div className="px-4 py-4 lg:px-24">
@@ -320,7 +319,6 @@ const CategoryPage = ({ type, title, subtitle, businesses = [], category, locati
 					</div>
 				</div>
 			</div>
-
 			{/* Main Content */}
 			<div className="px-4 py-8 lg:px-24">
 				{viewMode === "grid" ? (
@@ -366,7 +364,6 @@ const CategoryPage = ({ type, title, subtitle, businesses = [], category, locati
 					</div>
 				)}
 			</div>
-
 			{/* Load More */}
 			{filteredBusinesses.length > 0 && filteredBusinesses.length >= 20 && (
 				<div className="px-4 py-8 text-center lg:px-24">
@@ -381,3 +378,4 @@ const CategoryPage = ({ type, title, subtitle, businesses = [], category, locati
 };
 
 export default CategoryPage;
+

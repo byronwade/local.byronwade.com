@@ -157,12 +157,12 @@ const OnboardingComponent = () => {
 								If you own a company you can alternatively add it here, please note that you will have to <b>prove ownership</b> to claim otherwise you can add one anonymously.
 							</p>
 							<div className="flex flex-col mt-4 space-y-4">
-								<Link href="/claim-a-business" passHref legacyBehavior>
+								<Link href="/claim-a-business" passHref>
 									<Button className="w-full">
 										Claim a business <ArrowRight className="w-4 h-4 ml-2" />
 									</Button>
 								</Link>
-								<Link href="/add-a-business" passHref legacyBehavior>
+								<Link href="/add-a-business" passHref>
 									<Button variant="outline" className="w-full">
 										Submit Business Anonymously <ArrowRight className="w-4 h-4 ml-2" />
 									</Button>
@@ -177,3 +177,4 @@ const OnboardingComponent = () => {
 };
 
 export default OnboardingComponent;
+

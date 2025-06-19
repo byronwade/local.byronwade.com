@@ -102,7 +102,7 @@ export default function Header() {
 					{navigation.map((item) => {
 						const isActive = pathname === item.href || (item.href !== "/dashboard/localhub" && pathname.startsWith(item.href));
 						return (
-							<Link key={item.href} href={item.href} passHref legacyBehavior>
+							<Link key={item.href} href={item.href} passHref>
 								<Button variant={isActive ? "default" : "ghost"} size="sm" className={`text-sm font-medium transition-colors hover:text-primary ${isActive ? "bg-primary text-primary-foreground" : ""}`}>
 									{item.name}
 								</Button>
@@ -270,3 +270,4 @@ export default function Header() {
 		</div>
 	);
 }
+

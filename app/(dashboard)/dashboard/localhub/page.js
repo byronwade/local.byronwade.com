@@ -135,7 +135,6 @@ export default function LocalHubDashboard() {
 					</Button>
 				</div>
 			</div>
-
 			{/* Revenue Overview Cards */}
 			<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
 				{revenueStats.map((stat, index) => (
@@ -154,7 +153,6 @@ export default function LocalHubDashboard() {
 					</Card>
 				))}
 			</div>
-
 			{/* Main Navigation */}
 			<div>
 				<h2 className="mb-6 text-2xl font-bold">Directory Management</h2>
@@ -179,7 +177,6 @@ export default function LocalHubDashboard() {
 					))}
 				</div>
 			</div>
-
 			{/* Revenue & Activity */}
 			<div className="grid gap-6 lg:grid-cols-3">
 				{/* Revenue Breakdown */}
@@ -276,7 +273,6 @@ export default function LocalHubDashboard() {
 					</CardContent>
 				</Card>
 			</div>
-
 			{/* Revenue Sharing Model */}
 			<Card className="bg-gradient-to-r from-blue-50 to-green-50 dark:from-blue-950/20 dark:to-green-950/20">
 				<CardHeader>
@@ -308,7 +304,6 @@ export default function LocalHubDashboard() {
 					</div>
 				</CardContent>
 			</Card>
-
 			{/* Settings & Customization */}
 			<div>
 				<h2 className="mb-6 text-2xl font-bold">Directory Settings</h2>
@@ -336,3 +331,4 @@ export default function LocalHubDashboard() {
 		</div>
 	);
 }
+

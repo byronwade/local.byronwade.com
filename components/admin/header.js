@@ -63,7 +63,7 @@ export default function Header() {
 					{adminNavItems.map((item) => {
 						const isActive = pathname === item.href || (item.href !== "/dashboard/admin" && pathname.startsWith(item.href));
 						return (
-							<Link key={item.href} href={item.href} passHref legacyBehavior>
+							<Link key={item.href} href={item.href} passHref>
 								<Button variant={isActive ? "default" : "ghost"} size="sm" className={`text-sm font-medium transition-colors hover:text-primary ${isActive ? "bg-primary text-primary-foreground" : ""}`}>
 									{item.text}
 								</Button>
@@ -185,3 +185,4 @@ export default function Header() {
 		</div>
 	);
 }
+

@@ -55,9 +55,7 @@ export default function Admin() {
 			<div className="flex items-center justify-between">
 				<h1 className="text-4xl">Admin Dashboard</h1>
 			</div>
-
 			<p className="text-muted-foreground">Welcome to the admin dashboard. Manage your application from here.</p>
-
 			<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 				{adminItems.map((item) => (
 					<Link href={item.href} key={item.href}>
@@ -76,3 +74,4 @@ export default function Admin() {
 		</div>
 	);
 }
+

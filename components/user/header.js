@@ -48,13 +48,13 @@ export default function Header() {
 
 	return (
 		<div className="sticky top-0 z-[60] bg-card/95 backdrop-blur-md border-b border-border/50">
-			<div className="flex items-center justify-between w-full gap-6 py-3 mx-auto px-4 lg:px-24">
+			<div className="flex gap-6 justify-between items-center px-4 py-3 mx-auto w-full lg:px-24">
 				{/* Left Section - Logo and User Info */}
-				<div className="flex flex-row items-center w-full space-x-6">
+				<div className="flex flex-row items-center space-x-6 w-full">
 					<Link href="/" className="flex items-center space-x-3 text-xl font-bold group">
 						<div className="relative">
 							<Image src="/ThorbisLogo.webp" alt="Thorbis User" width={50} height={50} className="w-12 h-12 transition-transform duration-200 group-hover:scale-105" />
-							<div className="absolute inset-0 transition-opacity duration-200 rounded-full opacity-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 group-hover:opacity-100" />
+							<div className="absolute inset-0 bg-gradient-to-r rounded-full opacity-0 transition-opacity duration-200 from-blue-500/20 to-purple-500/20 group-hover:opacity-100" />
 						</div>
 						<div className="hidden sm:block">
 							<h1 className="text-lg font-bold leading-none text-foreground">Thorbis</h1>
@@ -63,13 +63,13 @@ export default function Header() {
 					</Link>
 
 					{/* Current Job/Project Dropdown */}
-					<div className="hidden lg:flex flex-row space-x-3">
+					<div className="hidden flex-row space-x-3 lg:flex">
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
-								<div className="flex items-center p-2 px-3 space-x-2 transition-colors bg-card/80 backdrop-blur-sm border border-border/50 rounded-lg hover:bg-accent/50 cursor-pointer">
+								<div className="flex items-center p-2 px-3 space-x-2 rounded-lg border backdrop-blur-sm transition-colors cursor-pointer bg-card/80 border-border/50 hover:bg-accent/50">
 									<div className="text-xs max-w-[200px]">
-										<div className="font-medium text-foreground truncate">Current Request</div>
-										<div className="text-muted-foreground truncate">Looking for a professional webdesigner</div>
+										<div className="font-medium truncate text-foreground">Current Request</div>
+										<div className="truncate text-muted-foreground">Looking for a professional webdesigner</div>
 									</div>
 									<ChevronDown className="w-4 h-4 text-muted-foreground" />
 								</div>
@@ -103,7 +103,7 @@ export default function Header() {
 					{userNavItems.map((item) => {
 						const isActive = pathname === item.href || (item.href !== "/dashboard/user" && pathname.startsWith(item.href));
 						return (
-							<Link key={item.href} href={item.href} passHref legacyBehavior>
+							<Link key={item.href} href={item.href} passHref>
 								<Button variant={isActive ? "default" : "ghost"} size="sm" className={`text-sm font-medium transition-colors hover:text-primary ${isActive ? "bg-primary text-primary-foreground" : ""}`}>
 									{item.text}
 								</Button>
@@ -117,13 +117,13 @@ export default function Header() {
 					{/* Notifications */}
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
-							<Button variant="ghost" size="sm" className="relative p-2 h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-accent">
+							<Button variant="ghost" size="sm" className="relative p-2 w-9 h-9 text-muted-foreground hover:text-foreground hover:bg-accent">
 								<Bell className="w-5 h-5" />
-								<span className="absolute top-1 right-1 w-2.5 h-2.5 bg-blue-500 border-2 border-white dark:border-gray-800 rounded-full"></span>
+								<span className="absolute top-1 right-1 w-2.5 h-2.5 bg-blue-500 rounded-full border-2 border-white dark:border-gray-800"></span>
 							</Button>
 						</DropdownMenuTrigger>
 						<DropdownMenuContent className="w-80 z-[80] bg-card/95 backdrop-blur-md border border-border/50">
-							<div className="flex items-center justify-between p-3 border-b border-border/50">
+							<div className="flex justify-between items-center p-3 border-b border-border/50">
 								<h3 className="font-semibold text-foreground">Notifications</h3>
 								<Badge variant="secondary" className="text-xs">
 									4 new
@@ -131,7 +131,7 @@ export default function Header() {
 							</div>
 							<div className="overflow-y-auto max-h-96">
 								<DropdownMenuItem className="flex items-start p-4 space-x-3">
-									<div className="flex-shrink-0 w-2 h-2 mt-2 bg-blue-500 rounded-full"></div>
+									<div className="flex-shrink-0 mt-2 w-2 h-2 bg-blue-500 rounded-full"></div>
 									<div className="flex-1 min-w-0">
 										<p className="text-sm font-medium text-foreground">New application received</p>
 										<p className="mt-1 text-xs text-muted-foreground">John D. applied for your web design request</p>
@@ -139,7 +139,7 @@ export default function Header() {
 									</div>
 								</DropdownMenuItem>
 								<DropdownMenuItem className="flex items-start p-4 space-x-3">
-									<div className="flex-shrink-0 w-2 h-2 mt-2 bg-green-500 rounded-full"></div>
+									<div className="flex-shrink-0 mt-2 w-2 h-2 bg-green-500 rounded-full"></div>
 									<div className="flex-1 min-w-0">
 										<p className="text-sm font-medium text-foreground">Job completed</p>
 										<p className="mt-1 text-xs text-muted-foreground">Your plumbing repair has been completed</p>
@@ -153,7 +153,7 @@ export default function Header() {
 					{/* User Avatar Menu */}
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
-							<Button variant="outline" size="sm" className="p-0 border rounded-full shadow-sm h-9 w-9 border-input bg-background hover:bg-accent hover:text-accent-foreground hover:border-primary">
+							<Button variant="outline" size="sm" className="p-0 w-9 h-9 rounded-full border shadow-sm border-input bg-background hover:bg-accent hover:text-accent-foreground hover:border-primary">
 								<Avatar className="w-8 h-8">
 									<AvatarImage src={`https://vercel.com/api/www/avatar?u=${user?.email?.split("@")[0] || "user"}&s=64`} />
 									<AvatarFallback>{user?.user_metadata?.first_name?.[0] || user?.email?.[0]?.toUpperCase() || "U"}</AvatarFallback>
@@ -174,19 +174,19 @@ export default function Header() {
 							<DropdownMenuGroup>
 								<DropdownMenuItem asChild>
 									<Link href="/dashboard/user/settings">
-										<Settings className="w-4 h-4 mr-2" />
+										<Settings className="mr-2 w-4 h-4" />
 										<span>Settings</span>
 									</Link>
 								</DropdownMenuItem>
 								<DropdownMenuItem asChild>
 									<Link href="/dashboard/user/billing">
-										<CreditCard className="w-4 h-4 mr-2" />
+										<CreditCard className="mr-2 w-4 h-4" />
 										<span>Billing</span>
 									</Link>
 								</DropdownMenuItem>
 								<DropdownMenuItem asChild>
 									<Link href="/support">
-										<HelpCircle className="w-4 h-4 mr-2" />
+										<HelpCircle className="mr-2 w-4 h-4" />
 										<span>Support</span>
 									</Link>
 								</DropdownMenuItem>
@@ -195,15 +195,15 @@ export default function Header() {
 							<DropdownMenuGroup>
 								<DropdownMenuLabel>Theme</DropdownMenuLabel>
 								<DropdownMenuItem onClick={() => setTheme("light")}>
-									<SunIcon className="w-4 h-4 mr-2 text-yellow-500" />
+									<SunIcon className="mr-2 w-4 h-4 text-yellow-500" />
 									Light
 								</DropdownMenuItem>
 								<DropdownMenuItem onClick={() => setTheme("dark")}>
-									<MoonIcon className="w-4 h-4 mr-2 text-indigo-500" />
+									<MoonIcon className="mr-2 w-4 h-4 text-indigo-500" />
 									Dark
 								</DropdownMenuItem>
 								<DropdownMenuItem onClick={() => setTheme("system")}>
-									<RiComputerFill className="w-4 h-4 mr-2 text-slate-500" />
+									<RiComputerFill className="mr-2 w-4 h-4 text-slate-500" />
 									System
 								</DropdownMenuItem>
 							</DropdownMenuGroup>
@@ -237,7 +237,7 @@ export default function Header() {
 								<Menu className="w-4 h-4" />
 							</Button>
 						</SheetTrigger>
-						<SheetContent className="bg-card/95 backdrop-blur-md">
+						<SheetContent className="backdrop-blur-md bg-card/95">
 							<SheetHeader>
 								<SheetTitle>User Menu</SheetTitle>
 							</SheetHeader>
@@ -264,3 +264,4 @@ export default function Header() {
 		</div>
 	);
 }
+

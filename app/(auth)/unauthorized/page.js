@@ -33,10 +33,10 @@ const UnauthorizedNotification = () => {
 			<p className="text-sm leading-6 text-left  text-muted-foreground"> You are not authorized to view this page. If you believe this is an error, please submit a request to our support page.</p>
 			<div className="flex flex-col mt-6">
 				<div className="flex flex-col w-full space-y-4">
-					<Link href="/support" passHref legacyBehavior>
+					<Link href="/support" passHref>
 						<Button className="w-full">Contact Support</Button>
 					</Link>
-					<Link href="/" passHref legacyBehavior>
+					<Link href="/" passHref>
 						<Button variant="outline" className="w-full">
 							Go to Homepage
 						</Button>
@@ -48,3 +48,4 @@ const UnauthorizedNotification = () => {
 };
 
 export default UnauthorizedNotification;
+

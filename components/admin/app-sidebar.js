@@ -159,3 +159,4 @@ export function AppSidebar({ className, ...props }) {
 		</Sidebar>
 	);
 }
+
