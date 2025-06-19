@@ -1,5 +1,5 @@
 import React from "react";
-import { Car, Wrench, Settings, Zap, Shield, Clock, DollarSign, Star, CheckCircle, AlertTriangle, Oil, Battery, Tire, Engine, Brakes, Phone } from "lucide-react";
+import { Car, Wrench, Settings, Zap, Shield, Clock, DollarSign, Star, CheckCircle, AlertTriangle, Droplet, Battery, CircleDot, Cog, Gauge, Phone } from "lucide-react";
 import { Badge } from "@components/ui/badge";
 import { Button } from "@components/ui/button";
 
@@ -40,11 +40,11 @@ export default function AutomotiveServices({ business }) {
 					{services.map((service, index) => (
 						<div key={index} className="space-y-4">
 							<div className="flex items-center space-x-3">
-								{service.icon === "engine" && <Engine className="w-5 h-5 text-primary" />}
-								{service.icon === "brakes" && <Brakes className="w-5 h-5 text-primary" />}
-								{service.icon === "tire" && <Tire className="w-5 h-5 text-primary" />}
+								{service.icon === "engine" && <Cog className="w-5 h-5 text-primary" />}
+								{service.icon === "brakes" && <Gauge className="w-5 h-5 text-primary" />}
+								{service.icon === "tire" && <CircleDot className="w-5 h-5 text-primary" />}
 								{service.icon === "battery" && <Battery className="w-5 h-5 text-primary" />}
-								{service.icon === "oil" && <Oil className="w-5 h-5 text-primary" />}
+								{service.icon === "oil" && <Droplet className="w-5 h-5 text-primary" />}
 								{service.icon === "wrench" && <Wrench className="w-5 h-5 text-primary" />}
 								{service.icon === "settings" && <Settings className="w-5 h-5 text-primary" />}
 								{service.icon === "car" && <Car className="w-5 h-5 text-primary" />}

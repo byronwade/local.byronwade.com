@@ -1,5 +1,5 @@
 import React from "react";
-import { Utensils, Carrot, Wine, ChefHat, Pizza, IceCream, Beer, Fish, Bread, Apple, Star, Clock, DollarSign, Heart, Eye, Phone } from "lucide-react";
+import { Utensils, Carrot, Wine, ChefHat, Pizza, IceCream, Beer, Fish, Cookie, Apple, Star, Clock, DollarSign, Heart, Eye, Phone } from "lucide-react";
 import { Badge } from "@components/ui/badge";
 import { Button } from "@components/ui/button";
 
@@ -67,7 +67,7 @@ export default function MenuSection({ business }) {
 								{category.icon === "pizza" && <Pizza className="w-5 h-5 text-primary" />}
 								{category.icon === "wine" && <Wine className="w-5 h-5 text-primary" />}
 								{category.icon === "fish" && <Fish className="w-5 h-5 text-primary" />}
-								{category.icon === "bread" && <Bread className="w-5 h-5 text-primary" />}
+								{category.icon === "bread" && <Cookie className="w-5 h-5 text-primary" />}
 								{category.icon === "ice-cream" && <IceCream className="w-5 h-5 text-primary" />}
 								{category.icon === "beer" && <Beer className="w-5 h-5 text-primary" />}
 								{category.icon === "apple" && <Apple className="w-5 h-5 text-primary" />}
@@ -174,7 +174,7 @@ export default function MenuSection({ business }) {
 							{dietaryInfo.glutenFree && (
 								<div className="p-3 border rounded-lg bg-blue-50 border-blue-200 dark:bg-blue-950/20 dark:border-blue-800/50">
 									<div className="flex items-center space-x-2">
-										<Bread className="w-4 h-4 text-blue-600" />
+										<Cookie className="w-4 h-4 text-blue-600" />
 										<span className="text-sm font-medium text-blue-800 dark:text-blue-400">Gluten-Free</span>
 									</div>
 								</div>

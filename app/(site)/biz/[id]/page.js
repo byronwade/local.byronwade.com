@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useMemo, useCallback, Suspense, use, lazy } from "react";
+import React, { useState, useEffect, useRef, useMemo, useCallback, Suspense, use, lazy } from "react";
 import {
 	ArrowLeft,
 	Share,
@@ -68,12 +68,12 @@ import {
 	IceCream,
 	Beer,
 	Fish,
-	Bread,
 	Apple,
 	BookOpen,
 	Cpu,
 	Music,
 	PawPrint,
+	Cookie,
 } from "lucide-react";
 import { Button } from "@components/ui/button";
 import { Badge } from "@components/ui/badge";
@@ -111,8 +111,8 @@ const AutomotiveServices = lazy(() => import("./sections/AutomotiveServices"));
 
 // Performance optimization: Memoized loading component
 const LoadingSpinner = () => (
-	<div className="flex items-center justify-center p-8">
-		<div className="w-8 h-8 border-b-2 rounded-full animate-spin border-primary"></div>
+	<div className="flex justify-center items-center p-8">
+		<div className="w-8 h-8 rounded-full border-b-2 animate-spin border-primary"></div>
 	</div>
 );
 
@@ -1439,8 +1439,8 @@ export default function BizProfile({ params }) {
 	// Show loading state while business data is being generated
 	if (!business) {
 		return (
-			<div className="flex items-center justify-center min-h-screen bg-background">
-				<div className="w-12 h-12 border-b-2 rounded-full animate-spin border-primary"></div>
+			<div className="flex justify-center items-center min-h-screen bg-background">
+				<div className="w-12 h-12 rounded-full border-b-2 animate-spin border-primary"></div>
 			</div>
 		);
 	}
@@ -1453,26 +1453,26 @@ export default function BizProfile({ params }) {
 					{/* Desktop Header - Always Visible */}
 					<div className={`${showHeaderSection ? "hidden lg:flex" : "flex"} items-center justify-between h-14 sm:h-16 transition-all duration-300 ease-out`}>
 						<div className="flex items-center space-x-2 sm:space-x-4">
-							<Button variant="ghost" size="sm" className="h-8 px-2 text-muted-foreground hover:text-foreground sm:h-9 sm:px-3">
-								<ArrowLeft className="w-4 h-4 mr-1 sm:mr-2" />
+							<Button variant="ghost" size="sm" className="px-2 h-8 text-muted-foreground hover:text-foreground sm:h-9 sm:px-3">
+								<ArrowLeft className="mr-1 w-4 h-4 sm:mr-2" />
 								<span className="text-sm">Back</span>
 							</Button>
 
 							{/* Mobile Navigation Toggle */}
-							<Button variant="ghost" size="sm" className="h-8 px-2 lg:hidden text-muted-foreground hover:text-foreground sm:h-9 sm:px-3" onClick={() => setShowMobileNav(!showMobileNav)}>
-								<Menu className="w-4 h-4 mr-1 sm:mr-2" />
+							<Button variant="ghost" size="sm" className="px-2 h-8 lg:hidden text-muted-foreground hover:text-foreground sm:h-9 sm:px-3" onClick={() => setShowMobileNav(!showMobileNav)}>
+								<Menu className="mr-1 w-4 h-4 sm:mr-2" />
 								<span className="text-sm">Sections</span>
 							</Button>
 						</div>
 
 						{/* Header Actions */}
 						<div className="flex items-center space-x-1 sm:space-x-2">
-							<Button variant="ghost" size="sm" className="h-8 px-2 text-muted-foreground hover:text-foreground sm:h-9 sm:px-3">
-								<Share className="w-4 h-4 mr-1 sm:mr-2" />
+							<Button variant="ghost" size="sm" className="px-2 h-8 text-muted-foreground hover:text-foreground sm:h-9 sm:px-3">
+								<Share className="mr-1 w-4 h-4 sm:mr-2" />
 								<span className="hidden text-sm sm:inline">Share</span>
 							</Button>
-							<Button variant="ghost" size="sm" className="h-8 px-2 text-muted-foreground hover:text-foreground sm:h-9 sm:px-3">
-								<Heart className="w-4 h-4 mr-1 sm:mr-2" />
+							<Button variant="ghost" size="sm" className="px-2 h-8 text-muted-foreground hover:text-foreground sm:h-9 sm:px-3">
+								<Heart className="mr-1 w-4 h-4 sm:mr-2" />
 								<span className="hidden text-sm sm:inline">Save</span>
 							</Button>
 						</div>
@@ -1480,7 +1480,7 @@ export default function BizProfile({ params }) {
 
 					{/* Mobile Scroll Header - Replaces main header on scroll */}
 					{showHeaderSection && (
-						<div className="flex items-center justify-between py-2 lg:hidden sm:py-3">
+						<div className="flex justify-between items-center py-2 lg:hidden sm:py-3">
 							{/* Business Name & Rating */}
 							<div className="flex-1 min-w-0">
 								<h1 className="text-sm font-bold truncate text-foreground sm:text-base">{business?.name}</h1>
@@ -1499,13 +1499,13 @@ export default function BizProfile({ params }) {
 							{/* Primary Action Buttons */}
 							<div className="flex space-x-2">
 								<Button size="sm" className="h-8 text-xs font-semibold transition-all duration-200 bg-primary hover:bg-primary/90 hover:scale-105 active:scale-95">
-									<Phone className="w-3 h-3 mr-1" />
+									<Phone className="mr-1 w-3 h-3" />
 									Call
 								</Button>
-								<Button variant="outline" size="sm" className="h-8 px-2 transition-all duration-200 border-border hover:bg-muted hover:scale-105 active:scale-95">
+								<Button variant="outline" size="sm" className="px-2 h-8 transition-all duration-200 border-border hover:bg-muted hover:scale-105 active:scale-95">
 									<MapPin className="w-3 h-3" />
 								</Button>
-								<Button variant="ghost" size="sm" className="h-8 px-2 transition-all duration-200 hover:scale-105 active:scale-95" onClick={() => setShowMobileNav(!showMobileNav)}>
+								<Button variant="ghost" size="sm" className="px-2 h-8 transition-all duration-200 hover:scale-105 active:scale-95" onClick={() => setShowMobileNav(!showMobileNav)}>
 									<Menu className="w-3 h-3" />
 								</Button>
 							</div>
@@ -1518,7 +1518,7 @@ export default function BizProfile({ params }) {
 							<div className="grid grid-cols-3 gap-6">
 								{/* Contact Info */}
 								<div className="space-y-4">
-									<div className="flex items-center justify-between">
+									<div className="flex justify-between items-center">
 										<div className="flex items-center space-x-4">
 											<div className="text-center">
 												<div className="text-lg font-bold text-primary">{business?.trustScore}%</div>
@@ -1533,7 +1533,7 @@ export default function BizProfile({ params }) {
 									</div>
 									<div className="flex space-x-2">
 										<Button size="sm" className="flex-1 transition-all duration-200 bg-primary hover:bg-primary/90 hover:scale-105 active:scale-95">
-											<Phone className="w-4 h-4 mr-2" />
+											<Phone className="mr-2 w-4 h-4" />
 											<span className="truncate">{business?.phone}</span>
 										</Button>
 										<Button variant="outline" size="sm" className="transition-all duration-200 border-border hover:bg-muted hover:scale-105 active:scale-95">
@@ -1548,7 +1548,7 @@ export default function BizProfile({ params }) {
 								{/* Hours */}
 								<div className="space-y-3">
 									<h4 className="flex items-center text-sm font-semibold text-foreground">
-										<Clock className="w-3 h-3 mr-2" />
+										<Clock className="mr-2 w-3 h-3" />
 										Hours
 									</h4>
 									<div className="text-xs text-foreground">
@@ -1615,7 +1615,7 @@ export default function BizProfile({ params }) {
 					<div className="space-y-6">
 						{/* Business Name & Basic Info */}
 						<div className="space-y-4">
-							<div className="flex items-start justify-between">
+							<div className="flex justify-between items-start">
 								<div className="flex-1 space-y-3">
 									<h1 className="text-3xl font-bold text-foreground sm:text-4xl lg:text-5xl">{business.name}</h1>
 									<div className="flex items-center space-x-2 text-muted-foreground">
@@ -1634,7 +1634,7 @@ export default function BizProfile({ params }) {
 							</div>
 
 							{/* Rating & Status Row */}
-							<div className="flex items-center justify-between">
+							<div className="flex justify-between items-center">
 								<div className="flex items-center space-x-6">
 									<div className="flex items-center space-x-2">
 										<div className="flex items-center space-x-1">
@@ -1667,16 +1667,16 @@ export default function BizProfile({ params }) {
 							<div className="space-y-4">
 								<div className="space-y-3">
 									<Button className="w-full h-12 text-base font-semibold">
-										<Phone className="w-5 h-5 mr-2" />
+										<Phone className="mr-2 w-5 h-5" />
 										{business.phone}
 									</Button>
 									<div className="grid grid-cols-2 gap-2">
 										<Button variant="outline" className="h-10">
-											<MapPin className="w-4 h-4 mr-2" />
+											<MapPin className="mr-2 w-4 h-4" />
 											Directions
 										</Button>
 										<Button variant="outline" className="h-10">
-											<Globe className="w-4 h-4 mr-2" />
+											<Globe className="mr-2 w-4 h-4" />
 											Website
 										</Button>
 									</div>
@@ -1708,15 +1708,15 @@ export default function BizProfile({ params }) {
 								<h3 className="font-semibold">Quick Actions</h3>
 								<div className="space-y-2">
 									<Button variant="outline" className="justify-start w-full h-10" onClick={() => setShowReviewModal(true)}>
-										<Edit className="w-4 h-4 mr-2" />
+										<Edit className="mr-2 w-4 h-4" />
 										Write Review
 									</Button>
 									<Button variant="outline" className="justify-start w-full h-10" onClick={() => scrollToSection("reviews")}>
-										<Star className="w-4 h-4 mr-2" />
+										<Star className="mr-2 w-4 h-4" />
 										View Reviews
 									</Button>
 									<Button variant="outline" className="justify-start w-full h-10" onClick={() => scrollToSection("services")}>
-										<Settings className="w-4 h-4 mr-2" />
+										<Settings className="mr-2 w-4 h-4" />
 										Services
 									</Button>
 								</div>
@@ -1728,7 +1728,7 @@ export default function BizProfile({ params }) {
 					<div className="space-y-6 sm:space-y-8 lg:col-span-2">
 						{/* Photo Gallery - Modern Style */}
 						<div className="space-y-4 sm:space-y-6">
-							<div className="flex items-center justify-between">
+							<div className="flex justify-between items-center">
 								<h2 className="text-lg font-semibold sm:text-xl md:text-2xl text-foreground">Photos</h2>
 								<div className="flex items-center space-x-2 text-sm text-muted-foreground">
 									<Camera className="w-4 h-4" />
@@ -1741,10 +1741,10 @@ export default function BizProfile({ params }) {
 							</div>
 
 							{/* Modern Photo Grid */}
-							<div className="grid grid-cols-4 gap-2 overflow-hidden h-80 rounded-xl sm:h-96">
+							<div className="grid overflow-hidden grid-cols-4 gap-2 h-80 rounded-xl sm:h-96">
 								{/* Main large photo - left side */}
 								<div
-									className="relative col-span-2 row-span-2 overflow-hidden cursor-pointer group bg-muted"
+									className="overflow-hidden relative col-span-2 row-span-2 cursor-pointer group bg-muted"
 									onClick={() => {
 										setSelectedImageIndex(0);
 										setShowAllPhotos(true);
@@ -1758,12 +1758,12 @@ export default function BizProfile({ params }) {
 											e.target.src = "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300&fit=crop";
 										}}
 									/>
-									<div className="absolute inset-0 transition-opacity duration-300 opacity-0 bg-black/20 group-hover:opacity-100" />
+									<div className="absolute inset-0 opacity-0 transition-opacity duration-300 bg-black/20 group-hover:opacity-100" />
 								</div>
 
 								{/* Top right photos */}
 								<div
-									className="relative overflow-hidden cursor-pointer group bg-muted"
+									className="overflow-hidden relative cursor-pointer group bg-muted"
 									onClick={() => {
 										setSelectedImageIndex(1);
 										setShowAllPhotos(true);
@@ -1777,10 +1777,10 @@ export default function BizProfile({ params }) {
 											e.target.src = "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop";
 										}}
 									/>
-									<div className="absolute inset-0 transition-opacity duration-300 opacity-0 bg-black/20 group-hover:opacity-100" />
+									<div className="absolute inset-0 opacity-0 transition-opacity duration-300 bg-black/20 group-hover:opacity-100" />
 								</div>
 								<div
-									className="relative overflow-hidden cursor-pointer group bg-muted"
+									className="overflow-hidden relative cursor-pointer group bg-muted"
 									onClick={() => {
 										setSelectedImageIndex(2);
 										setShowAllPhotos(true);
@@ -1794,12 +1794,12 @@ export default function BizProfile({ params }) {
 											e.target.src = "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&h=300&fit=crop";
 										}}
 									/>
-									<div className="absolute inset-0 transition-opacity duration-300 opacity-0 bg-black/20 group-hover:opacity-100" />
+									<div className="absolute inset-0 opacity-0 transition-opacity duration-300 bg-black/20 group-hover:opacity-100" />
 								</div>
 
 								{/* Bottom right photos */}
 								<div
-									className="relative overflow-hidden cursor-pointer group bg-muted"
+									className="overflow-hidden relative cursor-pointer group bg-muted"
 									onClick={() => {
 										setSelectedImageIndex(3);
 										setShowAllPhotos(true);
@@ -1813,10 +1813,10 @@ export default function BizProfile({ params }) {
 											e.target.src = "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&h=300&fit=crop";
 										}}
 									/>
-									<div className="absolute inset-0 transition-opacity duration-300 opacity-0 bg-black/20 group-hover:opacity-100" />
+									<div className="absolute inset-0 opacity-0 transition-opacity duration-300 bg-black/20 group-hover:opacity-100" />
 								</div>
 								<div
-									className="relative overflow-hidden cursor-pointer group bg-muted"
+									className="overflow-hidden relative cursor-pointer group bg-muted"
 									onClick={() => {
 										setSelectedImageIndex(4);
 										setShowAllPhotos(true);
@@ -1830,10 +1830,10 @@ export default function BizProfile({ params }) {
 											e.target.src = "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=400&h=300&fit=crop";
 										}}
 									/>
-									<div className="absolute inset-0 transition-opacity duration-300 opacity-0 bg-black/20 group-hover:opacity-100" />
+									<div className="absolute inset-0 opacity-0 transition-opacity duration-300 bg-black/20 group-hover:opacity-100" />
 									{/* Show all photos overlay on last visible image */}
 									{allImages.length > 5 && (
-										<div className="absolute inset-0 flex items-center justify-center transition-opacity duration-300 bg-black/60 group-hover:bg-black/80">
+										<div className="flex absolute inset-0 justify-center items-center transition-opacity duration-300 bg-black/60 group-hover:bg-black/80">
 											<div className="text-center text-white">
 												<div className="text-lg font-semibold">+{allImages.length - 5}</div>
 												<div className="text-sm">more photos</div>
@@ -1845,7 +1845,7 @@ export default function BizProfile({ params }) {
 
 							{/* Show all photos button */}
 							<Button variant="outline" className="w-full border-border hover:bg-muted/50 text-foreground" onClick={() => setShowAllPhotos(true)}>
-								<Camera className="w-4 h-4 mr-2" />
+								<Camera className="mr-2 w-4 h-4" />
 								Show all {allImages.length} photos
 							</Button>
 						</div>
@@ -1938,7 +1938,7 @@ export default function BizProfile({ params }) {
 			{/* Photo Modal */}
 			{showAllPhotos && (
 				<div
-					className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-background/95"
+					className="flex fixed inset-0 z-50 justify-center items-center backdrop-blur-sm bg-background/95"
 					onClick={(e) => {
 						// Close modal when clicking outside the content
 						if (e.target === e.currentTarget) {
@@ -1953,9 +1953,9 @@ export default function BizProfile({ params }) {
 					}}
 					tabIndex={0}
 				>
-					<div className="relative flex flex-col w-full h-full">
+					<div className="flex relative flex-col w-full h-full">
 						{/* Modal Header */}
-						<div className="flex items-center justify-between p-4 border-b backdrop-blur-md bg-background/80 border-border">
+						<div className="flex justify-between items-center p-4 border-b backdrop-blur-md bg-background/80 border-border">
 							<div className="flex items-center space-x-4">
 								<h3 className="font-semibold text-foreground">
 									{selectedImageIndex + 1} / {allImages.length}
@@ -1966,7 +1966,7 @@ export default function BizProfile({ params }) {
 							</div>
 							<div className="flex items-center space-x-2">
 								<Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
-									<Share className="w-4 h-4 mr-2" />
+									<Share className="mr-2 w-4 h-4" />
 									Share
 								</Button>
 								<Button variant="ghost" size="sm" onClick={() => setShowAllPhotos(false)} className="text-muted-foreground hover:text-foreground hover:bg-red-500/10 hover:text-red-500" title="Close (ESC)">
@@ -1976,14 +1976,14 @@ export default function BizProfile({ params }) {
 						</div>
 
 						{/* Modal Content */}
-						<div className="flex items-center justify-center flex-1 p-4">
+						<div className="flex flex-1 justify-center items-center p-4">
 							<div className="relative max-w-4xl max-h-full">
 								{allImages[selectedImageIndex] && (
 									<div className="relative">
 										<img src={allImages[selectedImageIndex].src || allImages[selectedImageIndex]} alt={allImages[selectedImageIndex].title || `${business.name} photo ${selectedImageIndex + 1}`} className="object-contain max-w-full max-h-full rounded-lg" />
 										{/* Image Info Overlay */}
 										{allImages[selectedImageIndex].title && (
-											<div className="absolute p-3 border rounded-lg right-4 bottom-4 left-4 backdrop-blur-md bg-background/80 border-border">
+											<div className="absolute right-4 bottom-4 left-4 p-3 rounded-lg border backdrop-blur-md bg-background/80 border-border">
 												<h4 className="font-medium text-foreground">{allImages[selectedImageIndex].title}</h4>
 												{allImages[selectedImageIndex].description && <p className="mt-1 text-sm text-muted-foreground">{allImages[selectedImageIndex].description}</p>}
 												<div className="mt-2">
@@ -1999,10 +1999,10 @@ export default function BizProfile({ params }) {
 								{/* Navigation Arrows */}
 								{allImages.length > 1 && (
 									<>
-										<Button variant="ghost" size="sm" className="absolute -translate-y-1/2 left-4 top-1/2 backdrop-blur-sm bg-background/80 hover:bg-background/90" onClick={() => setSelectedImageIndex((prev) => (prev > 0 ? prev - 1 : allImages.length - 1))}>
+										<Button variant="ghost" size="sm" className="absolute left-4 top-1/2 backdrop-blur-sm -translate-y-1/2 bg-background/80 hover:bg-background/90" onClick={() => setSelectedImageIndex((prev) => (prev > 0 ? prev - 1 : allImages.length - 1))}>
 											<ChevronLeft className="w-5 h-5" />
 										</Button>
-										<Button variant="ghost" size="sm" className="absolute -translate-y-1/2 right-4 top-1/2 backdrop-blur-sm bg-background/80 hover:bg-background/90" onClick={() => setSelectedImageIndex((prev) => (prev < allImages.length - 1 ? prev + 1 : 0))}>
+										<Button variant="ghost" size="sm" className="absolute right-4 top-1/2 backdrop-blur-sm -translate-y-1/2 bg-background/80 hover:bg-background/90" onClick={() => setSelectedImageIndex((prev) => (prev < allImages.length - 1 ? prev + 1 : 0))}>
 											<ChevronRight className="w-5 h-5" />
 										</Button>
 									</>
@@ -2013,7 +2013,7 @@ export default function BizProfile({ params }) {
 						{/* Thumbnail Navigation */}
 						{allImages.length > 1 && (
 							<div className="p-4 border-t backdrop-blur-md bg-background/80 border-border">
-								<div className="flex pb-2 space-x-2 overflow-x-auto">
+								<div className="flex overflow-x-auto pb-2 space-x-2">
 									{allImages.map((image, index) => (
 										<button key={index} onClick={() => setSelectedImageIndex(index)} className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${index === selectedImageIndex ? "border-primary" : "border-transparent hover:border-muted-foreground"}`}>
 											<img src={image.src || image} alt={image.title || `Thumbnail ${index + 1}`} className="object-cover w-full h-full" />
@@ -2029,15 +2029,15 @@ export default function BizProfile({ params }) {
 			{/* Enhanced Floating Scroll Spy Navigation - Desktop Only */}
 			{showScrollSpy && (
 				<div
-					className="fixed z-30 hidden left-6 lg:block"
+					className="hidden fixed left-6 z-30 lg:block"
 					style={{
 						top: `${headerHeight + 16}px`,
 						bottom: "2em",
 					}}
 				>
-					<div className="flex flex-col border shadow-lg rounded-xl backdrop-blur-md w-fit bg-card/90 border-border" style={{ overflow: "visible" }}>
+					<div className="flex flex-col rounded-xl border shadow-lg backdrop-blur-md w-fit bg-card/90 border-border" style={{ overflow: "visible" }}>
 						{/* Error State */}
-						{scrollSpyError && <div className="p-2 text-xs text-red-500 border-b border-red-200 bg-red-50 dark:bg-red-950/30 dark:border-red-800">⚠️ {scrollSpyError}</div>}
+						{scrollSpyError && <div className="p-2 text-xs text-red-500 bg-red-50 border-b border-red-200 dark:bg-red-950/30 dark:border-red-800">⚠️ {scrollSpyError}</div>}
 
 						{/* Previous Section Arrow */}
 						{shouldShowArrows && navigationItems.length > 1 && (
@@ -2125,11 +2125,11 @@ export default function BizProfile({ params }) {
 
 			{/* Review Modal */}
 			{showReviewModal && (
-				<div className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm bg-background/80">
+				<div className="flex fixed inset-0 z-50 justify-center items-center p-4 backdrop-blur-sm bg-background/80">
 					<div className="bg-card border border-border rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
 						{/* Modal Header */}
 						<div className="p-6 border-b border-border">
-							<div className="flex items-center justify-between">
+							<div className="flex justify-between items-center">
 								<h3 className="text-xl font-semibold text-foreground">Write a Review</h3>
 								<Button variant="ghost" size="sm" onClick={() => setShowReviewModal(false)} className="hover:bg-muted">
 									<X className="w-4 h-4" />
@@ -2157,19 +2157,19 @@ export default function BizProfile({ params }) {
 							{/* Review Title */}
 							<div className="space-y-2">
 								<label className="text-sm font-medium text-foreground">Review Title</label>
-								<input type="text" placeholder="Summarize your experience" value={newReview.title} onChange={(e) => setNewReview((prev) => ({ ...prev, title: e.target.value }))} className="w-full px-3 py-2 border rounded-lg bg-background border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+								<input type="text" placeholder="Summarize your experience" value={newReview.title} onChange={(e) => setNewReview((prev) => ({ ...prev, title: e.target.value }))} className="px-3 py-2 w-full rounded-lg border bg-background border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
 							</div>
 
 							{/* Review Text */}
 							<div className="space-y-2">
 								<label className="text-sm font-medium text-foreground">Your Review</label>
-								<textarea placeholder="Tell others about your experience..." value={newReview.text} onChange={(e) => setNewReview((prev) => ({ ...prev, text: e.target.value }))} rows={5} className="w-full px-3 py-2 border rounded-lg resize-none bg-background border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+								<textarea placeholder="Tell others about your experience..." value={newReview.text} onChange={(e) => setNewReview((prev) => ({ ...prev, text: e.target.value }))} rows={5} className="px-3 py-2 w-full rounded-lg border resize-none bg-background border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
 							</div>
 
 							{/* Author Name */}
 							<div className="space-y-2">
 								<label className="text-sm font-medium text-foreground">Your Name</label>
-								<input type="text" placeholder="Enter your name" value={newReview.author} onChange={(e) => setNewReview((prev) => ({ ...prev, author: e.target.value }))} className="w-full px-3 py-2 border rounded-lg bg-background border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+								<input type="text" placeholder="Enter your name" value={newReview.author} onChange={(e) => setNewReview((prev) => ({ ...prev, author: e.target.value }))} className="px-3 py-2 w-full rounded-lg border bg-background border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
 							</div>
 						</div>
 
@@ -2180,7 +2180,7 @@ export default function BizProfile({ params }) {
 									Cancel
 								</Button>
 								<Button onClick={handleSubmitReview} disabled={!newReview.text.trim() || !newReview.author.trim()} className="bg-primary hover:bg-primary/90 text-primary-foreground">
-									<Send className="w-4 h-4 mr-2" />
+									<Send className="mr-2 w-4 h-4" />
 									Submit Review
 								</Button>
 							</div>
@@ -2191,10 +2191,10 @@ export default function BizProfile({ params }) {
 
 			{/* Video Consultation Modal - REMOVED */}
 			{false && (
-				<div className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm bg-background/80">
+				<div className="flex fixed inset-0 z-50 justify-center items-center p-4 backdrop-blur-sm bg-background/80">
 					<div className="bg-card border border-border rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
 						<div className="p-6 border-b border-border">
-							<div className="flex items-center justify-between">
+							<div className="flex justify-between items-center">
 								<div className="flex items-center space-x-3">
 									<div className="p-2 rounded-lg bg-blue-500/10">
 										<Video className="w-6 h-6 text-blue-500" />
@@ -2213,11 +2213,11 @@ export default function BizProfile({ params }) {
 						<div className="p-6 space-y-6">
 							{/* Service Details */}
 							<div className="grid grid-cols-2 gap-4">
-								<div className="p-4 border rounded-lg bg-card/30">
+								<div className="p-4 rounded-lg border bg-card/30">
 									<p className="text-sm text-muted-foreground">Price</p>
 									<p className="text-xl font-bold text-primary">{business.videoConsultation.pricePerSession}</p>
 								</div>
-								<div className="p-4 border rounded-lg bg-card/30">
+								<div className="p-4 rounded-lg border bg-card/30">
 									<p className="text-sm text-muted-foreground">Duration</p>
 									<p className="text-xl font-bold text-foreground">{business.videoConsultation.duration}</p>
 								</div>
@@ -2237,14 +2237,14 @@ export default function BizProfile({ params }) {
 							</div>
 
 							{/* Next Available */}
-							<div className="p-4 border rounded-lg bg-primary/5 border-primary/20">
-								<div className="flex items-center justify-between">
+							<div className="p-4 rounded-lg border bg-primary/5 border-primary/20">
+								<div className="flex justify-between items-center">
 									<div>
 										<p className="font-semibold text-foreground">Next Available</p>
 										<p className="text-sm text-muted-foreground">{business.videoConsultation.nextSlot}</p>
 									</div>
 									<Button className="text-white bg-blue-500 hover:bg-blue-600">
-										<Video className="w-4 h-4 mr-2" />
+										<Video className="mr-2 w-4 h-4" />
 										Book Session
 									</Button>
 								</div>
@@ -2267,9 +2267,9 @@ export default function BizProfile({ params }) {
 			)}
 
 			{/* Mobile Review FAB - Hidden when main FAB is shown */}
-			<div className="fixed z-40 right-4 bottom-4 lg:hidden sm:bottom-6 sm:right-6">
-				<Button size="default" onClick={() => setShowReviewModal(true)} className="h-12 px-4 transition-all duration-200 transform rounded-full shadow-xl bg-primary hover:bg-primary/90 text-primary-foreground hover:shadow-2xl hover:scale-105 active:scale-95">
-					<Plus className="w-4 h-4 mr-2" />
+			<div className="fixed right-4 bottom-4 z-40 lg:hidden sm:bottom-6 sm:right-6">
+				<Button size="default" onClick={() => setShowReviewModal(true)} className="px-4 h-12 rounded-full shadow-xl transition-all duration-200 transform bg-primary hover:bg-primary/90 text-primary-foreground hover:shadow-2xl hover:scale-105 active:scale-95">
+					<Plus className="mr-2 w-4 h-4" />
 					<span className="text-sm font-semibold">Review</span>
 				</Button>
 			</div>
