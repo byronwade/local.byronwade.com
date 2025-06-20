@@ -6,6 +6,7 @@ import { Search, MapPin, Star, Users, Shield } from "react-feather";
 import { Button } from "@components/ui/button";
 import { Carousel, CarouselContent, CarouselItem } from "@components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
+import { cn } from "@utils";
 
 export default function HeroSection({ carouselItems }) {
 	const carouselApiRef = useRef(null);

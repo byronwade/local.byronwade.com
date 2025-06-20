@@ -1,6 +1,6 @@
 import * as React from "react";
 import { cva } from "class-variance-authority";
-import { cn } from "@utils/utils";
+import { cn } from "@utils";
 
 const cardVariants = cva("rounded-lg", {
 	variants: {
