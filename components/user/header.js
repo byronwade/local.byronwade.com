@@ -8,7 +8,7 @@ import { Badge } from "@components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuLabel, DropdownMenuGroup, DropdownMenuRadioGroup, DropdownMenuRadioItem } from "@components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@components/ui/sheet";
-import { ChevronDown, Menu, Bell, Settings, Briefcase, CreditCard, HelpCircle, User, Users, Activity } from "react-feather";
+import { ChevronDown, Menu, Bell, Settings, Briefcase, CreditCard, HelpCircle, User, Users, Activity, Star } from "react-feather";
 import { BarChart3, Zap } from "lucide-react";
 import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
 import { RiComputerFill } from "react-icons/ri";
@@ -40,9 +40,8 @@ export default function Header() {
 		{ href: "/dashboard/user", text: "Overview", icon: BarChart3 },
 		{ href: "/dashboard/user/jobs", text: "Jobs", icon: Briefcase },
 		{ href: "/dashboard/user/activity", text: "Activity", icon: Activity },
-		{ href: "/dashboard/user/boosts", text: "Boosts", icon: Zap },
+		{ href: "/dashboard/user/reviews", text: "Reviews", icon: Star },
 		{ href: "/dashboard/user/referral", text: "Referral", icon: Users },
-		{ href: "/dashboard/user/pro", text: "Pro", icon: CreditCard },
 		{ href: "/dashboard/user/settings", text: "Settings", icon: Settings },
 	];
 

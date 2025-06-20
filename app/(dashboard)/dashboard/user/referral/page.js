@@ -1,155 +1,455 @@
 "use client";
 import React, { useState } from "react";
 import { Button } from "@components/ui/button";
-import { ChevronDown, Facebook, Linkedin, Mail, Twitter, Copy } from "react-feather";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger } from "@components/ui/dropdown-menu";
-
-import { Card, CardHeader, CardDescription, CardTitle } from "@components/ui/card";
-import { Label } from "@components/ui/label";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
+import { Badge } from "@components/ui/badge";
 import { Input } from "@components/ui/input";
+import { Label } from "@components/ui/label";
+import { Progress } from "@components/ui/progress";
+import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
+import { Copy, Mail, Twitter, Facebook, Linkedin, Share2, Gift, Users, TrendingUp, Award, CheckCircle, ArrowRight, ExternalLink, Star, Zap, Target, BarChart3 } from "lucide-react";
+import { toast } from "@components/ui/use-toast";
+
+// Mock data
+const mockReferralData = {
+	referralCode: "THORBIS-1234",
+	referralLink: "https://thorbis.com/ref/THORBIS-1234",
+	totalReferrals: 12,
+	successfulReferrals: 8,
+	rewardsEarned: 200,
+	conversionRate: 67,
+	nextMilestone: 15,
+	currentTier: "Silver",
+	nextTier: "Gold",
+	recentReferrals: [
+		{
+			id: 1,
+			name: "Sarah Johnson",
+			email: "sarah@example.com",
+			status: "completed",
+			date: "2024-01-15",
+			reward: 25,
+			avatar: null,
+		},
+		{
+			id: 2,
+			name: "Mike Chen",
+			email: "mike@example.com",
+			status: "pending",
+			date: "2024-01-20",
+			reward: 25,
+			avatar: null,
+		},
+		{
+			id: 3,
+			name: "Emily Rodriguez",
+			email: "emily@example.com",
+			status: "completed",
+			date: "2024-01-18",
+			reward: 25,
+			avatar: null,
+		},
+	],
+	leaderboard: [
+		{ rank: 1, name: "Alex Thompson", referrals: 45, rewards: 1125 },
+		{ rank: 2, name: "Maria Garcia", referrals: 32, rewards: 800 },
+		{ rank: 3, name: "David Kim", referrals: 28, rewards: 700 },
+		{ rank: 4, name: "Lisa Wang", referrals: 25, rewards: 625 },
+		{ rank: 5, name: "You", referrals: 12, rewards: 200 },
+	],
+};
+
+const referralTiers = [
+	{
+		name: "Bronze",
+		referrals: 0,
+		rewards: 25,
+		features: ["$25 per referral", "Basic analytics", "Email support"],
+	},
+	{
+		name: "Silver",
+		referrals: 10,
+		rewards: 30,
+		features: ["$30 per referral", "Advanced analytics", "Priority support", "Custom referral link"],
+	},
+	{
+		name: "Gold",
+		referrals: 25,
+		rewards: 40,
+		features: ["$40 per referral", "Premium analytics", "Dedicated support", "Early access features", "Exclusive rewards"],
+	},
+	{
+		name: "Platinum",
+		referrals: 50,
+		rewards: 50,
+		features: ["$50 per referral", "VIP analytics", "Personal account manager", "Beta features", "Special events access"],
+	},
+];
 
 export default function Referral() {
-	const [referralLink, setReferralLink] = useState("https://thorbis.com/referral-code-1234");
+	const [referralData] = useState(mockReferralData);
+	const [copied, setCopied] = useState(false);
 
-	const copyToClipboard = () => {
-		navigator.clipboard.writeText(referralLink).then(
-			() => alert("Referral link copied to clipboard!"),
-			(err) => console.error("Failed to copy: ", err)
-		);
+	const copyToClipboard = async () => {
+		try {
+			await navigator.clipboard.writeText(referralData.referralLink);
+			setCopied(true);
+			toast({
+				title: "Link copied!",
+				description: "Your referral link has been copied to clipboard.",
+			});
+			setTimeout(() => setCopied(false), 2000);
+		} catch (err) {
+			toast({
+				title: "Failed to copy",
+				description: "Please try again or copy manually.",
+				variant: "destructive",
+			});
+		}
 	};
+
+	const shareViaEmail = () => {
+		const subject = encodeURIComponent("Join me on Thorbis - Find trusted local professionals!");
+		const body = encodeURIComponent(`Hi there!
+
+I've been using Thorbis to find amazing local professionals for my projects, and I think you'd love it too!
+
+Use my referral link to get started: ${referralData.referralLink}
+
+Thorbis connects you with pre-screened, verified professionals in your area. Whether you need a plumber, designer, or any other service, they make it super easy to find the right person.
+
+Check it out and let me know what you think!
+
+Best regards`);
+
+		window.open(`mailto:?subject=${subject}&body=${body}`);
+	};
+
+	const shareViaSocial = (platform) => {
+		const text = encodeURIComponent("Join me on Thorbis - Find trusted local professionals! Use my referral link:");
+		const url = encodeURIComponent(referralData.referralLink);
+
+		const urls = {
+			twitter: `https://twitter.com/intent/tweet?text=${text}&url=${url}`,
+			facebook: `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+			linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${url}`,
+		};
+
+		window.open(urls[platform], "_blank", "width=600,height=400");
+	};
+
+	const getStatusColor = (status) => {
+		switch (status) {
+			case "completed":
+				return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300";
+			case "pending":
+				return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300";
+			default:
+				return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300";
+		}
+	};
+
+	const currentTier = referralTiers.find((tier) => tier.referrals <= referralData.totalReferrals);
+	const nextTier = referralTiers.find((tier) => tier.referrals > referralData.totalReferrals);
+	const progressToNext = nextTier ? ((referralData.totalReferrals - currentTier.referrals) / (nextTier.referrals - currentTier.referrals)) * 100 : 100;
 
 	return (
 		<div className="w-full px-4 py-16 space-y-8 lg:px-24">
-			<div className="flex items-center justify-between space-x-6">
-				<h1 className="text-4xl">Referrals</h1>
+			{/* Header */}
+			<div className="space-y-4">
+				<div className="flex items-center gap-3">
+					<div className="p-2 rounded-lg bg-gradient-to-br from-purple-500/10 to-blue-500/10">
+						<Gift className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+					</div>
+					<div>
+						<h1 className="text-4xl font-bold tracking-tight">Referral Program</h1>
+						<p className="text-lg text-muted-foreground mt-1">Share Thorbis with friends and earn rewards for every successful referral</p>
+					</div>
+				</div>
 			</div>
-			<p className="text-muted-foreground">Refer friends and earn rewards for every successful signup.</p>
 
-			<div className="space-y-6">
-				<div>
-					<h2 className="mb-4 text-xl font-bold">Share Your Referral Link</h2>
-					<div className="col-span-12">
-						<div className="relative">
-							<Input value={referralLink} readOnly />
-							<div className="absolute inset-y-0 right-0 flex items-center pl-3 pr-1 space-x-1">
-								<Button variant="secondary" size="xs" onClick={copyToClipboard}>
-									<Copy className="w-4 h-4 mr-2 text-muted-foreground" />
-									<span className="truncate text-muted-foreground">Copy</span>
-								</Button>
+			{/* Stats Overview */}
+			<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+				<Card className="relative overflow-hidden">
+					<CardContent className="p-6">
+						<div className="flex items-center justify-between">
+							<div>
+								<p className="text-sm font-medium text-muted-foreground">Total Referrals</p>
+								<p className="text-3xl font-bold">{referralData.totalReferrals}</p>
 							</div>
+							<Users className="w-8 h-8 text-blue-600 dark:text-blue-400" />
 						</div>
-					</div>
-					<div className="flex items-center gap-4 mt-4">
-						<Button variant="ghost" size="sm">
-							<Mail className="w-5 h-5 mr-2" />
-							Email
-						</Button>
-						<Button variant="ghost" size="sm">
-							<Twitter className="w-5 h-5 mr-2" />
-							Twitter
-						</Button>
-						<Button variant="ghost" size="sm">
-							<Facebook className="w-5 h-5 mr-2" />
-							Facebook
-						</Button>
-						<Button variant="ghost" size="sm">
-							<Linkedin className="w-5 h-5 mr-2" />
-							LinkedIn
-						</Button>
-					</div>
-				</div>
-				<div class="bg-white border border-gray-300 rounded-md dark:border-neutral-800 dark:bg-neutral-900 p-4 mb-6" data-pc-el-id="div-42-58">
-					<div class="flex justify-between items-center mb-2" data-pc-el-id="div-43-46">
-						<span class="font-semibold" data-pc-el-id="span-44-44">
-							Referrals
-						</span>
-						<span class="text-2xl font-bold text-primary" data-pc-el-id="span-45-45">
-							3
-						</span>
-					</div>
-					<div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700" data-pc-el-id="div-47-56">
-						<div class="bg-primary h-2.5 rounded-full w-[30%]" role="progressbar" aria-valuenow="3" aria-valuemin="0" aria-valuemax="10" data-pc-el-id="div-48-55" />
-					</div>
-					<p class="text-sm dark:text-gray-500 text-gray-500 mt-1" data-pc-el-id="p-57-57">
-						3 out of 10 referrals
-					</p>
-				</div>
+						<div className="mt-4 flex items-center gap-2 text-sm text-green-600 dark:text-green-400">
+							<TrendingUp className="w-4 h-4" />
+							<span>+3 this month</span>
+						</div>
+					</CardContent>
+					<div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5" />
+				</Card>
 
-				<div className="w-full max-w-4xl p-6 border rounded-lg bg-background">
-					<div className="grid gap-6 md:grid-cols-2">
-						<div>
-							<div className="flex items-center justify-between">
-								<h2 className="text-2xl font-bold">Referral Program</h2>
-								<Button variant="outline" size="sm">
-									View Leaderboard
-								</Button>
+				<Card className="relative overflow-hidden">
+					<CardContent className="p-6">
+						<div className="flex items-center justify-between">
+							<div>
+								<p className="text-sm font-medium text-muted-foreground">Rewards Earned</p>
+								<p className="text-3xl font-bold">${referralData.rewardsEarned}</p>
 							</div>
-							<div className="grid grid-cols-2 gap-4 mt-6">
-								<Card>
-									<CardHeader>
-										<CardDescription>Total Referrals</CardDescription>
-										<CardTitle>1,234</CardTitle>
-									</CardHeader>
-								</Card>
-								<Card>
-									<CardHeader>
-										<CardDescription>Rewards Earned</CardDescription>
-										<CardTitle>$2,500</CardTitle>
-									</CardHeader>
-								</Card>
-								<Card>
-									<CardHeader>
-										<CardDescription>Conversion Rate</CardDescription>
-										<CardTitle>25%</CardTitle>
-									</CardHeader>
-								</Card>
-								<Card>
-									<CardHeader>
-										<CardDescription>Top Referrer</CardDescription>
-										<CardTitle>John Doe</CardTitle>
-									</CardHeader>
-								</Card>
-							</div>
+							<Award className="w-8 h-8 text-yellow-600 dark:text-yellow-400" />
 						</div>
-						<div>
-							<h2 className="text-2xl font-bold">Share Referral</h2>
-							<div className="mt-6 space-y-4">
-								<div>
-									<Label htmlFor="email">Email</Label>
-									<Input id="email" type="email" placeholder="Enter your email" className="mt-1" />
+						<div className="mt-4 flex items-center gap-2 text-sm text-green-600 dark:text-green-400">
+							<Zap className="w-4 h-4" />
+							<span>${currentTier.rewards} per referral</span>
+						</div>
+					</CardContent>
+					<div className="absolute inset-0 bg-gradient-to-r from-yellow-500/5 to-orange-500/5" />
+				</Card>
+
+				<Card className="relative overflow-hidden">
+					<CardContent className="p-6">
+						<div className="flex items-center justify-between">
+							<div>
+								<p className="text-sm font-medium text-muted-foreground">Conversion Rate</p>
+								<p className="text-3xl font-bold">{referralData.conversionRate}%</p>
+							</div>
+							<Target className="w-8 h-8 text-green-600 dark:text-green-400" />
+						</div>
+						<div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
+							<BarChart3 className="w-4 h-4" />
+							<span>{referralData.successfulReferrals} successful</span>
+						</div>
+					</CardContent>
+					<div className="absolute inset-0 bg-gradient-to-r from-green-500/5 to-emerald-500/5" />
+				</Card>
+
+				<Card className="relative overflow-hidden">
+					<CardContent className="p-6">
+						<div className="flex items-center justify-between">
+							<div>
+								<p className="text-sm font-medium text-muted-foreground">Current Tier</p>
+								<p className="text-3xl font-bold">{currentTier.name}</p>
+							</div>
+							<Star className="w-8 h-8 text-purple-600 dark:text-purple-400" />
+						</div>
+						<div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
+							<ArrowRight className="w-4 h-4" />
+							<span>{nextTier ? `${nextTier.referrals - referralData.totalReferrals} to ${nextTier.name}` : "Max tier reached"}</span>
+						</div>
+					</CardContent>
+					<div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 to-pink-500/5" />
+				</Card>
+			</div>
+
+			<div className="grid gap-8 lg:grid-cols-3">
+				{/* Main Content */}
+				<div className="lg:col-span-2 space-y-8">
+					{/* Share Your Link */}
+					<Card>
+						<CardHeader>
+							<CardTitle className="flex items-center gap-2">
+								<Share2 className="w-5 h-5" />
+								Share Your Referral Link
+							</CardTitle>
+							<CardDescription>Copy your unique referral link and share it with friends to start earning rewards</CardDescription>
+						</CardHeader>
+						<CardContent className="space-y-6">
+							<div className="space-y-4">
+								<div className="flex items-center gap-3">
+									<Input value={referralData.referralLink} readOnly className="font-mono text-sm" />
+									<Button onClick={copyToClipboard} variant={copied ? "default" : "outline"} className="shrink-0">
+										<Copy className="w-4 h-4 mr-2" />
+										{copied ? "Copied!" : "Copy"}
+									</Button>
 								</div>
-								<div className="flex gap-2">
-									<Button variant="outline" className="flex-1">
-										<div className="w-4 h-4 mr-2" />
+
+								<div className="flex flex-wrap gap-3">
+									<Button variant="outline" onClick={shareViaEmail} className="flex items-center gap-2">
+										<Mail className="w-4 h-4" />
+										Email
+									</Button>
+									<Button variant="outline" onClick={() => shareViaSocial("twitter")} className="flex items-center gap-2">
+										<Twitter className="w-4 h-4" />
 										Twitter
 									</Button>
-									<Button variant="outline" className="flex-1">
-										<div className="w-4 h-4 mr-2" />
-										LinkedIn
-									</Button>
-									<Button variant="outline" className="flex-1">
-										<div className="w-4 h-4 mr-2" />
+									<Button variant="outline" onClick={() => shareViaSocial("facebook")} className="flex items-center gap-2">
+										<Facebook className="w-4 h-4" />
 										Facebook
 									</Button>
-								</div>
-								<div className="flex items-center gap-2">
-									<Input type="text" value="https://example.com/referral" readOnly className="flex-1" />
-									<Button variant="outline">
-										<div className="w-4 h-4" />
-										Copy
+									<Button variant="outline" onClick={() => shareViaSocial("linkedin")} className="flex items-center gap-2">
+										<Linkedin className="w-4 h-4" />
+										LinkedIn
 									</Button>
 								</div>
 							</div>
-						</div>
-					</div>
-					<div className="mt-8">
-						<h2 className="text-2xl font-bold">Referral Program Details</h2>
-						<div className="mt-6 space-y-4">
-							<p>Our referral program allows you to earn rewards for sharing our product with your friends and colleagues. For every successful referral, you&APOS;ll receive a $25 credit towards your account.</p>
-							<p>To refer someone, simply share your unique referral link or use the social media buttons above. Once your friend signs up and makes a purchase, you&APOS;ll automatically receive your reward.</p>
-							<p>The more people you refer, the more you can earn. Check the leaderboard to see how you&APOS;re doing compared to other top referrers.</p>
-						</div>
-					</div>
+						</CardContent>
+					</Card>
+
+					{/* Recent Referrals */}
+					<Card>
+						<CardHeader>
+							<CardTitle>Recent Referrals</CardTitle>
+							<CardDescription>Track your latest referrals and their status</CardDescription>
+						</CardHeader>
+						<CardContent>
+							<div className="space-y-4">
+								{referralData.recentReferrals.map((referral) => (
+									<div key={referral.id} className="flex items-center justify-between p-4 rounded-lg border bg-muted/30">
+										<div className="flex items-center gap-3">
+											<Avatar className="w-10 h-10">
+												<AvatarImage src={referral.avatar} />
+												<AvatarFallback>
+													{referral.name
+														.split(" ")
+														.map((n) => n[0])
+														.join("")}
+												</AvatarFallback>
+											</Avatar>
+											<div>
+												<p className="font-medium">{referral.name}</p>
+												<p className="text-sm text-muted-foreground">{referral.email}</p>
+											</div>
+										</div>
+										<div className="flex items-center gap-3">
+											<Badge className={getStatusColor(referral.status)}>
+												{referral.status === "completed" ? <CheckCircle className="w-3 h-3 mr-1" /> : null}
+												{referral.status}
+											</Badge>
+											<div className="text-right">
+												<p className="font-medium">${referral.reward}</p>
+												<p className="text-sm text-muted-foreground">{new Date(referral.date).toLocaleDateString()}</p>
+											</div>
+										</div>
+									</div>
+								))}
+							</div>
+						</CardContent>
+					</Card>
+
+					{/* Tier Progress */}
+					<Card>
+						<CardHeader>
+							<CardTitle>Progress to Next Tier</CardTitle>
+							<CardDescription>Earn more rewards by reaching the next tier</CardDescription>
+						</CardHeader>
+						<CardContent className="space-y-6">
+							<div className="space-y-4">
+								<div className="flex items-center justify-between">
+									<span className="text-sm font-medium">{currentTier.name}</span>
+									<span className="text-sm font-medium">{nextTier?.name || "Max Tier"}</span>
+								</div>
+								<Progress value={progressToNext} className="h-2" />
+								<div className="flex items-center justify-between text-sm text-muted-foreground">
+									<span>{referralData.totalReferrals} referrals</span>
+									<span>{nextTier ? `${nextTier.referrals} needed` : "Tier complete"}</span>
+								</div>
+							</div>
+
+							{nextTier && (
+								<div className="p-4 rounded-lg bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-purple-500/20">
+									<h4 className="font-semibold mb-2">Unlock {nextTier.name} Tier</h4>
+									<div className="space-y-2 text-sm">
+										{nextTier.features.map((feature, index) => (
+											<div key={index} className="flex items-center gap-2">
+												<CheckCircle className="w-4 h-4 text-green-600" />
+												<span>{feature}</span>
+											</div>
+										))}
+									</div>
+								</div>
+							)}
+						</CardContent>
+					</Card>
+				</div>
+
+				{/* Sidebar */}
+				<div className="space-y-6">
+					{/* Leaderboard */}
+					<Card>
+						<CardHeader>
+							<CardTitle className="flex items-center gap-2">
+								<Award className="w-5 h-5" />
+								Top Referrers
+							</CardTitle>
+						</CardHeader>
+						<CardContent>
+							<div className="space-y-3">
+								{referralData.leaderboard.slice(0, 5).map((user, index) => (
+									<div key={user.rank} className={`flex items-center justify-between p-3 rounded-lg ${user.name === "You" ? "bg-primary/10 border border-primary/20" : "bg-muted/30"}`}>
+										<div className="flex items-center gap-3">
+											<div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${index === 0 ? "bg-yellow-500 text-white" : index === 1 ? "bg-gray-400 text-white" : index === 2 ? "bg-orange-500 text-white" : "bg-muted text-muted-foreground"}`}>{user.rank}</div>
+											<div>
+												<p className="font-medium">{user.name}</p>
+												<p className="text-sm text-muted-foreground">{user.referrals} referrals</p>
+											</div>
+										</div>
+										<div className="text-right">
+											<p className="font-medium">${user.rewards}</p>
+										</div>
+									</div>
+								))}
+							</div>
+						</CardContent>
+					</Card>
+
+					{/* How It Works */}
+					<Card>
+						<CardHeader>
+							<CardTitle>How It Works</CardTitle>
+						</CardHeader>
+						<CardContent className="space-y-4">
+							<div className="space-y-3">
+								<div className="flex gap-3">
+									<div className="flex justify-center items-center w-6 h-6 text-sm font-semibold rounded-full bg-primary/10 text-primary">1</div>
+									<div>
+										<p className="text-sm font-medium">Share your link</p>
+										<p className="text-xs text-muted-foreground">Send your unique referral link to friends</p>
+									</div>
+								</div>
+								<div className="flex gap-3">
+									<div className="flex justify-center items-center w-6 h-6 text-sm font-semibold rounded-full bg-primary/10 text-primary">2</div>
+									<div>
+										<p className="text-sm font-medium">They sign up</p>
+										<p className="text-xs text-muted-foreground">Your friend creates an account using your link</p>
+									</div>
+								</div>
+								<div className="flex gap-3">
+									<div className="flex justify-center items-center w-6 h-6 text-sm font-semibold rounded-full bg-primary/10 text-primary">3</div>
+									<div>
+										<p className="text-sm font-medium">You earn rewards</p>
+										<p className="text-xs text-muted-foreground">Get ${currentTier.rewards} credit when they complete their first job</p>
+									</div>
+								</div>
+							</div>
+						</CardContent>
+					</Card>
+
+					{/* Program Details */}
+					<Card>
+						<CardHeader>
+							<CardTitle>Program Details</CardTitle>
+						</CardHeader>
+						<CardContent className="space-y-4 text-sm">
+							<div className="space-y-2">
+								<p className="text-muted-foreground">Earn rewards for every successful referral. Rewards are automatically credited to your account when your referral completes their first job.</p>
+								<div className="space-y-1">
+									<p>
+										<strong>Reward Amount:</strong> ${currentTier.rewards} per successful referral
+									</p>
+									<p>
+										<strong>Reward Type:</strong> Account credit (usable for job posts and boosts)
+									</p>
+									<p>
+										<strong>Expiration:</strong> Rewards never expire
+									</p>
+								</div>
+							</div>
+							<Button variant="outline" className="w-full" asChild>
+								<a href="/support" target="_blank" rel="noopener noreferrer">
+									Learn More
+									<ExternalLink className="w-4 h-4 ml-2" />
+								</a>
+							</Button>
+						</CardContent>
+					</Card>
 				</div>
 			</div>
 		</div>

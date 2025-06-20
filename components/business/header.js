@@ -8,7 +8,7 @@ import { Badge } from "@components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuLabel, DropdownMenuGroup } from "@components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@components/ui/sheet";
-import { ChevronDown, Menu, Bell, Settings, Briefcase, CreditCard, HelpCircle, User } from "react-feather";
+import { ChevronDown, Menu, Bell, Settings, Briefcase, CreditCard, HelpCircle, User, Crown, Zap } from "react-feather";
 import { BarChart3 } from "lucide-react";
 import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
 import { RiComputerFill } from "react-icons/ri";
@@ -37,6 +37,7 @@ export default function Header() {
 	const businessNavItems = [
 		{ href: "/dashboard/business", text: "Overview", icon: BarChart3 },
 		{ href: "/dashboard/business/profile", text: "Profile", icon: User },
+		{ href: "/dashboard/business/integrations", text: "Integrations", icon: Zap },
 		{ href: "/dashboard/business/jobs", text: "Jobs", icon: Briefcase },
 		{ href: "/dashboard/business/billing", text: "Billing", icon: CreditCard },
 		{ href: "/dashboard/business/support", text: "Support", icon: HelpCircle },

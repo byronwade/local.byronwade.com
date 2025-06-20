@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@comp
 import { Badge } from "@components/ui/badge";
 // Removed Tabs import - using buttons instead per user preference
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
-import { ArrowLeft, MapPin, Clock, DollarSign, Users, Eye, Phone, MessageSquare, TrendingUp, Star, Calendar, Edit, Share2, MoreHorizontal, CheckCircle, AlertCircle, ThumbsUp, Award, X, AlertTriangle, Camera, Zap, Info, Upload, Trash2, CreditCard, Shield, Mail } from "lucide-react";
+import { ArrowLeft, MapPin, Clock, DollarSign, Users, Eye, Phone, MessageSquare, TrendingUp, Star, Calendar, Edit, Share2, MoreHorizontal, CheckCircle, AlertCircle, ThumbsUp, Award, X, AlertTriangle, Camera, Zap, Info, Upload, Trash2, CreditCard, Shield, Mail, BarChart3, Target, Pause, Play, Settings, Plus, ChevronDown } from "lucide-react";
 import { Alert, AlertDescription } from "@components/ui/alert";
 import { Input } from "@components/ui/input";
 import { Textarea } from "@components/ui/textarea";
@@ -15,6 +15,7 @@ import { Label } from "@components/ui/label";
 import { Checkbox } from "@components/ui/checkbox";
 import { Switch } from "@components/ui/switch";
 import { Progress } from "@components/ui/progress";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@components/ui/dialog";
 import { ALL_CATEGORIES } from "@components/site/categories/AllCategoriesPage";
 
 // Mock job data - in real app this would come from API based on job ID
@@ -31,7 +32,28 @@ const mockJob = {
 	contractorsNotified: 4,
 	responses: 2,
 	views: 12,
-	boosted: false,
+	boosted: true,
+	boostType: "premium",
+	boostStatus: "active",
+	boostStartDate: "2024-01-15",
+	boostEndDate: "2024-02-15",
+	boostCost: 25,
+	remainingDays: 12,
+	boostPerformance: {
+		views: 245,
+		applications: 18,
+		clicks: 89,
+		ctr: 36.3,
+		conversionRate: 20.2,
+		reach: 1250,
+		impressions: 1890,
+		engagement: 156,
+	},
+	boostHistory: [
+		{ date: "2024-01-15", action: "Boost started", cost: 25, views: 0 },
+		{ date: "2024-01-20", action: "Performance update", views: 89 },
+		{ date: "2024-01-25", action: "Performance update", views: 156 },
+	],
 	images: ["/placeholder.svg", "/placeholder.svg"],
 	timeline: "This week",
 	preferredContact: "phone",
@@ -83,11 +105,43 @@ const mockResponses = [
 	},
 ];
 
+const boostTypes = [
+	{
+		id: "standard",
+		name: "Standard Boost",
+		price: 15,
+		description: "Reach 10-25 more professionals",
+		features: ["30-day duration", "Basic analytics", "Standard placement"],
+		contractors: "10-25",
+		popular: false,
+	},
+	{
+		id: "premium",
+		name: "Premium Boost",
+		price: 25,
+		description: "Reach 25-50 more professionals",
+		features: ["30-day duration", "Advanced analytics", "Priority placement", "Featured badge"],
+		contractors: "25-50",
+		popular: true,
+	},
+	{
+		id: "maximum",
+		name: "Maximum Boost",
+		price: 50,
+		description: "Reach 50+ professionals",
+		features: ["30-day duration", "Full analytics", "Top placement", "Featured badge", "Priority support"],
+		contractors: "50+",
+		popular: false,
+	},
+];
+
 export default function JobDetailPage({ params }) {
 	const [showBoostDialog, setShowBoostDialog] = useState(false);
+	const [showBoostUpgradeDialog, setShowBoostUpgradeDialog] = useState(false);
 	const [editing, setEditing] = useState({});
+	const [boostAction, setBoostAction] = useState(""); // "pause", "resume", "upgrade"
 	const job = mockJob;
-	const totalCost = job.boosted ? 15 : 0; // Replace with real boost price logic if needed
+	const totalCost = job.boosted ? job.boostCost : 0;
 
 	// Inline edit handlers
 	const handleEdit = (field, value) => {
@@ -119,6 +173,50 @@ export default function JobDetailPage({ params }) {
 				return "bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20";
 			default:
 				return "bg-muted text-muted-foreground border-border";
+		}
+	};
+
+	const getBoostTypeColor = (type) => {
+		switch (type) {
+			case "standard":
+				return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300";
+			case "premium":
+				return "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300";
+			case "maximum":
+				return "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300";
+			default:
+				return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300";
+		}
+	};
+
+	const getBoostStatusColor = (status) => {
+		switch (status) {
+			case "active":
+				return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300";
+			case "completed":
+				return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300";
+			case "paused":
+				return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300";
+			default:
+				return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300";
+		}
+	};
+
+	const formatCurrency = (amount) => {
+		return new Intl.NumberFormat("en-US", {
+			style: "currency",
+			currency: "USD",
+			minimumFractionDigits: 0,
+			maximumFractionDigits: 0,
+		}).format(amount);
+	};
+
+	const handleBoostAction = (action) => {
+		setBoostAction(action);
+		if (action === "upgrade") {
+			setShowBoostUpgradeDialog(true);
+		} else {
+			setShowBoostDialog(true);
 		}
 	};
 
@@ -164,6 +262,117 @@ export default function JobDetailPage({ params }) {
 							</div>
 						</CardContent>
 					</Card>
+
+					{/* Boost Management Section */}
+					{job.boosted && (
+						<Card>
+							<CardHeader>
+								<CardTitle className="flex items-center gap-2">
+									<Zap className="w-5 h-5 text-yellow-600" />
+									Boost Management
+								</CardTitle>
+								<CardDescription>Manage your job boost and track performance</CardDescription>
+							</CardHeader>
+							<CardContent className="space-y-6">
+								{/* Boost Status */}
+								<div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+									<div className="flex items-center gap-3">
+										<Badge className={getBoostTypeColor(job.boostType)}>{job.boostType.charAt(0).toUpperCase() + job.boostType.slice(1)} Boost</Badge>
+										<Badge className={getBoostStatusColor(job.boostStatus)}>{job.boostStatus.charAt(0).toUpperCase() + job.boostStatus.slice(1)}</Badge>
+										{job.boostStatus === "active" && (
+											<div className="flex items-center gap-1 text-sm text-muted-foreground">
+												<Clock className="w-4 h-4" />
+												{job.remainingDays} days left
+											</div>
+										)}
+									</div>
+									<div className="flex items-center gap-2">
+										{job.boostStatus === "active" && (
+											<>
+												<Button variant="outline" size="sm" onClick={() => handleBoostAction("pause")}>
+													<Pause className="w-4 h-4 mr-1" />
+													Pause
+												</Button>
+												<Button variant="outline" size="sm" onClick={() => handleBoostAction("upgrade")}>
+													<Plus className="w-4 h-4 mr-1" />
+													Upgrade
+												</Button>
+											</>
+										)}
+										{job.boostStatus === "paused" && (
+											<Button variant="outline" size="sm" onClick={() => handleBoostAction("resume")}>
+												<Play className="w-4 h-4 mr-1" />
+												Resume
+											</Button>
+										)}
+									</div>
+								</div>
+
+								{/* Performance Metrics */}
+								<div>
+									<h4 className="font-semibold mb-4">Performance Metrics</h4>
+									<div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+										<div className="p-3 bg-muted/30 rounded-lg">
+											<div className="text-sm text-muted-foreground">Views</div>
+											<div className="text-2xl font-bold">{job.boostPerformance.views.toLocaleString()}</div>
+										</div>
+										<div className="p-3 bg-muted/30 rounded-lg">
+											<div className="text-sm text-muted-foreground">Applications</div>
+											<div className="text-2xl font-bold">{job.boostPerformance.applications}</div>
+										</div>
+										<div className="p-3 bg-muted/30 rounded-lg">
+											<div className="text-sm text-muted-foreground">CTR</div>
+											<div className="text-2xl font-bold">{job.boostPerformance.ctr}%</div>
+										</div>
+										<div className="p-3 bg-muted/30 rounded-lg">
+											<div className="text-sm text-muted-foreground">Reach</div>
+											<div className="text-2xl font-bold">{job.boostPerformance.reach.toLocaleString()}</div>
+										</div>
+									</div>
+								</div>
+
+								{/* Boost Timeline */}
+								<div>
+									<h4 className="font-semibold mb-4">Boost Timeline</h4>
+									<div className="space-y-3">
+										{job.boostHistory.map((entry, index) => (
+											<div key={index} className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg">
+												<div className="w-2 h-2 bg-primary rounded-full"></div>
+												<div className="flex-1">
+													<div className="font-medium">{entry.action}</div>
+													<div className="text-sm text-muted-foreground">
+														{new Date(entry.date).toLocaleDateString()}
+														{entry.views && ` • ${entry.views.toLocaleString()} views`}
+														{entry.cost && ` • ${formatCurrency(entry.cost)}`}
+													</div>
+												</div>
+											</div>
+										))}
+									</div>
+								</div>
+
+								{/* Boost Details */}
+								<div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-muted/30 rounded-lg">
+									<div>
+										<div className="text-sm text-muted-foreground">Boost Started</div>
+										<div className="font-medium">{new Date(job.boostStartDate).toLocaleDateString()}</div>
+									</div>
+									<div>
+										<div className="text-sm text-muted-foreground">Boost Ends</div>
+										<div className="font-medium">{new Date(job.boostEndDate).toLocaleDateString()}</div>
+									</div>
+									<div>
+										<div className="text-sm text-muted-foreground">Boost Cost</div>
+										<div className="font-medium">{formatCurrency(job.boostCost)}</div>
+									</div>
+									<div>
+										<div className="text-sm text-muted-foreground">Conversion Rate</div>
+										<div className="font-medium">{job.boostPerformance.conversionRate}%</div>
+									</div>
+								</div>
+							</CardContent>
+						</Card>
+					)}
 
 					{/* Location */}
 					<Card>
@@ -266,66 +475,6 @@ export default function JobDetailPage({ params }) {
 							<p className="mt-2 text-xs text-muted-foreground">We never sell your data. Your contact information is only shared with the professional you connect with.</p>
 						</CardContent>
 					</Card>
-
-					{/* Boost Options */}
-					{job.boosted && (
-						<Card>
-							<CardHeader>
-								<CardTitle className="flex gap-2 items-center">
-									<Shield className="w-5 h-5 text-green-600 dark:text-green-400" />
-									Boosted Job
-								</CardTitle>
-							</CardHeader>
-							<CardContent className="space-y-4">
-								<div className="flex gap-2 items-center p-3 rounded-lg border bg-green-500/5 border-green-500/20">
-									<Shield className="w-5 h-5 text-green-600 dark:text-green-400" />
-									<div>
-										<p className="text-sm font-medium">Secure Payment</p>
-										<p className="text-xs text-muted-foreground">Your payment information is encrypted and secure</p>
-									</div>
-								</div>
-								<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-									<div className="md:col-span-2">
-										<Label>Card Number</Label>
-										<div className="mt-1 text-base text-muted-foreground">•••• •••• •••• {job.cardNumber ? job.cardNumber.slice(-4) : ""}</div>
-									</div>
-									<div>
-										<Label>Expiry Date</Label>
-										<div className="mt-1 text-base text-muted-foreground">{job.expiryDate}</div>
-									</div>
-									<div>
-										<Label>CVV</Label>
-										<div className="mt-1 text-base text-muted-foreground">•••</div>
-									</div>
-								</div>
-								<div className="space-y-4">
-									<Label>Billing Information</Label>
-									<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-										<div className="md:col-span-2">
-											<Label>Full Name</Label>
-											<div className="mt-1 text-base text-muted-foreground">{job.billingName}</div>
-										</div>
-										<div className="md:col-span-2">
-											<Label>Address</Label>
-											<div className="mt-1 text-base text-muted-foreground">{job.billingAddress}</div>
-										</div>
-										<div>
-											<Label>City</Label>
-											<div className="mt-1 text-base text-muted-foreground">{job.billingCity}</div>
-										</div>
-										<div>
-											<Label>State</Label>
-											<div className="mt-1 text-base text-muted-foreground">{job.billingState}</div>
-										</div>
-										<div>
-											<Label>ZIP Code</Label>
-											<div className="mt-1 text-base text-muted-foreground">{job.billingZip}</div>
-										</div>
-									</div>
-								</div>
-							</CardContent>
-						</Card>
-					)}
 				</div>
 
 				{/* Sidebar Info */}
@@ -407,13 +556,13 @@ export default function JobDetailPage({ params }) {
 								{job.boosted && (
 									<div className="flex justify-between text-primary">
 										<span>Boost</span>
-										<span className="font-semibold">+${totalCost}</span>
+										<span className="font-semibold">+{formatCurrency(totalCost)}</span>
 									</div>
 								)}
 								<hr className="my-2" />
 								<div className="flex justify-between text-lg font-semibold">
 									<span>Total</span>
-									<span>${totalCost}</span>
+									<span>{formatCurrency(totalCost)}</span>
 								</div>
 								{totalCost > 0 && <p className="text-xs text-muted-foreground">Payment was processed when you posted the job.</p>}
 							</div>
@@ -421,6 +570,75 @@ export default function JobDetailPage({ params }) {
 					</Card>
 				</div>
 			</div>
+
+			{/* Boost Action Dialogs */}
+			<Dialog open={showBoostDialog} onOpenChange={setShowBoostDialog}>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>
+							{boostAction === "pause" && "Pause Boost"}
+							{boostAction === "resume" && "Resume Boost"}
+						</DialogTitle>
+						<DialogDescription>
+							{boostAction === "pause" && "Pausing your boost will stop it from reaching new professionals. You can resume it anytime."}
+							{boostAction === "resume" && "Resuming your boost will continue reaching professionals until the end date."}
+						</DialogDescription>
+					</DialogHeader>
+					<DialogFooter>
+						<Button variant="outline" onClick={() => setShowBoostDialog(false)}>
+							Cancel
+						</Button>
+						<Button onClick={() => setShowBoostDialog(false)}>{boostAction === "pause" ? "Pause Boost" : "Resume Boost"}</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
+
+			{/* Boost Upgrade Dialog */}
+			<Dialog open={showBoostUpgradeDialog} onOpenChange={setShowBoostUpgradeDialog}>
+				<DialogContent className="max-w-2xl">
+					<DialogHeader>
+						<DialogTitle>Upgrade Your Boost</DialogTitle>
+						<DialogDescription>Upgrade to a higher boost level to reach more professionals and get better results.</DialogDescription>
+					</DialogHeader>
+					<div className="grid gap-4 py-4">
+						{boostTypes
+							.filter((type) => type.id !== job.boostType)
+							.map((type) => (
+								<div key={type.id} className={`p-4 rounded-lg border-2 transition-colors ${type.popular ? "border-primary bg-primary/5" : "border-border hover:border-muted-foreground"}`}>
+									<div className="flex items-center justify-between mb-3">
+										<h3 className="text-lg font-semibold">{type.name}</h3>
+										<div className="text-right">
+											<div className="text-2xl font-bold">${type.price}</div>
+											<div className="text-sm text-muted-foreground">one-time</div>
+										</div>
+									</div>
+									<p className="text-muted-foreground mb-3">{type.description}</p>
+									<div className="space-y-2 mb-4">
+										{type.features.map((feature, index) => (
+											<div key={index} className="flex items-center gap-2 text-sm">
+												<CheckCircle className="w-4 h-4 text-green-500" />
+												{feature}
+											</div>
+										))}
+									</div>
+									<div className="text-center mb-4">
+										<div className="text-sm text-muted-foreground">Reaches approximately</div>
+										<div className="text-lg font-semibold text-primary">{type.contractors} professionals</div>
+									</div>
+									{type.popular && <Badge className="w-full justify-center mb-4 bg-gradient-to-r from-yellow-400 to-orange-500 text-white">Most Popular</Badge>}
+									<Button className="w-full" variant={type.popular ? "default" : "outline"}>
+										Upgrade to {type.name}
+									</Button>
+								</div>
+							))}
+					</div>
+					<DialogFooter>
+						<Button variant="outline" onClick={() => setShowBoostUpgradeDialog(false)}>
+							Cancel
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
 		</div>
 	);
 }
