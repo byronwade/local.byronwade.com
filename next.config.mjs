@@ -5,22 +5,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-	experimental: {
-		ppr: "incremental",
-		turbo: {
-			resolveAlias: {
-				"@components": path.resolve(__dirname, "components"),
-				"@utils": path.resolve(__dirname, "lib/utils"),
-				"@lib": path.resolve(__dirname, "lib"),
-				"@styles": path.resolve(__dirname, "styles"),
-				"@context": path.resolve(__dirname, "context"),
-				"@hooks": path.resolve(__dirname, "hooks"),
-				"@emails": path.resolve(__dirname, "emails"),
-				"@store": path.resolve(__dirname, "store"),
-			},
-			resolveExtensions: [".js", ".jsx", ".ts", ".tsx", ".json"],
-		},
-	},
 	reactStrictMode: true,
 	env: {
 		SUPABASE_URL: process.env.SUPABASE_URL,
@@ -30,67 +14,12 @@ const nextConfig = {
 		remotePatterns: [
 			{
 				protocol: "https",
-				hostname: "rebuzzle.vercel.app",
-				port: "",
-				pathname: "**",
-			},
-			{
-				protocol: "https",
-				hostname: "wdiuscbddaxckemvrvva.supabase.co",
-				port: "",
-				pathname: "**",
-			},
-			{
-				protocol: "https",
-				hostname: "images.unsplash.com",
-				port: "",
-				pathname: "**",
-			},
-			{
-				protocol: "https",
-				hostname: "img.cdn4dd.com",
-				port: "",
-				pathname: "**",
-			},
-			{
-				protocol: "https",
-				hostname: "occ-0-8236-37.1.nflxso.net",
-				port: "",
-				pathname: "**",
-			},
-			{
-				protocol: "https",
-				hostname: "images.pexels.com",
-				port: "",
-				pathname: "**",
-			},
-			{
-				protocol: "https",
-				hostname: "flowbite.s3.amazonaws.com",
-				port: "",
-				pathname: "**",
-			},
-			{
-				protocol: "https",
-				hostname: "via.placeholder.com",
-				port: "",
-				pathname: "**",
-			},
-			{
-				protocol: "https",
-				hostname: "avatars.githubusercontent.com",
-				port: "",
-				pathname: "**",
-			},
-			{
-				protocol: "https",
-				hostname: "picsum.photos",
-				port: "",
-				pathname: "**",
+				hostname: "**",
 			},
 		],
 	},
-	webpack: (config) => {
+	webpack: (config, { isServer }) => {
+		// Minimal alias setup only
 		config.resolve.alias = {
 			...config.resolve.alias,
 			"@components": path.resolve(__dirname, "components"),
@@ -102,6 +31,7 @@ const nextConfig = {
 			"@emails": path.resolve(__dirname, "emails"),
 			"@store": path.resolve(__dirname, "store"),
 		};
+
 		return config;
 	},
 	async headers() {
@@ -111,7 +41,7 @@ const nextConfig = {
 				headers: [
 					{
 						key: "Access-Control-Allow-Origin",
-						value: "*", // Set your origin
+						value: "*",
 					},
 					{
 						key: "Access-Control-Allow-Methods",

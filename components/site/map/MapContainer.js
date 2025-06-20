@@ -11,14 +11,11 @@ import useSearchStore from "@store/useSearchStore";
 import useBusinessStore from "@store/useBusinessStore";
 import { Map, NavigationControl, GeolocateControl, ScaleControl, FullscreenControl } from "react-map-gl";
 
-const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
+// Direct imports instead of dynamic imports
+import BusinessMarkers from "@components/site/map/BusinessMarkers";
+import ServiceArea from "@components/site/map/ServiceArea";
 
-const BusinessMarkers = dynamic(() => import("@components/site/map/BusinessMarkers"), {
-	ssr: false,
-});
-const ServiceArea = dynamic(() => import("@components/site/map/ServiceArea"), {
-	ssr: false,
-});
+const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
 const MapContainer = React.forwardRef((props, ref) => {
 	const mapRef = useRef(null);

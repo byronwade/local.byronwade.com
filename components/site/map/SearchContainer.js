@@ -2,7 +2,6 @@
 import React, { useEffect, useState, Suspense, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import dynamic from "next/dynamic";
 import { ArrowLeft, ChevronLeft, Settings, Filter, SortAsc, Grid, List, Maximize2, Activity } from "lucide-react";
 import { Button } from "@components/ui/button";
 import { Badge } from "@components/ui/badge";
@@ -21,10 +20,8 @@ import Header from "@components/site/Header";
 import UnifiedAIChat from "@components/shared/ai/UnifiedAIChat";
 import { useSearchParams } from "next/navigation";
 
-const MapContainer = dynamic(() => import("@components/site/map/MapContainer"), {
-	ssr: false,
-	loading: () => <FullScreenMapSkeleton />,
-});
+// Direct import instead of dynamic import
+import MapContainer from "@components/site/map/MapContainer";
 
 const SearchContainer = ({ searchParams: propSearchParams }) => {
 	const urlSearchParams = useSearchParams();

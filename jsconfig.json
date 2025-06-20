@@ -1,5 +1,5 @@
 {
-  "compilerOptions": {
+	"compilerOptions": {
 		"baseUrl": ".",
 		"paths": {
 			"@components/*": ["components/*"],
@@ -13,5 +13,7 @@
 			"@queries/*": ["queries/*"],
 			"@actions/*": ["actions/*"]
 		}
-  }
+	},
+	"exclude": ["node_modules", ".next"],
+	"include": ["**/*.js", "**/*.jsx"]
 }
