@@ -8,15 +8,44 @@ import { Badge } from "@components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuLabel, DropdownMenuGroup } from "@components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@components/ui/sheet";
-import { ChevronDown, Menu, Bell, Settings, Briefcase, CreditCard, HelpCircle, User, Crown, Zap } from "react-feather";
-import { BarChart3 } from "lucide-react";
+import { ChevronDown, Menu, Bell, Settings, Briefcase, CreditCard, HelpCircle, User, Crown, Zap, Building2, Plus } from "lucide-react";
+import { BarChart3, Target } from "lucide-react";
 import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
 import { RiComputerFill } from "react-icons/ri";
 import { useTheme } from "next-themes";
 import useAuthStore from "@store/useAuthStore";
 
+// Mock data for companies
+const mockCompanies = [
+	{
+		id: "1",
+		name: "Wade's Plumbing & Septic",
+		industry: "Plumbing Services",
+		status: "active",
+		subscription: "Pro",
+		location: "Raleigh, NC",
+	},
+	{
+		id: "2",
+		name: "Downtown Coffee Co.",
+		industry: "Food & Beverage",
+		status: "active",
+		subscription: "Basic",
+		location: "Raleigh, NC",
+	},
+	{
+		id: "3",
+		name: "Elite Auto Repair",
+		industry: "Automotive",
+		status: "active",
+		subscription: "Pro",
+		location: "Durham, NC",
+	},
+];
+
 export default function Header() {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+	const [currentCompanyId, setCurrentCompanyId] = useState("1"); // Default to first company
 	const pathname = usePathname();
 	const { setTheme, theme } = useTheme();
 	const { user, userRoles, logout } = useAuthStore((state) => ({
@@ -24,6 +53,8 @@ export default function Header() {
 		userRoles: state.userRoles,
 		logout: state.logout,
 	}));
+
+	const currentCompany = mockCompanies.find((company) => company.id === currentCompanyId) || mockCompanies[0];
 
 	const handleLogout = async () => {
 		try {
@@ -38,10 +69,8 @@ export default function Header() {
 		{ href: "/dashboard/business", text: "Overview", icon: BarChart3 },
 		{ href: "/dashboard/business/profile", text: "Profile", icon: User },
 		{ href: "/dashboard/business/integrations", text: "Integrations", icon: Zap },
+		{ href: "/dashboard/business/ads", text: "Ads", icon: Target },
 		{ href: "/dashboard/business/jobs", text: "Jobs", icon: Briefcase },
-		{ href: "/dashboard/business/billing", text: "Billing", icon: CreditCard },
-		{ href: "/dashboard/business/support", text: "Support", icon: HelpCircle },
-		{ href: "/dashboard/business/settings", text: "Settings", icon: Settings },
 	];
 
 	return (
@@ -60,36 +89,61 @@ export default function Header() {
 						</div>
 					</Link>
 
-					{/* Current Project/Job Dropdown */}
+					{/* Current Company Dropdown */}
 					<div className="hidden lg:flex flex-row space-x-3">
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
 								<div className="flex items-center p-2 px-3 space-x-2 transition-colors bg-card/80 backdrop-blur-sm border border-border/50 rounded-lg hover:bg-accent/50 cursor-pointer">
+									<Building2 className="w-4 h-4 text-muted-foreground" />
 									<div className="text-xs max-w-[200px]">
-										<div className="font-medium text-foreground truncate">Current Project</div>
-										<div className="text-muted-foreground truncate">Website redesign for local bakery</div>
+										<div className="font-medium text-foreground truncate">{currentCompany.name}</div>
+										<div className="text-muted-foreground truncate">
+											{currentCompany.industry} • {currentCompany.subscription}
+										</div>
 									</div>
 									<ChevronDown className="w-4 h-4 text-muted-foreground" />
 								</div>
 							</DropdownMenuTrigger>
-							<DropdownMenuContent className="w-64 z-[90] bg-card/95 backdrop-blur-md border border-border/50">
-								<DropdownMenuLabel>Recent Projects</DropdownMenuLabel>
+							<DropdownMenuContent className="w-72 z-[90] bg-card/95 backdrop-blur-md border border-border/50">
+								<DropdownMenuLabel>Your Companies</DropdownMenuLabel>
 								<DropdownMenuSeparator />
-								<DropdownMenuItem>
-									<div className="flex flex-col">
-										<span className="font-medium">Website redesign for local bakery</span>
-										<span className="text-xs text-muted-foreground">Due in 3 days</span>
-									</div>
-								</DropdownMenuItem>
-								<DropdownMenuItem>
-									<div className="flex flex-col">
-										<span className="font-medium">Plumbing repair service</span>
-										<span className="text-xs text-muted-foreground">Completed</span>
-									</div>
+								{mockCompanies.map((company) => (
+									<DropdownMenuItem key={company.id} onClick={() => setCurrentCompanyId(company.id)} className={`flex items-center space-x-3 p-3 ${company.id === currentCompanyId ? "bg-accent" : ""}`}>
+										<div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+											<Building2 className="w-4 h-4 text-white" />
+										</div>
+										<div className="flex-1 min-w-0">
+											<div className="flex items-center space-x-2">
+												<span className="font-medium text-foreground">{company.name}</span>
+												{company.subscription === "Pro" && (
+													<Badge variant="secondary" className="text-xs bg-gradient-to-r from-blue-500 to-purple-600 text-white">
+														Pro
+													</Badge>
+												)}
+											</div>
+											<p className="text-xs text-muted-foreground">{company.industry}</p>
+											<p className="text-xs text-muted-foreground">{company.location}</p>
+										</div>
+										{company.id === currentCompanyId && <div className="flex-shrink-0 w-2 h-2 bg-green-500 rounded-full"></div>}
+									</DropdownMenuItem>
+								))}
+								<DropdownMenuSeparator />
+								<DropdownMenuItem asChild>
+									<Link href="/add-a-business" className="flex items-center space-x-3 p-3">
+										<div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-green-500 to-blue-600 rounded-lg flex items-center justify-center">
+											<Plus className="w-4 h-4 text-white" />
+										</div>
+										<div className="flex-1">
+											<span className="font-medium text-foreground">Add New Company</span>
+											<p className="text-xs text-muted-foreground">Create or claim a new business</p>
+										</div>
+									</Link>
 								</DropdownMenuItem>
 								<DropdownMenuSeparator />
 								<DropdownMenuItem asChild>
-									<Link href="/dashboard/business/jobs">View all projects</Link>
+									<Link href="/dashboard/business/companies" className="text-sm text-muted-foreground">
+										Manage all companies
+									</Link>
 								</DropdownMenuItem>
 							</DropdownMenuContent>
 						</DropdownMenu>
@@ -176,15 +230,21 @@ export default function Header() {
 									</Link>
 								</DropdownMenuItem>
 								<DropdownMenuItem asChild>
-									<Link href="/dashboard/business/profile">
-										<User className="w-4 h-4 mr-2" />
-										<span>Profile</span>
+									<Link href="/dashboard/business/billing">
+										<CreditCard className="w-4 h-4 mr-2" />
+										<span>Billing</span>
 									</Link>
 								</DropdownMenuItem>
 								<DropdownMenuItem asChild>
 									<Link href="/dashboard/business/settings">
 										<Settings className="w-4 h-4 mr-2" />
 										<span>Settings</span>
+									</Link>
+								</DropdownMenuItem>
+								<DropdownMenuItem asChild>
+									<Link href="/dashboard/business/support">
+										<HelpCircle className="w-4 h-4 mr-2" />
+										<span>Support</span>
 									</Link>
 								</DropdownMenuItem>
 							</DropdownMenuGroup>
@@ -227,6 +287,62 @@ export default function Header() {
 							<SheetHeader>
 								<SheetTitle>Business Menu</SheetTitle>
 							</SheetHeader>
+
+							{/* Mobile Company Switcher */}
+							<div className="mt-6 p-4 border-b border-border/50">
+								<div className="flex items-center space-x-3 p-3 bg-accent/50 rounded-lg">
+									<div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+										<Building2 className="w-5 h-5 text-white" />
+									</div>
+									<div className="flex-1 min-w-0">
+										<p className="font-medium text-foreground">{currentCompany.name}</p>
+										<p className="text-sm text-muted-foreground">
+											{currentCompany.industry} • {currentCompany.subscription}
+										</p>
+									</div>
+								</div>
+
+								<div className="mt-3 space-y-2">
+									<p className="text-sm font-medium text-foreground">Switch Company</p>
+									{mockCompanies.map((company) => (
+										<button
+											key={company.id}
+											onClick={() => {
+												setCurrentCompanyId(company.id);
+												setMobileMenuOpen(false);
+											}}
+											className={`w-full flex items-center space-x-3 p-3 rounded-lg text-left transition-colors ${company.id === currentCompanyId ? "bg-primary text-primary-foreground" : "hover:bg-accent"}`}
+										>
+											<div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+												<Building2 className="w-4 h-4 text-white" />
+											</div>
+											<div className="flex-1 min-w-0">
+												<div className="flex items-center space-x-2">
+													<span className="font-medium">{company.name}</span>
+													{company.subscription === "Pro" && (
+														<Badge variant="secondary" className="text-xs bg-gradient-to-r from-blue-500 to-purple-600 text-white">
+															Pro
+														</Badge>
+													)}
+												</div>
+												<p className="text-xs opacity-80">{company.industry}</p>
+											</div>
+											{company.id === currentCompanyId && <div className="flex-shrink-0 w-2 h-2 bg-green-500 rounded-full"></div>}
+										</button>
+									))}
+
+									<Link href="/add-a-business" onClick={() => setMobileMenuOpen(false)} className="w-full flex items-center space-x-3 p-3 rounded-lg text-left hover:bg-accent transition-colors">
+										<div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-green-500 to-blue-600 rounded-lg flex items-center justify-center">
+											<Plus className="w-4 h-4 text-white" />
+										</div>
+										<div className="flex-1">
+											<span className="font-medium text-foreground">Add New Company</span>
+											<p className="text-xs text-muted-foreground">Create or claim a new business</p>
+										</div>
+									</Link>
+								</div>
+							</div>
+
 							<nav className="mt-6">
 								<ul className="space-y-2">
 									{businessNavItems.map((item) => {

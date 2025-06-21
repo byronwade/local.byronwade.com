@@ -1,15 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { X, Filter, SortAsc, Star, Clock, MapPin, DollarSign } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Slider } from "@/components/ui/slider";
-import { Checkbox } from "@/components/ui/checkbox";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@components/ui/button";
+import { Badge } from "@components/ui/badge";
+import { Slider } from "@components/ui/slider";
+import { Checkbox } from "@components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@components/ui/radio-group";
+import { Label } from "@components/ui/label";
+import { Separator } from "@components/ui/separator";
+import { ScrollArea } from "@components/ui/scroll-area";
 
 const CATEGORIES = ["Restaurants", "Health & Medical", "Home Services", "Beauty & Spas", "Automotive", "Shopping", "Professional Services", "Entertainment", "Fitness & Recreation", "Education"];
 

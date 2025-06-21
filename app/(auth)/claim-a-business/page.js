@@ -8,7 +8,11 @@ import BusinessSearch from "@components/auth/shared/business-search";
 import BusinessVerification from "@components/auth/onboarding/business-verification";
 import BusinessSuccess from "@components/auth/onboarding/business-success";
 import { Button } from "@components/ui/button";
+import { Card, CardContent } from "@components/ui/card";
+import { Badge } from "@components/ui/badge";
+import { Progress } from "@components/ui/progress";
 import { ArrowRight, ArrowLeft } from "react-feather";
+import { Star, MapPin, Phone, Building2, CheckCircle, Shield } from "lucide-react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -25,15 +29,115 @@ const businessVerificationSchema = z.object({
 });
 
 const steps = [
-	{ component: ActiveUser, name: "activeUser" },
-	{ component: BusinessSearch, name: "businessSearch" },
-	{ component: BusinessVerification, name: "businessVerification" },
-	{ component: BusinessSuccess, name: "businessSuccess" },
+	{ component: ActiveUser, name: "activeUser", title: "User Info", description: "Verify your account" },
+	{ component: BusinessSearch, name: "businessSearch", title: "Find Business", description: "Search and select your business" },
+	{ component: BusinessVerification, name: "businessVerification", title: "Verify Ownership", description: "Upload verification documents" },
+	{ component: BusinessSuccess, name: "businessSuccess", title: "Complete", description: "Claim process finished" },
 ];
+
+// Progress Indicator Component
+const ProgressIndicator = ({ currentStep, totalSteps, steps }) => {
+	const progress = ((currentStep + 1) / totalSteps) * 100;
+
+	return (
+		<div className="mb-8">
+			<div className="flex items-center justify-between mb-4">
+				<h3 className="text-lg font-semibold">Claim Progress</h3>
+				<Badge variant="secondary">
+					{currentStep + 1} of {totalSteps}
+				</Badge>
+			</div>
+
+			<Progress value={progress} className="mb-4" />
+
+			<div className="flex items-center justify-between text-sm text-muted-foreground">
+				<span>{steps[currentStep]?.title}</span>
+				<span>{Math.round(progress)}% complete</span>
+			</div>
+		</div>
+	);
+};
+
+// Business Card Component for displaying selected business
+const SelectedBusinessCard = ({ business }) => {
+	if (!business) return null;
+
+	return (
+		<div className="mb-6">
+			<div className="text-center mb-4">
+				<h3 className="text-lg font-semibold">Claiming Business</h3>
+				<p className="text-sm text-muted-foreground">You are claiming ownership of this business</p>
+			</div>
+
+			<Card className="border-primary/20 bg-primary/5">
+				<CardContent className="p-4">
+					{/* Mobile-first layout */}
+					<div className="space-y-3">
+						{/* Header Row: Logo, Name, Rating */}
+						<div className="flex items-start gap-3">
+							{/* Business Logo/Image */}
+							<div className="flex-shrink-0">
+								{business.logo ? (
+									<div className="relative w-14 h-14">
+										<Image src={business.logo} alt={`${business.name} logo`} fill className="rounded-lg object-cover border border-border" />
+									</div>
+								) : (
+									<div className="w-14 h-14 rounded-lg bg-muted flex items-center justify-center border border-border">
+										<Building2 className="w-7 h-7 text-muted-foreground" />
+									</div>
+								)}
+							</div>
+
+							{/* Business Name and Rating */}
+							<div className="flex-1 min-w-0">
+								<div className="flex items-start justify-between">
+									<h4 className="text-lg font-semibold text-foreground leading-tight">{business.name}</h4>
+									{business.ratings?.overall && (
+										<div className="flex items-center gap-1 ml-2 flex-shrink-0">
+											<Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+											<span className="text-sm font-medium">{business.ratings.overall}</span>
+										</div>
+									)}
+								</div>
+
+								{business.reviewCount && <p className="text-sm text-muted-foreground mt-1">{business.reviewCount} reviews</p>}
+							</div>
+						</div>
+
+						{/* Contact Info Row */}
+						<div className="flex flex-col gap-2">
+							{business.address && (
+								<div className="flex items-center gap-2 text-sm text-muted-foreground">
+									<MapPin className="w-4 h-4 flex-shrink-0" />
+									<span className="truncate">{business.address.split(",")[0]}</span>
+								</div>
+							)}
+							{business.phone && (
+								<div className="flex items-center gap-2 text-sm text-muted-foreground">
+									<Phone className="w-4 h-4 flex-shrink-0" />
+									<span>{business.phone}</span>
+								</div>
+							)}
+						</div>
+
+						{/* Status Badge Row */}
+						<div className="flex justify-center pt-2">
+							<Badge variant="secondary" className="bg-green-100 text-green-800 border-green-200 dark:bg-green-900 dark:text-green-200 dark:border-green-800">
+								<CheckCircle className="w-4 h-4 mr-2" />
+								Selected for Claiming
+							</Badge>
+						</div>
+					</div>
+				</CardContent>
+			</Card>
+		</div>
+	);
+};
 
 const ClaimBusiness = () => {
 	const [currentStep, setCurrentStep] = useState(0);
 	const [loading, setLoading] = useState(false);
+	const [selectedBusinessData, setSelectedBusinessData] = useState(null);
 	const { isInitialized, user, loading: authLoading } = useAuth();
 
 	const formMethods = useForm({
@@ -51,6 +155,28 @@ const ClaimBusiness = () => {
 		// Reset to the first step when the component mounts
 		setCurrentStep(0);
 	}, []);
+
+	// Listen for business selection event
+	useEffect(() => {
+		const handleBusinessSelected = (event) => {
+			const { business } = event.detail;
+			setSelectedBusinessData(business);
+
+			// Automatically advance to the next step (business verification)
+			if (currentStep === 1) {
+				// businessSearch step
+				setTimeout(() => {
+					setCurrentStep(2); // businessVerification step
+				}, 100);
+			}
+		};
+
+		window.addEventListener("businessSelected", handleBusinessSelected);
+
+		return () => {
+			window.removeEventListener("businessSelected", handleBusinessSelected);
+		};
+	}, [currentStep]);
 
 	const nextStep = async () => {
 		setLoading(true);
@@ -111,6 +237,12 @@ const ClaimBusiness = () => {
 	return (
 		<FormProvider {...formMethods}>
 			<form>
+				{/* Progress Indicator */}
+				{currentStep > 0 && currentStep < steps.length - 1 && <ProgressIndicator currentStep={currentStep} totalSteps={steps.length - 1} steps={steps} />}
+
+				{/* Show selected business card if we have one and not on the first step */}
+				{selectedBusinessData && currentStep > 0 && <SelectedBusinessCard business={selectedBusinessData} />}
+
 				<CurrentComponent />
 				{currentStep !== steps.findIndex((step) => step.name === "businessSuccess") && (
 					<div className="flex justify-between mt-10">
@@ -120,13 +252,13 @@ const ClaimBusiness = () => {
 							</Button>
 						)}
 						{currentStep < steps.length - 1 && currentStep !== steps.findIndex((step) => step.name === "businessVerification") && (
-							<Button type="button" onClick={nextStep} className="mt-2">
-								Next <ArrowRight className="w-4 h-4 ml-2" />
+							<Button type="button" onClick={nextStep} className="mt-2" disabled={loading}>
+								{loading ? "Processing..." : `Next: ${steps[currentStep + 1]?.title}`} <ArrowRight className="w-4 h-4 ml-2" />
 							</Button>
 						)}
 						{currentStep === steps.findIndex((step) => step.name === "businessVerification") && (
-							<Button type="button" onClick={handleSubmit} className="mt-2">
-								Submit <ArrowRight className="w-4 h-4 ml-2" />
+							<Button type="button" onClick={handleSubmit} className="mt-2" disabled={loading}>
+								{loading ? "Verifying..." : "Verify Ownership"} <Shield className="w-4 h-4 ml-2" />
 							</Button>
 						)}
 					</div>

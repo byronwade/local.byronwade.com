@@ -8,19 +8,12 @@ import DarkModeToggle from "@components/ui/DarkModeToggle";
 export default function DashboardRootLayout({ children }) {
 	return (
 		<>
-			<div className="grid w-screen h-screen grid-cols-1 bg-white dark:bg-neutral-900 md:grid-cols-2">
-				{/* <div className="absolute top-5 left-5">
-					<Link href="/">
-						<Button>
-							<ArrowLeft className="w-4 h-4 mr-2" /> Thorbis
-						</Button>
-					</Link>
-				</div> */}
-				<div className="absolute top-5 right-5">
+			<div className="grid overflow-hidden grid-cols-1 w-screen h-screen bg-white dark:bg-neutral-900 md:grid-cols-2">
+				<div className="absolute top-5 right-5 z-10">
 					<DarkModeToggle />
 				</div>
-				<div className="relative flex-col items-center justify-center hidden min-h-screen md:flex">
-					<div className="sticky transform -translate-y-1/2 top-1/2">
+				<div className="hidden relative flex-col justify-center items-center min-h-screen md:flex">
+					<div className="sticky top-1/2 transform -translate-y-1/2">
 						<div className="p-6 md:space-y-8 lg:space-y-20">
 							<div className="md:space-y-2 lg:space-y-6">
 								<Link href="/">
@@ -39,9 +32,19 @@ export default function DashboardRootLayout({ children }) {
 						</div>
 					</div>
 				</div>
-				<div className="bg-gray-100 md:shadow-panel md:border-l md:border-gray-200 dark:md:border-gray-950 dark:bg-dark-950">
-					<div className="flex flex-col items-center justify-center w-full h-full min-h-screen py-20 ">
-						<div className="w-full max-w-sm p-4">{children}</div>
+				<div className="overflow-y-auto relative bg-gray-100 md:shadow-panel md:border-l md:border-gray-200 dark:md:border-gray-950 dark:bg-dark-950">
+					{/* Back Button - Top Left of Right Panel */}
+					<div className="absolute top-5 left-5 z-10">
+						<Link href="/">
+							<Button variant="outline" size="sm" className="flex gap-2 items-center">
+								<ArrowLeft className="w-4 h-4" />
+								Back to Thorbis
+							</Button>
+						</Link>
+					</div>
+
+					<div className="flex flex-col justify-center items-center py-20 w-full min-h-screen">
+						<div className="p-4 w-full max-w-sm">{children}</div>
 					</div>
 				</div>
 			</div>

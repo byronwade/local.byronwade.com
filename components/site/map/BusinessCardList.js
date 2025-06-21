@@ -805,9 +805,9 @@ const BusinessCardList = ({ businesses, activeBusinessId, activeCardRef, onAICli
 	};
 
 	return (
-        <div className="flex flex-col h-full">
-            {/* Enhanced Results Header with Filter and Sort */}
-            <div className={`border-b border-border/50 bg-card/30 backdrop-blur-sm ${listMode === "full" ? "px-8 py-6" : "px-4 py-3"}`}>
+		<div className="flex flex-col h-full">
+			{/* Enhanced Results Header with Filter and Sort */}
+			<div className={`border-b border-border/50 bg-card/30 backdrop-blur-sm flex-shrink-0 ${listMode === "full" ? "px-8 py-6" : "px-4 py-3"}`}>
 				<div className="flex flex-col gap-3">
 					{/* Results Count */}
 					<div className="flex items-center justify-between">
@@ -892,18 +892,18 @@ const BusinessCardList = ({ businesses, activeBusinessId, activeCardRef, onAICli
 					</div>
 				</div>
 			</div>
-            {/* Business List */}
-            <ScrollArea className="flex-1" ref={listRef}>
+			{/* Business List */}
+			<ScrollArea className="flex-1 min-h-0" ref={listRef}>
 				<div className={listMode === "full" ? "py-4" : "p-4"}>
 					{filteredBusinesses.length === 0 && !loading ? (
 						/* Empty State */
-						(<div className={`text-center ${listMode === "full" ? "py-20 max-w-2xl mx-auto px-4" : "py-12"}`}>
-                            <div className="w-16 h-16 mx-auto mb-4 bg-muted/30 rounded-full flex items-center justify-center">
+						<div className={`text-center ${listMode === "full" ? "py-20 max-w-2xl mx-auto px-4" : "py-12"}`}>
+							<div className="w-16 h-16 mx-auto mb-4 bg-muted/30 rounded-full flex items-center justify-center">
 								<MapPin className="w-8 h-8 text-muted-foreground" />
 							</div>
-                            <h3 className={`font-semibold text-foreground mb-2 ${listMode === "full" ? "text-2xl" : "text-lg"}`}>{searchQuery || searchLocation ? "No businesses found" : "Start exploring"}</h3>
-                            <p className={`text-muted-foreground mb-6 mx-auto ${listMode === "full" ? "text-base max-w-lg" : "text-sm max-w-sm"}`}>{searchQuery || searchLocation ? "Try adjusting your search terms or explore different areas on the map" : "Search for businesses or explore the map to discover local businesses around you"}</p>
-                            {!searchQuery && !searchLocation && (
+							<h3 className={`font-semibold text-foreground mb-2 ${listMode === "full" ? "text-2xl" : "text-lg"}`}>{searchQuery || searchLocation ? "No businesses found" : "Start exploring"}</h3>
+							<p className={`text-muted-foreground mb-6 mx-auto ${listMode === "full" ? "text-base max-w-lg" : "text-sm max-w-sm"}`}>{searchQuery || searchLocation ? "Try adjusting your search terms or explore different areas on the map" : "Search for businesses or explore the map to discover local businesses around you"}</p>
+							{!searchQuery && !searchLocation && (
 								<div className="space-y-3">
 									<p className="text-xs text-muted-foreground mb-3">Popular searches:</p>
 									<div className="flex flex-wrap gap-2 justify-center">
@@ -926,7 +926,7 @@ const BusinessCardList = ({ businesses, activeBusinessId, activeCardRef, onAICli
 									</div>
 								</div>
 							)}
-                        </div>)
+						</div>
 					) : (
 						<>
 							{/* Business Results */}
@@ -1023,8 +1023,8 @@ const BusinessCardList = ({ businesses, activeBusinessId, activeCardRef, onAICli
 					)}
 				</div>
 			</ScrollArea>
-        </div>
-    );
+		</div>
+	);
 };
 
 export default memo(BusinessCardList);

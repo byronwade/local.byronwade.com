@@ -1,12 +1,13 @@
 import LoginPage from "@components/auth/login";
+import { Metadata } from "next";
 
 export const metadata = {
 	title: "Login - Thorbis",
-	description: "Log in to your Thorbis account to post jobs and connect with businessfessional service businessviders easily.",
-	keywords: ["Thorbis", "login", "log in", "account access", "find business", "contractors", "home imbusinessvement"],
+	description: "Log in to your Thorbis account to post jobs and connect with professional service providers easily.",
+	keywords: ["Thorbis", "login", "log in", "account access", "find business", "contractors", "home improvement"],
 	openGraph: {
 		title: "Login - Thorbis",
-		description: "Log in to your Thorbis account to post jobs and connect with businessfessional service businessviders easily.",
+		description: "Log in to your Thorbis account to post jobs and connect with professional service providers easily.",
 		url: "https://thorbis/login",
 		siteName: "Thorbis",
 		images: [
@@ -23,7 +24,7 @@ export const metadata = {
 	twitter: {
 		card: "summary_large_image",
 		title: "Login - Thorbis",
-		description: "Log in to your Thorbis account to post jobs and connect with businessfessional service businessviders easily.",
+		description: "Log in to your Thorbis account to post jobs and connect with professional service providers easily.",
 		images: ["https://thorbis/twitter-login.jpg"],
 	},
 	alternates: {
@@ -40,7 +41,7 @@ const jsonLdData = {
 	"@type": "WebSite",
 	url: "https://thorbis/login",
 	name: "Thorbis",
-	description: "Log in to your Thorbis account to post jobs and connect with businessfessional service businessviders easily.",
+	description: "Log in to your Thorbis account to post jobs and connect with professional service providers easily.",
 	publisher: {
 		"@type": "Organization",
 		name: "Thorbis",
