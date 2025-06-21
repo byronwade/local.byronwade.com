@@ -9,7 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuLabel, DropdownMenuGroup, DropdownMenuRadioGroup, DropdownMenuRadioItem } from "@components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@components/ui/sheet";
 import { ChevronDown, Menu, Bell, Settings, Briefcase, CreditCard, HelpCircle, User, Users, Activity, Star } from "react-feather";
-import { BarChart3, Zap } from "lucide-react";
+import { BarChart3, Zap, Building2, Plus } from "lucide-react";
 import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
 import { RiComputerFill } from "react-icons/ri";
 import { useTheme } from "next-themes";
@@ -61,36 +61,49 @@ export default function Header() {
 						</div>
 					</Link>
 
-					{/* Current Job/Project Dropdown */}
+					{/* Add Business Dropdown */}
 					<div className="hidden flex-row space-x-3 lg:flex">
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
-								<div className="flex items-center p-2 px-3 space-x-2 rounded-lg border backdrop-blur-sm transition-colors cursor-pointer bg-card/80 border-border/50 hover:bg-accent/50">
-									<div className="text-xs max-w-[200px]">
-										<div className="font-medium truncate text-foreground">Current Request</div>
-										<div className="truncate text-muted-foreground">Looking for a professional webdesigner</div>
-									</div>
-									<ChevronDown className="w-4 h-4 text-muted-foreground" />
-								</div>
+								<Button variant="outline" size="sm" className="flex items-center space-x-2">
+									<Plus className="w-4 h-4" />
+									<span>Add New</span>
+									<ChevronDown className="w-4 h-4" />
+								</Button>
 							</DropdownMenuTrigger>
-							<DropdownMenuContent className="w-64 z-[90] bg-card/95 backdrop-blur-md border border-border/50">
-								<DropdownMenuLabel>Recent Requests</DropdownMenuLabel>
+							<DropdownMenuContent className="w-56 z-[90] bg-card/95 backdrop-blur-md border border-border/50">
+								<DropdownMenuLabel>Quick Actions</DropdownMenuLabel>
 								<DropdownMenuSeparator />
-								<DropdownMenuItem>
-									<div className="flex flex-col">
-										<span className="font-medium">Looking for a professional webdesigner</span>
-										<span className="text-xs text-muted-foreground">Active • 5 applications</span>
-									</div>
+								<DropdownMenuItem asChild>
+									<Link href="/claim-a-business">
+										<Building2 className="mr-2 w-4 h-4" />
+										<span>Claim a Business</span>
+									</Link>
 								</DropdownMenuItem>
-								<DropdownMenuItem>
-									<div className="flex flex-col">
-										<span className="font-medium">Need plumbing repair</span>
-										<span className="text-xs text-muted-foreground">Completed</span>
-									</div>
+								<DropdownMenuItem asChild>
+									<Link href="/add-a-business">
+										<Plus className="mr-2 w-4 h-4" />
+										<span>Add New Business</span>
+									</Link>
+								</DropdownMenuItem>
+								<DropdownMenuItem asChild>
+									<Link href="/dashboard/user/jobs/create">
+										<Briefcase className="mr-2 w-4 h-4" />
+										<span>Post a Job</span>
+									</Link>
+								</DropdownMenuItem>
+								<DropdownMenuItem asChild>
+									<Link href="/dashboard/user/reviews/create">
+										<Star className="mr-2 w-4 h-4" />
+										<span>Write a Review</span>
+									</Link>
 								</DropdownMenuItem>
 								<DropdownMenuSeparator />
 								<DropdownMenuItem asChild>
-									<Link href="/dashboard/user/jobs">View all requests</Link>
+									<Link href="/dashboard/user/referral">
+										<Users className="mr-2 w-4 h-4" />
+										<span>Invite Friends</span>
+									</Link>
 								</DropdownMenuItem>
 							</DropdownMenuContent>
 						</DropdownMenu>
@@ -103,7 +116,7 @@ export default function Header() {
 						const isActive = pathname === item.href || (item.href !== "/dashboard/user" && pathname.startsWith(item.href));
 						return (
 							<Link key={item.href} href={item.href} passHref>
-								<Button variant={isActive ? "default" : "ghost"} size="sm" className={`text-sm font-medium transition-colors hover:text-primary ${isActive ? "bg-primary text-primary-foreground" : ""}`}>
+								<Button variant={isActive ? "default" : "ghost"} size="sm" className={`text-sm font-medium transition-colors ${isActive ? "bg-primary/5 text-primary border border-primary/20 hover:text-white" : "hover:text-white hover:bg-muted"}`}>
 									{item.text}
 								</Button>
 							</Link>
@@ -247,7 +260,7 @@ export default function Header() {
 										return (
 											<li key={item.href}>
 												<Link href={item.href} onClick={() => setMobileMenuOpen(false)}>
-													<Button variant={isActive ? "default" : "ghost"} className={`w-full justify-start ${isActive ? "bg-primary text-primary-foreground" : ""}`}>
+													<Button variant={isActive ? "default" : "ghost"} className={`w-full justify-start ${isActive ? "bg-primary/5 text-primary border border-primary/20 hover:text-white" : "hover:text-white"}`}>
 														{item.text}
 													</Button>
 												</Link>

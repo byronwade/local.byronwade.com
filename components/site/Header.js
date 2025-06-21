@@ -76,19 +76,19 @@ export default function Header() {
 
 	return (
 		<div id="header" className="transition-none sticky top-0 z-[60] bg-card/95 backdrop-blur-md border-b border-border/50">
-			<div className={`flex items-center justify-between w-full gap-6 py-3 mx-auto ${isSearchMapPage ? "max-w-none px-4" : "px-4 lg:px-24"}`}>
-				<div className="flex flex-row items-center w-full space-x-6">
+			<div className={`flex items-center justify-between w-full gap-6 py-3 mx-auto ${isSearchMapPage ? "px-4 max-w-none" : "px-4 lg:px-24"}`}>
+				<div className="flex flex-row items-center space-x-6 w-full">
 					<Link href="/" className="flex items-center space-x-3 text-xl font-bold group">
 						<div className="relative">
 							<Image src="/ThorbisLogo.webp" alt="Thorbis" width={50} height={50} className="w-12 h-12 transition-transform duration-200 group-hover:scale-105" />
-							<div className="absolute inset-0 transition-opacity duration-200 rounded-full opacity-0 bg-gradient-to-r from-blue-500/20 to-green-500/20 group-hover:opacity-100" />
+							<div className="absolute inset-0 bg-gradient-to-r rounded-full opacity-0 transition-opacity duration-200 from-blue-500/20 to-green-500/20 group-hover:opacity-100" />
 						</div>
 						<div className="hidden sm:block">
 							<h1 className="text-lg font-bold leading-none text-foreground">Thorbis</h1>
 							<p className="text-xs text-muted-foreground">Local Business Directory</p>
 						</div>
 					</Link>
-					<div className="items-center hidden w-full max-w-2xl md:flex">
+					<div className="hidden items-center w-full max-w-2xl md:flex">
 						{/* Show search bar on all pages */}
 						<div className="flex items-center w-full max-w-2xl">
 							<SearchBarHeader />
@@ -101,12 +101,12 @@ export default function Header() {
 							Categories
 						</Button>
 					</Link>
-					<Link href="/dashboard/user" passHref>
+					<Link href="/dashboard/user/jobs/create" passHref>
 						<Button variant="ghost" size="sm" className="text-sm font-medium transition-colors hover:text-primary">
 							Post a Job
 						</Button>
 					</Link>
-					<Link href="/dashboard/user" passHref>
+					<Link href="/dashboard/user/reviews/create" passHref>
 						<Button variant="ghost" size="sm" className="text-sm font-medium transition-colors hover:text-primary">
 							Write Review
 						</Button>
@@ -114,7 +114,7 @@ export default function Header() {
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<Button variant="ghost" size="sm" className="text-sm font-medium transition-colors hover:text-primary">
-								For Business <ChevronDown className="w-4 h-4 ml-1" />
+								For Business <ChevronDown className="ml-1 w-4 h-4" />
 							</Button>
 						</DropdownMenuTrigger>
 						<DropdownMenuContent className="w-64 z-[80] bg-card/95 backdrop-blur-md border border-border/50">
@@ -147,8 +147,8 @@ export default function Header() {
 							<DropdownMenuItem asChild className="text-sm">
 								<Link href="/business-certification">
 									<div className="flex items-center">
-										<span className="font-medium text-transparent bg-gradient-to-r from-blue-500 to-green-500 bg-clip-text">Get Thorbis Certified</span>
-										<span className="ml-2 px-1.5 py-0.5 text-xs bg-gradient-to-r from-blue-500 to-green-500 text-white rounded-full">Elite</span>
+										<span className="font-medium text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-green-500">Get Thorbis Certified</span>
+										<span className="px-1.5 py-0.5 ml-2 text-xs text-white bg-gradient-to-r from-blue-500 to-green-500 rounded-full">Elite</span>
 									</div>
 								</Link>
 							</DropdownMenuItem>
@@ -158,7 +158,7 @@ export default function Header() {
 									<div className="flex flex-col">
 										<div className="flex items-center">
 											<span className="font-medium">Build Your Local Directory</span>
-											<span className="ml-2 px-1.5 py-0.5 text-xs bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full">New</span>
+											<span className="px-1.5 py-0.5 ml-2 text-xs text-white bg-gradient-to-r from-purple-500 to-pink-500 rounded-full">New</span>
 										</div>
 										<span className="text-xs text-muted-foreground">Create & monetize your neighborhood hub</span>
 									</div>
@@ -171,13 +171,13 @@ export default function Header() {
 							{/* Notification Bell */}
 							<DropdownMenu>
 								<DropdownMenuTrigger asChild>
-									<Button variant="ghost" size="sm" className="relative p-2 h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-accent">
+									<Button variant="ghost" size="sm" className="relative p-2 w-9 h-9 text-muted-foreground hover:text-foreground hover:bg-accent">
 										<Bell className="w-5 h-5" />
-										<span className="absolute top-1 right-1 w-2.5 h-2.5 bg-blue-500 border-2 border-white dark:border-gray-800 rounded-full"></span>
+										<span className="absolute top-1 right-1 w-2.5 h-2.5 bg-blue-500 rounded-full border-2 border-white dark:border-gray-800"></span>
 									</Button>
 								</DropdownMenuTrigger>
 								<DropdownMenuContent className="w-80 z-[80] bg-card/95 backdrop-blur-md border border-border/50">
-									<div className="flex items-center justify-between p-3 border-b border-border/50">
+									<div className="flex justify-between items-center p-3 border-b border-border/50">
 										<h3 className="font-semibold text-foreground">Notifications</h3>
 										<Badge variant="secondary" className="text-xs">
 											3 new
@@ -185,7 +185,7 @@ export default function Header() {
 									</div>
 									<div className="overflow-y-auto max-h-96">
 										<DropdownMenuItem className="flex items-start p-4 space-x-3">
-											<div className="flex-shrink-0 w-2 h-2 mt-2 bg-blue-500 rounded-full"></div>
+											<div className="flex-shrink-0 mt-2 w-2 h-2 bg-blue-500 rounded-full"></div>
 											<div className="flex-1 min-w-0">
 												<p className="text-sm font-medium text-foreground">New review received</p>
 												<p className="mt-1 text-xs text-muted-foreground">Someone reviewed your business listing</p>
@@ -193,7 +193,7 @@ export default function Header() {
 											</div>
 										</DropdownMenuItem>
 										<DropdownMenuItem className="flex items-start p-4 space-x-3">
-											<div className="flex-shrink-0 w-2 h-2 mt-2 bg-green-500 rounded-full"></div>
+											<div className="flex-shrink-0 mt-2 w-2 h-2 bg-green-500 rounded-full"></div>
 											<div className="flex-1 min-w-0">
 												<p className="text-sm font-medium text-foreground">Job application received</p>
 												<p className="mt-1 text-xs text-muted-foreground">New application for your job posting</p>
@@ -201,7 +201,7 @@ export default function Header() {
 											</div>
 										</DropdownMenuItem>
 										<DropdownMenuItem className="flex items-start p-4 space-x-3">
-											<div className="flex-shrink-0 w-2 h-2 mt-2 bg-orange-500 rounded-full"></div>
+											<div className="flex-shrink-0 mt-2 w-2 h-2 bg-orange-500 rounded-full"></div>
 											<div className="flex-1 min-w-0">
 												<p className="text-sm font-medium text-foreground">Subscription reminder</p>
 												<p className="mt-1 text-xs text-muted-foreground">Your premium plan expires in 3 days</p>
@@ -220,15 +220,15 @@ export default function Header() {
 							{/* User Avatar Menu */}
 							<DropdownMenu>
 								<DropdownMenuTrigger asChild>
-									<Button variant="outline" size="sm" className="p-0 border rounded-full shadow-sm h-9 w-9 border-input bg-background hover:bg-accent hover:text-accent-foreground hover:border-primary" aria-label="User menu">
-										<div className="relative flex w-8 h-8 mx-auto overflow-hidden rounded-full shrink-0">
+									<Button variant="outline" size="sm" className="p-0 w-9 h-9 rounded-full border shadow-sm border-input bg-background hover:bg-accent hover:text-accent-foreground hover:border-primary" aria-label="User menu">
+										<div className="flex overflow-hidden relative mx-auto w-8 h-8 rounded-full shrink-0">
 											<img className="object-cover w-full h-full aspect-square" alt={user?.user_metadata?.first_name || user?.email?.split("@")[0] || "User"} src={`https://vercel.com/api/www/avatar?u=${user?.email?.split("@")[0] || "user"}&s=64`} />
 										</div>
 									</Button>
 								</DropdownMenuTrigger>
 								<DropdownMenuContent className="w-56 z-[80] bg-card/95 backdrop-blur-md border border-border/50">
 									<div className="flex items-center p-3 space-x-3 border-b border-border/50">
-										<div className="relative flex w-8 h-8 overflow-hidden rounded-full shrink-0">
+										<div className="flex overflow-hidden relative w-8 h-8 rounded-full shrink-0">
 											<img className="object-cover w-full h-full aspect-square" alt={user?.user_metadata?.first_name || user?.email?.split("@")[0] || "User"} src={`https://vercel.com/api/www/avatar?u=${user?.email?.split("@")[0] || "user"}&s=64`} />
 										</div>
 										<div className="flex-1 min-w-0">
@@ -298,15 +298,15 @@ export default function Header() {
 							<Menu className="w-4 h-4" />
 						</Button>
 					</DrawerTrigger>
-					<DrawerContent className="p-4 text-white bg-black h-5/6">
+					<DrawerContent className="p-4 h-5/6 text-white bg-black">
 						{/* Mobile Search Bar */}
 						<div className="mb-6">
-							<div className="flex items-center gap-2 p-3 bg-gray-800 rounded-lg">
+							<div className="flex gap-2 items-center p-3 bg-gray-800 rounded-lg">
 								<Search className="w-4 h-4 text-gray-400" />
 								<input
 									type="text"
 									placeholder="Search for businesses..."
-									className="flex-1 text-white placeholder-gray-400 bg-transparent border-none outline-none"
+									className="flex-1 placeholder-gray-400 text-white bg-transparent border-none outline-none"
 									onKeyDown={(e) => {
 										if (e.key === "Enter" && e.target.value.trim()) {
 											window.location.href = `/search?query=${encodeURIComponent(e.target.value.trim())}`;
@@ -348,6 +348,16 @@ export default function Header() {
 										<li>
 											<Link href="/dashboard/user" onClick={() => setMobileMenuOpen(false)}>
 												Dashboard
+											</Link>
+										</li>
+										<li>
+											<Link href="/dashboard/user/jobs/create" onClick={() => setMobileMenuOpen(false)}>
+												Post a Job
+											</Link>
+										</li>
+										<li>
+											<Link href="/dashboard/user/reviews/create" onClick={() => setMobileMenuOpen(false)}>
+												Write Review
 											</Link>
 										</li>
 										<li>

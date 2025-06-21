@@ -8,7 +8,7 @@ import { Badge } from "@components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuLabel, DropdownMenuGroup } from "@components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@components/ui/sheet";
-import { ChevronDown, Menu, Bell, Settings, Briefcase, CreditCard, HelpCircle, User, Crown, Zap, Building2, Plus } from "lucide-react";
+import { ChevronDown, Menu, Bell, Settings, Briefcase, CreditCard, HelpCircle, User, Crown, Zap, Building2, Plus, Star } from "lucide-react";
 import { BarChart3, Target } from "lucide-react";
 import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
 import { RiComputerFill } from "react-icons/ri";
@@ -68,6 +68,7 @@ export default function Header() {
 	const businessNavItems = [
 		{ href: "/dashboard/business", text: "Overview", icon: BarChart3 },
 		{ href: "/dashboard/business/profile", text: "Profile", icon: User },
+		{ href: "/dashboard/business/reviews", text: "Reviews", icon: Star },
 		{ href: "/dashboard/business/integrations", text: "Integrations", icon: Zap },
 		{ href: "/dashboard/business/ads", text: "Ads", icon: Target },
 		{ href: "/dashboard/business/jobs", text: "Jobs", icon: Briefcase },
@@ -149,21 +150,19 @@ export default function Header() {
 						</DropdownMenu>
 					</div>
 				</div>
-
 				{/* Right Section - Navigation and User Menu */}
 				<div className="hidden space-x-1 lg:flex xl:space-x-2">
 					{businessNavItems.map((item) => {
 						const isActive = pathname === item.href || (item.href !== "/dashboard/business" && pathname.startsWith(item.href));
 						return (
 							<Link key={item.href} href={item.href} passHref>
-								<Button variant={isActive ? "default" : "ghost"} size="sm" className={`text-sm font-medium transition-colors hover:text-primary ${isActive ? "bg-primary text-primary-foreground" : ""}`}>
+								<Button variant={isActive ? "default" : "ghost"} size="sm" className={`text-sm font-medium transition-colors ${isActive ? "bg-primary/5 text-primary border border-primary/20 hover:text-white" : "hover:text-white hover:bg-muted"}`}>
 									{item.text}
 								</Button>
 							</Link>
 						);
 					})}
 				</div>
-
 				{/* User Controls */}
 				<div className="flex items-center space-x-2">
 					{/* Notifications */}
@@ -350,7 +349,7 @@ export default function Header() {
 										return (
 											<li key={item.href}>
 												<Link href={item.href} onClick={() => setMobileMenuOpen(false)}>
-													<Button variant={isActive ? "default" : "ghost"} className={`w-full justify-start ${isActive ? "bg-primary text-primary-foreground" : ""}`}>
+													<Button variant={isActive ? "default" : "ghost"} className={`w-full justify-start ${isActive ? "bg-primary/5 text-primary border border-primary/20" : ""}`}>
 														{item.text}
 													</Button>
 												</Link>

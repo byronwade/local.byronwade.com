@@ -57,22 +57,20 @@ export default function Header() {
 						</div>
 					</Link>
 				</div>
-
 				{/* Right Section - Navigation and User Menu */}
 				<div className="hidden space-x-1 lg:flex xl:space-x-2">
 					{adminNavItems.map((item) => {
 						const isActive = pathname === item.href || (item.href !== "/dashboard/admin" && pathname.startsWith(item.href));
 						return (
 							<Link key={item.href} href={item.href} passHref>
-								<Button variant={isActive ? "default" : "ghost"} size="sm" className={`text-sm font-medium transition-colors hover:text-primary ${isActive ? "bg-primary text-primary-foreground" : ""}`}>
+								<Button variant={isActive ? "default" : "ghost"} size="sm" className={`text-sm font-medium transition-colors ${isActive ? "bg-primary/5 text-primary border border-primary/20 hover:text-white" : "hover:text-white hover:bg-muted"}`}>
 									{item.text}
 								</Button>
 							</Link>
 						);
 					})}
 				</div>
-
-				{/* User Controls */}
+				;{/* User Controls */}
 				<div className="flex items-center space-x-2">
 					{/* Notifications */}
 					<DropdownMenu>
@@ -169,7 +167,7 @@ export default function Header() {
 										return (
 											<li key={item.href}>
 												<Link href={item.href} onClick={() => setMobileMenuOpen(false)}>
-													<Button variant={isActive ? "default" : "ghost"} className={`w-full justify-start ${isActive ? "bg-primary text-primary-foreground" : ""}`}>
+													<Button variant={isActive ? "default" : "ghost"} className={`w-full justify-start ${isActive ? "bg-primary/5 text-primary border border-primary/20" : ""}`}>
 														{item.text}
 													</Button>
 												</Link>
@@ -181,6 +179,7 @@ export default function Header() {
 						</SheetContent>
 					</Sheet>
 				</div>
+				;;
 			</div>
 		</div>
 	);

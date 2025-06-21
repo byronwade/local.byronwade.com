@@ -9,7 +9,7 @@ import { Badge } from "@components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuGroup, DropdownMenuRadioGroup, DropdownMenuRadioItem } from "@components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@components/ui/sheet";
-import { Bell, ChevronDown, Settings, LogOut, Eye, Building2, DollarSign, Menu, CreditCard, HelpCircle } from "lucide-react";
+import { Bell, ChevronDown, Settings, LogOut, Eye, Building2, DollarSign, Menu, CreditCard, HelpCircle, MapPin, Users, Plus, Globe } from "lucide-react";
 import { SunIcon, MoonIcon } from "@heroicons/react/24/outline";
 import { RiComputerFill } from "react-icons/ri";
 import { useTheme } from "next-themes";
@@ -18,18 +18,54 @@ import useAuthStore from "@store/useAuthStore";
 const navigation = [
 	{ name: "Dashboard", href: "/dashboard/localhub" },
 	{ name: "Businesses", href: "/dashboard/localhub/businesses" },
-	{ name: "Subscriptions", href: "/dashboard/localhub/subscriptions" },
 	{ name: "Analytics", href: "/dashboard/localhub/analytics" },
 	{ name: "Customization", href: "/dashboard/localhub/customization" },
-	{ name: "Domains", href: "/dashboard/localhub/domains" },
+	{ name: "Settings", href: "/dashboard/localhub/settings" },
+];
+
+// Mock data for LocalHub directories
+const mockDirectories = [
+	{
+		id: "1",
+		name: "Raleigh LocalHub",
+		location: "Raleigh, NC",
+		status: "active",
+		businessCount: 127,
+		monthlyRevenue: 1872,
+		totalRevenue: 2340,
+		domain: "raleigh.localhub.com",
+	},
+	{
+		id: "2",
+		name: "Durham LocalHub",
+		location: "Durham, NC",
+		status: "active",
+		businessCount: 89,
+		monthlyRevenue: 1245,
+		totalRevenue: 1556,
+		domain: "durham.localhub.com",
+	},
+	{
+		id: "3",
+		name: "Charlotte LocalHub",
+		location: "Charlotte, NC",
+		status: "active",
+		businessCount: 203,
+		monthlyRevenue: 2890,
+		totalRevenue: 3612,
+		domain: "charlotte.localhub.com",
+	},
 ];
 
 export default function Header() {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+	const [currentDirectoryId, setCurrentDirectoryId] = useState("1"); // Default to first directory
 	const pathname = usePathname();
 	const { user, signOut } = useAuthStore();
 	const { setTheme } = useTheme();
 	const [primaryColor, setPrimaryColor] = useState("theme-default");
+
+	const currentDirectory = mockDirectories.find((directory) => directory.id === currentDirectoryId) || mockDirectories[0];
 
 	const handleLogout = async () => {
 		try {
@@ -47,13 +83,13 @@ export default function Header() {
 
 	return (
 		<div className="sticky top-0 z-[60] bg-card/95 backdrop-blur-md border-b border-border/50">
-			<div className="flex items-center justify-between w-full gap-6 py-3 mx-auto px-4 lg:px-24">
+			<div className="flex gap-6 justify-between items-center px-4 py-3 mx-auto w-full lg:px-24">
 				{/* Left Section - Logo and LocalHub Info */}
-				<div className="flex flex-row items-center w-full space-x-6">
+				<div className="flex flex-row items-center space-x-6 w-full">
 					<Link href="/" className="flex items-center space-x-3 text-xl font-bold group">
 						<div className="relative">
 							<Image src="/ThorbisLogo.webp" alt="Thorbis LocalHub" width={50} height={50} className="w-12 h-12 transition-transform duration-200 group-hover:scale-105" />
-							<div className="absolute inset-0 transition-opacity duration-200 rounded-full opacity-0 bg-gradient-to-r from-purple-500/20 to-pink-500/20 group-hover:opacity-100" />
+							<div className="absolute inset-0 bg-gradient-to-r rounded-full opacity-0 transition-opacity duration-200 from-purple-500/20 to-pink-500/20 group-hover:opacity-100" />
 						</div>
 						<div className="hidden sm:block">
 							<h1 className="text-lg font-bold leading-none text-foreground">LocalHub</h1>
@@ -61,36 +97,61 @@ export default function Header() {
 						</div>
 					</Link>
 
-					{/* Current Revenue/Status Dropdown */}
-					<div className="hidden lg:flex flex-row space-x-3">
+					{/* Current Directory Dropdown */}
+					<div className="hidden flex-row space-x-3 lg:flex">
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
-								<div className="flex items-center p-2 px-3 space-x-2 transition-colors bg-card/80 backdrop-blur-sm border border-border/50 rounded-lg hover:bg-accent/50 cursor-pointer">
+								<div className="flex items-center p-2 px-3 space-x-2 rounded-lg border backdrop-blur-sm transition-colors cursor-pointer bg-card/80 border-border/50 hover:bg-accent/50">
+									<MapPin className="w-4 h-4 text-muted-foreground" />
 									<div className="text-xs max-w-[200px]">
-										<div className="font-medium text-foreground truncate">Monthly Revenue</div>
-										<div className="text-muted-foreground truncate">$1,872 (Your 80% share)</div>
+										<div className="font-medium truncate text-foreground">{currentDirectory.name}</div>
+										<div className="truncate text-muted-foreground">
+											{currentDirectory.businessCount} businesses • ${currentDirectory.monthlyRevenue.toLocaleString()} revenue
+										</div>
 									</div>
 									<ChevronDown className="w-4 h-4 text-muted-foreground" />
 								</div>
 							</DropdownMenuTrigger>
-							<DropdownMenuContent className="w-64 z-[90] bg-card/95 backdrop-blur-md border border-border/50">
-								<DropdownMenuLabel>Revenue Breakdown</DropdownMenuLabel>
+							<DropdownMenuContent className="w-80 z-[90] bg-card/95 backdrop-blur-md border border-border/50">
+								<DropdownMenuLabel>Your LocalHub Directories</DropdownMenuLabel>
 								<DropdownMenuSeparator />
-								<DropdownMenuItem>
-									<div className="flex flex-col">
-										<span className="font-medium">Total Revenue: $2,340</span>
-										<span className="text-xs text-muted-foreground">45 active subscriptions</span>
-									</div>
-								</DropdownMenuItem>
-								<DropdownMenuItem>
-									<div className="flex flex-col">
-										<span className="font-medium">Your Share: $1,872</span>
-										<span className="text-xs text-muted-foreground">80% revenue share</span>
-									</div>
+								{mockDirectories.map((directory) => (
+									<DropdownMenuItem key={directory.id} onClick={() => setCurrentDirectoryId(directory.id)} className={`flex items-center space-x-3 p-3 ${directory.id === currentDirectoryId ? "bg-accent" : ""}`}>
+										<div className="flex flex-shrink-0 justify-center items-center w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg">
+											<MapPin className="w-4 h-4 text-white" />
+										</div>
+										<div className="flex-1 min-w-0">
+											<div className="flex items-center space-x-2">
+												<span className="font-medium text-foreground">{directory.name}</span>
+												<Badge variant="secondary" className="text-xs text-white bg-gradient-to-r from-green-500 to-blue-600">
+													{directory.status}
+												</Badge>
+											</div>
+											<p className="text-xs text-muted-foreground">{directory.location}</p>
+											<p className="text-xs text-muted-foreground">
+												{directory.businessCount} businesses • ${directory.monthlyRevenue.toLocaleString()}/mo
+											</p>
+										</div>
+										{directory.id === currentDirectoryId && <div className="flex-shrink-0 w-2 h-2 bg-green-500 rounded-full"></div>}
+									</DropdownMenuItem>
+								))}
+								<DropdownMenuSeparator />
+								<DropdownMenuItem asChild>
+									<Link href="/dashboard/localhub/create-directory" className="flex items-center p-3 space-x-3">
+										<div className="flex flex-shrink-0 justify-center items-center w-8 h-8 bg-gradient-to-br from-green-500 to-blue-600 rounded-lg">
+											<Plus className="w-4 h-4 text-white" />
+										</div>
+										<div className="flex-1">
+											<span className="font-medium text-foreground">Add New Directory</span>
+											<p className="text-xs text-muted-foreground">Create a new LocalHub directory</p>
+										</div>
+									</Link>
 								</DropdownMenuItem>
 								<DropdownMenuSeparator />
 								<DropdownMenuItem asChild>
-									<Link href="/dashboard/localhub/subscriptions">View detailed revenue</Link>
+									<Link href="/dashboard/localhub/directories" className="text-sm text-muted-foreground">
+										Manage all directories
+									</Link>
 								</DropdownMenuItem>
 							</DropdownMenuContent>
 						</DropdownMenu>
@@ -103,26 +164,28 @@ export default function Header() {
 						const isActive = pathname === item.href || (item.href !== "/dashboard/localhub" && pathname.startsWith(item.href));
 						return (
 							<Link key={item.href} href={item.href} passHref>
-								<Button variant={isActive ? "default" : "ghost"} size="sm" className={`text-sm font-medium transition-colors hover:text-primary ${isActive ? "bg-primary text-primary-foreground" : ""}`}>
+								<Button variant={isActive ? "default" : "ghost"} size="sm" className={`text-sm font-medium transition-colors ${isActive ? "bg-primary/5 text-primary border border-primary/20 hover:text-white" : "hover:text-white hover:bg-muted"}`}>
 									{item.name}
 								</Button>
 							</Link>
 						);
 					})}
-				</div>
+				</div>;
 
-				{/* User Controls */}
+				{
+					/* User Controls */
+				}
 				<div className="flex items-center space-x-2">
 					{/* Notifications */}
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
-							<Button variant="ghost" size="sm" className="relative p-2 h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-accent">
+							<Button variant="ghost" size="sm" className="relative p-2 w-9 h-9 text-muted-foreground hover:text-foreground hover:bg-accent">
 								<Bell className="w-5 h-5" />
-								<span className="absolute top-1 right-1 w-2.5 h-2.5 bg-purple-500 border-2 border-white dark:border-gray-800 rounded-full"></span>
+								<span className="absolute top-1 right-1 w-2.5 h-2.5 bg-purple-500 rounded-full border-2 border-white dark:border-gray-800"></span>
 							</Button>
 						</DropdownMenuTrigger>
 						<DropdownMenuContent className="w-80 z-[80] bg-card/95 backdrop-blur-md border border-border/50">
-							<div className="flex items-center justify-between p-3 border-b border-border/50">
+							<div className="flex justify-between items-center p-3 border-b border-border/50">
 								<h3 className="font-semibold text-foreground">LocalHub Notifications</h3>
 								<Badge variant="secondary" className="text-xs">
 									3 new
@@ -130,7 +193,7 @@ export default function Header() {
 							</div>
 							<div className="overflow-y-auto max-h-96">
 								<DropdownMenuItem className="flex items-start p-4 space-x-3">
-									<div className="flex-shrink-0 w-2 h-2 mt-2 bg-green-500 rounded-full"></div>
+									<div className="flex-shrink-0 mt-2 w-2 h-2 bg-green-500 rounded-full"></div>
 									<div className="flex-1 min-w-0">
 										<p className="text-sm font-medium text-foreground">New business subscription</p>
 										<p className="mt-1 text-xs text-muted-foreground">Wade&apos;s Plumbing started Pro subscription</p>
@@ -138,7 +201,7 @@ export default function Header() {
 									</div>
 								</DropdownMenuItem>
 								<DropdownMenuItem className="flex items-start p-4 space-x-3">
-									<div className="flex-shrink-0 w-2 h-2 mt-2 bg-blue-500 rounded-full"></div>
+									<div className="flex-shrink-0 mt-2 w-2 h-2 bg-blue-500 rounded-full"></div>
 									<div className="flex-1 min-w-0">
 										<p className="text-sm font-medium text-foreground">Payment received</p>
 										<p className="mt-1 text-xs text-muted-foreground">$79 payment from Downtown Coffee</p>
@@ -152,7 +215,7 @@ export default function Header() {
 					{/* User Avatar Menu */}
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
-							<Button variant="outline" size="sm" className="p-0 border rounded-full shadow-sm h-9 w-9 border-input bg-background hover:bg-accent hover:text-accent-foreground hover:border-primary">
+							<Button variant="outline" size="sm" className="p-0 w-9 h-9 rounded-full border shadow-sm border-input bg-background hover:bg-accent hover:text-accent-foreground hover:border-primary">
 								<Avatar className="w-8 h-8">
 									<AvatarImage src={`https://vercel.com/api/www/avatar?u=${user?.email?.split("@")[0] || "localhub"}&s=64`} />
 									<AvatarFallback>{user?.user_metadata?.first_name?.[0] || user?.email?.[0]?.toUpperCase() || "L"}</AvatarFallback>
@@ -173,19 +236,19 @@ export default function Header() {
 							<DropdownMenuGroup>
 								<DropdownMenuItem asChild>
 									<Link href="/dashboard/localhub/settings">
-										<Settings className="w-4 h-4 mr-2" />
+										<Settings className="mr-2 w-4 h-4" />
 										<span>Settings</span>
 									</Link>
 								</DropdownMenuItem>
 								<DropdownMenuItem asChild>
 									<Link href="/dashboard/localhub/billing">
-										<CreditCard className="w-4 h-4 mr-2" />
+										<CreditCard className="mr-2 w-4 h-4" />
 										<span>Billing</span>
 									</Link>
 								</DropdownMenuItem>
 								<DropdownMenuItem asChild>
 									<Link href="/support">
-										<HelpCircle className="w-4 h-4 mr-2" />
+										<HelpCircle className="mr-2 w-4 h-4" />
 										<span>Support</span>
 									</Link>
 								</DropdownMenuItem>
@@ -194,15 +257,15 @@ export default function Header() {
 							<DropdownMenuGroup>
 								<DropdownMenuLabel>Theme</DropdownMenuLabel>
 								<DropdownMenuItem onClick={() => setTheme("light")}>
-									<SunIcon className="w-4 h-4 mr-2 text-yellow-500" />
+									<SunIcon className="mr-2 w-4 h-4 text-yellow-500" />
 									Light
 								</DropdownMenuItem>
 								<DropdownMenuItem onClick={() => setTheme("dark")}>
-									<MoonIcon className="w-4 h-4 mr-2 text-indigo-500" />
+									<MoonIcon className="mr-2 w-4 h-4 text-indigo-500" />
 									Dark
 								</DropdownMenuItem>
 								<DropdownMenuItem onClick={() => setTheme("system")}>
-									<RiComputerFill className="w-4 h-4 mr-2 text-slate-500" />
+									<RiComputerFill className="mr-2 w-4 h-4 text-slate-500" />
 									System
 								</DropdownMenuItem>
 							</DropdownMenuGroup>
@@ -219,7 +282,7 @@ export default function Header() {
 							<DropdownMenuSeparator />
 							<DropdownMenuItem asChild>
 								<Link href="/dashboard/user">
-									<Building2 className="w-4 h-4 mr-2" />
+									<Building2 className="mr-2 w-4 h-4" />
 									<span>User Dashboard</span>
 								</Link>
 							</DropdownMenuItem>
@@ -243,10 +306,65 @@ export default function Header() {
 								<Menu className="w-4 h-4" />
 							</Button>
 						</SheetTrigger>
-						<SheetContent className="bg-card/95 backdrop-blur-md">
+						<SheetContent className="backdrop-blur-md bg-card/95">
 							<SheetHeader>
 								<SheetTitle>LocalHub Menu</SheetTitle>
 							</SheetHeader>
+
+							{/* Mobile Directory Switcher */}
+							<div className="p-4 mt-6 border-b border-border/50">
+								<div className="flex items-center p-3 space-x-3 rounded-lg bg-accent/50">
+									<div className="flex flex-shrink-0 justify-center items-center w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg">
+										<MapPin className="w-5 h-5 text-white" />
+									</div>
+									<div className="flex-1 min-w-0">
+										<p className="font-medium text-foreground">{currentDirectory.name}</p>
+										<p className="text-sm text-muted-foreground">
+											{currentDirectory.businessCount} businesses • ${currentDirectory.monthlyRevenue.toLocaleString()}/mo
+										</p>
+									</div>
+								</div>
+
+								<div className="mt-3 space-y-2">
+									<p className="text-sm font-medium text-foreground">Switch Directory</p>
+									{mockDirectories.map((directory) => (
+										<button
+											key={directory.id}
+											onClick={() => {
+												setCurrentDirectoryId(directory.id);
+												setMobileMenuOpen(false);
+											}}
+											className={`w-full flex items-center space-x-3 p-3 rounded-lg text-left transition-colors ${directory.id === currentDirectoryId ? "bg-primary text-primary-foreground" : "hover:bg-accent"}`}
+										>
+											<div className="flex flex-shrink-0 justify-center items-center w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg">
+												<MapPin className="w-4 h-4 text-white" />
+											</div>
+											<div className="flex-1 min-w-0">
+												<div className="flex items-center space-x-2">
+													<span className="font-medium">{directory.name}</span>
+													<Badge variant="secondary" className="text-xs text-white bg-gradient-to-r from-green-500 to-blue-600">
+														{directory.status}
+													</Badge>
+												</div>
+												<p className="text-xs opacity-80">{directory.location}</p>
+												<p className="text-xs opacity-80">{directory.businessCount} businesses</p>
+											</div>
+											{directory.id === currentDirectoryId && <div className="flex-shrink-0 w-2 h-2 bg-green-500 rounded-full"></div>}
+										</button>
+									))}
+
+									<Link href="/dashboard/localhub/create-directory" onClick={() => setMobileMenuOpen(false)} className="flex items-center p-3 space-x-3 w-full text-left rounded-lg transition-colors hover:bg-accent">
+										<div className="flex flex-shrink-0 justify-center items-center w-8 h-8 bg-gradient-to-br from-green-500 to-blue-600 rounded-lg">
+											<Plus className="w-4 h-4 text-white" />
+										</div>
+										<div className="flex-1">
+											<span className="font-medium text-foreground">Add New Directory</span>
+											<p className="text-xs text-muted-foreground">Create a new LocalHub directory</p>
+										</div>
+									</Link>
+								</div>
+							</div>
+
 							<nav className="mt-6">
 								<ul className="space-y-2">
 									{navigation.map((item) => {
@@ -254,7 +372,7 @@ export default function Header() {
 										return (
 											<li key={item.href}>
 												<Link href={item.href} onClick={() => setMobileMenuOpen(false)}>
-													<Button variant={isActive ? "default" : "ghost"} className={`w-full justify-start ${isActive ? "bg-primary text-primary-foreground" : ""}`}>
+													<Button variant={isActive ? "default" : "ghost"} className={`w-full justify-start ${isActive ? "bg-primary/5 text-primary border border-primary/20 hover:text-white" : "hover:text-white"}`}>
 														{item.name}
 													</Button>
 												</Link>
@@ -265,7 +383,7 @@ export default function Header() {
 							</nav>
 						</SheetContent>
 					</Sheet>
-				</div>
+				</div>;
 			</div>
 		</div>
 	);

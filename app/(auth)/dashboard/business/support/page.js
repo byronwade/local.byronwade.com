@@ -1,6 +1,6 @@
 import React from "react";
 import SupportPage from "@components/shared/support/SupportPage";
 
-export default function SupportPageSite() {
-	return <SupportPage userType="user" />;
+export default function Support() {
+	return <SupportPage userType="business" />;
 }

@@ -19,6 +19,9 @@ const nextConfig = {
 		],
 	},
 	webpack: (config, { isServer }) => {
+		// Disable webpack caching to fix build issues
+		config.cache = false;
+
 		// Minimal alias setup only
 		config.resolve.alias = {
 			...config.resolve.alias,

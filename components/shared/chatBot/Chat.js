@@ -94,9 +94,9 @@ function ChatContent({ messages: initialMessages, suggestions }) {
 	};
 
 	return (
-		<div className="flex flex-col justify-between min-h-96">
-			<div className="flex-1 overflow-auto text-sm">{messages.length === 0 ? <ChatSuggestions suggestions={suggestions} addMessage={addMessage} /> : messages.map((msg) => (msg.sender === "user" ? <UserBubble key={msg.id} message={msg.message} /> : <ThorbisBubble key={msg.id} message={msg.message} />))}</div>
-			<div className="p-4">
+		<div className="flex flex-col justify-between h-full">
+			<div className="flex-1 overflow-auto text-sm p-4">{messages.length === 0 ? <ChatSuggestions suggestions={suggestions} addMessage={addMessage} /> : messages.map((msg) => (msg.sender === "user" ? <UserBubble key={msg.id} message={msg.message} /> : <ThorbisBubble key={msg.id} message={msg.message} />))}</div>
+			<div className="p-4 border-t">
 				<ChatInput addMessage={addMessage} />
 			</div>
 		</div>
@@ -116,7 +116,7 @@ function ChatWindow({ messages, suggestions }) {
 
 function ChatFull({ messages, suggestions }) {
 	return (
-		<div className="bg-card text-card-foreground w-full rounded-md min-h-96 flex flex-col justify-between h-full border">
+		<div className="bg-card text-card-foreground w-full h-full flex flex-col border rounded-md">
 			<ChatContent messages={messages} suggestions={suggestions} />
 		</div>
 	);
