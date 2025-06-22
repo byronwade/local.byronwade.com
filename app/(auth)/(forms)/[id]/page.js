@@ -220,7 +220,7 @@ export default function BusinessSetup() {
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 								<div>
 									<Label htmlFor="business-name">Business Name *</Label>
-									<Input id="business-name" value={businessData.name} onChange={(e) => handleInputChange("name", e.target.value)} placeholder="Your Business Name" className={validationErrors.name ? "border-red-500" : ""} />
+									<Input id="business-name" value={businessData.name} onChange={(e) => handleInputChange("name", e.target.value)} placeholder="Your Business Name" className={validationErrors.name ? "border-red-500" : ""} suppressHydrationWarning />
 									{validationErrors.name && <p className="text-sm text-red-500 mt-1">{validationErrors.name}</p>}
 								</div>
 								<div>
@@ -243,7 +243,7 @@ export default function BusinessSetup() {
 
 							<div>
 								<Label htmlFor="description">Business Description</Label>
-								<Textarea id="description" value={businessData.description} onChange={(e) => handleInputChange("description", e.target.value)} placeholder="Describe your business, services, and what makes you special..." rows={4} />
+								<Textarea id="description" value={businessData.description} onChange={(e) => handleInputChange("description", e.target.value)} placeholder="Describe your business, services, and what makes you special..." rows={4} suppressHydrationWarning />
 							</div>
 						</div>
 					</div>
@@ -283,19 +283,19 @@ export default function BusinessSetup() {
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 								<div>
 									<Label htmlFor="phone">Phone Number *</Label>
-									<Input id="phone" value={businessData.phone} onChange={(e) => handleInputChange("phone", e.target.value)} placeholder="(503) 555-0123" className={validationErrors.phone ? "border-red-500" : ""} />
+									<Input id="phone" value={businessData.phone} onChange={(e) => handleInputChange("phone", e.target.value)} placeholder="(503) 555-0123" className={validationErrors.phone ? "border-red-500" : ""} suppressHydrationWarning />
 									{validationErrors.phone && <p className="text-sm text-red-500 mt-1">{validationErrors.phone}</p>}
 								</div>
 								<div>
 									<Label htmlFor="email">Email Address *</Label>
-									<Input id="email" type="email" value={businessData.email} onChange={(e) => handleInputChange("email", e.target.value)} placeholder="info@yourbusiness.com" className={validationErrors.email ? "border-red-500" : ""} />
+									<Input id="email" type="email" value={businessData.email} onChange={(e) => handleInputChange("email", e.target.value)} placeholder="info@yourbusiness.com" className={validationErrors.email ? "border-red-500" : ""} suppressHydrationWarning />
 									{validationErrors.email && <p className="text-sm text-red-500 mt-1">{validationErrors.email}</p>}
 								</div>
 							</div>
 
 							<div>
 								<Label htmlFor="website">Website</Label>
-								<Input id="website" value={businessData.website} onChange={(e) => handleInputChange("website", e.target.value)} placeholder="https://www.yourbusiness.com" />
+								<Input id="website" value={businessData.website} onChange={(e) => handleInputChange("website", e.target.value)} placeholder="https://www.yourbusiness.com" suppressHydrationWarning />
 							</div>
 						</div>
 					</div>

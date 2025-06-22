@@ -4,9 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@components/ui/button";
-import { FaTwitter, FaLinkedin, FaInstagram, FaYoutube, FaDiscord, FaCertificate, FaAward, FaBriefcaseMedical, FaBookOpen } from "react-icons/fa";
-import { SiYelp, SiGoogle, SiTripadvisor, SiAngi, SiBooking, SiExpedia, SiThumbtack, SiBark } from "react-icons/si";
-import { MdVerifiedUser, MdGppGood, MdSecurity } from "react-icons/md";
+import { FaTwitter, FaLinkedin, FaInstagram, FaYoutube, FaDiscord, FaCertificate, FaAward, FaBriefcaseMedical, FaBookOpen, FaBuilding } from "react-icons/fa";
+import { SiYelp, SiGoogle, SiTripadvisor, SiExpedia, SiThumbtack } from "react-icons/si";
+import { MdVerifiedUser, MdGppGood, MdSecurity, MdRateReview, MdWork } from "react-icons/md";
 
 export default function Footer() {
 	const pathname = usePathname();
@@ -319,13 +319,13 @@ export default function Footer() {
 							</Link>
 							<Link href="/angies-list-alternative" className="group flex flex-col items-center p-4 bg-white/5 rounded-xl hover:bg-white/15 transition-all duration-300 hover:scale-105">
 								<div className="w-8 h-8 mb-2 flex items-center justify-center bg-white/10 rounded-full">
-									<SiAngi className="w-5 h-5" />
+									<MdRateReview className="w-5 h-5" />
 								</div>
-								<span className="text-sm font-medium group-hover:text-white transition-colors">Angie's List</span>
+								<span className="text-sm font-medium group-hover:text-white transition-colors">Angie&apos;s List</span>
 							</Link>
 							<Link href="/booking-alternative" className="group flex flex-col items-center p-4 bg-white/5 rounded-xl hover:bg-white/15 transition-all duration-300 hover:scale-105">
 								<div className="w-8 h-8 mb-2 flex items-center justify-center bg-white/10 rounded-full">
-									<SiBooking className="w-5 h-5" />
+									<FaBuilding className="w-5 h-5" />
 								</div>
 								<span className="text-sm font-medium group-hover:text-white transition-colors">Booking.com</span>
 							</Link>
@@ -343,7 +343,7 @@ export default function Footer() {
 							</Link>
 							<Link href="/bark-alternative" className="group flex flex-col items-center p-4 bg-white/5 rounded-xl hover:bg-white/15 transition-all duration-300 hover:scale-105">
 								<div className="w-8 h-8 mb-2 flex items-center justify-center bg-white/10 rounded-full">
-									<SiBark className="w-5 h-5" />
+									<MdWork className="w-5 h-5" />
 								</div>
 								<span className="text-sm font-medium group-hover:text-white transition-colors">Bark.com</span>
 							</Link>
@@ -359,7 +359,7 @@ export default function Footer() {
 			</footer>
 
 			{/* Bottom Footer with Copyright */}
-			<div className="bg-black/95 backdrop-blur-sm border-t border-white/10">
+			<div className="bg-primary/90 backdrop-blur-sm border-t border-white/10">
 				<div className="px-4 lg:px-24 py-6">
 					<div className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
 						<div className="text-center md:text-left">
@@ -367,7 +367,7 @@ export default function Footer() {
 						</div>
 						<div className="flex items-center space-x-2 text-white/80">
 							<span className="text-sm">Designed and Developed by</span>
-							<a href="https://byronwade.com" target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-white hover:text-primary-foreground transition-colors duration-200 underline decoration-dotted underline-offset-4">
+							<a href="https://byronwade.com" target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-white hover:text-blue-200 transition-colors duration-200 underline decoration-dotted underline-offset-4">
 								Byron Wade
 							</a>
 						</div>
