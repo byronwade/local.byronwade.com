@@ -4,8 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@components/ui/button";
-import { FaGithub, FaDiscord, FaProductHunt, FaHackerNews } from "react-icons/fa";
-import { RiTwitterXFill } from "react-icons/ri";
+import { FaTwitter, FaLinkedin, FaInstagram, FaYoutube, FaDiscord, FaCertificate, FaAward, FaBriefcaseMedical, FaBookOpen } from "react-icons/fa";
+import { SiYelp, SiGoogle, SiTripadvisor, SiAngi, SiBooking, SiExpedia, SiThumbtack, SiBark } from "react-icons/si";
+import { MdVerifiedUser, MdGppGood, MdSecurity } from "react-icons/md";
 
 export default function Footer() {
 	const pathname = usePathname();
@@ -17,261 +18,359 @@ export default function Footer() {
 
 	return (
 		<>
-			<footer className="relative w-full h-full px-4 py-20 pl-8 mx-auto bg-primary text-primary-foreground sm:px-12 lg:px-24">
-				<div className="flex flex-col pr-2 my-4 text-sm">
-					<div className="flex pb-2 lg:pb-7">
-						<div className="flex">
-							<Link href="/" className="flex flex-col items-start h-full space-y-4 text-xl font-bold align-middle">
-								<Image src="/ThorbisLogo.webp" alt="Thorbis" width={50} height={50} className="h-full w-[41px]" />
-								<h1 className="text-2xl leading-none">Thorbis</h1>
-							</Link>
+			<footer className="relative w-full bg-gradient-to-br from-primary via-primary/95 to-primary/90 text-primary-foreground">
+				{/* Main Footer Content */}
+				<div className="px-4 lg:px-24 py-16">
+					{/* Top Section with Logo and Description */}
+					<div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mb-16">
+						{/* Logo and Brand Section */}
+						<div className="lg:col-span-1">
+							<div className="flex items-center space-x-4 mb-6">
+								<Image src="/ThorbisLogo.webp" alt="Thorbis" width={60} height={60} className="h-12 w-auto" />
+								<h1 className="text-3xl font-bold">Thorbis</h1>
+							</div>
+							<p className="text-lg leading-relaxed mb-6 max-w-md">Thorbis® is a registered trademark by Wades, Inc. All rights reserved.</p>
+							<p className="text-base opacity-90 mb-8 max-w-md">Our mission is to transform lead management by providing the best business listing and review platform.</p>
+
+							{/* Social Links */}
+							<div className="flex space-x-4 mb-6">
+								<a href="#" className="p-3 bg-white/10 rounded-full hover:bg-white/20 transition-all duration-300 hover:scale-110">
+									<FaTwitter className="w-5 h-5" />
+								</a>
+								<a href="#" className="p-3 bg-white/10 rounded-full hover:bg-white/20 transition-all duration-300 hover:scale-110">
+									<FaLinkedin className="w-5 h-5" />
+								</a>
+								<a href="#" className="p-3 bg-white/10 rounded-full hover:bg-white/20 transition-all duration-300 hover:scale-110">
+									<FaInstagram className="w-5 h-5" />
+								</a>
+								<a href="#" className="p-3 bg-white/10 rounded-full hover:bg-white/20 transition-all duration-300 hover:scale-110">
+									<FaYoutube className="w-5 h-5" />
+								</a>
+								<a href="#" className="p-3 bg-white/10 rounded-full hover:bg-white/20 transition-all duration-300 hover:scale-110">
+									<FaDiscord className="w-5 h-5" />
+								</a>
+							</div>
+
+							{/* Language Selector */}
+							<Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20">
+								<svg xmlns="http://www.w3.org/2000/svg" width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 mr-2">
+									<path d="m5 8 6 6" />
+									<path d="m4 14 6-6 2-3" />
+									<path d="M2 5h12" />
+									<path d="M7 2h1" />
+									<path d="m22 22-5-10-5 10" />
+									<path d="M14 18h6" />
+								</svg>
+								English
+							</Button>
+						</div>
+
+						{/* Trust Badges */}
+						<div className="lg:col-span-2">
+							<h3 className="text-lg font-semibold mb-4">Trust & Security</h3>
+							<div className="grid grid-cols-3 md:grid-cols-6 gap-4">
+								<div className="flex flex-col items-center p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
+									<div className="w-10 h-10 mb-2 flex items-center justify-center bg-white/10 rounded-full">
+										<MdVerifiedUser className="w-6 h-6" />
+									</div>
+									<span className="text-xs text-center">Privacy Shield</span>
+								</div>
+								<div className="flex flex-col items-center p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
+									<div className="w-10 h-10 mb-2 flex items-center justify-center bg-white/10 rounded-full">
+										<FaCertificate className="w-6 h-6" />
+									</div>
+									<span className="text-xs text-center">ISO 27001</span>
+								</div>
+								<div className="flex flex-col items-center p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
+									<div className="w-10 h-10 mb-2 flex items-center justify-center bg-white/10 rounded-full">
+										<FaAward className="w-6 h-6" />
+									</div>
+									<span className="text-xs text-center">SOC2</span>
+								</div>
+								<div className="flex flex-col items-center p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
+									<div className="w-10 h-10 mb-2 flex items-center justify-center bg-white/10 rounded-full">
+										<MdGppGood className="w-6 h-6" />
+									</div>
+									<span className="text-xs text-center">CCPA</span>
+								</div>
+								<div className="flex flex-col items-center p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
+									<div className="w-10 h-10 mb-2 flex items-center justify-center bg-white/10 rounded-full">
+										<MdSecurity className="w-6 h-6" />
+									</div>
+									<span className="text-xs text-center">GDPR</span>
+								</div>
+								<div className="flex flex-col items-center p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
+									<div className="w-10 h-10 mb-2 flex items-center justify-center bg-white/10 rounded-full">
+										<FaBriefcaseMedical className="w-6 h-6" />
+									</div>
+									<span className="text-xs text-center">HIPAA</span>
+								</div>
+							</div>
 						</div>
 					</div>
-					<p className="max-w-[250px] lg:block">Thorbis® is a registered trademark by Wades, Inc. All rights reserved.</p>
-					<div className="mt-6 flex h-12 w-[300px] place-items-center gap-3">
-						<a className="block" href="/security">
-							<Image alt="EU-US Privacy Shield" loading="lazy" width={500} height={500} className="w-full h-12 min-w-11 opacity-80 grayscale hover:opacity-100 hover:grayscale-0 invert" src="/chatgpt.svg" />
-						</a>
-						<a className="block" href="/security">
-							<Image alt="ISO 27001" loading="lazy" width={500} height={500} className="w-full h-12 min-w-11 opacity-80 grayscale hover:opacity-100 hover:grayscale-0 invert" src="/chatgpt.svg" />
-						</a>
-						<a className="block" href="/security">
-							<Image alt="SOC2" loading="lazy" width={500} height={500} className="w-full h-12 min-w-11 opacity-80 grayscale hover:opacity-100 hover:grayscale-0 invert" src="/chatgpt.svg" />
-						</a>
-						<a className="block" href="/security">
-							<Image alt="CCPA" loading="lazy" width={500} height={500} className="w-full h-12 min-w-11 opacity-80 grayscale hover:opacity-100 hover:grayscale-0 invert" src="/chatgpt.svg" />
-						</a>
-						<a className="block" href="/security">
-							<Image alt="GDPR" loading="lazy" width={500} height={500} className="w-full h-12 min-w-11 opacity-80 grayscale hover:opacity-100 hover:grayscale-0 invert" src="/chatgpt.svg" />
-						</a>
-						<a className="block" href="/security">
-							<Image alt="HIPAA" loading="lazy" width={500} height={500} className="w-full h-12 min-w-11 opacity-80 grayscale hover:opacity-100 hover:grayscale-0 invert" src="/chatgpt.svg" />
-						</a>
-					</div>
-					<div className="flex gap-4 mt-6">
-						<FaDiscord className="w-6 h-6 text-primary-foreground/80 hover:text-primary-foreground hover:animate-spin-slow cursor-pointer" />
-						<RiTwitterXFill className="w-6 h-6 text-primary-foreground/80 hover:text-primary-foreground hover:animate-spin-slow cursor-pointer" />
-						<FaGithub className="w-6 h-6 text-primary-foreground/80 hover:text-primary-foreground hover:animate-spin-slow cursor-pointer" />
-						<FaProductHunt className="w-6 h-6 text-primary-foreground/80 hover:text-primary-foreground hover:animate-spin-slow cursor-pointer" />
-						<FaHackerNews className="w-6 h-6 text-primary-foreground/80 hover:text-primary-foreground hover:animate-spin-slow cursor-pointer" />
-					</div>
-					<p className="mt-2 max-w-[350px] pr-4 text-base opacity-50 transition-opacity  ease-in-out hover:opacity-100 ">Our mission is to transform lead management by providing the best business listing and review platform.</p>
-					<div className="mt-8">
-						<Button>
-							<svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 mr-4">
-								<path d="m5 8 6 6" />
-								<path d="m4 14 6-6 2-3" />
-								<path d="M2 5h12" />
-								<path d="M7 2h1" />
-								<path d="m22 22-5-10-5 10" />
-								<path d="M14 18h6" />
-							</svg>
-							<span className="font-normal truncate">English</span>
-						</Button>
-					</div>
-				</div>
-				<div>
-					<nav className="mt-6 grid w-full grid-cols-1 gap-x-4 gap-y-10 leading-[125%] sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+
+					{/* Navigation Links */}
+					<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 mb-12">
 						<div>
-							<h2 className="text-lg font-semibold uppercase">About</h2>
-							<div className="flex flex-col mt-4 space-y-4">
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/about">
+							<h3 className="text-lg font-semibold mb-4 uppercase tracking-wide">About</h3>
+							<div className="space-y-3">
+								<a href="/about" className="block text-sm hover:text-white transition-colors duration-200">
 									About Thorbis
 								</a>
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/careers">
+								<a href="/careers" className="block text-sm hover:text-white transition-colors duration-200">
 									Careers
 								</a>
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/press">
+								<a href="/press" className="block text-sm hover:text-white transition-colors duration-200">
 									Press
 								</a>
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/investor-relations">
+								<a href="/investor-relations" className="block text-sm hover:text-white transition-colors duration-200">
 									Investor Relations
 								</a>
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/trust-safety">
+								<a href="/trust-safety" className="block text-sm hover:text-white transition-colors duration-200">
 									Trust & Safety
 								</a>
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/content-guidelines">
+								<a href="/content-guidelines" className="block text-sm hover:text-white transition-colors duration-200">
 									Content Guidelines
 								</a>
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/accessibility-statement">
-									Accessibility Statement
+								<a href="/accessibility-statement" className="block text-sm hover:text-white transition-colors duration-200">
+									Accessibility
 								</a>
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/terms">
+								<a href="/terms" className="block text-sm hover:text-white transition-colors duration-200">
 									Terms of Service
 								</a>
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/privacy">
+								<a href="/privacy" className="block text-sm hover:text-white transition-colors duration-200">
 									Privacy Policy
 								</a>
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/ad-choices">
+								<a href="/ad-choices" className="block text-sm hover:text-white transition-colors duration-200">
 									Ad Choices
 								</a>
 							</div>
 						</div>
+
 						<div>
-							<h2 className="text-lg font-semibold uppercase">Support</h2>
-							<div className="flex flex-col mt-4 space-y-4">
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/mobile">
+							<h3 className="text-lg font-semibold mb-4 uppercase tracking-wide">Support</h3>
+							<div className="space-y-3">
+								<a href="/mobile" className="block text-sm hover:text-white transition-colors duration-200">
 									Thorbis Mobile
 								</a>
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/developers">
+								<a href="/developers" className="block text-sm hover:text-white transition-colors duration-200">
 									Developers
 								</a>
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/rss">
+								<a href="/rss" className="block text-sm hover:text-white transition-colors duration-200">
 									RSS
 								</a>
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/contact-support">
+								<a href="/contact-support" className="block text-sm hover:text-white transition-colors duration-200">
 									Contact Support
 								</a>
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/help-center">
+								<a href="/help-center" className="block text-sm hover:text-white transition-colors duration-200">
 									Help Center
 								</a>
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/community-guidelines">
+								<a href="/community-guidelines" className="block text-sm hover:text-white transition-colors duration-200">
 									Community Guidelines
 								</a>
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/faq">
+								<a href="/faq" className="block text-sm hover:text-white transition-colors duration-200">
 									FAQ
 								</a>
 							</div>
 						</div>
+
 						<div>
-							<h2 className="text-lg font-semibold uppercase">Business</h2>
-							<div className="flex flex-col mt-4 space-y-4">
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/business">
+							<h3 className="text-lg font-semibold mb-4 uppercase tracking-wide">Business</h3>
+							<div className="space-y-3">
+								<a href="/business" className="block text-sm hover:text-white transition-colors duration-200">
 									Thorbis for Business
 								</a>
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/business-owner-login">
+								<a href="/business-owner-login" className="block text-sm hover:text-white transition-colors duration-200">
 									Business Owner Login
 								</a>
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/claim-business">
-									Claim your Business Page
+								<a href="/claim-business" className="block text-sm hover:text-white transition-colors duration-200">
+									Claim your Business
 								</a>
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/advertise">
+								<a href="/advertise" className="block text-sm hover:text-white transition-colors duration-200">
 									Advertise on Thorbis
 								</a>
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/restaurant-owners">
-									Thorbis for Restaurant Owners
+								<a href="/restaurant-owners" className="block text-sm hover:text-white transition-colors duration-200">
+									For Restaurant Owners
 								</a>
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/table-management">
+								<a href="/table-management" className="block text-sm hover:text-white transition-colors duration-200">
 									Table Management
 								</a>
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/business-success-stories">
-									Business Success Stories
+								<a href="/business-success-stories" className="block text-sm hover:text-white transition-colors duration-200">
+									Success Stories
 								</a>
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/business-support">
+								<a href="/business-support" className="block text-sm hover:text-white transition-colors duration-200">
 									Business Support
 								</a>
 							</div>
 						</div>
+
 						<div>
-							<h2 className="text-lg font-semibold uppercase">Cities</h2>
-							<div className="flex flex-col mt-4 space-y-4">
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/search?query=&zip=10001">
+							<h3 className="text-lg font-semibold mb-4 uppercase tracking-wide">Marketing Tools</h3>
+							<div className="space-y-3">
+								<a href="/shorts" className="block text-sm hover:text-white transition-colors duration-200">
+									Business Shorts
+								</a>
+								<a href="/learn" className="block text-sm hover:text-white transition-colors duration-200">
+									Educational Content Hub
+								</a>
+								<a href="/challenges" className="block text-sm hover:text-white transition-colors duration-200">
+									Business Challenges
+								</a>
+								<a href="/network" className="block text-sm hover:text-white transition-colors duration-200">
+									Local Business Networking
+								</a>
+								<a href="/events" className="block text-sm hover:text-white transition-colors duration-200">
+									Local Events Platform
+								</a>
+								<a href="/neighborhoods" className="block text-sm hover:text-white transition-colors duration-200">
+									Neighborhood Hubs
+								</a>
+								<a href="/business-story-videos" className="block text-sm hover:text-white transition-colors duration-200">
+									Business Story Videos
+								</a>
+								<a href="/live-streaming" className="block text-sm hover:text-white transition-colors duration-200">
+									Live Streaming
+								</a>
+							</div>
+						</div>
+
+						<div>
+							<h3 className="text-lg font-semibold mb-4 uppercase tracking-wide">Cities</h3>
+							<div className="space-y-3">
+								<a href="/search?query=&zip=10001" className="block text-sm hover:text-white transition-colors duration-200">
 									New York, NY
 								</a>
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/search?query=&zip=90001">
+								<a href="/search?query=&zip=90001" className="block text-sm hover:text-white transition-colors duration-200">
 									Los Angeles, CA
 								</a>
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/search?query=&zip=60601">
+								<a href="/search?query=&zip=60601" className="block text-sm hover:text-white transition-colors duration-200">
 									Chicago, IL
 								</a>
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/search?query=&zip=77001">
+								<a href="/search?query=&zip=77001" className="block text-sm hover:text-white transition-colors duration-200">
 									Houston, TX
 								</a>
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/search?query=&zip=85001">
+								<a href="/search?query=&zip=85001" className="block text-sm hover:text-white transition-colors duration-200">
 									Phoenix, AZ
 								</a>
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/search?query=&zip=19101">
+								<a href="/search?query=&zip=19101" className="block text-sm hover:text-white transition-colors duration-200">
 									Philadelphia, PA
 								</a>
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/search?query=&zip=94101">
+								<a href="/search?query=&zip=94101" className="block text-sm hover:text-white transition-colors duration-200">
 									San Francisco, CA
 								</a>
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/search?query=&zip=98101">
+								<a href="/search?query=&zip=98101" className="block text-sm hover:text-white transition-colors duration-200">
 									Seattle, WA
 								</a>
 							</div>
 						</div>
+
 						<div>
-							<h2 className="text-lg font-semibold uppercase">Company</h2>
-							<div className="flex flex-col mt-4 space-y-4">
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/jobs">
+							<h3 className="text-lg font-semibold mb-4 uppercase tracking-wide">Company</h3>
+							<div className="space-y-3">
+								<a href="/jobs" className="block text-sm hover:text-white transition-colors duration-200">
 									Jobs
 								</a>
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/about">
+								<a href="/about" className="block text-sm hover:text-white transition-colors duration-200">
 									About
 								</a>
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="https://app.thorbis.com/support">
-									Support
+								<a href="/contact" className="block text-sm hover:text-white transition-colors duration-200">
+									Contact
 								</a>
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/privacy">
-									Privacy
+								<a href="/blog" className="block text-sm hover:text-white transition-colors duration-200">
+									Blog
 								</a>
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/terms">
-									Terms
+								<a href="/press" className="block text-sm hover:text-white transition-colors duration-200">
+									Press
 								</a>
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="https://github.com/thorbis/thorbis.com/blob/main/LICENSE">
-									License
+								<a href="/investors" className="block text-sm hover:text-white transition-colors duration-200">
+									Investors
 								</a>
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/security">
-									Security
+								<a href="/partners" className="block text-sm hover:text-white transition-colors duration-200">
+									Partners
 								</a>
-								<a target="_blank" className="hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]" href="/subscribe">
-									Changelog
+								<a href="/affiliates" className="block text-sm hover:text-white transition-colors duration-200">
+									Affiliates
 								</a>
 							</div>
 						</div>
-					</nav>
+					</div>
 
-					<div className="mt-8 text-center">
-						<h2 className="text-lg font-semibold uppercase">Compare to</h2>
-						<div className="grid grid-cols-2 gap-6 mt-4 md:grid-cols-3 lg:grid-cols-9">
-							<Link href="/yelp-alternative" className="flex flex-col items-center p-4 bg-background/10 border rounded-md text-md hover:bg-background/20">
-								<Image src="/chatgpt.svg" alt="Yelp" width={30} height={30} className="w-[30px] h-[30px] m-auto invert" />
-								<div className="mt-2 hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]">Yelp</div>
+					{/* Competitor Comparison Section */}
+					<div className="border-t border-white/20 pt-12">
+						<h3 className="text-xl font-semibold text-center mb-8 uppercase tracking-wide">Compare to Alternatives</h3>
+						<div className="grid grid-cols-3 md:grid-cols-6 lg:grid-cols-9 gap-4">
+							<Link href="/yelp-alternative" className="group flex flex-col items-center p-4 bg-white/5 rounded-xl hover:bg-white/15 transition-all duration-300 hover:scale-105">
+								<div className="w-8 h-8 mb-2 flex items-center justify-center bg-white/10 rounded-full">
+									<SiYelp className="w-5 h-5" />
+								</div>
+								<span className="text-sm font-medium group-hover:text-white transition-colors">Yelp</span>
 							</Link>
-							<Link href="/google-business-alternative" className="flex flex-col items-center p-4 bg-background/10 border rounded-md text-md hover:bg-background/20">
-								<Image src="/chatgpt.svg" alt="Google Business" width={30} height={30} className="w-[30px] h-[30px] m-auto invert" />
-								<div className="mt-2 hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]">Google Business</div>
+							<Link href="/google-business-alternative" className="group flex flex-col items-center p-4 bg-white/5 rounded-xl hover:bg-white/15 transition-all duration-300 hover:scale-105">
+								<div className="w-8 h-8 mb-2 flex items-center justify-center bg-white/10 rounded-full">
+									<SiGoogle className="w-5 h-5" />
+								</div>
+								<span className="text-sm font-medium group-hover:text-white transition-colors">Google Business</span>
 							</Link>
-							<Link href="/tripadvisor-alternative" className="flex flex-col items-center p-4 bg-background/10 border rounded-md text-md hover:bg-background/20">
-								<Image src="/chatgpt.svg" alt="TripAdvisor" width={30} height={30} className="w-[30px] h-[30px] m-auto invert" />
-								<div className="mt-2 hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]">TripAdvisor</div>
+							<Link href="/tripadvisor-alternative" className="group flex flex-col items-center p-4 bg-white/5 rounded-xl hover:bg-white/15 transition-all duration-300 hover:scale-105">
+								<div className="w-8 h-8 mb-2 flex items-center justify-center bg-white/10 rounded-full">
+									<SiTripadvisor className="w-5 h-5" />
+								</div>
+								<span className="text-sm font-medium group-hover:text-white transition-colors">TripAdvisor</span>
 							</Link>
-							<Link href="/angies-list-alternative" className="flex flex-col items-center p-4 bg-background/10 border rounded-md text-md hover:bg-background/20">
-								<Image src="/chatgpt.svg" alt="Angie's List" width={30} height={30} className="w-[30px] h-[30px] m-auto invert" />
-								<div className="mt-2 hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]">Angie&apos;s List</div>
+							<Link href="/angies-list-alternative" className="group flex flex-col items-center p-4 bg-white/5 rounded-xl hover:bg-white/15 transition-all duration-300 hover:scale-105">
+								<div className="w-8 h-8 mb-2 flex items-center justify-center bg-white/10 rounded-full">
+									<SiAngi className="w-5 h-5" />
+								</div>
+								<span className="text-sm font-medium group-hover:text-white transition-colors">Angie's List</span>
 							</Link>
-							<Link href="/booking-alternative" className="flex flex-col items-center p-4 bg-background/10 border rounded-md text-md hover:bg-background/20">
-								<Image src="/chatgpt.svg" alt="Booking.com" width={30} height={30} className="w-[30px] h-[30px] m-auto invert" />
-								<div className="mt-2 hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]">Booking.com</div>
+							<Link href="/booking-alternative" className="group flex flex-col items-center p-4 bg-white/5 rounded-xl hover:bg-white/15 transition-all duration-300 hover:scale-105">
+								<div className="w-8 h-8 mb-2 flex items-center justify-center bg-white/10 rounded-full">
+									<SiBooking className="w-5 h-5" />
+								</div>
+								<span className="text-sm font-medium group-hover:text-white transition-colors">Booking.com</span>
 							</Link>
-							<Link href="/expedia-alternative" className="flex flex-col items-center p-4 bg-background/10 border rounded-md text-md hover:bg-background/20">
-								<Image src="/chatgpt.svg" alt="Expedia" width={30} height={30} className="w-[30px] h-[30px] m-auto invert" />
-								<div className="mt-2 hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]">Expedia</div>
+							<Link href="/expedia-alternative" className="group flex flex-col items-center p-4 bg-white/5 rounded-xl hover:bg-white/15 transition-all duration-300 hover:scale-105">
+								<div className="w-8 h-8 mb-2 flex items-center justify-center bg-white/10 rounded-full">
+									<SiExpedia className="w-5 h-5" />
+								</div>
+								<span className="text-sm font-medium group-hover:text-white transition-colors">Expedia</span>
 							</Link>
-							<Link href="/yellow-pages-alternative" className="flex flex-col items-center p-4 bg-background/10 border rounded-md text-md hover:bg-background/20">
-								<Image src="/chatgpt.svg" alt="Yellow Pages" width={30} height={30} className="w-[30px] h-[30px] m-auto invert" />
-								<div className="mt-2 hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]">Yellow Pages</div>
+							<Link href="/yellow-pages-alternative" className="group flex flex-col items-center p-4 bg-white/5 rounded-xl hover:bg-white/15 transition-all duration-300 hover:scale-105">
+								<div className="w-8 h-8 mb-2 flex items-center justify-center bg-white/10 rounded-full">
+									<FaBookOpen className="w-5 h-5" />
+								</div>
+								<span className="text-sm font-medium group-hover:text-white transition-colors">Yellow Pages</span>
 							</Link>
-							<Link href="/bark-alternative" className="flex flex-col items-center p-4 bg-background/10 border rounded-md text-md hover:bg-background/20">
-								<Image src="/chatgpt.svg" alt="Bark.com" width={30} height={30} className="w-[30px] h-[30px] m-auto invert" />
-								<div className="mt-2 hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]">Bark.com</div>
+							<Link href="/bark-alternative" className="group flex flex-col items-center p-4 bg-white/5 rounded-xl hover:bg-white/15 transition-all duration-300 hover:scale-105">
+								<div className="w-8 h-8 mb-2 flex items-center justify-center bg-white/10 rounded-full">
+									<SiBark className="w-5 h-5" />
+								</div>
+								<span className="text-sm font-medium group-hover:text-white transition-colors">Bark.com</span>
 							</Link>
-							<Link href="/thumbtack-alternative" className="flex flex-col items-center p-4 bg-background/10 border rounded-md text-md hover:bg-background/20">
-								<Image src="/chatgpt.svg" alt="Thumbtack" width={30} height={30} className="w-[30px] h-[30px] m-auto invert" />
-								<div className="mt-2 hover:text-primary-foreground/80 truncate text-ellipsis transition-colors duration-150 [text-wrap:nowrap]">Thumbtack</div>
+							<Link href="/thumbtack-alternative" className="group flex flex-col items-center p-4 bg-white/5 rounded-xl hover:bg-white/15 transition-all duration-300 hover:scale-105">
+								<div className="w-8 h-8 mb-2 flex items-center justify-center bg-white/10 rounded-full">
+									<SiThumbtack className="w-5 h-5" />
+								</div>
+								<span className="text-sm font-medium group-hover:text-white transition-colors">Thumbtack</span>
 							</Link>
 						</div>
 					</div>
 				</div>
 			</footer>
-			<div>
-				<div className="flex items-center justify-center w-full h-24 bg-black">
-					<div className="flex flex-col items-center justify-center space-y-2 text-white">
-						<p className="text-sm">© 2004–2024 Thorbis Inc. Thorbis, Thorbis logo, and related marks are registered trademarks of Thorbis.</p>
-						<a href="https://byronwade.com" target="_blank" className="text-xs">
-							Designed and Developed by <span className="font-bold text-primary">Byron Wade</span>
-						</a>
+
+			{/* Bottom Footer with Copyright */}
+			<div className="bg-black/95 backdrop-blur-sm border-t border-white/10">
+				<div className="px-4 lg:px-24 py-6">
+					<div className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
+						<div className="text-center md:text-left">
+							<p className="text-sm text-white/90 font-medium">© 2004–2024 Thorbis Inc. Thorbis, Thorbis logo, and related marks are registered trademarks of Thorbis.</p>
+						</div>
+						<div className="flex items-center space-x-2 text-white/80">
+							<span className="text-sm">Designed and Developed by</span>
+							<a href="https://byronwade.com" target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-white hover:text-primary-foreground transition-colors duration-200 underline decoration-dotted underline-offset-4">
+								Byron Wade
+							</a>
+						</div>
 					</div>
 				</div>
 			</div>
