@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+import Head from "next/head";
 import { ChevronUp, ChevronDown, Search, Filter, TrendingUp, Clock, Star, Plus, MapPin, ArrowLeft, Home, TrendingUp as TrendingIcon, Menu } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -337,159 +338,164 @@ const ShortsHeader = ({ searchQuery, setSearchQuery, filter, setFilter, categori
 	);
 };
 
-const ShortsPage = () => {
-	const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
-	const [mute, setMute] = useState(true);
-	const [filter, setFilter] = useState("all");
-	const [searchQuery, setSearchQuery] = useState("");
-	const [showUploadModal, setShowUploadModal] = useState(false);
-	const [isMobile, setIsMobile] = useState(false);
-	const containerRef = useRef(null);
-	const scrollContainerRef = useRef(null);
+// Sidebar for navigation and discovery
+const ShortsSidebar = () => {
+	const sidebarLinks = [
+		{ name: "For You", icon: <Home className="w-6 h-6" />, href: "/shorts" },
+		{ name: "Following", icon: <TrendingUp className="w-6 h-6" />, href: "#" },
+		{ name: "Trending", icon: <TrendingIcon className="w-6 h-6" />, href: "#" },
+		{ name: "Explore", icon: <Search className="w-6 h-6" />, href: "#" },
+		{ name: "Go back home", icon: <ArrowLeft className="w-6 h-6" />, href: "/" },
+	];
 
-	// Check if mobile
+	return (
+		<aside className="w-64 bg-card p-4 border-r border-border/50 hidden lg:flex flex-col justify-between">
+			<div>
+				<h2 className="text-lg font-semibold mb-4">Discover</h2>
+				<ul className="space-y-2">
+					{sidebarLinks.map((link) => (
+						<li key={link.name}>
+							<Link href={link.href} className="flex items-center space-x-3 text-lg p-2 rounded-md hover:bg-muted/50 transition-colors">
+								{link.icon}
+								<span>{link.name}</span>
+							</Link>
+						</li>
+					))}
+				</ul>
+			</div>
+			<div>
+				<Button className="w-full">Upload Video</Button>
+			</div>
+		</aside>
+	);
+};
+
+const ShortsPage = () => {
+	const [videos, setVideos] = useState(businessVideos);
+	const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+	const [searchQuery, setSearchQuery] = useState("");
+	const [filter, setFilter] = useState("all");
+	const containerRef = useRef(null);
+	const [isMobile, setIsMobile] = useState(false);
+
 	useEffect(() => {
 		const checkMobile = () => {
-			setIsMobile(window.innerWidth < 768);
+			setIsMobile(window.innerWidth < 1024);
 		};
 		checkMobile();
 		window.addEventListener("resize", checkMobile);
-		return () => window.removeEventListener("resize", checkMobile);
+		return () => {
+			window.removeEventListener("resize", checkMobile);
+		};
 	}, []);
 
-	// Filter videos based on search and category
-	const filteredVideos = businessVideos.filter((video) => {
-		const matchesSearch = video.title.toLowerCase().includes(searchQuery.toLowerCase()) || video.author.toLowerCase().includes(searchQuery.toLowerCase()) || video.description.toLowerCase().includes(searchQuery.toLowerCase());
-		const matchesFilter = filter === "all" || video.businessCategory.toLowerCase() === filter;
-		return matchesSearch && matchesFilter;
-	});
-
 	const scrollToVideo = (index) => {
-		if (scrollContainerRef.current) {
-			const videoHeight = scrollContainerRef.current.clientHeight;
-			scrollContainerRef.current.scrollTo({
-				top: index * videoHeight,
-				behavior: "smooth",
-			});
+		if (containerRef.current) {
+			const videoElement = containerRef.current.children[index];
+			if (videoElement) {
+				videoElement.scrollIntoView({ behavior: "smooth", block: "start" });
+			}
 		}
-		setCurrentVideoIndex(index);
 	};
 
 	const handleScroll = (direction) => {
-		const newIndex = direction === "up" ? currentVideoIndex - 1 : currentVideoIndex + 1;
-		if (newIndex >= 0 && newIndex < filteredVideos.length) {
-			scrollToVideo(newIndex);
-		}
+		const nextIndex = direction === "up" ? Math.max(0, currentVideoIndex - 1) : Math.min(videos.length - 1, currentVideoIndex + 1);
+		setCurrentVideoIndex(nextIndex);
+		scrollToVideo(nextIndex);
 	};
 
-	// Handle scroll events for snap behavior
 	useEffect(() => {
-		const handleScroll = () => {
-			if (scrollContainerRef.current) {
-				const scrollTop = scrollContainerRef.current.scrollTop;
-				const videoHeight = scrollContainerRef.current.clientHeight;
-				const newIndex = Math.round(scrollTop / videoHeight);
-				if (newIndex !== currentVideoIndex && newIndex >= 0 && newIndex < filteredVideos.length) {
-					setCurrentVideoIndex(newIndex);
-				}
+		const handleScroll = (e) => {
+			const { scrollTop, clientHeight, scrollHeight } = document.documentElement;
+			const videoHeight = clientHeight;
+			const currentIndex = Math.round(scrollTop / videoHeight);
+			if (currentIndex !== currentVideoIndex) {
+				setCurrentVideoIndex(currentIndex);
 			}
 		};
 
-		const container = scrollContainerRef.current;
-		if (container) {
-			container.addEventListener("scroll", handleScroll);
-			return () => container.removeEventListener("scroll", handleScroll);
-		}
-	}, [currentVideoIndex, filteredVideos.length]);
-
-	useEffect(() => {
 		const handleKeyPress = (e) => {
-			if (e.key === "ArrowUp") {
-				handleScroll("up");
-			} else if (e.key === "ArrowDown") {
+			if (e.key === "ArrowDown") {
 				handleScroll("down");
-			} else if (e.key === " ") {
-				e.preventDefault();
-				setMute(!mute);
+			} else if (e.key === "ArrowUp") {
+				handleScroll("up");
 			}
 		};
 
+		window.addEventListener("scroll", handleScroll);
 		window.addEventListener("keydown", handleKeyPress);
-		return () => window.removeEventListener("keydown", handleKeyPress);
-	}, [currentVideoIndex, mute]);
+
+		return () => {
+			window.removeEventListener("scroll", handleScroll);
+			window.removeEventListener("keydown", handleKeyPress);
+		};
+	}, [currentVideoIndex]);
+
+	const handleUploadVideo = () => {
+		alert("Feature coming soon!");
+	};
 
 	const categories = ["all", "plumbing", "restaurant", "automotive", "beauty", "real estate", "landscaping", "electrical", "cleaning", "hvac"];
 
-	const handleUploadVideo = () => {
-		setShowUploadModal(true);
-		console.log("Open video upload modal");
+	const jsonLd = {
+		"@context": "https://schema.org",
+		"@type": "WebPage",
+		name: "Thorbis Business Shorts",
+		description: "Short-form videos from local businesses. See behind the scenes, get tips, and discover new services.",
+		mainEntity: {
+			"@type": "ItemList",
+			name: "Business Shorts",
+			itemListElement: videos.map((video, index) => ({
+				"@type": "ListItem",
+				position: index + 1,
+				item: {
+					"@type": "VideoObject",
+					name: video.title,
+					description: video.description,
+					thumbnailUrl: video.thumbnailUrl,
+					uploadDate: video.uploadTime,
+					duration: video.duration,
+					contentUrl: video.videoUrl,
+					author: {
+						"@type": "Organization",
+						name: video.author,
+					},
+					interactionStatistic: {
+						"@type": "InteractionCounter",
+						interactionType: "https://schema.org/WatchAction",
+						userInteractionCount: parseInt(video.views.replace("K", "000")),
+					},
+				},
+			})),
+		},
 	};
 
 	return (
-		<div className="flex flex-col h-screen bg-background">
-			{/* Custom Shorts Header */}
-			<ShortsHeader searchQuery={searchQuery} setSearchQuery={setSearchQuery} filter={filter} setFilter={setFilter} categories={categories} />
-
-			{/* Video Container - Account for header height */}
-			<div className="flex-1 relative overflow-hidden" ref={containerRef} style={{ height: "calc(100vh - 80px)" }}>
-				{filteredVideos.length > 0 ? (
-					<div ref={scrollContainerRef} className="h-full overflow-y-auto snap-y snap-mandatory scroll-smooth scrollbar-hidden">
-						{filteredVideos.map((video, index) => (
-							<div key={video.id} className="h-full snap-start flex items-center justify-center" style={{ minHeight: "calc(100vh - 80px)" }}>
-								<div className={`${isMobile ? "w-full h-full" : "w-full max-w-md h-full mx-auto"}`}>
-									<VideoComponent video={video} mute={mute} setMute={setMute} isPlaying={index === currentVideoIndex} onNext={() => handleScroll("down")} onPrevious={() => handleScroll("up")} />
-								</div>
-							</div>
-						))}
-					</div>
-				) : (
-					<div className="flex items-center justify-center h-full text-foreground">
-						<p>No videos found matching your criteria.</p>
-					</div>
-				)}
-
-				{/* Navigation Buttons - Only show on desktop */}
-				{!isMobile && (
-					<>
-						{currentVideoIndex > 0 && (
-							<button onClick={() => handleScroll("up")} className="absolute top-1/2 left-4 transform -translate-y-1/2 p-2 bg-background/80 backdrop-blur-sm text-foreground rounded-full hover:bg-background/90 transition-all z-10 border border-border/50">
-								<ChevronUp className="w-6 h-6" />
-							</button>
-						)}
-						{currentVideoIndex < filteredVideos.length - 1 && (
-							<button onClick={() => handleScroll("down")} className="absolute top-1/2 right-4 transform -translate-y-1/2 p-2 bg-background/80 backdrop-blur-sm text-foreground rounded-full hover:bg-background/90 transition-all z-10 border border-border/50">
-								<ChevronDown className="w-6 h-6" />
-							</button>
-						)}
-					</>
-				)}
-			</div>
-
-			{/* Video Counter */}
-			<div className="absolute bottom-4 left-4 text-foreground text-sm bg-background/80 backdrop-blur-sm px-2 py-1 rounded z-20 border border-border/50">
-				{currentVideoIndex + 1} / {filteredVideos.length}
-			</div>
-
-			{/* Floating Action Button for Business Upload */}
-			<button onClick={handleUploadVideo} className="fixed bottom-6 right-6 w-14 h-14 bg-primary text-primary-foreground rounded-full flex items-center justify-center hover:bg-primary/90 transition-all shadow-lg z-50 fab-upload" title="Upload Business Video">
-				<Plus className="w-6 h-6" />
-			</button>
-
-			{/* Business Upload Modal */}
-			{showUploadModal && (
-				<div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50">
-					<div className="bg-card rounded-lg p-6 max-w-md w-full mx-4 border border-border/50">
-						<h3 className="text-xl font-bold text-foreground mb-4">Upload Business Video</h3>
-						<p className="text-muted-foreground mb-4">Share your business story, tips, or behind-the-scenes content with your local community!</p>
-						<div className="space-y-4">
-							<Button className="w-full">Select Video File</Button>
-							<Button variant="outline" onClick={() => setShowUploadModal(false)} className="w-full">
-								Cancel
-							</Button>
-						</div>
-					</div>
+		<div className="flex h-screen bg-black text-white">
+			<Head>
+				<title>Thorbis Business Shorts</title>
+				<meta name="description" content="Short-form videos from local businesses. See behind the scenes, get tips, and discover new services." />
+				<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+			</Head>
+			<ShortsSidebar />
+			<main className="flex-1 relative">
+				<ShortsHeader searchQuery={searchQuery} setSearchQuery={setSearchQuery} filter={filter} setFilter={setFilter} categories={categories} />
+				<div className="absolute top-0 right-4 lg:right-10 z-50 flex flex-col gap-4 h-full justify-center">
+					<Button variant="ghost" size="icon" onClick={() => handleScroll("up")} className="text-white bg-black/30 hover:bg-black/50">
+						<ChevronUp className="w-6 h-6" />
+					</Button>
+					<Button variant="ghost" size="icon" onClick={() => handleScroll("down")} className="text-white bg-black/30 hover:bg-black/50">
+						<ChevronDown className="w-6 h-6" />
+					</Button>
 				</div>
-			)}
+				<div ref={containerRef} className="h-screen w-full snap-y snap-mandatory overflow-y-scroll overflow-x-hidden scrollbar-hide">
+					{videos.map((video, index) => (
+						<div key={video.id} className="h-screen w-full snap-start flex items-center justify-center">
+							<VideoComponent video={video} isActive={index === currentVideoIndex} />
+						</div>
+					))}
+				</div>
+			</main>
 		</div>
 	);
 };

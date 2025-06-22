@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Head from "next/head";
 import { Button } from "@components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 import { Badge } from "@components/ui/badge";
@@ -173,6 +174,49 @@ export default function EventsPage() {
 		return matchesSearch && matchesCategory;
 	});
 
+	const jsonLd = {
+		"@context": "https://schema.org",
+		"@type": "WebPage",
+		name: "Local Events",
+		description: "Find local events, from business networking to food festivals and tech meetups.",
+		mainEntity: {
+			"@type": "ItemList",
+			name: "Upcoming Events",
+			itemListElement: filteredEvents.map((event, index) => ({
+				"@type": "ListItem",
+				position: index + 1,
+				item: {
+					"@type": "Event",
+					name: event.title,
+					description: event.description,
+					startDate: `${event.date}T${event.time}`,
+					location: {
+						"@type": "Place",
+						name: event.location,
+						address: event.address,
+					},
+					image: event.image,
+					organizer: {
+						"@type": "Organization",
+						name: event.organizer,
+					},
+					offers: {
+						"@type": "Offer",
+						price: event.price === "Free" ? "0" : event.price.replace("$", ""),
+						priceCurrency: "USD",
+					},
+					performer:
+						event.category === "Music"
+							? {
+									"@type": "PerformingGroup",
+									name: "Local Bands",
+							  }
+							: undefined,
+				},
+			})),
+		},
+	};
+
 	const EventCard = ({ event }) => (
 		<Card className="group hover:shadow-lg transition-all duration-300 cursor-pointer">
 			<div className="relative overflow-hidden rounded-t-lg">
@@ -315,32 +359,65 @@ export default function EventsPage() {
 		</div>
 	);
 
-	return (
-		<div className="min-h-screen bg-background">
-			{/* Hero Section */}
-			<div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground">
-				<div className="container px-4 py-16 mx-auto">
-					<div className="mx-auto max-w-4xl text-center">
-						<div className="flex justify-center items-center mb-4">
-							<Calendar className="mr-3 w-8 h-8" />
-							<h1 className="text-4xl font-bold">Local Events</h1>
-						</div>
-						<p className="mb-8 text-xl text-primary-foreground/90">Discover amazing events happening in your area. From networking to entertainment, find your next adventure.</p>
-
-						{/* Quick Actions */}
-						<div className="flex flex-col gap-4 justify-center sm:flex-row">
-							<Button className="bg-white text-primary hover:bg-white/90">
-								<Plus className="mr-2 w-4 h-4" />
-								Create Event
-							</Button>
-							<Button variant="outline" className="border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/10">
-								<Calendar className="mr-2 w-4 h-4" />
-								My Events
-							</Button>
-						</div>
-					</div>
-				</div>
+	const MainContent = () => (
+		<div className="flex-1">
+			{/* Event Categories */}
+			<div className="flex flex-wrap gap-2 mb-8">
+				{categories.slice(1).map((category) => (
+					<Button key={category} variant={selectedCategory === category ? "default" : "outline"} size="sm" onClick={() => setSelectedCategory(category)}>
+						{category}
+					</Button>
+				))}
 			</div>
+
+			{/* Events Grid */}
+			<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-2">
+				{filteredEvents.map((event) => (
+					<EventCard key={event.id} event={event} />
+				))}
+			</div>
+
+			{filteredEvents.length === 0 && (
+				<div className="text-center py-12">
+					<Calendar className="mx-auto w-12 h-12 text-muted-foreground mb-4" />
+					<h3 className="text-lg font-semibold mb-2">No events found</h3>
+					<p className="text-muted-foreground mb-4">Try adjusting your search criteria or browse all events.</p>
+					<Button
+						onClick={() => {
+							setSearchQuery("");
+							setSelectedCategory("All Events");
+						}}
+					>
+						Browse All Events
+					</Button>
+				</div>
+			)}
+		</div>
+	);
+
+	return (
+		<div className="bg-muted/30">
+			<Head>
+				<title>Local Events | Localbyronwade</title>
+				<meta name="description" content="Find local events, from business networking to food festivals and tech meetups." />
+				<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+			</Head>
+			<header className="py-24 px-4 lg:px-24 bg-card/50 text-center border-b">
+				<h1 className="text-4xl md:text-6xl font-extrabold tracking-tighter">Find Your Next Event</h1>
+				<p className="mb-8 text-xl text-primary-foreground/90">Discover amazing events happening in your area. From networking to entertainment, find your next adventure.</p>
+
+				{/* Quick Actions */}
+				<div className="flex flex-col gap-4 justify-center sm:flex-row">
+					<Button className="bg-white text-primary hover:bg-white/90">
+						<Plus className="mr-2 w-4 h-4" />
+						Create Event
+					</Button>
+					<Button variant="outline" className="border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/10">
+						<Calendar className="mr-2 w-4 h-4" />
+						My Events
+					</Button>
+				</div>
+			</header>
 
 			{/* Main Content */}
 			<div className="container px-4 py-8 mx-auto">
@@ -353,39 +430,7 @@ export default function EventsPage() {
 					</div>
 
 					{/* Main Content Area */}
-					<div className="flex-1">
-						{/* Event Categories */}
-						<div className="flex flex-wrap gap-2 mb-8">
-							{categories.slice(1).map((category) => (
-								<Button key={category} variant={selectedCategory === category ? "default" : "outline"} size="sm" onClick={() => setSelectedCategory(category)}>
-									{category}
-								</Button>
-							))}
-						</div>
-
-						{/* Events Grid */}
-						<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-2">
-							{filteredEvents.map((event) => (
-								<EventCard key={event.id} event={event} />
-							))}
-						</div>
-
-						{filteredEvents.length === 0 && (
-							<div className="text-center py-12">
-								<Calendar className="mx-auto w-12 h-12 text-muted-foreground mb-4" />
-								<h3 className="text-lg font-semibold mb-2">No events found</h3>
-								<p className="text-muted-foreground mb-4">Try adjusting your search criteria or browse all events.</p>
-								<Button
-									onClick={() => {
-										setSearchQuery("");
-										setSelectedCategory("All Events");
-									}}
-								>
-									Browse All Events
-								</Button>
-							</div>
-						)}
-					</div>
+					<MainContent />
 				</div>
 			</div>
 

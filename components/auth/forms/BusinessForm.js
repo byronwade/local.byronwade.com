@@ -1,49 +1,26 @@
 "use client";
+
 import React, { useState, useEffect } from "react";
 import { useParams, useSearchParams } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
-import { Button } from "@components/ui/button";
-import { Input } from "@components/ui/input";
-import { Label } from "@components/ui/label";
-import { Textarea } from "@components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@components/ui/select";
-import { Badge } from "@components/ui/badge";
-import { Alert, AlertDescription } from "@components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
 import { Building2, MapPin, Phone, Globe, Mail, Clock, Camera, CreditCard, CheckCircle, Star, Info, Upload, Plus, X, Save, AlertTriangle } from "lucide-react";
-import { toast } from "@components/ui/use-toast";
+import { toast } from "@/components/ui/use-toast";
 
+const businessCategories = ["Restaurant", "Retail", "Services", "Health & Wellness", "Automotive"];
 const subscriptionTiers = [
-	{
-		value: "basic",
-		name: "Basic",
-		price: 49,
-		features: ["Business listing with contact info", "Photo gallery (up to 10 photos)", "Basic business description", "Customer reviews", "Map integration"],
-	},
-	{
-		value: "pro",
-		name: "Pro",
-		price: 79,
-		features: ["Everything in Basic", "Unlimited photos", "Extended business description", "Business hours & services", "Special offers & promotions", "Priority listing placement"],
-		popular: true,
-	},
-	{
-		value: "premium",
-		name: "Premium",
-		price: 129,
-		features: ["Everything in Pro", "Online booking integration", "Analytics dashboard", "Social media integration", "Custom branding options", "Featured directory placement"],
-	},
+	{ name: "Basic", value: "basic", price: 29, features: ["Basic Listing", "Contact Info", "Customer Reviews"], popular: false },
+	{ name: "Pro", value: "pro", price: 59, features: ["Enhanced Listing", "Photo Gallery", "Respond to Reviews", "Analytics"], popular: true },
+	{ name: "Premium", value: "premium", price: 99, features: ["Featured Listing", "Video Uploads", "Deals & Offers", "Premium Support"], popular: false },
 ];
 
-const businessCategories = ["Restaurants & Food", "Health & Medical", "Home Services", "Retail & Shopping", "Professional Services", "Automotive", "Beauty & Wellness", "Education", "Entertainment", "Technology", "Real Estate", "Finance", "Legal"];
-
-const businessHours = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-
-export default function BusinessSetup() {
-	const params = useParams();
-	const searchParams = useSearchParams();
-	const businessId = params.id;
-	const hubSlug = searchParams.get("hub");
-
+export function BusinessForm({ formType }) {
 	const [currentStep, setCurrentStep] = useState(1);
 	const [selectedTier, setSelectedTier] = useState("pro");
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -97,7 +74,6 @@ export default function BusinessSetup() {
 				if (!businessData.address.trim()) errors.address = "Address is required";
 				if (!businessData.city.trim()) errors.city = "City is required";
 				if (!businessData.phone.trim()) errors.phone = "Phone number is required";
-				if (!businessData.email.trim()) errors.email = "Email is required";
 				if (businessData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(businessData.email)) {
 					errors.email = "Please enter a valid email address";
 				}
@@ -120,7 +96,6 @@ export default function BusinessSetup() {
 			[field]: value,
 		}));
 
-		// Clear validation error when user starts typing
 		if (validationErrors[field]) {
 			setValidationErrors((prev) => ({ ...prev, [field]: null }));
 		}
@@ -147,10 +122,6 @@ export default function BusinessSetup() {
 	const handleNext = () => {
 		if (validateStep(currentStep) && currentStep < 4) {
 			setCurrentStep(currentStep + 1);
-			toast({
-				title: "Step completed",
-				description: `Moving to step ${currentStep + 1} of 4`,
-			});
 		} else if (!validateStep(currentStep)) {
 			toast({
 				title: "Please fix the errors",
@@ -178,17 +149,10 @@ export default function BusinessSetup() {
 
 		setIsSubmitting(true);
 		try {
-			// Simulate API call
 			await new Promise((resolve) => setTimeout(resolve, 2000));
-
 			toast({
 				title: "Setup Complete!",
-				description: "Your business profile has been created successfully. Welcome to the directory!",
-				action: (
-					<Button variant="outline" size="sm" onClick={() => (window.location.href = "/dashboard/business")}>
-						Go to Dashboard
-					</Button>
-				),
+				description: "Your business profile has been created successfully.",
 			});
 		} catch (error) {
 			toast({
@@ -207,20 +171,15 @@ export default function BusinessSetup() {
 				return (
 					<div className="space-y-6">
 						<div className="text-center space-y-2">
-							<h2 className="text-2xl font-bold">Welcome to Portland Business Directory!</h2>
-							<p className="text-muted-foreground">You&apos;ve been invited to join our local business directory. Let&apos;s get your business set up.</p>
+							<h2 className="text-2xl font-bold">Welcome to the Directory!</h2>
+							<p className="text-muted-foreground">Let&apos;s get your business set up.</p>
 						</div>
-
-						<Alert>
-							<Info className="h-4 w-4" />
-							<AlertDescription>This directory takes 20% of subscription fees. You keep 80% of what businesses pay.</AlertDescription>
-						</Alert>
 
 						<div className="space-y-4">
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 								<div>
 									<Label htmlFor="business-name">Business Name *</Label>
-									<Input id="business-name" value={businessData.name} onChange={(e) => handleInputChange("name", e.target.value)} placeholder="Your Business Name" className={validationErrors.name ? "border-red-500" : ""} suppressHydrationWarning />
+									<Input id="business-name" value={businessData.name} onChange={(e) => handleInputChange("name", e.target.value)} placeholder="Your Business Name" className={validationErrors.name ? "border-red-500" : ""} />
 									{validationErrors.name && <p className="text-sm text-red-500 mt-1">{validationErrors.name}</p>}
 								</div>
 								<div>
@@ -243,7 +202,7 @@ export default function BusinessSetup() {
 
 							<div>
 								<Label htmlFor="description">Business Description</Label>
-								<Textarea id="description" value={businessData.description} onChange={(e) => handleInputChange("description", e.target.value)} placeholder="Describe your business, services, and what makes you special..." rows={4} suppressHydrationWarning />
+								<Textarea id="description" value={businessData.description} onChange={(e) => handleInputChange("description", e.target.value)} placeholder="Describe your business, services, and what makes you special..." rows={4} />
 							</div>
 						</div>
 					</div>
@@ -283,19 +242,19 @@ export default function BusinessSetup() {
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 								<div>
 									<Label htmlFor="phone">Phone Number *</Label>
-									<Input id="phone" value={businessData.phone} onChange={(e) => handleInputChange("phone", e.target.value)} placeholder="(503) 555-0123" className={validationErrors.phone ? "border-red-500" : ""} suppressHydrationWarning />
+									<Input id="phone" value={businessData.phone} onChange={(e) => handleInputChange("phone", e.target.value)} placeholder="(503) 555-0123" className={validationErrors.phone ? "border-red-500" : ""} />
 									{validationErrors.phone && <p className="text-sm text-red-500 mt-1">{validationErrors.phone}</p>}
 								</div>
 								<div>
 									<Label htmlFor="email">Email Address *</Label>
-									<Input id="email" type="email" value={businessData.email} onChange={(e) => handleInputChange("email", e.target.value)} placeholder="info@yourbusiness.com" className={validationErrors.email ? "border-red-500" : ""} suppressHydrationWarning />
+									<Input id="email" type="email" value={businessData.email} onChange={(e) => handleInputChange("email", e.target.value)} placeholder="info@yourbusiness.com" className={validationErrors.email ? "border-red-500" : ""} />
 									{validationErrors.email && <p className="text-sm text-red-500 mt-1">{validationErrors.email}</p>}
 								</div>
 							</div>
 
 							<div>
 								<Label htmlFor="website">Website</Label>
-								<Input id="website" value={businessData.website} onChange={(e) => handleInputChange("website", e.target.value)} placeholder="https://www.yourbusiness.com" suppressHydrationWarning />
+								<Input id="website" value={businessData.website} onChange={(e) => handleInputChange("website", e.target.value)} placeholder="https://www.yourbusiness.com" />
 							</div>
 						</div>
 					</div>
@@ -336,12 +295,6 @@ export default function BusinessSetup() {
 									</CardContent>
 								</Card>
 							))}
-						</div>
-
-						<div className="text-center p-4 bg-muted/50 rounded-lg">
-							<p className="text-sm text-muted-foreground">
-								<strong>Revenue Sharing:</strong> The directory owner keeps 80% of your subscription fee. Platform takes 20% for hosting and maintenance.
-							</p>
 						</div>
 					</div>
 				);
@@ -395,80 +348,57 @@ export default function BusinessSetup() {
 	};
 
 	return (
-		<div className="min-h-screen bg-background py-12">
-			<div className="container mx-auto px-4 max-w-4xl">
-				{/* Progress Bar */}
-				<div className="mb-8">
-					<div className="flex items-center justify-between mb-2">
-						<span className="text-sm font-medium">Step {currentStep} of 4</span>
-						<div className="flex items-center space-x-2">
-							<span className="text-sm text-muted-foreground">{Math.round((currentStep / 4) * 100)}% Complete</span>
-							{autoSaveStatus === "saving" && (
-								<div className="flex items-center space-x-1 text-sm text-blue-600">
-									<Save className="w-3 h-3 animate-spin" />
-									<span>Saving...</span>
-								</div>
-							)}
-							{autoSaveStatus === "saved" && (
-								<div className="flex items-center space-x-1 text-sm text-green-600">
-									<CheckCircle className="w-3 h-3" />
-									<span>Saved</span>
-								</div>
-							)}
-						</div>
-					</div>
-					<div className="w-full bg-muted rounded-full h-2">
-						<div className="bg-primary h-2 rounded-full transition-all duration-300" style={{ width: `${(currentStep / 4) * 100}%` }} />
+		<div className="w-full max-w-4xl">
+			<div className="mb-8">
+				<div className="flex items-center justify-between mb-2">
+					<span className="text-sm font-medium">Step {currentStep} of 4</span>
+					<div className="flex items-center space-x-2">
+						<span className="text-sm text-muted-foreground">{Math.round((currentStep / 4) * 100)}% Complete</span>
+						{autoSaveStatus === "saving" && (
+							<div className="flex items-center space-x-1 text-sm text-blue-600">
+								<Save className="w-3 h-3 animate-spin" />
+								<span>Saving...</span>
+							</div>
+						)}
+						{autoSaveStatus === "saved" && (
+							<div className="flex items-center space-x-1 text-sm text-green-600">
+								<CheckCircle className="w-3 h-3" />
+								<span>Saved</span>
+							</div>
+						)}
 					</div>
 				</div>
-
-				{/* Validation Errors Summary */}
-				{Object.keys(validationErrors).length > 0 && (
-					<Alert variant="destructive" className="mb-6">
-						<AlertTriangle className="h-4 w-4" />
-						<AlertDescription>Please fix the following errors before continuing: {Object.values(validationErrors).join(", ")}</AlertDescription>
-					</Alert>
-				)}
-
-				{/* Main Content */}
-				<Card>
-					<CardContent className="p-8">
-						{renderStepContent()}
-
-						{/* Navigation Buttons */}
-						<div className="flex justify-between pt-8 border-t">
-							<Button variant="outline" onClick={handlePrevious} disabled={currentStep === 1 || isSubmitting}>
-								Previous
-							</Button>
-							{currentStep < 4 ? (
-								<Button onClick={handleNext} disabled={isSubmitting}>
-									Next
-								</Button>
-							) : (
-								<Button onClick={handleSubmit} disabled={isSubmitting}>
-									{isSubmitting ? "Setting up..." : "Complete Setup"}
-								</Button>
-							)}
-						</div>
-					</CardContent>
-				</Card>
-
-				{/* Help Section */}
-				<Card className="mt-6">
-					<CardContent className="p-6">
-						<div className="flex items-start space-x-4">
-							<Info className="w-5 h-5 text-blue-500 mt-0.5" />
-							<div>
-								<h4 className="font-medium mb-1">Need Help?</h4>
-								<p className="text-sm text-muted-foreground mb-2">If you have questions about setting up your business profile, we&apos;re here to help.</p>
-								<Button variant="outline" size="sm">
-									Contact Support
-								</Button>
-							</div>
-						</div>
-					</CardContent>
-				</Card>
+				<div className="w-full bg-muted rounded-full h-2">
+					<div className="bg-primary h-2 rounded-full transition-all duration-300" style={{ width: `${(currentStep / 4) * 100}%` }} />
+				</div>
 			</div>
+
+			{Object.keys(validationErrors).length > 0 && (
+				<Alert variant="destructive" className="mb-6">
+					<AlertTriangle className="h-4 w-4" />
+					<AlertDescription>Please fix the following errors before continuing: {Object.values(validationErrors).filter(Boolean).join(", ")}</AlertDescription>
+				</Alert>
+			)}
+
+			<Card>
+				<CardContent className="p-8">
+					{renderStepContent()}
+					<div className="flex justify-between pt-8 border-t">
+						<Button variant="outline" onClick={handlePrevious} disabled={currentStep === 1 || isSubmitting}>
+							Previous
+						</Button>
+						{currentStep < 4 ? (
+							<Button onClick={handleNext} disabled={isSubmitting}>
+								Next
+							</Button>
+						) : (
+							<Button onClick={handleSubmit} disabled={isSubmitting}>
+								{isSubmitting ? "Setting up..." : "Complete Setup"}
+							</Button>
+						)}
+					</div>
+				</CardContent>
+			</Card>
 		</div>
 	);
 }
