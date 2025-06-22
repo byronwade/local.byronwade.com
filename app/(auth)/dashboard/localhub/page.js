@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
 import { Button } from "@components/ui/button";
@@ -158,6 +158,10 @@ import {
 
 export default function LocalHubDashboard() {
 	const [showAllUpdates, setShowAllUpdates] = useState(false);
+
+	useEffect(() => {
+		document.title = "LocalHub Dashboard - Thorbis";
+	}, []);
 
 	// Directory Stats
 	const directoryStats = [

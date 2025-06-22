@@ -4,46 +4,6 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-export const metadata = {
-	title: "Thorbis Affiliate Program | Partner with Us & Earn",
-	description: "Join the Thorbis affiliate program and earn competitive commissions by referring new businesses to our platform. Get access to marketing support and real-time tracking.",
-	keywords: ["affiliate program", "thorbis affiliates", "partner program", "make money online", "referral program"],
-	openGraph: {
-		title: "Thorbis Affiliate Program | Partner with Us & Earn",
-		description: "Partner with Thorbis to empower local businesses and earn rewards. Our affiliate program offers generous commissions and robust support.",
-		url: "https://local.byronwade.com/affiliates",
-		type: "website",
-		images: [
-			{
-				url: "https://images.unsplash.com/photo-1556740738-b6a63e27c4df?q=80&w=1200",
-				width: 1200,
-				height: 630,
-				alt: "Thorbis Affiliate Program",
-			},
-		],
-	},
-};
-
-const jsonLd = {
-	"@context": "https://schema.org",
-	"@type": "WebPage",
-	name: "Thorbis Affiliate Program",
-	url: "https://local.byronwade.com/affiliates",
-	description: "Partner with Thorbis and earn competitive commissions for referring businesses to our platform.",
-	mainEntity: {
-		"@type": "Offer",
-		name: "Thorbis Affiliate Commission",
-		category: "Affiliate Program",
-		price: "0",
-		priceCurrency: "USD",
-		description: "Earn a commission for every successful referral. Free to join.",
-		seller: {
-			"@type": "Organization",
-			name: "Thorbis",
-		},
-	},
-};
-
 const affiliateBenefits = [
 	{
 		icon: <Zap className="w-8 h-8 mb-4 text-primary" />,
@@ -62,7 +22,87 @@ const affiliateBenefits = [
 	},
 ];
 
+export const metadata = {
+	title: "Affiliate Program - Partner with Thorbis & Earn Rewards",
+	description: "Join Thorbis's affiliate program and earn competitive commissions by referring customers. Get marketing support, real-time tracking, and generous rewards.",
+	keywords: ["affiliate program", "partner with thorbis", "earn commissions", "referral program", "marketing partnership", "affiliate marketing"],
+	openGraph: {
+		title: "Affiliate Program - Partner with Thorbis & Earn Rewards",
+		description: "Join Thorbis's affiliate program and earn competitive commissions by referring customers. Get marketing support, real-time tracking, and generous rewards.",
+		url: "https://local.byronwade.com/affiliates",
+		siteName: "Thorbis",
+		images: [
+			{
+				url: "https://images.unsplash.com/photo-1556740738-b6a63e27c4df?q=80&w=2070&auto=format&fit=crop",
+				width: 1200,
+				height: 630,
+				alt: "Thorbis Affiliate Program",
+			},
+		],
+		locale: "en_US",
+		type: "website",
+	},
+	twitter: {
+		card: "summary_large_image",
+		title: "Affiliate Program - Partner with Thorbis",
+		description: "Join our affiliate program and earn competitive commissions by referring customers.",
+		images: ["https://images.unsplash.com/photo-1556740738-b6a63e27c4df?q=80&w=2070&auto=format&fit=crop"],
+	},
+	alternates: {
+		canonical: "https://local.byronwade.com/affiliates",
+	},
+};
+
 export default function AffiliatesPage() {
+	const jsonLd = {
+		"@context": "https://schema.org",
+		"@type": "Service",
+		name: "Thorbis Affiliate Program",
+		description: "A partnership program that allows individuals and businesses to earn commissions by referring customers to Thorbis platform.",
+		provider: {
+			"@type": "Organization",
+			name: "Thorbis",
+			logo: "https://local.byronwade.com/ThorbisLogo.webp",
+			url: "https://local.byronwade.com",
+		},
+		serviceType: "Affiliate Marketing Program",
+		areaServed: "United States",
+		hasOfferCatalog: {
+			"@type": "OfferCatalog",
+			name: "Affiliate Benefits",
+			itemListElement: [
+				{
+					"@type": "Offer",
+					itemOffered: {
+						"@type": "Service",
+						name: "Competitive Commissions",
+						description: "Earn generous commissions for every customer you refer to our platform",
+					},
+				},
+				{
+					"@type": "Offer",
+					itemOffered: {
+						"@type": "Service",
+						name: "Marketing Support",
+						description: "Access to marketing materials, banners, links, and content",
+					},
+				},
+				{
+					"@type": "Offer",
+					itemOffered: {
+						"@type": "Service",
+						name: "Real-Time Tracking",
+						description: "Advanced dashboard with real-time tracking of referrals and earnings",
+					},
+				},
+			],
+		},
+		audience: {
+			"@type": "Audience",
+			audienceType: "Marketing Partners",
+		},
+	};
+
 	return (
 		<>
 			<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />

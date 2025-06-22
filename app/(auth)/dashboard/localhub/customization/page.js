@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
@@ -88,6 +88,10 @@ export default function Customization() {
 	});
 	const [logoPreview, setLogoPreview] = useState("");
 	const [faviconPreview, setFaviconPreview] = useState("");
+
+	useEffect(() => {
+		document.title = "Directory Customization - LocalHub - Thorbis";
+	}, []);
 
 	const handleLogoUpload = (e) => {
 		const file = e.target.files[0];

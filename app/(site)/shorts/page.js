@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import Head from "next/head";
 import { ChevronUp, ChevronDown, Search, Filter, TrendingUp, Clock, Star, Plus, MapPin, ArrowLeft, Home, TrendingUp as TrendingIcon, Menu } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -236,8 +235,8 @@ const ShortsHeader = ({ searchQuery, setSearchQuery, filter, setFilter, categori
 	}, []);
 
 	return (
-		<div className="sticky top-0 z-50 bg-card/95 backdrop-blur-md border-b border-border/50">
-			<div className="flex items-center justify-between w-full gap-6 py-3 mx-auto px-4 lg:px-24">
+		<div className="sticky top-0 z-50 border-b backdrop-blur-md bg-card/95 border-border/50">
+			<div className="flex gap-6 justify-between items-center px-4 py-3 mx-auto w-full lg:px-24">
 				{/* Left side - Logo and Navigation */}
 				<div className="flex items-center space-x-4">
 					<Link href="/" className="flex items-center space-x-3 text-xl font-bold group">
@@ -252,19 +251,19 @@ const ShortsHeader = ({ searchQuery, setSearchQuery, filter, setFilter, categori
 					</Link>
 
 					{/* Navigation Divider */}
-					<div className="hidden sm:block w-px h-6 bg-border/50"></div>
+					<div className="hidden w-px h-6 sm:block bg-border/50"></div>
 
 					{/* Back and Home buttons */}
 					<div className="flex items-center space-x-2">
 						<Link href="/" passHref>
 							<Button variant="ghost" size="sm" className="text-sm font-medium transition-colors hover:text-primary">
-								<ArrowLeft className="w-4 h-4 mr-1" />
+								<ArrowLeft className="mr-1 w-4 h-4" />
 								<span className="hidden sm:inline">Back</span>
 							</Button>
 						</Link>
 						<Link href="/" passHref>
 							<Button variant="ghost" size="sm" className="text-sm font-medium transition-colors hover:text-primary">
-								<Home className="w-4 h-4 mr-1" />
+								<Home className="mr-1 w-4 h-4" />
 								<span className="hidden sm:inline">Home</span>
 							</Button>
 						</Link>
@@ -272,18 +271,18 @@ const ShortsHeader = ({ searchQuery, setSearchQuery, filter, setFilter, categori
 				</div>
 
 				{/* Center - Search and Filter */}
-				<div className="flex-1 flex items-center justify-center space-x-4 max-w-md mx-4">
+				<div className="flex flex-1 justify-center items-center mx-4 space-x-4 max-w-md">
 					{/* Search Input */}
-					<div className="relative flex items-center w-full max-w-xs">
+					<div className="flex relative items-center w-full max-w-xs">
 						<Search className="absolute left-3 w-4 h-4 text-muted-foreground" />
-						<input type="text" placeholder="Search businesses..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full pl-10 pr-4 py-2 text-sm bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent" />
+						<input type="text" placeholder="Search businesses..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="py-2 pr-4 pl-10 w-full text-sm rounded-md border bg-background border-input focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent" />
 					</div>
 
 					{/* Filter Dropdown */}
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<Button variant="outline" size="sm" className="text-sm font-medium transition-colors hover:text-primary">
-								<Filter className="w-4 h-4 mr-2" />
+								<Filter className="mr-2 w-4 h-4" />
 								<span className="hidden sm:inline">{filter === "all" ? "All Categories" : filter.charAt(0).toUpperCase() + filter.slice(1)}</span>
 							</Button>
 						</DropdownMenuTrigger>
@@ -302,14 +301,14 @@ const ShortsHeader = ({ searchQuery, setSearchQuery, filter, setFilter, categori
 					{/* Mobile Menu Button */}
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
-							<Button variant="ghost" size="sm" className="md:hidden p-2">
+							<Button variant="ghost" size="sm" className="p-2 md:hidden">
 								<Menu className="w-5 h-5" />
 							</Button>
 						</DropdownMenuTrigger>
 						<DropdownMenuContent className="w-56 z-[80] bg-card/95 backdrop-blur-md border border-border/50">
 							<DropdownMenuItem asChild>
 								<Link href="/" className="flex items-center">
-									<ArrowLeft className="w-4 h-4 mr-2" />
+									<ArrowLeft className="mr-2 w-4 h-4" />
 									Back to Main Site
 								</Link>
 							</DropdownMenuItem>
@@ -320,7 +319,7 @@ const ShortsHeader = ({ searchQuery, setSearchQuery, filter, setFilter, categori
 							</DropdownMenuItem>
 							<DropdownMenuItem asChild>
 								<Link href="/search" className="flex items-center">
-									<Search className="w-4 h-4 mr-2" />
+									<Search className="mr-2 w-4 h-4" />
 									Search
 								</Link>
 							</DropdownMenuItem>
@@ -328,7 +327,7 @@ const ShortsHeader = ({ searchQuery, setSearchQuery, filter, setFilter, categori
 					</DropdownMenu>
 
 					{/* Trending Badge */}
-					<div className="hidden sm:flex items-center space-x-1 px-2 py-1 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs rounded-full">
+					<div className="hidden items-center px-2 py-1 space-x-1 text-xs text-white bg-gradient-to-r from-red-500 to-pink-500 rounded-full sm:flex">
 						<TrendingIcon className="w-3 h-3" />
 						<span>Trending</span>
 					</div>
@@ -338,164 +337,159 @@ const ShortsHeader = ({ searchQuery, setSearchQuery, filter, setFilter, categori
 	);
 };
 
-// Sidebar for navigation and discovery
-const ShortsSidebar = () => {
-	const sidebarLinks = [
-		{ name: "For You", icon: <Home className="w-6 h-6" />, href: "/shorts" },
-		{ name: "Following", icon: <TrendingUp className="w-6 h-6" />, href: "#" },
-		{ name: "Trending", icon: <TrendingIcon className="w-6 h-6" />, href: "#" },
-		{ name: "Explore", icon: <Search className="w-6 h-6" />, href: "#" },
-		{ name: "Go back home", icon: <ArrowLeft className="w-6 h-6" />, href: "/" },
-	];
-
-	return (
-		<aside className="w-64 bg-card p-4 border-r border-border/50 hidden lg:flex flex-col justify-between">
-			<div>
-				<h2 className="text-lg font-semibold mb-4">Discover</h2>
-				<ul className="space-y-2">
-					{sidebarLinks.map((link) => (
-						<li key={link.name}>
-							<Link href={link.href} className="flex items-center space-x-3 text-lg p-2 rounded-md hover:bg-muted/50 transition-colors">
-								{link.icon}
-								<span>{link.name}</span>
-							</Link>
-						</li>
-					))}
-				</ul>
-			</div>
-			<div>
-				<Button className="w-full">Upload Video</Button>
-			</div>
-		</aside>
-	);
-};
-
 const ShortsPage = () => {
-	const [videos, setVideos] = useState(businessVideos);
 	const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
-	const [searchQuery, setSearchQuery] = useState("");
+	const [mute, setMute] = useState(true);
 	const [filter, setFilter] = useState("all");
-	const containerRef = useRef(null);
+	const [searchQuery, setSearchQuery] = useState("");
+	const [showUploadModal, setShowUploadModal] = useState(false);
 	const [isMobile, setIsMobile] = useState(false);
+	const containerRef = useRef(null);
+	const scrollContainerRef = useRef(null);
 
+	// Check if mobile
 	useEffect(() => {
 		const checkMobile = () => {
-			setIsMobile(window.innerWidth < 1024);
+			setIsMobile(window.innerWidth < 768);
 		};
 		checkMobile();
 		window.addEventListener("resize", checkMobile);
-		return () => {
-			window.removeEventListener("resize", checkMobile);
-		};
+		return () => window.removeEventListener("resize", checkMobile);
 	}, []);
 
+	// Filter videos based on search and category
+	const filteredVideos = businessVideos.filter((video) => {
+		const matchesSearch = video.title.toLowerCase().includes(searchQuery.toLowerCase()) || video.author.toLowerCase().includes(searchQuery.toLowerCase()) || video.description.toLowerCase().includes(searchQuery.toLowerCase());
+		const matchesFilter = filter === "all" || video.businessCategory.toLowerCase() === filter;
+		return matchesSearch && matchesFilter;
+	});
+
 	const scrollToVideo = (index) => {
-		if (containerRef.current) {
-			const videoElement = containerRef.current.children[index];
-			if (videoElement) {
-				videoElement.scrollIntoView({ behavior: "smooth", block: "start" });
-			}
+		if (scrollContainerRef.current) {
+			const videoHeight = scrollContainerRef.current.clientHeight;
+			scrollContainerRef.current.scrollTo({
+				top: index * videoHeight,
+				behavior: "smooth",
+			});
 		}
+		setCurrentVideoIndex(index);
 	};
 
 	const handleScroll = (direction) => {
-		const nextIndex = direction === "up" ? Math.max(0, currentVideoIndex - 1) : Math.min(videos.length - 1, currentVideoIndex + 1);
-		setCurrentVideoIndex(nextIndex);
-		scrollToVideo(nextIndex);
+		const newIndex = direction === "up" ? currentVideoIndex - 1 : currentVideoIndex + 1;
+		if (newIndex >= 0 && newIndex < filteredVideos.length) {
+			scrollToVideo(newIndex);
+		}
 	};
+
+	// Handle scroll events for snap behavior
+	useEffect(() => {
+		const handleScroll = () => {
+			if (scrollContainerRef.current) {
+				const scrollTop = scrollContainerRef.current.scrollTop;
+				const videoHeight = scrollContainerRef.current.clientHeight;
+				const newIndex = Math.round(scrollTop / videoHeight);
+				if (newIndex !== currentVideoIndex && newIndex >= 0 && newIndex < filteredVideos.length) {
+					setCurrentVideoIndex(newIndex);
+				}
+			}
+		};
+
+		const container = scrollContainerRef.current;
+		if (container) {
+			container.addEventListener("scroll", handleScroll);
+			return () => container.removeEventListener("scroll", handleScroll);
+		}
+	}, [currentVideoIndex, filteredVideos.length]);
 
 	useEffect(() => {
-		const handleScroll = (e) => {
-			const { scrollTop, clientHeight, scrollHeight } = document.documentElement;
-			const videoHeight = clientHeight;
-			const currentIndex = Math.round(scrollTop / videoHeight);
-			if (currentIndex !== currentVideoIndex) {
-				setCurrentVideoIndex(currentIndex);
-			}
-		};
-
 		const handleKeyPress = (e) => {
-			if (e.key === "ArrowDown") {
-				handleScroll("down");
-			} else if (e.key === "ArrowUp") {
+			if (e.key === "ArrowUp") {
 				handleScroll("up");
+			} else if (e.key === "ArrowDown") {
+				handleScroll("down");
+			} else if (e.key === " ") {
+				e.preventDefault();
+				setMute(!mute);
 			}
 		};
 
-		window.addEventListener("scroll", handleScroll);
 		window.addEventListener("keydown", handleKeyPress);
-
-		return () => {
-			window.removeEventListener("scroll", handleScroll);
-			window.removeEventListener("keydown", handleKeyPress);
-		};
-	}, [currentVideoIndex]);
-
-	const handleUploadVideo = () => {
-		alert("Feature coming soon!");
-	};
+		return () => window.removeEventListener("keydown", handleKeyPress);
+	}, [currentVideoIndex, mute]);
 
 	const categories = ["all", "plumbing", "restaurant", "automotive", "beauty", "real estate", "landscaping", "electrical", "cleaning", "hvac"];
 
-	const jsonLd = {
-		"@context": "https://schema.org",
-		"@type": "WebPage",
-		name: "Thorbis Business Shorts",
-		description: "Short-form videos from local businesses. See behind the scenes, get tips, and discover new services.",
-		mainEntity: {
-			"@type": "ItemList",
-			name: "Business Shorts",
-			itemListElement: videos.map((video, index) => ({
-				"@type": "ListItem",
-				position: index + 1,
-				item: {
-					"@type": "VideoObject",
-					name: video.title,
-					description: video.description,
-					thumbnailUrl: video.thumbnailUrl,
-					uploadDate: video.uploadTime,
-					duration: video.duration,
-					contentUrl: video.videoUrl,
-					author: {
-						"@type": "Organization",
-						name: video.author,
-					},
-					interactionStatistic: {
-						"@type": "InteractionCounter",
-						interactionType: "https://schema.org/WatchAction",
-						userInteractionCount: parseInt(video.views.replace("K", "000")),
-					},
-				},
-			})),
-		},
+	const handleUploadVideo = () => {
+		setShowUploadModal(true);
+		console.log("Open video upload modal");
 	};
 
 	return (
-		<div className="flex h-screen bg-black text-white">
-			<Head>
-				<title>Thorbis Business Shorts</title>
-				<meta name="description" content="Short-form videos from local businesses. See behind the scenes, get tips, and discover new services." />
-				<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-			</Head>
-			<ShortsSidebar />
-			<main className="flex-1 relative">
-				<ShortsHeader searchQuery={searchQuery} setSearchQuery={setSearchQuery} filter={filter} setFilter={setFilter} categories={categories} />
-				<div className="absolute top-0 right-4 lg:right-10 z-50 flex flex-col gap-4 h-full justify-center">
-					<Button variant="ghost" size="icon" onClick={() => handleScroll("up")} className="text-white bg-black/30 hover:bg-black/50">
-						<ChevronUp className="w-6 h-6" />
-					</Button>
-					<Button variant="ghost" size="icon" onClick={() => handleScroll("down")} className="text-white bg-black/30 hover:bg-black/50">
-						<ChevronDown className="w-6 h-6" />
-					</Button>
-				</div>
-				<div ref={containerRef} className="h-screen w-full snap-y snap-mandatory overflow-y-scroll overflow-x-hidden scrollbar-hide">
-					{videos.map((video, index) => (
-						<div key={video.id} className="h-screen w-full snap-start flex items-center justify-center">
-							<VideoComponent video={video} isActive={index === currentVideoIndex} />
+		<div className="flex flex-col h-screen bg-background">
+			{/* Custom Shorts Header */}
+			<ShortsHeader searchQuery={searchQuery} setSearchQuery={setSearchQuery} filter={filter} setFilter={setFilter} categories={categories} />
+
+			{/* Video Container - Account for header height */}
+			<div className="overflow-hidden relative flex-1" ref={containerRef} style={{ height: "calc(100vh - 80px)" }}>
+				{filteredVideos.length > 0 ? (
+					<div ref={scrollContainerRef} className="overflow-y-auto h-full snap-y snap-mandatory scroll-smooth scrollbar-hidden">
+						{filteredVideos.map((video, index) => (
+							<div key={video.id} className="flex justify-center items-center h-full snap-start" style={{ minHeight: "calc(100vh - 80px)" }}>
+								<div className={`${isMobile ? "w-full h-full" : "mx-auto w-full max-w-md h-full"}`}>
+									<VideoComponent video={video} mute={mute} setMute={setMute} isPlaying={index === currentVideoIndex} onNext={() => handleScroll("down")} onPrevious={() => handleScroll("up")} />
+								</div>
+							</div>
+						))}
+					</div>
+				) : (
+					<div className="flex justify-center items-center h-full text-foreground">
+						<p>No videos found matching your criteria.</p>
+					</div>
+				)}
+
+				{/* Navigation Buttons - Only show on desktop */}
+				{!isMobile && (
+					<>
+						{currentVideoIndex > 0 && (
+							<button onClick={() => handleScroll("up")} className="absolute left-4 top-1/2 z-10 p-2 rounded-full border backdrop-blur-sm transition-all transform -translate-y-1/2 bg-background/80 text-foreground hover:bg-background/90 border-border/50">
+								<ChevronUp className="w-6 h-6" />
+							</button>
+						)}
+						{currentVideoIndex < filteredVideos.length - 1 && (
+							<button onClick={() => handleScroll("down")} className="absolute right-4 top-1/2 z-10 p-2 rounded-full border backdrop-blur-sm transition-all transform -translate-y-1/2 bg-background/80 text-foreground hover:bg-background/90 border-border/50">
+								<ChevronDown className="w-6 h-6" />
+							</button>
+						)}
+					</>
+				)}
+			</div>
+
+			{/* Video Counter */}
+			<div className="absolute bottom-4 left-4 z-20 px-2 py-1 text-sm rounded border backdrop-blur-sm text-foreground bg-background/80 border-border/50">
+				{currentVideoIndex + 1} / {filteredVideos.length}
+			</div>
+
+			{/* Floating Action Button for Business Upload */}
+			<button onClick={handleUploadVideo} className="flex fixed right-6 bottom-6 z-50 justify-center items-center w-14 h-14 rounded-full shadow-lg transition-all bg-primary text-primary-foreground hover:bg-primary/90 fab-upload" title="Upload Business Video">
+				<Plus className="w-6 h-6" />
+			</button>
+
+			{/* Business Upload Modal */}
+			{showUploadModal && (
+				<div className="flex fixed inset-0 z-50 justify-center items-center backdrop-blur-sm bg-background/80">
+					<div className="p-6 mx-4 w-full max-w-md rounded-lg border bg-card border-border/50">
+						<h3 className="mb-4 text-xl font-bold text-foreground">Upload Business Video</h3>
+						<p className="mb-4 text-muted-foreground">Share your business story, tips, or behind-the-scenes content with your local community!</p>
+						<div className="space-y-4">
+							<Button className="w-full">Select Video File</Button>
+							<Button variant="outline" onClick={() => setShowUploadModal(false)} className="w-full">
+								Cancel
+							</Button>
 						</div>
-					))}
+					</div>
 				</div>
-			</main>
+			)}
 		</div>
 	);
 };

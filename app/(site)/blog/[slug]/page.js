@@ -15,18 +15,6 @@ const allPosts = [
 		authorImage: "https://www.gravatar.com/avatar/be85a3bc61ad70c85c9b3411dc07cb2d?s=250&r=x&d=mp",
 		date: "2023-06-23",
 		tags: ["Tailwind CSS", "Flowbite", "Figma"],
-		content: `
-      <p class="lead">Flowbite is an open-source library of UI components built with the utility-first classes from Tailwind CSS. It also includes interactive elements such as dropdowns, modals, datepickers.</p>
-      <p>Before going digital, you might benefit from scribbling down some ideas in a sketchbook. This way, you can think things through before committing to an actual design project.</p>
-      <p>But then I found a <a href="https://flowbite.com">component library based on Tailwind CSS called Flowbite</a>. It comes with the most commonly used UI components, such as buttons, navigation bars, cards, form elements, and more which are conveniently built with the utility classes from Tailwind CSS.</p>
-      <figure>
-          <img src="https://flowbite.s3.amazonaws.com/typography-plugin/typography-image-1.png" alt="Digital art" class="w-full rounded-lg">
-          <figcaption class="text-center text-muted-foreground">Digital art by Anonymous</figcaption>
-      </figure>
-      <h2>Getting started with Flowbite</h2>
-      <p>First of all you need to understand how Flowbite works. This library is not another framework. Rather, it is a set of components based on Tailwind CSS that you can just copy-paste from the documentation.</p>
-      <p>It also includes a JavaScript file that enables interactive components, such as modals, dropdowns, and datepickers which you can optionally include into your project via CDN or NPM.</p>
-    `,
 	},
 	{
 		slug: "state-of-flowbite-2022",
@@ -36,44 +24,9 @@ const allPosts = [
 		authorImage: "https://www.gravatar.com/avatar/be85a3bc61ad70c85c9b3411dc07cb2d?s=250&r=x&d=mp",
 		date: "2022-02-22",
 		tags: ["Flowbite"],
-		content: `
-      <p class="lead">This is a placeholder for the actual content of the "State of Flowbite 2022" post. Replace it with the real article content.</p>
-      <p>This post would detail the progress and future plans for Flowbite.</p>
-    `,
 	},
 	// ... other posts
 ];
-
-export async function generateMetadata({ params }) {
-	const post = allPosts.find((p) => p.slug === params.slug);
-	if (!post) {
-		return {};
-	}
-	return {
-		title: `${post.title} | Thorbis Blog`,
-		description: post.description,
-		keywords: post.tags,
-		openGraph: {
-			title: `${post.title} | Thorbis Blog`,
-			description: post.description,
-			url: `https://local.byronwade.com/blog/${post.slug}`,
-			type: "article",
-			article: {
-				publishedTime: new Date(post.date).toISOString(),
-				authors: [post.author],
-				tags: post.tags,
-			},
-			images: [
-				{
-					url: `https://flowbite.s3.amazonaws.com/typography-plugin/typography-image-1.png`, // Placeholder, should be dynamic
-					width: 1200,
-					height: 630,
-					alt: post.title,
-				},
-			],
-		},
-	};
-}
 
 const PostPage = ({ params }) => {
 	const post = allPosts.find((p) => p.slug === params.slug);
@@ -84,34 +37,8 @@ const PostPage = ({ params }) => {
 
 	const relatedArticles = allPosts.filter((p) => p.slug !== params.slug).slice(0, 4);
 
-	const jsonLd = {
-		"@context": "https://schema.org",
-		"@type": "BlogPosting",
-		headline: post.title,
-		description: post.description,
-		image: `https://flowbite.s3.amazonaws.com/typography-plugin/typography-image-1.png`, // Placeholder
-		author: {
-			"@type": "Person",
-			name: post.author,
-		},
-		publisher: {
-			"@type": "Organization",
-			name: "Thorbis",
-			logo: {
-				"@type": "ImageObject",
-				url: "https://local.byronwade.com/logo.png", // Placeholder
-			},
-		},
-		datePublished: new Date(post.date).toISOString(),
-		mainEntityOfPage: {
-			"@type": "WebPage",
-			"@id": `https://local.byronwade.com/blog/${post.slug}`,
-		},
-	};
-
 	return (
 		<>
-			<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 			<main className="pt-8 pb-16 lg:pt-16 lg:pb-24">
 				<div className="flex justify-center max-w-screen-xl px-4 mx-auto">
 					<article className="w-full max-w-2xl format format-sm sm:format-base lg:format-lg format-blue dark:format-invert">
@@ -142,7 +69,20 @@ const PostPage = ({ params }) => {
 							<h1 className="mb-4 text-3xl font-extrabold leading-tight lg:mb-6 lg:text-4xl">{post.title}</h1>
 						</header>
 
-						<div className="space-y-4" dangerouslySetInnerHTML={{ __html: post.content }} />
+						<div className="space-y-4">
+							<p className="lead">Flowbite is an open-source library of UI components built with the utility-first classes from Tailwind CSS. It also includes interactive elements such as dropdowns, modals, datepickers.</p>
+							<p>Before going digital, you might benefit from scribbling down some ideas in a sketchbook. This way, you can think things through before committing to an actual design project.</p>
+							<p>
+								But then I found a <a href="https://flowbite.com">component library based on Tailwind CSS called Flowbite</a>. It comes with the most commonly used UI components, such as buttons, navigation bars, cards, form elements, and more which are conveniently built with the utility classes from Tailwind CSS.
+							</p>
+							<figure>
+								<img src="https://flowbite.s3.amazonaws.com/typography-plugin/typography-image-1.png" alt="Digital art" className="w-full rounded-lg" />
+								<figcaption className="text-center text-muted-foreground">Digital art by Anonymous</figcaption>
+							</figure>
+							<h2>Getting started with Flowbite</h2>
+							<p>First of all you need to understand how Flowbite works. This library is not another framework. Rather, it is a set of components based on Tailwind CSS that you can just copy-paste from the documentation.</p>
+							<p>It also includes a JavaScript file that enables interactive components, such as modals, dropdowns, and datepickers which you can optionally include into your project via CDN or NPM.</p>
+						</div>
 					</article>
 				</div>
 			</main>

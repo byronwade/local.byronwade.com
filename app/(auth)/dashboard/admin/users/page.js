@@ -1,3 +1,8 @@
+export const metadata = {
+	title: "User Management - Admin Dashboard - Thorbis",
+	description: "Manage all registered users, view user statistics and handle user account administration.",
+};
+
 import React from "react";
 
 export default function Users() {

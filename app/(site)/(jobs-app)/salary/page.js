@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Head from "next/head";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -17,46 +16,8 @@ const mockSalaries = [
 ];
 
 export default function SalaryGuidePage() {
-	const jsonLd = {
-		"@context": "https://schema.org",
-		"@type": "WebPage",
-		name: "Salary Guide",
-		description: "Explore salaries for different roles and locations.",
-		url: "https://local.byronwade.com/salary",
-		mainEntity: {
-			"@type": "ItemList",
-			name: "Average Salary in Springfield, IL",
-			itemListElement: mockSalaries.map((salary, index) => ({
-				"@type": "ListItem",
-				position: index + 1,
-				item: {
-					"@type": "Occupation",
-					name: salary.title,
-					estimatedSalary: {
-						"@type": "MonetaryAmountDistribution",
-						name: "Average Salary",
-						currency: "USD",
-						duration: "P1Y",
-						percentile10: salary.range.split(" - ")[0].replace(/[^0-9]/g, ""),
-						percentile90: salary.range.split(" - ")[1].replace(/[^0-9]/g, ""),
-						median: salary.average.replace(/[^0-9]/g, ""),
-					},
-					occupationLocation: {
-						"@type": "City",
-						name: "Springfield, IL",
-					},
-				},
-			})),
-		},
-	};
-
 	return (
 		<div className="space-y-8">
-			<Head>
-				<title>Salary Guide</title>
-				<meta name="description" content="Explore salaries for different roles and locations." />
-				<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-			</Head>
 			<Card className="text-center p-8 bg-card/80">
 				<CardHeader>
 					<CardTitle className="text-3xl">Find a career you&apos;ll love</CardTitle>

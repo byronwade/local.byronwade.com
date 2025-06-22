@@ -1,6 +1,6 @@
 "use client";
 // pages/business-account.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
 	ArrowUpRight,
@@ -130,6 +130,10 @@ const recentSales = [
 
 export default function BusinessDashboard() {
 	const [showAllUpdates, setShowAllUpdates] = useState(false);
+
+	useEffect(() => {
+		document.title = "Business Dashboard - Thorbis";
+	}, []);
 
 	// Business Stats
 	const businessStats = [
@@ -361,15 +365,15 @@ export default function BusinessDashboard() {
 	};
 
 	return (
-		<div className="w-full px-4 lg:px-24 py-16 space-y-8">
+		<div className="px-4 py-16 space-y-8 w-full lg:px-24">
 			{/* Welcome Header */}
-			<div className="flex items-center justify-between">
+			<div className="flex justify-between items-center">
 				<div>
 					<h1 className="text-3xl font-bold">Welcome back, Wade&apos;s Plumbing!</h1>
 					<p className="text-muted-foreground">Here&apos;s what&apos;s happening with your business today.</p>
 				</div>
 				<Button variant="outline" size="sm">
-					<RefreshCw className="w-4 h-4 mr-2" />
+					<RefreshCw className="mr-2 w-4 h-4" />
 					Refresh
 				</Button>
 			</div>
@@ -378,7 +382,7 @@ export default function BusinessDashboard() {
 			<div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
 				{businessStats.map((stat, index) => (
 					<Card key={index}>
-						<CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+						<CardHeader className="flex flex-row justify-between items-center pb-2 space-y-0">
 							<CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
 							<stat.icon className="w-4 h-4 text-muted-foreground" />
 						</CardHeader>
@@ -395,7 +399,7 @@ export default function BusinessDashboard() {
 
 			<div className="grid gap-6 lg:grid-cols-3">
 				{/* Recent Activity */}
-				<div className="lg:col-span-2 space-y-6">
+				<div className="space-y-6 lg:col-span-2">
 					<Card>
 						<CardHeader>
 							<CardTitle className="flex items-center space-x-2">
@@ -406,19 +410,19 @@ export default function BusinessDashboard() {
 						</CardHeader>
 						<CardContent className="space-y-4">
 							{recentActivity.map((activity) => (
-								<div key={activity.id} className="flex items-start space-x-4 p-3 rounded-lg hover:bg-muted/50 transition-colors">
+								<div key={activity.id} className="flex items-start p-3 space-x-4 rounded-lg transition-colors hover:bg-muted/50">
 									<div className={`p-2 rounded-lg bg-muted ${activity.iconColor}`}>
 										<activity.icon className="w-4 h-4" />
 									</div>
 									<div className="flex-1 min-w-0">
-										<div className="flex items-center justify-between">
+										<div className="flex justify-between items-center">
 											<h4 className="text-sm font-medium">{activity.title}</h4>
 											<span className="text-xs text-muted-foreground">{activity.time}</span>
 										</div>
-										<p className="text-sm text-muted-foreground mt-1">{activity.description}</p>
-										<Button variant="link" size="sm" className="p-0 h-auto text-xs mt-2">
+										<p className="mt-1 text-sm text-muted-foreground">{activity.description}</p>
+										<Button variant="link" size="sm" className="p-0 mt-2 h-auto text-xs">
 											{activity.action}
-											<ChevronRight className="w-3 h-3 ml-1" />
+											<ChevronRight className="ml-1 w-3 h-3" />
 										</Button>
 									</div>
 								</div>
@@ -441,18 +445,18 @@ export default function BusinessDashboard() {
 						<CardContent>
 							<div className="space-y-4">
 								{(showAllUpdates ? systemUpdates : systemUpdates.slice(0, 3)).map((update) => (
-									<div key={update.id} className="flex items-start space-x-4 p-3 rounded-lg border">
+									<div key={update.id} className="flex items-start p-3 space-x-4 rounded-lg border">
 										<div className={`p-2 rounded-lg bg-muted ${update.iconColor}`}>
 											<update.icon className="w-4 h-4" />
 										</div>
 										<div className="flex-1 min-w-0">
-											<div className="flex items-center space-x-2 mb-1">
+											<div className="flex items-center mb-1 space-x-2">
 												<h4 className="text-sm font-medium">{update.title}</h4>
 												<Badge variant="outline" className="text-xs">
 													{update.badge}
 												</Badge>
 											</div>
-											<p className="text-sm text-muted-foreground mb-2">{update.description}</p>
+											<p className="mb-2 text-sm text-muted-foreground">{update.description}</p>
 											<div className="flex items-center space-x-4 text-xs text-muted-foreground">
 												<span>{update.date}</span>
 												<span>•</span>
@@ -485,15 +489,15 @@ export default function BusinessDashboard() {
 						<CardContent className="grid gap-3">
 							{quickActions.map((action, index) => (
 								<Link key={index} href={action.link}>
-									<Button variant="outline" className="w-full justify-start h-auto p-4 hover:shadow-md transition-all duration-200">
+									<Button variant="outline" className="justify-start p-4 w-full h-auto transition-all duration-200 hover:shadow-md">
 										<div className={`p-2 rounded-lg mr-4 ${action.color} text-white shadow-sm`}>
 											<action.icon className="w-5 h-5" />
 										</div>
-										<div className="text-left flex-1">
-											<div className="font-semibold text-sm">{action.title}</div>
-											<div className="text-xs text-muted-foreground mt-1">{action.description}</div>
+										<div className="flex-1 text-left">
+											<div className="text-sm font-semibold">{action.title}</div>
+											<div className="mt-1 text-xs text-muted-foreground">{action.description}</div>
 										</div>
-										<ChevronRight className="w-4 h-4 text-muted-foreground ml-2" />
+										<ChevronRight className="ml-2 w-4 h-4 text-muted-foreground" />
 									</Button>
 								</Link>
 							))}
@@ -512,12 +516,12 @@ export default function BusinessDashboard() {
 						<CardContent className="space-y-4">
 							{recentReviews.map((review) => (
 								<div key={review.id} className="space-y-2">
-									<div className="flex items-center justify-between">
+									<div className="flex justify-between items-center">
 										<div className="flex items-center space-x-2">
 											<span className="text-sm font-medium">{review.customer}</span>
 											{review.verified && (
 												<Badge variant="outline" className="text-xs">
-													<CheckCircle className="w-3 h-3 mr-1" />
+													<CheckCircle className="mr-1 w-3 h-3" />
 													Verified
 												</Badge>
 											)}
@@ -531,7 +535,7 @@ export default function BusinessDashboard() {
 							<Button variant="outline" size="sm" className="w-full" asChild>
 								<Link href="/dashboard/business/reviews">
 									View All Reviews
-									<ChevronRight className="w-4 h-4 ml-2" />
+									<ChevronRight className="ml-2 w-4 h-4" />
 								</Link>
 							</Button>
 						</CardContent>
@@ -545,21 +549,21 @@ export default function BusinessDashboard() {
 						</CardHeader>
 						<CardContent className="space-y-4">
 							<div className="space-y-2">
-								<div className="flex items-center justify-between text-sm">
+								<div className="flex justify-between items-center text-sm">
 									<span>Profile Completion</span>
 									<span className="font-medium">85%</span>
 								</div>
 								<Progress value={85} className="h-2" />
 							</div>
 							<div className="space-y-2">
-								<div className="flex items-center justify-between text-sm">
+								<div className="flex justify-between items-center text-sm">
 									<span>Response Rate</span>
 									<span className="font-medium">92%</span>
 								</div>
 								<Progress value={92} className="h-2" />
 							</div>
 							<div className="space-y-2">
-								<div className="flex items-center justify-between text-sm">
+								<div className="flex justify-between items-center text-sm">
 									<span>Customer Satisfaction</span>
 									<span className="font-medium">4.8/5</span>
 								</div>

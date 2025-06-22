@@ -86,6 +86,10 @@ export default function ManageCompanies() {
 	const [companies, setCompanies] = useState(mockCompanies);
 	const [searchTerm, setSearchTerm] = useState("");
 	const [filterStatus, setFilterStatus] = useState("all");
+
+	React.useEffect(() => {
+		document.title = "Manage Businesses - Business Dashboard - Thorbis";
+	}, []);
 	const [sortBy, setSortBy] = useState("name");
 	const [sortOrder, setSortOrder] = useState("asc");
 

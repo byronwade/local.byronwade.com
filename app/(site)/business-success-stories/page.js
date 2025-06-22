@@ -1,98 +1,164 @@
+export const metadata = {
+	title: "Business Success Stories - Inspiring Journeys & Case Studies | Thorbis",
+	description: "Read inspiring business success stories and case studies from Thorbis partners. Learn how businesses grew their customer base, improved operations, and achieved success.",
+	keywords: ["business success stories", "case studies", "business growth", "success testimonials", "business inspiration", "customer stories"],
+	openGraph: {
+		title: "Business Success Stories - Inspiring Journeys & Case Studies | Thorbis",
+		description: "Read inspiring business success stories and case studies from Thorbis partners. Learn how businesses grew their customer base, improved operations, and achieved success.",
+		url: "https://local.byronwade.com/business-success-stories",
+		siteName: "Thorbis",
+		images: [
+			{
+				url: "https://local.byronwade.com/og-success-stories.jpg",
+				width: 1200,
+				height: 630,
+				alt: "Business Success Stories on Thorbis",
+			},
+		],
+		locale: "en_US",
+		type: "website",
+	},
+	twitter: {
+		card: "summary_large_image",
+		title: "Business Success Stories - Thorbis",
+		description: "Read inspiring business success stories and learn from proven growth strategies.",
+		images: ["https://local.byronwade.com/og-success-stories.jpg"],
+	},
+	alternates: {
+		canonical: "https://local.byronwade.com/business-success-stories",
+	},
+};
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { ArrowUpRight, Star, TrendingUp, Users } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-export const metadata = {
-	title: "Business Success Stories",
-	description: "See how businesses like yours are thriving with our platform.",
-};
-
 const successStories = [
 	{
-		company: "Springfield Bakery",
-		owner: "Jane Doe",
-		quote: "Claiming our Thorbis page was a game-changer. We saw a 30% increase in customer calls within the first month and our online visibility has never been better.",
-		image: "https://images.unsplash.com/photo-1598373182133-52452f7691ef?q=80&w=2070&auto=format&fit=crop",
-		link: "#",
+		businessName: "Wade's Plumbing & Septic",
+		category: "Home Services",
+		location: "Springfield, IL",
+		image: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&h=300&fit=crop",
+		results: {
+			customerIncrease: "300%",
+			revenueGrowth: "250%",
+			reviewScore: "4.9",
+		},
+		story: "Transformed from a small local plumbing service to the region's most trusted plumbing company through strategic online presence and exceptional customer service.",
+		link: "/case-studies/wades-plumbing-and-septic",
 	},
-	{
-		company: "Innovate Auto Repair",
-		owner: "John Smith",
-		quote: "The advertising tools are incredibly effective. We can target local customers who need our services, and the ROI has been fantastic.",
-		image: "https://images.unsplash.com/photo-1548695604-94ab04a5441a?q=80&w=1974&auto=format&fit=crop",
-		link: "#",
-	},
+	// Add more success stories as needed
 ];
 
 export default function BusinessSuccessStoriesPage() {
 	const jsonLd = {
 		"@context": "https://schema.org",
 		"@type": "WebPage",
-		name: metadata.title,
-		description: metadata.description,
+		name: "Business Success Stories",
+		description: "Inspiring business success stories and case studies from Thorbis partners",
 		url: "https://local.byronwade.com/business-success-stories",
-		isPartOf: {
-			"@type": "WebSite",
-			name: "Inbox Zero",
-			url: "https://local.byronwade.com",
-		},
 		mainEntity: {
 			"@type": "ItemList",
-			name: "Success Stories",
+			name: "Business Success Stories",
 			itemListElement: successStories.map((story, index) => ({
 				"@type": "ListItem",
 				position: index + 1,
 				item: {
 					"@type": "Article",
-					headline: story.company,
+					headline: `${story.businessName} Success Story`,
+					description: story.story,
 					author: {
-						"@type": "Person",
-						name: story.owner,
-					},
-					publisher: {
 						"@type": "Organization",
-						name: "Inbox Zero",
+						name: "Thorbis",
 					},
-					description: story.quote,
-					image: story.image,
-					url: `https://local.byronwade.com/business-success-stories${story.link}`,
+					about: {
+						"@type": "LocalBusiness",
+						name: story.businessName,
+						address: story.location,
+					},
 				},
 			})),
 		},
+		breadcrumb: {
+			"@type": "BreadcrumbList",
+			itemListElement: [
+				{
+					"@type": "ListItem",
+					position: 1,
+					item: {
+						"@id": "https://local.byronwade.com",
+						name: "Thorbis",
+					},
+				},
+				{
+					"@type": "ListItem",
+					position: 2,
+					item: {
+						"@id": "https://local.byronwade.com/business-success-stories",
+						name: "Success Stories",
+					},
+				},
+			],
+		},
 	};
+
 	return (
 		<>
 			<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 			<div className="bg-background text-foreground">
 				{/* Hero Section */}
 				<div className="bg-muted">
-					<div className="py-24 px-4 lg:px-24 max-w-5xl mx-auto text-center">
-						<h1 className="text-4xl md:text-6xl font-extrabold tracking-tighter">Success Stories</h1>
-						<p className="mt-4 text-lg md:text-xl max-w-3xl mx-auto text-muted-foreground">See how businesses like yours are thriving with Thorbis.</p>
+					<div className="px-4 py-24 mx-auto max-w-5xl text-center lg:px-24">
+						<h1 className="text-4xl font-extrabold tracking-tighter md:text-6xl">Business Success Stories</h1>
+						<p className="mx-auto mt-4 max-w-3xl text-lg md:text-xl text-muted-foreground">Discover how businesses like yours achieved remarkable growth and success with Thorbis.</p>
 					</div>
 				</div>
 
-				{/* Stories Section */}
-				<div className="py-24 px-4 lg:px-24">
-					<div className="max-w-5xl mx-auto space-y-16">
-						{successStories.map((story, index) => (
-							<Card key={story.company} className="overflow-hidden">
-								<div className={`grid grid-cols-1 md:grid-cols-2 gap-8 items-center ${index % 2 !== 0 ? "md:grid-flow-col-dense" : ""}`}>
-									<div className={`relative h-80 ${index % 2 !== 0 ? "md:order-last" : ""}`}>
-										<Image src={story.image} alt={story.company} layout="fill" objectFit="cover" />
+				{/* Success Stories Grid */}
+				<div className="px-4 py-24 lg:px-24">
+					<div className="mx-auto max-w-6xl">
+						<div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+							{successStories.map((story, index) => (
+								<Card key={index} className="transition-shadow hover:shadow-lg">
+									<div className="relative overflow-hidden">
+										<Image src={story.image} alt={story.businessName} width={400} height={300} className="w-full h-48 object-cover" />
 									</div>
-									<div className="p-8">
-										<p className="text-2xl font-serif italic mb-4">&quot;{story.quote}&quot;</p>
-										<p className="font-semibold">
-											{story.owner}, Owner of {story.company}
-										</p>
-										<Link href={story.link} className="text-primary hover:underline mt-4 inline-block">
-											Read the full story
+									<CardHeader>
+										<div className="flex justify-between items-start">
+											<div>
+												<CardTitle className="text-lg">{story.businessName}</CardTitle>
+												<Badge variant="secondary" className="mt-1">
+													{story.category}
+												</Badge>
+											</div>
+											<div className="flex items-center">
+												<Star className="w-4 h-4 text-yellow-500 fill-current" />
+												<span className="ml-1 text-sm">{story.results.reviewScore}</span>
+											</div>
+										</div>
+									</CardHeader>
+									<CardContent>
+										<div className="grid grid-cols-2 gap-4 mb-4">
+											<div className="text-center">
+												<div className="text-lg font-bold text-primary">{story.results.customerIncrease}</div>
+												<div className="text-xs text-muted-foreground">Customer Increase</div>
+											</div>
+											<div className="text-center">
+												<div className="text-lg font-bold text-primary">{story.results.revenueGrowth}</div>
+												<div className="text-xs text-muted-foreground">Revenue Growth</div>
+											</div>
+										</div>
+										<p className="text-sm text-muted-foreground mb-4">{story.story}</p>
+										<Link href={story.link} className="inline-flex items-center text-sm font-medium text-primary hover:underline">
+											Read Full Case Study
+											<ArrowUpRight className="ml-1 w-4 h-4" />
 										</Link>
-									</div>
-								</div>
-							</Card>
-						))}
+									</CardContent>
+								</Card>
+							))}
+						</div>
 					</div>
 				</div>
 			</div>

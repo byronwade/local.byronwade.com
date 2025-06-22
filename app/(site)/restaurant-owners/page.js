@@ -3,11 +3,6 @@ import { UtensilsCrossed, Calendar, Star, BookOpen } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-export const metadata = {
-	title: "Restaurant Owners - Tools for Success",
-	description: "From reservations to reviews, our platform has everything you need to fill your tables and delight your guests.",
-};
-
 const restaurantFeatures = [
 	{
 		icon: <UtensilsCrossed className="w-8 h-8 text-primary" />,
@@ -31,32 +26,78 @@ const restaurantFeatures = [
 	},
 ];
 
+export const metadata = {
+	title: "Restaurant Management Solutions - Tools for Restaurant Owners | Thorbis",
+	description: "Comprehensive management tools for restaurant owners. Handle reservations, online ordering, reviews, staff scheduling, and grow your restaurant business with Thorbis.",
+	keywords: ["restaurant management", "restaurant owners", "restaurant tools", "restaurant software", "restaurant business", "food service management"],
+	openGraph: {
+		title: "Restaurant Management Solutions - Tools for Restaurant Owners | Thorbis",
+		description: "Comprehensive management tools for restaurant owners. Handle reservations, online ordering, reviews, staff scheduling, and grow your restaurant business with Thorbis.",
+		url: "https://local.byronwade.com/restaurant-owners",
+		siteName: "Thorbis",
+		images: [
+			{
+				url: "https://local.byronwade.com/og-restaurant-owners.jpg",
+				width: 1200,
+				height: 630,
+				alt: "Restaurant Management Solutions on Thorbis",
+			},
+		],
+		locale: "en_US",
+		type: "website",
+	},
+	twitter: {
+		card: "summary_large_image",
+		title: "Restaurant Management Solutions - Thorbis",
+		description: "Comprehensive tools to help restaurant owners manage and grow their business.",
+		images: ["https://local.byronwade.com/og-restaurant-owners.jpg"],
+	},
+	alternates: {
+		canonical: "https://local.byronwade.com/restaurant-owners",
+	},
+};
+
 export default function RestaurantOwnersPage() {
 	const jsonLd = {
 		"@context": "https://schema.org",
 		"@type": "WebPage",
-		name: metadata.title,
-		description: metadata.description,
+		name: "Restaurant Management Solutions",
+		description: "Comprehensive management solutions and tools for restaurant owners",
 		url: "https://local.byronwade.com/restaurant-owners",
-		isPartOf: {
-			"@type": "WebSite",
-			name: "Inbox Zero",
-			url: "https://local.byronwade.com",
-		},
 		mainEntity: {
-			"@type": "ItemList",
-			name: "Restaurant Features",
-			itemListElement: restaurantFeatures.map((feature, index) => ({
-				"@type": "ListItem",
-				position: index + 1,
-				item: {
-					"@type": "Service",
-					name: feature.title,
-					description: feature.description,
+			"@type": "Service",
+			name: "Restaurant Management Services",
+			description: "Complete suite of tools for restaurant operations and growth",
+			provider: {
+				"@type": "Organization",
+				name: "Thorbis",
+			},
+			areaServed: "Worldwide",
+			serviceType: "Restaurant Management",
+		},
+		breadcrumb: {
+			"@type": "BreadcrumbList",
+			itemListElement: [
+				{
+					"@type": "ListItem",
+					position: 1,
+					item: {
+						"@id": "https://local.byronwade.com",
+						name: "Thorbis",
+					},
 				},
-			})),
+				{
+					"@type": "ListItem",
+					position: 2,
+					item: {
+						"@id": "https://local.byronwade.com/restaurant-owners",
+						name: "Restaurant Owners",
+					},
+				},
+			],
 		},
 	};
+
 	return (
 		<>
 			<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />

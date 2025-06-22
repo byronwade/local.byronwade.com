@@ -90,6 +90,10 @@ export default function Referral() {
 	const [referralData] = useState(mockReferralData);
 	const [copied, setCopied] = useState(false);
 
+	React.useEffect(() => {
+		document.title = "Referral Program - User Dashboard - Thorbis";
+	}, []);
+
 	const copyToClipboard = async () => {
 		try {
 			await navigator.clipboard.writeText(referralData.referralLink);

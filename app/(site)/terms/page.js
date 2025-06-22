@@ -1,30 +1,85 @@
 export const metadata = {
-	title: "Terms of Service",
-	description: "Read our Terms of Service to understand the rules for using our platform.",
+	title: "Terms of Service - Legal Agreement for Using Thorbis",
+	description: "Read Thorbis's terms of service to understand the legal agreement governing your use of our platform, including user responsibilities and service policies.",
+	keywords: ["terms of service", "user agreement", "legal terms", "service agreement", "platform rules", "user responsibilities"],
+	openGraph: {
+		title: "Terms of Service - Legal Agreement for Using Thorbis",
+		description: "Read Thorbis's terms of service to understand the legal agreement governing your use of our platform, including user responsibilities and service policies.",
+		url: "https://local.byronwade.com/terms",
+		siteName: "Thorbis",
+		images: [
+			{
+				url: "https://local.byronwade.com/og-terms.jpg",
+				width: 1200,
+				height: 630,
+				alt: "Thorbis Terms of Service",
+			},
+		],
+		locale: "en_US",
+		type: "website",
+	},
+	twitter: {
+		card: "summary_large_image",
+		title: "Terms of Service - Thorbis",
+		description: "Legal agreement governing your use of the Thorbis platform.",
+		images: ["https://local.byronwade.com/og-terms.jpg"],
+	},
+	alternates: {
+		canonical: "https://local.byronwade.com/terms",
+	},
 };
 
 export default function TermsPage() {
 	const jsonLd = {
 		"@context": "https://schema.org",
-		"@type": "Article",
-		headline: "Terms of Service",
-		description: "Read our Terms of Service to understand the rules for using our platform.",
-		author: {
-			"@type": "Organization",
-			name: "Inbox Zero",
-		},
-		publisher: {
-			"@type": "Organization",
-			name: "Inbox Zero",
-			logo: {
-				"@type": "ImageObject",
-				url: "https://local.byronwade.com/logo-placeholder.png",
-			},
-		},
+		"@type": "WebPage",
+		name: "Terms of Service",
+		description: "Legal agreement governing your use of Thorbis services",
 		url: "https://local.byronwade.com/terms",
-		datePublished: "2023-10-26",
 		dateModified: "2023-10-26",
+		mainEntity: {
+			"@type": "Article",
+			headline: "Terms of Service",
+			description: "Legal terms and conditions for using Thorbis platform and services",
+			datePublished: "2023-10-26",
+			dateModified: "2023-10-26",
+			author: {
+				"@type": "Organization",
+				name: "Thorbis",
+			},
+			publisher: {
+				"@type": "Organization",
+				name: "Thorbis",
+				logo: {
+					"@type": "ImageObject",
+					url: "https://local.byronwade.com/ThorbisLogo.webp",
+				},
+			},
+			about: ["Legal Agreement", "User Responsibilities", "Service Terms", "Platform Rules", "Account Terms"],
+		},
+		breadcrumb: {
+			"@type": "BreadcrumbList",
+			itemListElement: [
+				{
+					"@type": "ListItem",
+					position: 1,
+					item: {
+						"@id": "https://local.byronwade.com",
+						name: "Thorbis",
+					},
+				},
+				{
+					"@type": "ListItem",
+					position: 2,
+					item: {
+						"@id": "https://local.byronwade.com/terms",
+						name: "Terms of Service",
+					},
+				},
+			],
+		},
 	};
+
 	return (
 		<>
 			<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />

@@ -1,3 +1,8 @@
+export const metadata = {
+	title: "Pro Accounts Management - Admin Dashboard - Thorbis",
+	description: "Manage pro accounts, subscriptions and premium business account administration.",
+};
+
 import React from "react";
 
 export default function ProAccounts() {

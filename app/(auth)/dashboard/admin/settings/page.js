@@ -1,3 +1,8 @@
+export const metadata = {
+	title: "System Settings - Admin Dashboard - Thorbis",
+	description: "Configure application settings, system preferences and administrative controls.",
+};
+
 import React from "react";
 
 export default function Settings() {

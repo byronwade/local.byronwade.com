@@ -1,6 +1,5 @@
 "use client";
-import Head from "next/head";
-import { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { MapPin, Users, Newspaper, Building, Heart, Share2, Plus, Search, Filter, TrendingUp, Star, Camera, MessageCircle, Globe, Home, Store } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -8,6 +7,8 @@ import { Button } from "@components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
 import { Badge } from "@components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
+import { Input } from "@components/ui/input";
+import { ArrowRight, MessageSquare, Calendar, Clock, Award, Shield, Eye, Phone, Mail, Facebook, Twitter, Instagram, Linkedin, Video, Music, Coffee, ShoppingBag, Utensils, Car, Briefcase, GraduationCap, Heart as HeartIcon, Baby, Gamepad2, Dumbbell, Palette, Wrench, Scissors, Stethoscope, Gavel, Plane, TreePine, Mountain, Waves, Sun, Moon, Zap, Target, CheckCircle, Gift, Crown, Sparkles, Flame, ThumbsUp } from "lucide-react";
 
 // Neighborhood data
 const neighborhoodsData = {
@@ -132,26 +133,54 @@ const neighborhoodsData = {
 
 const categories = ["All", "Business", "Community", "Technology", "Lost & Found", "Recommendation"];
 
+// Metadata removed - this is a client component
+
 export default function NeighborhoodsPage() {
 	const jsonLd = {
 		"@context": "https://schema.org",
 		"@type": "WebPage",
-		name: "Neighborhood Hubs",
-		description: "This page is under construction. Check back soon for our new neighborhood hubs feature.",
+		name: "Local Neighborhoods Directory",
+		description: "Comprehensive directory of local neighborhoods and communities",
+		url: "https://local.byronwade.com/neighborhoods",
+		mainEntity: {
+			"@type": "ItemList",
+			name: "Neighborhood Directory",
+			description: "Directory of local neighborhoods with businesses and community information",
+		},
+		breadcrumb: {
+			"@type": "BreadcrumbList",
+			itemListElement: [
+				{
+					"@type": "ListItem",
+					position: 1,
+					item: {
+						"@id": "https://local.byronwade.com",
+						name: "Thorbis",
+					},
+				},
+				{
+					"@type": "ListItem",
+					position: 2,
+					item: {
+						"@id": "https://local.byronwade.com/neighborhoods",
+						name: "Neighborhoods",
+					},
+				},
+			],
+		},
 	};
+
 	return (
-		<div className="bg-background text-foreground">
-			<Head>
-				<title>Neighborhood Hubs | Localbyronwade</title>
-				<meta name="description" content="This page is under construction. Check back soon for our new neighborhood hubs feature." />
-				<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-			</Head>
-			<div className="py-24 px-4 lg:px-24">
-				<div className="max-w-4xl mx-auto text-center">
-					<h1 className="text-4xl md:text-6xl font-extrabold tracking-tighter">Neighborhood Hubs</h1>
-					<p className="mt-4 text-lg md:text-xl max-w-3xl mx-auto text-muted-foreground">This page is under construction. Check back soon for our new neighborhood hubs feature.</p>
+		<>
+			<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+			<div className="bg-background text-foreground">
+				<div className="px-4 py-24 lg:px-24">
+					<div className="mx-auto max-w-4xl text-center">
+						<h1 className="text-4xl font-extrabold tracking-tighter md:text-6xl">Local Neighborhoods</h1>
+						<p className="mx-auto mt-4 max-w-3xl text-lg md:text-xl text-muted-foreground">This page is under construction. Check back soon to explore local neighborhoods and discover what makes each community unique.</p>
+					</div>
 				</div>
 			</div>
-		</div>
+		</>
 	);
 }

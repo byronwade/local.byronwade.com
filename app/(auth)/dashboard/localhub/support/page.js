@@ -1,3 +1,8 @@
+export const metadata = {
+	title: "LocalHub Support - Dashboard - Thorbis",
+	description: "Get help and support for your LocalHub directory, billing and technical issues.",
+};
+
 import React from "react";
 import SupportPage from "@components/shared/support/SupportPage";
 

@@ -18,6 +18,10 @@ export default function IntegrationsAndBilling() {
 	const [searchTerm, setSearchTerm] = useState("");
 	const [selectedCategory, setSelectedCategory] = useState("All");
 	const [selectedIndustry, setSelectedIndustry] = useState("All");
+
+	React.useEffect(() => {
+		document.title = "Integrations & Features - Business Dashboard - Thorbis";
+	}, []);
 	const [expandedFeatures, setExpandedFeatures] = useState(new Set());
 	const [showCheckout, setShowCheckout] = useState(false);
 	const [showPaymentMethods, setShowPaymentMethods] = useState(false);

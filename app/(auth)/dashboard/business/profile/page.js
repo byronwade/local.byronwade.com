@@ -138,6 +138,11 @@ export default function BusinessProfile() {
 		price: "",
 		category: "General",
 	});
+
+	useEffect(() => {
+		document.title = "Business Profile - Dashboard - Thorbis";
+	}, []);
+
 	const [profile, setProfile] = useState({
 		// Basic Information
 		name: "Wade's Plumbing & Septic",

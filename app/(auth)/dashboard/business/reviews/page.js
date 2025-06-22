@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
 import { Badge } from "@components/ui/badge";
@@ -94,6 +94,10 @@ export default function BusinessReviews() {
 	const [filterRating, setFilterRating] = useState("all");
 	const [sortBy, setSortBy] = useState("newest");
 	const [showReplies, setShowReplies] = useState({});
+
+	useEffect(() => {
+		document.title = "Review Management - Business Dashboard - Thorbis";
+	}, []);
 
 	// Mock reviews data
 	const [reviews, setReviews] = useState([
@@ -391,7 +395,7 @@ export default function BusinessReviews() {
 									<Star className="w-4 h-4 text-yellow-400" />
 								</div>
 								<Progress value={(ratingDistribution[rating] / reviews.length) * 100} className="flex-1 h-2" />
-								<span className="text-sm text-muted-foreground w-12 text-right">{ratingDistribution[rating]}</span>
+								<span className="w-12 text-sm text-right text-muted-foreground">{ratingDistribution[rating]}</span>
 							</div>
 						))}
 					</CardContent>
@@ -409,8 +413,8 @@ export default function BusinessReviews() {
 						</CardHeader>
 						<CardContent className="space-y-4">
 							{pendingReviews.map((review) => (
-								<div key={review.id} className="p-4 border rounded-lg">
-									<div className="flex items-start justify-between mb-3">
+								<div key={review.id} className="p-4 rounded-lg border">
+									<div className="flex justify-between items-start mb-3">
 										<div className="flex items-center space-x-3">
 											<Avatar className="w-10 h-10">
 												<AvatarFallback>
@@ -422,30 +426,30 @@ export default function BusinessReviews() {
 													<span className="font-medium">{review.customerName}</span>
 													{review.verified && (
 														<Badge variant="outline" className="text-xs">
-															<CheckCircle className="w-3 h-3 mr-1" />
+															<CheckCircle className="mr-1 w-3 h-3" />
 															Verified
 														</Badge>
 													)}
 												</div>
 												<div className="flex items-center space-x-1">
 													{renderStars(review.rating)}
-													<span className="text-sm text-muted-foreground ml-2">{review.date}</span>
+													<span className="ml-2 text-sm text-muted-foreground">{review.date}</span>
 												</div>
 											</div>
 										</div>
 										<div className="flex space-x-2">
 											<Button size="sm" onClick={() => handleApproveReview(review.id)}>
-												<CheckCircle className="w-4 h-4 mr-1" />
+												<CheckCircle className="mr-1 w-4 h-4" />
 												Approve
 											</Button>
 											<Button size="sm" variant="outline" onClick={() => handleRejectReview(review.id)}>
-												<X className="w-4 h-4 mr-1" />
+												<X className="mr-1 w-4 h-4" />
 												Reject
 											</Button>
 										</div>
 									</div>
-									<h4 className="font-medium mb-2">{review.title}</h4>
-									<p className="text-muted-foreground mb-3">{review.content}</p>
+									<h4 className="mb-2 font-medium">{review.title}</h4>
+									<p className="mb-3 text-muted-foreground">{review.content}</p>
 									<div className="flex items-center space-x-4 text-sm text-muted-foreground">
 										<span>Service: {review.service}</span>
 										<span>Category: {review.category}</span>
@@ -464,10 +468,10 @@ export default function BusinessReviews() {
 					</CardHeader>
 					<CardContent>
 						{/* Filters and Search */}
-						<div className="flex flex-col space-y-4 mb-6 md:flex-row md:space-y-0 md:space-x-4">
+						<div className="flex flex-col mb-6 space-y-4 md:flex-row md:space-y-0 md:space-x-4">
 							<div className="flex-1">
 								<div className="relative">
-									<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+									<Search className="absolute left-3 top-1/2 w-4 h-4 transform -translate-y-1/2 text-muted-foreground" />
 									<Input placeholder="Search reviews..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-10" />
 								</div>
 							</div>
@@ -500,8 +504,8 @@ export default function BusinessReviews() {
 						{/* Reviews */}
 						<div className="space-y-4">
 							{sortedReviews.map((review) => (
-								<div key={review.id} className="p-4 border rounded-lg">
-									<div className="flex items-start justify-between mb-3">
+								<div key={review.id} className="p-4 rounded-lg border">
+									<div className="flex justify-between items-start mb-3">
 										<div className="flex items-center space-x-3">
 											<Avatar className="w-10 h-10">
 												<AvatarFallback>
@@ -513,33 +517,33 @@ export default function BusinessReviews() {
 													<span className="font-medium">{review.customerName}</span>
 													{review.verified && (
 														<Badge variant="outline" className="text-xs">
-															<CheckCircle className="w-3 h-3 mr-1" />
+															<CheckCircle className="mr-1 w-3 h-3" />
 															Verified
 														</Badge>
 													)}
 												</div>
 												<div className="flex items-center space-x-1">
 													{renderStars(review.rating)}
-													<span className="text-sm text-muted-foreground ml-2">{review.date}</span>
+													<span className="ml-2 text-sm text-muted-foreground">{review.date}</span>
 												</div>
 											</div>
 										</div>
 										<div className="flex items-center space-x-2">
 											<Button size="sm" variant="outline" onClick={() => handleHelpful(review.id, true)}>
-												<ThumbsUp className="w-4 h-4 mr-1" />
+												<ThumbsUp className="mr-1 w-4 h-4" />
 												{review.helpful}
 											</Button>
 											<Button size="sm" variant="outline" onClick={() => handleHelpful(review.id, false)}>
-												<ThumbsDown className="w-4 h-4 mr-1" />
+												<ThumbsDown className="mr-1 w-4 h-4" />
 												{review.notHelpful}
 											</Button>
 										</div>
 									</div>
 
-									<h4 className="font-medium mb-2">{review.title}</h4>
-									<p className="text-muted-foreground mb-3">{review.content}</p>
+									<h4 className="mb-2 font-medium">{review.title}</h4>
+									<p className="mb-3 text-muted-foreground">{review.content}</p>
 
-									<div className="flex items-center space-x-4 text-sm text-muted-foreground mb-3">
+									<div className="flex items-center mb-3 space-x-4 text-sm text-muted-foreground">
 										<span>Service: {review.service}</span>
 										<span>Category: {review.category}</span>
 									</div>
@@ -548,9 +552,9 @@ export default function BusinessReviews() {
 									{review.replies.length > 0 && (
 										<div className="ml-8 space-y-2">
 											{review.replies.map((reply) => (
-												<div key={reply.id} className="p-3 bg-muted/30 rounded-lg">
-													<div className="flex items-center space-x-2 mb-1">
-														<span className="font-medium text-sm">{reply.author}</span>
+												<div key={reply.id} className="p-3 rounded-lg bg-muted/30">
+													<div className="flex items-center mb-1 space-x-2">
+														<span className="text-sm font-medium">{reply.author}</span>
 														{reply.isBusiness && (
 															<Badge variant="secondary" className="text-xs">
 																Business
@@ -567,15 +571,15 @@ export default function BusinessReviews() {
 									{/* Reply Form */}
 									<div className="mt-4">
 										<Button size="sm" variant="outline" onClick={() => setShowReplies((prev) => ({ ...prev, [review.id]: !prev[review.id] }))}>
-											<Reply className="w-4 h-4 mr-1" />
+											<Reply className="mr-1 w-4 h-4" />
 											{showReplies[review.id] ? "Cancel Reply" : "Reply"}
 										</Button>
 
 										{showReplies[review.id] && (
-											<div className="mt-3 p-3 border rounded-lg">
+											<div className="p-3 mt-3 rounded-lg border">
 												<Textarea placeholder="Write your reply..." className="mb-2" rows={3} />
 												<Button size="sm">
-													<Reply className="w-4 h-4 mr-1" />
+													<Reply className="mr-1 w-4 h-4" />
 													Post Reply
 												</Button>
 											</div>
@@ -586,8 +590,8 @@ export default function BusinessReviews() {
 						</div>
 
 						{sortedReviews.length === 0 && (
-							<div className="text-center py-8">
-								<MessageSquare className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+							<div className="py-8 text-center">
+								<MessageSquare className="mx-auto mb-4 w-12 h-12 text-muted-foreground" />
 								<p className="text-muted-foreground">No reviews found matching your criteria.</p>
 							</div>
 						)}

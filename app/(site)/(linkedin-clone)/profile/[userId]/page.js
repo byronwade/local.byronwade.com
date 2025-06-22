@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { Check, MessageSquare, UserPlus, Users, MapPin } from "lucide-react";
@@ -100,19 +99,6 @@ const allUsers = {
 	},
 };
 
-export async function generateMetadata({ params }) {
-	const user = allUsers[params.userId];
-	if (!user) {
-		return {
-			title: "User Not Found",
-		};
-	}
-	return {
-		title: `${user.name} | ${user.title}`,
-		description: user.about,
-	};
-}
-
 const ProfileHeader = ({ user }) => {
 	const [isFollowing, setIsFollowing] = useState(false);
 
@@ -193,12 +179,9 @@ const UserListItem = ({ userId }) => {
 	);
 };
 
-const UserListCard = ({ userIds, title }) => {
+const UserListCard = ({ userIds }) => {
 	return (
 		<Card>
-			<CardHeader>
-				<CardTitle>{title}</CardTitle>
-			</CardHeader>
 			<CardContent className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
 				{userIds.map((id) => (
 					<UserListItem key={id} userId={id} />
@@ -251,63 +234,46 @@ export default function ProfilePage({ params }) {
 		return <div className="text-center py-10">User not found.</div>;
 	}
 
-	const jsonLd = {
-		"@context": "https://schema.org",
-		"@type": "ProfilePage",
-		mainEntity: {
-			"@type": "Person",
-			name: user.name,
-			alternateName: user.id,
-			jobTitle: user.title,
-			description: user.about,
-			image: user.avatar,
-			url: `https://local.byronwade.com/profile/${user.id}`,
-			worksFor: {
-				"@type": "Organization",
-				name: user.businessName,
-			},
-			skill: user.skills,
-			location: {
-				"@type": "Place",
-				address: user.location,
-			},
-			interactionStatistic: [
-				{
-					"@type": "InteractionCounter",
-					interactionType: "https://schema.org/FollowAction",
-					userInteractionCount: user.followersCount,
-				},
-				{
-					"@type": "InteractionCounter",
-					interactionType: "https://schema.org/FollowAction",
-					userInteractionCount: user.followingCount,
-				},
-			],
-		},
-	};
-
 	return (
 		<div className="bg-muted/40">
-			<Head>
-				<title>{`${user.name} | ${user.title}`}</title>
-				<meta name="description" content={user.about} />
-				<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-			</Head>
 			<main className="container mx-auto px-4 lg:px-8 py-8">
 				<div className="grid grid-cols-1 md:grid-cols-4 gap-8 items-start">
 					<div className="md:col-span-4">
 						<ProfileHeader user={user} />
 					</div>
-					<div className="md:col-span-4 space-y-6">
-						<AboutCard user={user} />
-						<div>
-							<h2 className="text-2xl font-bold mb-4">Posts</h2>
-							{user.posts.map((post) => (
-								<PostCard key={post.id} post={post} />
-							))}
-						</div>
-						<UserListCard userIds={user.followers} title="Followers" />
-						<UserListCard userIds={user.following} title="Following" />
+					<div className="md:col-span-4">
+						<Tabs defaultValue="posts" className="w-full">
+							<TabsList>
+								<TabsTrigger value="posts">Posts</TabsTrigger>
+								<TabsTrigger value="about">About</TabsTrigger>
+								<TabsTrigger value="followers" id="followers">
+									Followers
+								</TabsTrigger>
+								<TabsTrigger value="following" id="following">
+									Following
+								</TabsTrigger>
+							</TabsList>
+							<TabsContent value="posts" className="mt-4">
+								<div className="space-y-4">
+									{user.posts.length > 0 ? (
+										user.posts.map((post) => <PostCard key={post.id} post={post} />)
+									) : (
+										<Card>
+											<CardContent className="p-6 text-center text-muted-foreground">No posts yet.</CardContent>
+										</Card>
+									)}
+								</div>
+							</TabsContent>
+							<TabsContent value="about" className="mt-4">
+								<AboutCard user={user} />
+							</TabsContent>
+							<TabsContent value="followers" className="mt-4">
+								<UserListCard userIds={user.followers} />
+							</TabsContent>
+							<TabsContent value="following" className="mt-4">
+								<UserListCard userIds={user.following} />
+							</TabsContent>
+						</Tabs>
 					</div>
 				</div>
 			</main>

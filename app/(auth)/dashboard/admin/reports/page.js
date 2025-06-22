@@ -1,3 +1,8 @@
+export const metadata = {
+	title: "Reports & Analytics - Admin Dashboard - Thorbis",
+	description: "Generate and view detailed reports, analytics and system performance metrics.",
+};
+
 import React from "react";
 
 export default function Reports() {

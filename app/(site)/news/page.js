@@ -1,76 +1,80 @@
-// app/send-test-email/page.js
-"use client";
-
-import { useState } from "react";
-
-const SendTestEmail = () => {
-	const [emailType, setEmailType] = useState("welcome");
-	const [to, setTo] = useState("");
-	const [subject, setSubject] = useState("");
-	const [firstName, setFirstName] = useState("");
-	const [url, setUrl] = useState("");
-
-	const handleSubmit = async (e) => {
-		e.preventDefault();
-
-		const response = await fetch("/api/send", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
+export const metadata = {
+	title: "Local Business News & Updates - Stay Informed | Thorbis",
+	description: "Stay updated with the latest local business news, industry insights, and Thorbis platform updates. Get valuable information to help grow your business.",
+	keywords: ["local business news", "business updates", "industry news", "business insights", "thorbis news", "business trends"],
+	openGraph: {
+		title: "Local Business News & Updates - Stay Informed | Thorbis",
+		description: "Stay updated with the latest local business news, industry insights, and Thorbis platform updates. Get valuable information to help grow your business.",
+		url: "https://local.byronwade.com/news",
+		siteName: "Thorbis",
+		images: [
+			{
+				url: "https://local.byronwade.com/og-news.jpg",
+				width: 1200,
+				height: 630,
+				alt: "Business News on Thorbis",
 			},
-			body: JSON.stringify({ emailType, to, subject, firstName, url }),
-		});
+		],
+		locale: "en_US",
+		type: "website",
+	},
+	twitter: {
+		card: "summary_large_image",
+		title: "Local Business News - Thorbis",
+		description: "Stay updated with the latest business news and insights.",
+		images: ["https://local.byronwade.com/og-news.jpg"],
+	},
+	alternates: {
+		canonical: "https://local.byronwade.com/news",
+	},
+};
 
-		if (response.ok) {
-			const data = await response.json();
-			console.log(data);
-		} else {
-			const error = await response.json();
-			console.error("Error sending email:", error);
-		}
+export default function NewsPage() {
+	const jsonLd = {
+		"@context": "https://schema.org",
+		"@type": "WebPage",
+		name: "Local Business News",
+		description: "Latest news and updates about local businesses and industry trends",
+		url: "https://local.byronwade.com/news",
+		mainEntity: {
+			"@type": "Blog",
+			name: "Thorbis Business News",
+			description: "News and insights for local businesses",
+		},
+		breadcrumb: {
+			"@type": "BreadcrumbList",
+			itemListElement: [
+				{
+					"@type": "ListItem",
+					position: 1,
+					item: {
+						"@id": "https://local.byronwade.com",
+						name: "Thorbis",
+					},
+				},
+				{
+					"@type": "ListItem",
+					position: 2,
+					item: {
+						"@id": "https://local.byronwade.com/news",
+						name: "News",
+					},
+				},
+			],
+		},
 	};
 
 	return (
-		<div>
-			<h1>Send Test Email</h1>
-			<form onSubmit={handleSubmit}>
-				<label>
-					Email Type:
-					<select value={emailType} onChange={(e) => setEmailType(e.target.value)}>
-						<option value="welcome">Welcome</option>
-						<option value="passwordReset">Password Reset</option>
-						<option value="accountActivation">Account Activation</option>
-						<option value="newJobNotification">New Job Notification</option>
-						<option value="jobCompletion">Job Completion</option>
-						<option value="accountDeactivationWarning">Account Deactivation Warning</option>
-						<option value="subscriptionRenewalReminder">Subscription Renewal Reminder</option>
-					</select>
-				</label>
-				<br />
-				<label>
-					To:
-					<input type="email" value={to} onChange={(e) => setTo(e.target.value)} required />
-				</label>
-				<br />
-				<label>
-					Subject:
-					<input type="text" value={subject} onChange={(e) => setSubject(e.target.value)} required />
-				</label>
-				<br />
-				<label>
-					First Name:
-					<input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
-				</label>
-				<br />
-				<label>
-					URL:
-					<input type="text" value={url} onChange={(e) => setUrl(e.target.value)} required />
-				</label>
-				<br />
-				<button type="submit">Send Test Email</button>
-			</form>
-		</div>
+		<>
+			<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+			<div className="bg-background text-foreground">
+				<div className="py-24 px-4 lg:px-24">
+					<div className="max-w-4xl mx-auto text-center">
+						<h1 className="text-4xl md:text-6xl font-extrabold tracking-tighter">Business News & Updates</h1>
+						<p className="mt-4 text-lg md:text-xl max-w-3xl mx-auto text-muted-foreground">This page is under construction. Check back soon for the latest business news, industry insights, and platform updates.</p>
+					</div>
+				</div>
+			</div>
+		</>
 	);
-};
-
-export default SendTestEmail;
+}

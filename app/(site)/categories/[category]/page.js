@@ -129,6 +129,7 @@ export async function generateMetadata({ params }) {
 
 export default function CategoryRoute({ params }) {
 	const { category } = params;
+	let jsonLd = {};
 
 	// Check if it's a location
 	if (LOCATION_SLUGS[category]) {
@@ -141,7 +142,34 @@ export default function CategoryRoute({ params }) {
 			})
 			.map((business, index) => enhanceBusinessData(business, null, index));
 
-		return <CategoryPage type="location" title={`Local Businesses in ${location.name}, ${location.state}`} subtitle={`Discover top-rated businesses and services in ${location.name}`} businesses={locationBusinesses} category={null} location={location} requiresLocation={false} />;
+		jsonLd = {
+			"@context": "https://schema.org",
+			"@type": "CollectionPage",
+			name: `Local Businesses in ${location.name}, ${location.state}`,
+			description: `Discover top-rated local businesses in ${location.name}, ${location.state}. Find restaurants, services, and more with verified reviews.`,
+			mainEntity: {
+				"@type": "ItemList",
+				name: `Businesses in ${location.name}`,
+				itemListElement: locationBusinesses.slice(0, 20).map((business, index) => ({
+					"@type": "ListItem",
+					position: index + 1,
+					item: {
+						"@type": "LocalBusiness",
+						name: business.name,
+						description: business.description,
+						image: business.image,
+						address: business.address,
+					},
+				})),
+			},
+		};
+
+		return (
+			<>
+				<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+				<CategoryPage type="location" title={`Local Businesses in ${location.name}, ${location.state}`} subtitle={`Discover top-rated businesses and services in ${location.name}`} businesses={locationBusinesses} category={null} location={location} requiresLocation={false} />
+			</>
+		);
 	}
 
 	// Check if it's a category
@@ -171,9 +199,37 @@ export default function CategoryRoute({ params }) {
 			})
 			.map((business, index) => enhanceBusinessData(business, category, index));
 
-		return <CategoryPage type="category" title={`${categoryName} Near You`} subtitle={`Find trusted ${categoryName.toLowerCase()} with verified reviews and instant booking`} businesses={categoryBusinesses} category={categoryName} location={null} requiresLocation={isHomeService} />;
+		jsonLd = {
+			"@context": "https://schema.org",
+			"@type": "CollectionPage",
+			name: `${categoryName} Near You`,
+			description: `Find the best ${categoryName.toLowerCase()} ${isHomeService ? "in your area" : "near you"}. Read reviews, compare prices, and book services instantly.`,
+			mainEntity: {
+				"@type": "ItemList",
+				name: `Top ${categoryName}`,
+				itemListElement: categoryBusinesses.slice(0, 20).map((business, index) => ({
+					"@type": "ListItem",
+					position: index + 1,
+					item: {
+						"@type": "LocalBusiness",
+						name: business.name,
+						description: business.description,
+						image: business.image,
+						address: business.address,
+					},
+				})),
+			},
+		};
+
+		return (
+			<>
+				<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+				<CategoryPage type="category" title={`${categoryName} Near You`} subtitle={`Find trusted ${categoryName.toLowerCase()} with verified reviews and instant booking`} businesses={categoryBusinesses} category={categoryName} location={null} requiresLocation={isHomeService} />
+			</>
+		);
 	}
 
 	// Category/location not found
+	console.log("Category or location not found");
 	notFound();
 }

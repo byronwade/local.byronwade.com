@@ -3,30 +3,63 @@ import { Megaphone, SlidersHorizontal, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 
 export const metadata = {
-	title: "Ad Choices",
-	description: "Learn about our advertising practices and how to manage your ad preferences.",
+	title: "Ad Choices - Control Your Advertising Experience | Thorbis",
+	description: "Learn about Thorbis's advertising policies, interest-based ads, and how to control your advertising experience. Manage your ad preferences and privacy settings.",
+	keywords: ["ad choices", "advertising preferences", "interest-based ads", "ad privacy", "advertising control"],
+	openGraph: {
+		title: "Ad Choices - Control Your Advertising Experience | Thorbis",
+		description: "Learn about Thorbis's advertising policies, interest-based ads, and how to control your advertising experience. Manage your ad preferences and privacy settings.",
+		url: "https://local.byronwade.com/ad-choices",
+		siteName: "Thorbis",
+		images: [
+			{
+				url: "https://local.byronwade.com/og-ad-choices.jpg",
+				width: 1200,
+				height: 630,
+				alt: "Thorbis Ad Choices",
+			},
+		],
+		locale: "en_US",
+		type: "website",
+	},
+	twitter: {
+		card: "summary_large_image",
+		title: "Ad Choices - Control Your Advertising Experience",
+		description: "Learn about advertising policies and how to control your ad experience on Thorbis.",
+		images: ["https://local.byronwade.com/og-ad-choices.jpg"],
+	},
+	alternates: {
+		canonical: "https://local.byronwade.com/ad-choices",
+	},
 };
 
 export default function AdChoicesPage() {
 	const jsonLd = {
 		"@context": "https://schema.org",
-		"@type": "Article",
-		headline: metadata.title,
-		description: metadata.description,
-		author: {
-			"@type": "Organization",
-			name: "Inbox Zero",
-		},
-		publisher: {
-			"@type": "Organization",
-			name: "Inbox Zero",
-			logo: {
-				"@type": "ImageObject",
-				url: "https://local.byronwade.com/logo-placeholder.png",
-			},
-		},
+		"@type": "WebPage",
+		name: "Ad Choices",
+		description: "Information about Thorbis's advertising policies, interest-based ads, and how users can control their advertising experience.",
 		url: "https://local.byronwade.com/ad-choices",
+		mainEntity: {
+			"@type": "Article",
+			headline: "Ad Choices",
+			description: "Control your advertising experience with Thorbis",
+			author: {
+				"@type": "Organization",
+				name: "Thorbis",
+			},
+			publisher: {
+				"@type": "Organization",
+				name: "Thorbis",
+				logo: {
+					"@type": "ImageObject",
+					url: "https://local.byronwade.com/ThorbisLogo.webp",
+				},
+			},
+			about: ["Interest-Based Advertising", "Ad Privacy", "User Control", "Advertising Preferences"],
+		},
 	};
+
 	return (
 		<>
 			<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />

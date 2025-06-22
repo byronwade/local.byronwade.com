@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@components/ui/button";
 import { AlertCircle, AlertOctagon, BarChart, ChevronDown, Copy, Pause, Truck, User, Shield, Bell, CreditCard, HelpCircle, Settings as SettingsIcon, Building2, Star, Users, MessageCircle, BookOpen } from "lucide-react";
@@ -12,6 +12,10 @@ import { Badge } from "@components/ui/badge";
 
 export default function Settings() {
 	const [activeSection, setActiveSection] = useState("profile");
+
+	useEffect(() => {
+		document.title = "User Settings - Dashboard - Thorbis";
+	}, []);
 
 	const settingsSections = [
 		{ id: "profile", label: "Profile", icon: User },

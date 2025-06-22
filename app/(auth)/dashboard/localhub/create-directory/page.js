@@ -82,6 +82,15 @@ export default function CreateDirectoryPage() {
 	const { toast } = useToast();
 	const router = useRouter();
 
+	useEffect(() => {
+		document.title = "Create Directory - LocalHub - Thorbis";
+	}, []);
+
+	useEffect(() => {
+		// Reset to the first step when the component mounts
+		setCurrentStep(0);
+	}, []);
+
 	const formMethods = useForm({
 		resolver: zodResolver(combinedDirectorySchema),
 		defaultValues: {
@@ -106,11 +115,6 @@ export default function CreateDirectoryPage() {
 			},
 		},
 	});
-
-	useEffect(() => {
-		// Reset to the first step when the component mounts
-		setCurrentStep(0);
-	}, []);
 
 	const nextStep = async () => {
 		setLoading(true);

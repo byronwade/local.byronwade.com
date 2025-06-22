@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { CircleUser, Menu, Package2, Search, Building2, Shield, Bell, CreditCard, HelpCircle, Settings as SettingsIcon, Users, Globe, Database } from "lucide-react";
 
@@ -14,6 +14,10 @@ import { Badge } from "@components/ui/badge";
 
 export default function Settings() {
 	const [activeSection, setActiveSection] = useState("general");
+
+	useEffect(() => {
+		document.title = "Business Settings - Dashboard - Thorbis";
+	}, []);
 
 	const settingsSections = [
 		{ id: "general", label: "General", icon: Building2 },

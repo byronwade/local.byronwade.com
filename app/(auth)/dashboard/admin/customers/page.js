@@ -1,3 +1,8 @@
+export const metadata = {
+	title: "Customer Management - Admin Dashboard - Thorbis",
+	description: "View and manage customer information, interactions and customer service activities.",
+};
+
 import React from "react";
 
 export default function Customers() {

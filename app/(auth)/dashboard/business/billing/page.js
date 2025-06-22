@@ -151,6 +151,10 @@ export default function BillingPage() {
 	const [showAddPaymentMethod, setShowAddPaymentMethod] = useState(false);
 	const [showBillingHistory, setShowBillingHistory] = useState(false);
 	const [selectedInvoice, setSelectedInvoice] = useState(null);
+
+	React.useEffect(() => {
+		document.title = "Billing & Subscriptions - Business Dashboard - Thorbis";
+	}, []);
 	const [newPaymentMethod, setNewPaymentMethod] = useState({
 		cardNumber: "",
 		expiry: "",
@@ -227,55 +231,55 @@ export default function BillingPage() {
 	};
 
 	return (
-		<div className="w-full px-4 py-16 space-y-8 lg:px-24">
+		<div className="px-4 py-16 space-y-8 w-full lg:px-24">
 			{/* Header */}
 			<div className="space-y-4">
-				<div className="flex items-center gap-3">
-					<div className="p-2 rounded-lg bg-gradient-to-br from-blue-500/10 to-purple-500/10">
+				<div className="flex gap-3 items-center">
+					<div className="p-2 bg-gradient-to-br rounded-lg from-blue-500/10 to-purple-500/10">
 						<CreditCard className="w-6 h-6 text-blue-600 dark:text-blue-400" />
 					</div>
 					<div>
 						<h1 className="text-4xl font-bold tracking-tight">Billing & Subscriptions</h1>
-						<p className="text-lg text-muted-foreground mt-1">Manage your active integrations and billing preferences</p>
+						<p className="mt-1 text-lg text-muted-foreground">Manage your active integrations and billing preferences</p>
 					</div>
 				</div>
 			</div>
 
 			<div className="grid gap-8 lg:grid-cols-3">
 				{/* Main Content */}
-				<div className="lg:col-span-2 space-y-6">
+				<div className="space-y-6 lg:col-span-2">
 					{/* Billing Overview */}
 					<Card>
 						<CardHeader>
-							<CardTitle className="flex items-center gap-2">
+							<CardTitle className="flex gap-2 items-center">
 								<Receipt className="w-5 h-5" />
 								Billing Overview
 							</CardTitle>
 							<CardDescription>Your current subscription and upcoming charges</CardDescription>
 						</CardHeader>
 						<CardContent className="space-y-6">
-							<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-								<div className="text-center p-4 bg-muted rounded-lg">
+							<div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+								<div className="p-4 text-center rounded-lg bg-muted">
 									<p className="text-2xl font-bold">${calculateTotal()}</p>
 									<p className="text-sm text-muted-foreground">{billingCycle === "yearly" ? "per year" : "per month"}</p>
 								</div>
-								<div className="text-center p-4 bg-muted rounded-lg">
+								<div className="p-4 text-center rounded-lg bg-muted">
 									<p className="text-2xl font-bold">{activeIntegrations.length}</p>
 									<p className="text-sm text-muted-foreground">Active Integrations</p>
 								</div>
-								<div className="text-center p-4 bg-muted rounded-lg">
+								<div className="p-4 text-center rounded-lg bg-muted">
 									<p className="text-2xl font-bold">{getNextBillingDate()}</p>
 									<p className="text-sm text-muted-foreground">Next Billing Date</p>
 								</div>
 							</div>
 
 							{/* Billing Cycle Toggle */}
-							<div className="flex items-center justify-center gap-4">
+							<div className="flex gap-4 justify-center items-center">
 								<span className={`text-sm ${billingCycle === "monthly" ? "text-foreground" : "text-muted-foreground"}`}>Monthly</span>
 								<Switch checked={billingCycle === "yearly"} onCheckedChange={(checked) => setBillingCycle(checked ? "yearly" : "monthly")} />
 								<span className={`text-sm ${billingCycle === "yearly" ? "text-foreground" : "text-muted-foreground"}`}>
 									Yearly
-									<Badge className="ml-2 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">Save 20%</Badge>
+									<Badge className="ml-2 text-green-800 bg-green-100 dark:bg-green-900 dark:text-green-300">Save 20%</Badge>
 								</span>
 							</div>
 						</CardContent>
@@ -284,7 +288,7 @@ export default function BillingPage() {
 					{/* Active Integrations */}
 					<Card>
 						<CardHeader>
-							<CardTitle className="flex items-center gap-2">
+							<CardTitle className="flex gap-2 items-center">
 								<Zap className="w-5 h-5" />
 								Active Integrations
 							</CardTitle>
@@ -294,25 +298,25 @@ export default function BillingPage() {
 							{activeIntegrations.map((integration) => {
 								const Icon = integration.icon;
 								return (
-									<div key={integration.id} className="flex items-center justify-between p-4 border rounded-lg">
-										<div className="flex items-center gap-4">
+									<div key={integration.id} className="flex justify-between items-center p-4 rounded-lg border">
+										<div className="flex gap-4 items-center">
 											<div className="p-2 rounded-lg bg-muted">
 												<Icon className="w-5 h-5" />
 											</div>
 											<div>
-												<div className="flex items-center gap-2">
+												<div className="flex gap-2 items-center">
 													<h3 className="font-semibold">{integration.name}</h3>
 													<Badge variant="secondary">{integration.category}</Badge>
-													<Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">{integration.status}</Badge>
+													<Badge className="text-green-800 bg-green-100 dark:bg-green-900 dark:text-green-300">{integration.status}</Badge>
 												</div>
 												<p className="text-sm text-muted-foreground">{integration.description}</p>
-												<div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
+												<div className="flex gap-4 items-center mt-2 text-xs text-muted-foreground">
 													<span>Added: {new Date(integration.addedDate).toLocaleDateString()}</span>
 													<span>Next billing: {new Date(integration.nextBilling).toLocaleDateString()}</span>
 												</div>
 											</div>
 										</div>
-										<div className="flex items-center gap-4">
+										<div className="flex gap-4 items-center">
 											<div className="text-right">
 												<p className="font-semibold">${integration.price}</p>
 												<p className="text-sm text-muted-foreground">per month</p>
@@ -328,38 +332,38 @@ export default function BillingPage() {
 					{/* Payment Methods */}
 					<Card>
 						<CardHeader>
-							<div className="flex items-center justify-between">
+							<div className="flex justify-between items-center">
 								<div>
-									<CardTitle className="flex items-center gap-2">
+									<CardTitle className="flex gap-2 items-center">
 										<CreditCard className="w-5 h-5" />
 										Payment Methods
 									</CardTitle>
 									<CardDescription>Manage your payment methods and billing preferences</CardDescription>
 								</div>
 								<Button onClick={() => setShowAddPaymentMethod(true)} size="sm">
-									<Plus className="w-4 h-4 mr-2" />
+									<Plus className="mr-2 w-4 h-4" />
 									Add Payment Method
 								</Button>
 							</div>
 						</CardHeader>
 						<CardContent className="space-y-4">
 							{paymentMethods.map((method) => (
-								<div key={method.id} className="flex items-center justify-between p-4 border rounded-lg">
-									<div className="flex items-center gap-4">
+								<div key={method.id} className="flex justify-between items-center p-4 rounded-lg border">
+									<div className="flex gap-4 items-center">
 										<div className="text-2xl">{getCardIcon(method.brand)}</div>
 										<div>
-											<div className="flex items-center gap-2">
+											<div className="flex gap-2 items-center">
 												<span className="font-semibold">
 													{method.brand.charAt(0).toUpperCase() + method.brand.slice(1)} •••• {method.last4}
 												</span>
-												{method.isDefault && <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">Default</Badge>}
+												{method.isDefault && <Badge className="text-blue-800 bg-blue-100 dark:bg-blue-900 dark:text-blue-300">Default</Badge>}
 											</div>
 											<p className="text-sm text-muted-foreground">
 												{method.cardholderName} • Expires {method.expiry}
 											</p>
 										</div>
 									</div>
-									<div className="flex items-center gap-2">
+									<div className="flex gap-2 items-center">
 										{!method.isDefault && (
 											<Button variant="outline" size="sm" onClick={() => handleSetDefaultPaymentMethod(method.id)}>
 												Set Default
@@ -377,7 +381,7 @@ export default function BillingPage() {
 					{/* Billing History */}
 					<Card>
 						<CardHeader>
-							<CardTitle className="flex items-center gap-2">
+							<CardTitle className="flex gap-2 items-center">
 								<History className="w-5 h-5" />
 								Billing History
 							</CardTitle>
@@ -385,18 +389,18 @@ export default function BillingPage() {
 						</CardHeader>
 						<CardContent className="space-y-4">
 							{billingHistory.map((invoice) => (
-								<div key={invoice.id} className="flex items-center justify-between p-4 border rounded-lg">
+								<div key={invoice.id} className="flex justify-between items-center p-4 rounded-lg border">
 									<div>
 										<h3 className="font-semibold">{invoice.description}</h3>
 										<p className="text-sm text-muted-foreground">{new Date(invoice.date).toLocaleDateString()}</p>
 									</div>
-									<div className="flex items-center gap-4">
+									<div className="flex gap-4 items-center">
 										<div className="text-right">
 											<p className="font-semibold">${invoice.amount}</p>
 											<Badge className={`mt-1 ${invoice.status === "paid" ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300" : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300"}`}>{invoice.status}</Badge>
 										</div>
 										<Button variant="outline" size="sm" onClick={() => setSelectedInvoice(invoice)}>
-											<FileText className="w-4 h-4 mr-2" />
+											<FileText className="mr-2 w-4 h-4" />
 											View
 										</Button>
 									</div>
@@ -407,11 +411,11 @@ export default function BillingPage() {
 				</div>
 
 				{/* Right Sidebar */}
-				<div className="lg:col-span-1 space-y-6">
+				<div className="space-y-6 lg:col-span-1">
 					{/* Current Bill Summary */}
 					<Card className="sticky top-6">
 						<CardHeader>
-							<CardTitle className="flex items-center gap-2">
+							<CardTitle className="flex gap-2 items-center">
 								<Receipt className="w-5 h-5" />
 								Current Bill
 							</CardTitle>
@@ -419,7 +423,7 @@ export default function BillingPage() {
 						</CardHeader>
 						<CardContent className="space-y-4">
 							{activeIntegrations.map((integration) => (
-								<div key={integration.id} className="flex items-center justify-between text-sm">
+								<div key={integration.id} className="flex justify-between items-center text-sm">
 									<span className="truncate">{integration.name}</span>
 									<span className="font-medium">${integration.price}</span>
 								</div>
@@ -427,7 +431,7 @@ export default function BillingPage() {
 
 							<Separator />
 
-							<div className="flex items-center justify-between">
+							<div className="flex justify-between items-center">
 								<span className="text-lg font-semibold">Total</span>
 								<span className="text-2xl font-bold">${calculateTotal()}</span>
 							</div>
@@ -435,7 +439,7 @@ export default function BillingPage() {
 							<p className="text-sm text-muted-foreground">{billingCycle === "yearly" ? "per year" : "per month"}</p>
 
 							<Button className="w-full">
-								<Download className="w-4 h-4 mr-2" />
+								<Download className="mr-2 w-4 h-4" />
 								Download Invoice
 							</Button>
 						</CardContent>
@@ -447,21 +451,21 @@ export default function BillingPage() {
 							<CardTitle>Quick Actions</CardTitle>
 						</CardHeader>
 						<CardContent className="space-y-3">
-							<Button variant="outline" className="w-full justify-start" asChild>
+							<Button variant="outline" className="justify-start w-full" asChild>
 								<a href="/dashboard/business/integrations">
-									<Plus className="w-4 h-4 mr-2" />
+									<Plus className="mr-2 w-4 h-4" />
 									Add Integration
 								</a>
 							</Button>
-							<Button variant="outline" className="w-full justify-start" asChild>
+							<Button variant="outline" className="justify-start w-full" asChild>
 								<a href="mailto:support@thorbis.com">
-									<Mail className="w-4 h-4 mr-2" />
+									<Mail className="mr-2 w-4 h-4" />
 									Billing Support
 								</a>
 							</Button>
-							<Button variant="outline" className="w-full justify-start" asChild>
+							<Button variant="outline" className="justify-start w-full" asChild>
 								<a href="tel:+1-800-THORBIS">
-									<Phone className="w-4 h-4 mr-2" />
+									<Phone className="mr-2 w-4 h-4" />
 									Call Support
 								</a>
 							</Button>
@@ -576,20 +580,20 @@ export default function BillingPage() {
 							<div className="space-y-4">
 								<div className="space-y-2">
 									{selectedInvoice.items.map((item, index) => (
-										<div key={index} className="flex items-center justify-between text-sm">
+										<div key={index} className="flex justify-between items-center text-sm">
 											<span>{item.name}</span>
 											<span className="font-medium">${item.amount}</span>
 										</div>
 									))}
 									<Separator />
-									<div className="flex items-center justify-between font-semibold">
+									<div className="flex justify-between items-center font-semibold">
 										<span>Total</span>
 										<span>${selectedInvoice.amount}</span>
 									</div>
 								</div>
 								<div className="flex gap-3 pt-4">
 									<Button className="flex-1">
-										<Download className="w-4 h-4 mr-2" />
+										<Download className="mr-2 w-4 h-4" />
 										Download PDF
 									</Button>
 									<Button variant="outline" onClick={() => setSelectedInvoice(null)}>

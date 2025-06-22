@@ -15,6 +15,10 @@ export default function Activity() {
 	const [filterType, setFilterType] = useState("all");
 	const [filterStatus, setFilterStatus] = useState("all");
 
+	React.useEffect(() => {
+		document.title = "Activity - User Dashboard - Thorbis";
+	}, []);
+
 	// Mock activity data - in real app this would come from API
 	const activities = useMemo(
 		() => [
@@ -161,21 +165,21 @@ export default function Activity() {
 	};
 
 	return (
-		<div className="w-full px-4 lg:px-24 py-16 space-y-8">
+		<div className="px-4 py-16 space-y-8 w-full lg:px-24">
 			{/* Header */}
-			<div className="flex items-center justify-between space-x-6">
+			<div className="flex justify-between items-center space-x-6">
 				<div>
 					<h1 className="text-4xl font-bold">Activity</h1>
-					<p className="text-muted-foreground mt-2">Track your interactions, applications, and reviews</p>
+					<p className="mt-2 text-muted-foreground">Track your interactions, applications, and reviews</p>
 				</div>
 			</div>
 
 			{/* Stats Cards */}
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+			<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
 				<Card>
-					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+					<CardHeader className="flex flex-row justify-between items-center pb-2 space-y-0">
 						<CardTitle className="text-sm font-medium">Total Activities</CardTitle>
-						<Briefcase className="h-4 w-4 text-muted-foreground" />
+						<Briefcase className="w-4 h-4 text-muted-foreground" />
 					</CardHeader>
 					<CardContent>
 						<div className="text-2xl font-bold">{activities.length}</div>
@@ -183,9 +187,9 @@ export default function Activity() {
 					</CardContent>
 				</Card>
 				<Card>
-					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+					<CardHeader className="flex flex-row justify-between items-center pb-2 space-y-0">
 						<CardTitle className="text-sm font-medium">Reviews Given</CardTitle>
-						<Star className="h-4 w-4 text-muted-foreground" />
+						<Star className="w-4 h-4 text-muted-foreground" />
 					</CardHeader>
 					<CardContent>
 						<div className="text-2xl font-bold">{activities.filter((a) => a.type === "review").length}</div>
@@ -193,9 +197,9 @@ export default function Activity() {
 					</CardContent>
 				</Card>
 				<Card>
-					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+					<CardHeader className="flex flex-row justify-between items-center pb-2 space-y-0">
 						<CardTitle className="text-sm font-medium">Active Applications</CardTitle>
-						<Clock className="h-4 w-4 text-muted-foreground" />
+						<Clock className="w-4 h-4 text-muted-foreground" />
 					</CardHeader>
 					<CardContent>
 						<div className="text-2xl font-bold">{activities.filter((a) => a.status === "pending").length}</div>
@@ -203,9 +207,9 @@ export default function Activity() {
 					</CardContent>
 				</Card>
 				<Card>
-					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+					<CardHeader className="flex flex-row justify-between items-center pb-2 space-y-0">
 						<CardTitle className="text-sm font-medium">Completed Jobs</CardTitle>
-						<CheckCircle className="h-4 w-4 text-muted-foreground" />
+						<CheckCircle className="w-4 h-4 text-muted-foreground" />
 					</CardHeader>
 					<CardContent>
 						<div className="text-2xl font-bold">{activities.filter((a) => a.status === "completed").length}</div>
@@ -220,10 +224,10 @@ export default function Activity() {
 					<CardTitle>Filter Activities</CardTitle>
 				</CardHeader>
 				<CardContent>
-					<div className="flex flex-col sm:flex-row gap-4">
+					<div className="flex flex-col gap-4 sm:flex-row">
 						<div className="flex-1">
 							<div className="relative">
-								<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+								<Search className="absolute left-3 top-1/2 w-4 h-4 transform -translate-y-1/2 text-muted-foreground" />
 								<Input placeholder="Search activities, businesses, or descriptions..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="pl-10" />
 							</div>
 						</div>
@@ -257,7 +261,7 @@ export default function Activity() {
 
 			{/* Activity List */}
 			<div className="space-y-4">
-				<div className="flex items-center justify-between">
+				<div className="flex justify-between items-center">
 					<h2 className="text-xl font-semibold">Recent Activity</h2>
 					<p className="text-sm text-muted-foreground">
 						{filteredActivities.length} of {activities.length} activities
@@ -266,10 +270,10 @@ export default function Activity() {
 
 				{filteredActivities.length === 0 ? (
 					<Card>
-						<CardContent className="flex flex-col items-center justify-center py-12">
-							<Search className="w-12 h-12 text-muted-foreground mb-4" />
-							<h3 className="text-lg font-medium mb-2">No activities found</h3>
-							<p className="text-muted-foreground text-center">Try adjusting your search or filters to find what you&apos;re looking for.</p>
+						<CardContent className="flex flex-col justify-center items-center py-12">
+							<Search className="mb-4 w-12 h-12 text-muted-foreground" />
+							<h3 className="mb-2 text-lg font-medium">No activities found</h3>
+							<p className="text-center text-muted-foreground">Try adjusting your search or filters to find what you&apos;re looking for.</p>
 						</CardContent>
 					</Card>
 				) : (
@@ -277,19 +281,19 @@ export default function Activity() {
 						{filteredActivities.map((activity) => {
 							const IconComponent = activity.icon;
 							return (
-								<Card key={activity.id} className="hover:shadow-md transition-shadow">
+								<Card key={activity.id} className="transition-shadow hover:shadow-md">
 									<CardContent className="p-6">
 										<div className="flex items-start space-x-4">
 											<div className="flex-shrink-0">
-												<div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+												<div className="flex justify-center items-center w-10 h-10 rounded-full bg-primary/10">
 													<IconComponent className="w-5 h-5 text-primary" />
 												</div>
 											</div>
 
 											<div className="flex-1 min-w-0">
-												<div className="flex items-start justify-between">
+												<div className="flex justify-between items-start">
 													<div className="flex-1">
-														<div className="flex items-center space-x-2 mb-2">
+														<div className="flex items-center mb-2 space-x-2">
 															<h3 className="text-lg font-medium">{activity.title}</h3>
 															<Badge variant="outline" className="text-xs">
 																{getTypeLabel(activity.type)}
@@ -297,7 +301,7 @@ export default function Activity() {
 															<Badge className={`text-xs ${getStatusColor(activity.status)}`}>{activity.status}</Badge>
 														</div>
 
-														<p className="text-muted-foreground mb-3">{activity.description}</p>
+														<p className="mb-3 text-muted-foreground">{activity.description}</p>
 
 														<div className="flex items-center space-x-4 text-sm text-muted-foreground">
 															<div className="flex items-center space-x-1">
@@ -310,7 +314,7 @@ export default function Activity() {
 															</div>
 															{activity.rating && (
 																<div className="flex items-center space-x-1">
-																	<Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+																	<Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
 																	<span>{activity.rating}/5</span>
 																</div>
 															)}
@@ -318,7 +322,7 @@ export default function Activity() {
 														</div>
 
 														{activity.blockchainHash && (
-															<div className="mt-3 p-2 bg-green-50 dark:bg-green-900/20 rounded-md">
+															<div className="p-2 mt-3 bg-green-50 rounded-md dark:bg-green-900/20">
 																<div className="flex items-center space-x-2 text-xs">
 																	<div className="w-2 h-2 bg-green-500 rounded-full"></div>
 																	<span className="text-green-700 dark:text-green-300">Blockchain Verified</span>
@@ -352,7 +356,7 @@ export default function Activity() {
 													</div>
 												</div>
 
-												<div className="mt-4 flex items-center justify-between">
+												<div className="flex justify-between items-center mt-4">
 													<div className="flex items-center space-x-2">
 														<Avatar className="w-6 h-6">
 															<AvatarFallback className="text-xs">
@@ -367,7 +371,7 @@ export default function Activity() {
 
 													<Link href={`/biz/${activity.id}`} passHref>
 														<Button variant="outline" size="sm">
-															<ExternalLink className="w-4 h-4 mr-2" />
+															<ExternalLink className="mr-2 w-4 h-4" />
 															View Business
 														</Button>
 													</Link>

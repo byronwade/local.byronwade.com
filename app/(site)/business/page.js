@@ -4,26 +4,6 @@ import { CheckCircle, BarChart, MessageSquare, Megaphone } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-export const metadata = {
-	title: "Thorbis for Business | Grow Your Local Business",
-	description: "Access a suite of free tools to manage your online presence, respond to reviews, and reach new customers on Thorbis. Claim your business page today.",
-	keywords: ["business tools", "thorbis for business", "local business marketing", "customer engagement", "online presence", "claim business"],
-	openGraph: {
-		title: "Thorbis for Business | Grow Your Local Business",
-		description: "Supercharge your growth with Thorbis. Connect with customers, manage your reputation, and track your success with our powerful business tools.",
-		url: "https://local.byronwade.com/business",
-		type: "website",
-		images: [
-			{
-				url: "https://local.byronwade.com/og-business.png", // Placeholder
-				width: 1200,
-				height: 630,
-				alt: "Tools for Business Growth on Thorbis",
-			},
-		],
-	},
-};
-
 const features = [
 	{
 		icon: <CheckCircle className="w-8 h-8 text-primary" />,
@@ -47,39 +27,108 @@ const features = [
 	},
 ];
 
-const jsonLd = {
-	"@context": "https://schema.org",
-	"@type": "WebPage",
-	name: "Thorbis for Business",
-	url: "https://local.byronwade.com/business",
-	description: "A comprehensive suite of tools for businesses to manage their online presence on Thorbis.",
-	mainEntity: {
-		"@type": "ItemList",
-		name: "Business Features",
-		itemListElement: features.map((feature, index) => ({
-			"@type": "ListItem",
-			position: index + 1,
-			item: {
-				"@type": "Service",
-				name: feature.title,
-				description: feature.description,
+export const metadata = {
+	title: "Grow Your Business with Thorbis - Free Business Listings & Marketing Tools",
+	description: "Claim your free business page on Thorbis and connect with millions of potential customers. Manage reviews, track analytics, and grow your local business.",
+	keywords: ["business listings", "free business page", "local business marketing", "customer reviews", "business analytics", "claim business"],
+	openGraph: {
+		title: "Grow Your Business with Thorbis - Free Business Listings & Marketing Tools",
+		description: "Claim your free business page on Thorbis and connect with millions of potential customers. Manage reviews, track analytics, and grow your local business.",
+		url: "https://local.byronwade.com/business",
+		siteName: "Thorbis",
+		images: [
+			{
+				url: "https://local.byronwade.com/og-business.jpg",
+				width: 1200,
+				height: 630,
+				alt: "Thorbis Business Solutions",
 			},
-		})),
+		],
+		locale: "en_US",
+		type: "website",
+	},
+	twitter: {
+		card: "summary_large_image",
+		title: "Grow Your Business with Thorbis",
+		description: "Claim your free business page and connect with millions of potential customers.",
+		images: ["https://local.byronwade.com/og-business.jpg"],
+	},
+	alternates: {
+		canonical: "https://local.byronwade.com/business",
 	},
 };
 
 export default function BusinessPage() {
+	const jsonLd = {
+		"@context": "https://schema.org",
+		"@type": "Service",
+		name: "Thorbis Business Solutions",
+		description: "Comprehensive business listing and marketing tools to help local businesses connect with customers and grow their online presence.",
+		provider: {
+			"@type": "Organization",
+			name: "Thorbis",
+			logo: "https://local.byronwade.com/ThorbisLogo.webp",
+			url: "https://local.byronwade.com",
+		},
+		serviceType: "Business Listing Service",
+		areaServed: "United States",
+		hasOfferCatalog: {
+			"@type": "OfferCatalog",
+			name: "Business Tools",
+			itemListElement: [
+				{
+					"@type": "Offer",
+					itemOffered: {
+						"@type": "Service",
+						name: "Free Business Page",
+						description: "Claim and manage your free business listing page",
+					},
+					price: "0",
+					priceCurrency: "USD",
+				},
+				{
+					"@type": "Offer",
+					itemOffered: {
+						"@type": "Service",
+						name: "Review Management",
+						description: "Respond to customer reviews and manage your online reputation",
+					},
+				},
+				{
+					"@type": "Offer",
+					itemOffered: {
+						"@type": "Service",
+						name: "Business Analytics",
+						description: "Track page views, customer leads, and business insights",
+					},
+				},
+				{
+					"@type": "Offer",
+					itemOffered: {
+						"@type": "Service",
+						name: "Advertising Solutions",
+						description: "Reach more customers with targeted advertising",
+					},
+				},
+			],
+		},
+		audience: {
+			"@type": "BusinessAudience",
+			audienceType: "Local Businesses",
+		},
+	};
+
 	return (
 		<>
 			<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 			<div className="bg-background text-foreground">
 				{/* Hero Section */}
-				<div className="relative isolate overflow-hidden">
-					<div className="absolute inset-0 bg-gradient-to-b from-primary/10 to-transparent" />
-					<div className="py-24 px-4 lg:px-24 max-w-5xl mx-auto text-center">
-						<h1 className="text-4xl md:text-6xl font-extrabold tracking-tighter">Grow Your Business with Thorbis</h1>
-						<p className="mt-4 text-lg md:text-xl max-w-3xl mx-auto text-muted-foreground">Connect with millions of potential customers searching for businesses like yours.</p>
-						<div className="mt-8 flex justify-center gap-4">
+				<div className="isolate overflow-hidden relative">
+					<div className="absolute inset-0 bg-gradient-to-b to-transparent from-primary/10" />
+					<div className="px-4 py-24 mx-auto max-w-5xl text-center lg:px-24">
+						<h1 className="text-4xl font-extrabold tracking-tighter md:text-6xl">Grow Your Business with Thorbis</h1>
+						<p className="mx-auto mt-4 max-w-3xl text-lg md:text-xl text-muted-foreground">Connect with millions of potential customers searching for businesses like yours.</p>
+						<div className="flex gap-4 justify-center mt-8">
 							<Button asChild size="lg">
 								<Link href="/claim-a-business">Get Started for Free</Link>
 							</Button>
@@ -88,16 +137,16 @@ export default function BusinessPage() {
 				</div>
 
 				{/* Features Section */}
-				<div className="py-24 px-4 lg:px-24">
-					<div className="max-w-5xl mx-auto">
-						<h2 className="text-3xl font-bold tracking-tight text-center mb-16">Everything You Need to Succeed</h2>
-						<div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+				<div className="px-4 py-24 lg:px-24">
+					<div className="mx-auto max-w-5xl">
+						<h2 className="mb-16 text-3xl font-bold tracking-tight text-center">Everything You Need to Succeed</h2>
+						<div className="grid grid-cols-1 gap-10 md:grid-cols-2">
 							{features.map((feature) => (
-								<div key={feature.title} className="flex items-start gap-6">
+								<div key={feature.title} className="flex gap-6 items-start">
 									<div className="flex-shrink-0">{feature.icon}</div>
 									<div>
 										<h3 className="text-lg font-semibold">{feature.title}</h3>
-										<p className="text-muted-foreground mt-1">{feature.description}</p>
+										<p className="mt-1 text-muted-foreground">{feature.description}</p>
 									</div>
 								</div>
 							))}
@@ -106,9 +155,9 @@ export default function BusinessPage() {
 				</div>
 
 				{/* Testimonial Section */}
-				<div className="bg-muted py-24 px-4 lg:px-24">
-					<div className="max-w-4xl mx-auto text-center">
-						<p className="text-2xl font-serif italic">&quot;Claiming our Thorbis page was a game-changer. We saw a 30% increase in customer calls within the first month.&quot;</p>
+				<div className="px-4 py-24 bg-muted lg:px-24">
+					<div className="mx-auto max-w-4xl text-center">
+						<p className="font-serif text-2xl italic">&quot;Claiming our Thorbis page was a game-changer. We saw a 30% increase in customer calls within the first month.&quot;</p>
 						<p className="mt-6 font-semibold">Jane Doe, Owner of Springfield Bakery</p>
 					</div>
 				</div>

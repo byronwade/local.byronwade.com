@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Head from "next/head";
 import Link from "next/link";
 import { UserPlus, Check, X, Users, Building, Calendar, Rss, Handshake, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -165,85 +164,65 @@ export default function ManageNetworkPage() {
 	const [pages] = useState(networkManagementData.pages);
 	const [events] = useState(networkManagementData.events);
 
-	const jsonLd = {
-		"@context": "https://schema.org",
-		"@type": "WebPage",
-		name: "Manage My Network",
-		description: "Manage your network connections, followers, and the pages you follow.",
-		mainEntity: {
-			"@type": "Person",
-			name: "Byron Wade",
-			interactionStatistic: [
-				{
-					"@type": "InteractionCounter",
-					interactionType: "https://schema.org/FollowAction",
-					userInteractionCount: followers.length,
-				},
-				{
-					"@type": "InteractionCounter",
-					interactionType: "https://schema.org/FollowAction",
-					userInteractionCount: following.length,
-				},
-			],
-		},
-	};
-
 	return (
-		<div>
-			<Head>
-				<title>Manage My Network | Localbyronwade</title>
-				<meta name="description" content="Manage your network connections, followers, and the pages you follow." />
-				<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-			</Head>
-			<div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-				{/* Left Column - Management Panel */}
-				<div className="md:col-span-1">
-					<Card>
-						<CardHeader>
-							<CardTitle>Manage my network</CardTitle>
-						</CardHeader>
-						<CardContent className="space-y-1">
-							<Button variant="ghost" className="w-full justify-start gap-3">
-								<Users className="w-4 h-4" /> Followers <Badge variant="secondary">{followers.length}</Badge>
-							</Button>
-							<Button variant="ghost" className="w-full justify-start gap-3">
-								<UserCheck className="w-4 h-4" /> Following <Badge variant="secondary">{following.length}</Badge>
-							</Button>
-							<Button variant="ghost" className="w-full justify-start gap-3">
-								<Building className="w-4 h-4" /> Pages <Badge variant="secondary">{pages.length}</Badge>
-							</Button>
-							<Button variant="ghost" className="w-full justify-start gap-3">
-								<Calendar className="w-4 h-4" /> Events <Badge variant="secondary">{events.length}</Badge>
-							</Button>
-							<Button variant="ghost" className="w-full justify-start gap-3">
-								<Rss className="w-4 h-4" /> Newsletters
-							</Button>
-							<Button variant="ghost" className="w-full justify-start gap-3">
-								<Handshake className="w-4 h-4" /> Contacts
-							</Button>
-						</CardContent>
-					</Card>
-				</div>
+		<div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+			{/* Left Column - Management Panel */}
+			<div className="md:col-span-1">
+				<Card>
+					<CardHeader>
+						<CardTitle>Manage my network</CardTitle>
+					</CardHeader>
+					<CardContent className="space-y-1">
+						<Button variant="ghost" className="w-full justify-start gap-3">
+							<Users className="w-4 h-4" /> Followers <Badge variant="secondary">{followers.length}</Badge>
+						</Button>
+						<Button variant="ghost" className="w-full justify-start gap-3">
+							<UserCheck className="w-4 h-4" /> Following <Badge variant="secondary">{following.length}</Badge>
+						</Button>
+						<Button variant="ghost" className="w-full justify-start gap-3">
+							<Building className="w-4 h-4" /> Pages <Badge variant="secondary">{pages.length}</Badge>
+						</Button>
+						<Button variant="ghost" className="w-full justify-start gap-3">
+							<Calendar className="w-4 h-4" /> Events <Badge variant="secondary">{events.length}</Badge>
+						</Button>
+						<Button variant="ghost" className="w-full justify-start gap-3">
+							<Rss className="w-4 h-4" /> Newsletters
+						</Button>
+						<Button variant="ghost" className="w-full justify-start gap-3">
+							<Handshake className="w-4 h-4" /> Contacts
+						</Button>
+					</CardContent>
+				</Card>
+			</div>
 
-				{/* Right Column - Main Content */}
-				<div className="md:col-span-3 space-y-6">
-					<div>
-						<h2 className="text-2xl font-bold mb-4">Followers ({followers.length})</h2>
+			{/* Right Column - Main Content */}
+			<div className="md:col-span-3">
+				<Tabs defaultValue="following">
+					<div className="flex justify-between items-center mb-4">
+						<TabsList>
+							<TabsTrigger value="followers">Followers ({followers.length})</TabsTrigger>
+							<TabsTrigger value="following">Following ({following.length})</TabsTrigger>
+						</TabsList>
+						<div className="relative w-64">
+							<Input placeholder="Search..." className="pl-8" />
+							<Search className="absolute left-2 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+						</div>
+					</div>
+					<TabsContent value="followers">
 						<div className="space-y-4">
 							{followers.map((user) => (
 								<UserCard key={user.id} user={user} />
 							))}
 						</div>
-					</div>
-					<div>
-						<h2 className="text-2xl font-bold mb-4">Following ({following.length})</h2>
+					</TabsContent>
+					<TabsContent value="following">
 						<div className="space-y-4">
 							{following.map((user) => (
 								<UserCard key={user.id} user={user} />
 							))}
 						</div>
-					</div>
-				</div>
+					</TabsContent>
+				</Tabs>
 			</div>
 		</div>
 	);

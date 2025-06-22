@@ -1,30 +1,85 @@
 export const metadata = {
-	title: "Privacy Policy",
-	description: "Learn how we collect, use, and share your personal information.",
+	title: "Privacy Policy - How We Protect Your Data | Thorbis",
+	description: "Read Thorbis's privacy policy to understand how we collect, use, and protect your personal information. Learn about your privacy rights and data choices.",
+	keywords: ["privacy policy", "data protection", "personal information", "user privacy", "data collection", "privacy rights"],
+	openGraph: {
+		title: "Privacy Policy - How We Protect Your Data | Thorbis",
+		description: "Read Thorbis's privacy policy to understand how we collect, use, and protect your personal information. Learn about your privacy rights and data choices.",
+		url: "https://local.byronwade.com/privacy",
+		siteName: "Thorbis",
+		images: [
+			{
+				url: "https://local.byronwade.com/og-privacy.jpg",
+				width: 1200,
+				height: 630,
+				alt: "Thorbis Privacy Policy",
+			},
+		],
+		locale: "en_US",
+		type: "website",
+	},
+	twitter: {
+		card: "summary_large_image",
+		title: "Privacy Policy - Thorbis",
+		description: "Learn how we protect your data and respect your privacy on Thorbis.",
+		images: ["https://local.byronwade.com/og-privacy.jpg"],
+	},
+	alternates: {
+		canonical: "https://local.byronwade.com/privacy",
+	},
 };
 
 export default function PrivacyPage() {
 	const jsonLd = {
 		"@context": "https://schema.org",
-		"@type": "Article",
-		headline: metadata.title,
-		description: metadata.description,
-		author: {
-			"@type": "Organization",
-			name: "Inbox Zero",
-		},
-		publisher: {
-			"@type": "Organization",
-			name: "Inbox Zero",
-			logo: {
-				"@type": "ImageObject",
-				url: "https://local.byronwade.com/logo-placeholder.png",
-			},
-		},
+		"@type": "WebPage",
+		name: "Privacy Policy",
+		description: "Thorbis privacy policy explaining how we collect, use, and protect your personal information",
 		url: "https://local.byronwade.com/privacy",
-		datePublished: "2023-10-26",
 		dateModified: "2023-10-26",
+		mainEntity: {
+			"@type": "Article",
+			headline: "Privacy Policy",
+			description: "How Thorbis collects, uses, and shares your personal information",
+			datePublished: "2023-10-26",
+			dateModified: "2023-10-26",
+			author: {
+				"@type": "Organization",
+				name: "Thorbis",
+			},
+			publisher: {
+				"@type": "Organization",
+				name: "Thorbis",
+				logo: {
+					"@type": "ImageObject",
+					url: "https://local.byronwade.com/ThorbisLogo.webp",
+				},
+			},
+			about: ["Data Privacy", "Personal Information Protection", "User Rights", "Data Collection Practices", "Information Security"],
+		},
+		breadcrumb: {
+			"@type": "BreadcrumbList",
+			itemListElement: [
+				{
+					"@type": "ListItem",
+					position: 1,
+					item: {
+						"@id": "https://local.byronwade.com",
+						name: "Thorbis",
+					},
+				},
+				{
+					"@type": "ListItem",
+					position: 2,
+					item: {
+						"@id": "https://local.byronwade.com/privacy",
+						name: "Privacy Policy",
+					},
+				},
+			],
+		},
 	};
+
 	return (
 		<>
 			<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Head from "next/head";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -41,48 +40,8 @@ const Rating = ({ rating }) => (
 );
 
 export default function CompanyReviewsPage() {
-	const jsonLd = {
-		"@context": "https://schema.org",
-		"@type": "WebPage",
-		name: "Company Reviews",
-		description: "Get the inside scoop on companies with employee reviews.",
-		url: "https://local.byronwade.com/reviews",
-		mainEntity: {
-			"@type": "ItemList",
-			name: "Featured Reviews",
-			itemListElement: mockReviews.map((review, index) => ({
-				"@type": "ListItem",
-				position: index + 1,
-				item: {
-					"@type": "Review",
-					itemReviewed: {
-						"@type": "Organization",
-						name: review.company,
-						image: review.logo,
-					},
-					reviewRating: {
-						"@type": "Rating",
-						ratingValue: review.rating,
-						bestRating: "5",
-					},
-					name: review.title,
-					reviewBody: review.review,
-					author: {
-						"@type": "Person",
-						name: review.author,
-					},
-				},
-			})),
-		},
-	};
-
 	return (
 		<div className="space-y-8">
-			<Head>
-				<title>Company Reviews</title>
-				<meta name="description" content="Get the inside scoop on companies with employee reviews." />
-				<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-			</Head>
 			<Card className="text-center p-8 bg-card/80">
 				<CardHeader>
 					<CardTitle className="text-3xl">Find great places to work</CardTitle>

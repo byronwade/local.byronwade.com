@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
@@ -75,6 +75,14 @@ export default function JobsPage() {
 	const [filterStatus, setFilterStatus] = useState("all");
 	const [selectedJobs, setSelectedJobs] = useState([]);
 	const [selectAll, setSelectAll] = useState(false);
+
+	React.useEffect(() => {
+		document.title = "My Jobs - User Dashboard - Thorbis";
+	}, []);
+
+	useEffect(() => {
+		document.title = "My Jobs - User Dashboard - Thorbis";
+	}, []);
 
 	const filteredJobs = mockJobs.filter((job) => {
 		const matchesSearch = job.title.toLowerCase().includes(searchQuery.toLowerCase()) || job.category.toLowerCase().includes(searchQuery.toLowerCase());

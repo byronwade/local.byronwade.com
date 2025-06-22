@@ -1,37 +1,28 @@
 "use client";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import Link from "next/link";
-import Head from "next/head";
 
 export default function BusinessOwnerLoginPage() {
-	const pageTitle = "Business Owner Login";
-	const pageDescription = "Access your business dashboard.";
-	const pageUrl = "https://local.byronwade.com/business-owner-login";
+	const jsonLd = {
+		"@context": "https://schema.org",
+		"@type": "WebPage",
+		name: "Business Owner Login",
+		description: "Secure login portal for business owners to access their Thorbis dashboard",
+		url: "https://local.byronwade.com/business-owner-login",
+		mainEntity: {
+			"@type": "WebApplication",
+			name: "Thorbis Business Dashboard",
+			description: "Business management portal for managing profiles, reviews, and analytics",
+			applicationCategory: "BusinessApplication",
+		},
+	};
+
 	return (
 		<>
-			<Head>
-				<title>{pageTitle}</title>
-				<meta name="description" content={pageDescription} />
-				<script
-					type="application/ld+json"
-					dangerouslySetInnerHTML={{
-						__html: JSON.stringify({
-							"@context": "https://schema.org",
-							"@type": "WebPage",
-							name: pageTitle,
-							description: pageDescription,
-							url: pageUrl,
-							isPartOf: {
-								"@type": "WebSite",
-								name: "Inbox Zero",
-								url: "https://local.byronwade.com",
-							},
-						}),
-					}}
-				/>
-			</Head>
+			<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 			<div className="flex items-center justify-center min-h-screen bg-muted">
 				<Card className="w-full max-w-md">
 					<CardHeader className="text-center">

@@ -2,6 +2,7 @@ import "./globals.css";
 import { Inter as FontSans } from "next/font/google";
 import { ThemeProvider } from "@context/ThemeContext";
 import { Toaster } from "@components/ui/toaster";
+import ErrorBoundary from "@components/shared/ErrorBoundary";
 import { cn } from "@utils";
 
 import { AuthProvider } from "@context/AuthContext";
@@ -16,12 +17,14 @@ export default function RootLayout({ children }) {
 		<html lang="en" suppressHydrationWarning>
 			<head />
 			<body className={cn("min-h-screen bg-background text-foreground font-sans antialiased", fontSans.variable)}>
-				<ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange storageKey="thorbis-theme">
-					<AuthProvider>
-						{children}
-						<Toaster />
-					</AuthProvider>
-				</ThemeProvider>
+				<ErrorBoundary>
+					<ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange storageKey="thorbis-theme">
+						<AuthProvider>
+							{children}
+							<Toaster />
+						</AuthProvider>
+					</ThemeProvider>
+				</ErrorBoundary>
 			</body>
 		</html>
 	);

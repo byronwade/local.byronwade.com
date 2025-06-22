@@ -3,11 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 
-export const metadata = {
-	title: "Trust & Safety",
-	description: "Learn how we work to keep our community safe and secure.",
-};
-
 const safetyPillars = [
 	{
 		icon: <ShieldCheck className="w-8 h-8 text-primary" />,
@@ -26,32 +21,85 @@ const safetyPillars = [
 	},
 ];
 
+export const metadata = {
+	title: "Trust & Safety - Platform Security & Community Protection | Thorbis",
+	description: "Learn about Thorbis's trust and safety measures. We protect user data, maintain content guidelines, and provide reporting tools to keep our community safe.",
+	keywords: ["trust and safety", "platform security", "community protection", "content moderation", "user safety", "data protection"],
+	openGraph: {
+		title: "Trust & Safety - Platform Security & Community Protection | Thorbis",
+		description: "Learn about Thorbis's trust and safety measures. We protect user data, maintain content guidelines, and provide reporting tools to keep our community safe.",
+		url: "https://local.byronwade.com/trust-safety",
+		siteName: "Thorbis",
+		images: [
+			{
+				url: "https://local.byronwade.com/og-trust-safety.jpg",
+				width: 1200,
+				height: 630,
+				alt: "Thorbis Trust & Safety",
+			},
+		],
+		locale: "en_US",
+		type: "website",
+	},
+	twitter: {
+		card: "summary_large_image",
+		title: "Trust & Safety - Thorbis",
+		description: "Learn about our trust and safety measures to protect our community.",
+		images: ["https://local.byronwade.com/og-trust-safety.jpg"],
+	},
+	alternates: {
+		canonical: "https://local.byronwade.com/trust-safety",
+	},
+};
+
 export default function TrustSafetyPage() {
 	const jsonLd = {
 		"@context": "https://schema.org",
 		"@type": "WebPage",
-		name: metadata.title,
-		description: metadata.description,
+		name: "Trust & Safety",
+		description: "Trust and safety measures to protect the Thorbis community",
 		url: "https://local.byronwade.com/trust-safety",
-		isPartOf: {
-			"@type": "WebSite",
-			name: "Inbox Zero",
-			url: "https://local.byronwade.com",
-		},
 		mainEntity: {
-			"@type": "ItemList",
-			name: "Safety Pillars",
-			itemListElement: safetyPillars.map((pillar, index) => ({
-				"@type": "ListItem",
-				position: index + 1,
-				item: {
-					"@type": "Thing",
-					name: pillar.title,
-					description: pillar.description,
+			"@type": "Article",
+			headline: "Trust & Safety",
+			description: "Platform security and community protection measures",
+			author: {
+				"@type": "Organization",
+				name: "Thorbis",
+			},
+			publisher: {
+				"@type": "Organization",
+				name: "Thorbis",
+				logo: {
+					"@type": "ImageObject",
+					url: "https://local.byronwade.com/ThorbisLogo.webp",
 				},
-			})),
+			},
+			about: safetyPillars.map((pillar) => pillar.title),
+		},
+		breadcrumb: {
+			"@type": "BreadcrumbList",
+			itemListElement: [
+				{
+					"@type": "ListItem",
+					position: 1,
+					item: {
+						"@id": "https://local.byronwade.com",
+						name: "Thorbis",
+					},
+				},
+				{
+					"@type": "ListItem",
+					position: 2,
+					item: {
+						"@id": "https://local.byronwade.com/trust-safety",
+						name: "Trust & Safety",
+					},
+				},
+			],
 		},
 	};
+
 	return (
 		<>
 			<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />

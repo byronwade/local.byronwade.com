@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
@@ -94,6 +94,10 @@ export default function ManageDirectories() {
 	const [filterStatus, setFilterStatus] = useState("all");
 	const [sortBy, setSortBy] = useState("name");
 	const [sortOrder, setSortOrder] = useState("asc");
+
+	useEffect(() => {
+		document.title = "Manage Directories - LocalHub - Thorbis";
+	}, []);
 
 	// Filter and sort directories
 	const filteredDirectories = directories

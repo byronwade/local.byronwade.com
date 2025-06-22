@@ -5,41 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-export const metadata = {
-	title: "About Thorbis | Our Story, Mission, and Team",
-	description: "Learn about Thorbis, our mission to empower local businesses, and the team driving the change. Discover our story and commitment to building stronger communities.",
-	keywords: ["about us", "thorbis", "local business", "community", "mission", "company story"],
-	openGraph: {
-		title: "About Thorbis | Our Story, Mission, and Team",
-		description: "Discover the story behind Thorbis, our mission to connect communities, and the leaders dedicated to empowering local businesses.",
-		url: "https://local.byronwade.com/about-us",
-		type: "website",
-		images: [
-			{
-				url: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?q=80&w=1200",
-				width: 1200,
-				height: 630,
-				alt: "The Thorbis Team",
-			},
-		],
-	},
-};
-
-const jsonLd = {
-	"@context": "https://schema.org",
-	"@type": "Organization",
-	name: "Thorbis",
-	url: "https://local.byronwade.com",
-	logo: "https://local.byronwade.com/logo.png", // Placeholder
-	description: "Thorbis is a platform dedicated to connecting local businesses with their communities, fostering economic growth and stronger neighborhoods.",
-	sameAs: ["https://www.linkedin.com/in/byron-wade-8b5b5a1b3/"],
-	contactPoint: {
-		"@type": "ContactPoint",
-		telephone: "+1-800-555-0199", // Placeholder
-		contactType: "customer service",
-	},
-};
-
 const leaders = [
 	{
 		name: "Byron Wade",
@@ -64,7 +29,63 @@ const stats = [
 	{ value: "99%", label: "Satisfaction Rate" },
 ];
 
+export const metadata = {
+	title: "About Thorbis - Local Business Platform & Community Partner",
+	description: "Learn about Thorbis's mission to empower local businesses and connect communities. Discover our story, values, and commitment to supporting small businesses.",
+	keywords: ["about thorbis", "local business platform", "community support", "small business empowerment", "local commerce"],
+	authors: [{ name: "Byron Wade" }],
+	openGraph: {
+		title: "About Thorbis - Local Business Platform & Community Partner",
+		description: "Learn about Thorbis's mission to empower local businesses and connect communities. Discover our story, values, and commitment to supporting small businesses.",
+		url: "https://local.byronwade.com/about-us",
+		siteName: "Thorbis",
+		images: [
+			{
+				url: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=2832&auto=format&fit=crop",
+				width: 1200,
+				height: 630,
+				alt: "Thorbis team collaboration",
+			},
+		],
+		locale: "en_US",
+		type: "website",
+	},
+	twitter: {
+		card: "summary_large_image",
+		title: "About Thorbis - Local Business Platform & Community Partner",
+		description: "Learn about Thorbis's mission to empower local businesses and connect communities.",
+		images: ["https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=2832&auto=format&fit=crop"],
+	},
+	alternates: {
+		canonical: "https://local.byronwade.com/about-us",
+	},
+};
+
 export default function AboutPage() {
+	const jsonLd = {
+		"@context": "https://schema.org",
+		"@type": "Organization",
+		name: "Thorbis",
+		description: "Thorbis is a local business platform that empowers small businesses and connects communities through innovative technology and community-first approach.",
+		url: "https://local.byronwade.com",
+		logo: "https://local.byronwade.com/ThorbisLogo.webp",
+		foundingDate: "2024",
+		founder: {
+			"@type": "Person",
+			name: "Byron Wade",
+			jobTitle: "Founder & Visionary",
+			url: "https://www.linkedin.com/in/byron-wade-8b5b5a1b3/",
+		},
+		address: {
+			"@type": "PostalAddress",
+			addressLocality: "United States",
+			addressCountry: "US",
+		},
+		sameAs: ["https://www.linkedin.com/in/byron-wade-8b5b5a1b3/"],
+		knowsAbout: ["Local Business Directory", "Community Support", "Small Business Empowerment", "Local Commerce"],
+		mission: "Empowering local businesses and fostering community connections through innovative technology.",
+	};
+
 	return (
 		<>
 			<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />

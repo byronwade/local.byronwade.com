@@ -13,6 +13,10 @@ import { Plus, Eye, Settings, TrendingUp, Users, Phone, MessageSquare, MapPin, C
 export default function AdsPage() {
 	const [activeTab, setActiveTab] = useState("overview");
 
+	React.useEffect(() => {
+		document.title = "Thorbis Ads - Business Dashboard - Thorbis";
+	}, []);
+
 	// Mock active ad data
 	const activeAds = [
 		{

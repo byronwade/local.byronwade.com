@@ -1,10 +1,5 @@
 import JobsClient from "./JobsClient";
 
-export const metadata = {
-	title: "Find Jobs",
-	description: "Search for jobs in your area.",
-};
-
 const mockJobs = [
 	{
 		id: "job1",
@@ -47,48 +42,6 @@ const mockJobs = [
 export default async function JobsPage() {
 	// In a real application, you would fetch jobs from an API
 	const jobs = mockJobs;
-	const jsonLd = {
-		"@context": "https://schema.org",
-		"@type": "ItemList",
-		name: "Job Listings",
-		itemListElement: jobs.map((job, index) => ({
-			"@type": "ListItem",
-			position: index + 1,
-			item: {
-				"@type": "JobPosting",
-				title: job.title,
-				description: job.description,
-				hiringOrganization: {
-					"@type": "Organization",
-					name: job.company,
-					logo: job.logo,
-				},
-				employmentType: job.type.toUpperCase(),
-				datePosted: job.posted,
-				jobLocation: {
-					"@type": "Place",
-					address: {
-						"@type": "PostalAddress",
-						addressLocality: job.location,
-					},
-				},
-				baseSalary: {
-					"@type": "MonetaryAmount",
-					currency: "USD",
-					value: {
-						"@type": "QuantitativeValue",
-						value: job.salary.split(" - ")[0].replace(/[^0-9]/g, ""),
-						unitText: "YEAR",
-					},
-				},
-			},
-		})),
-	};
 
-	return (
-		<>
-			<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-			<JobsClient jobs={jobs} />
-		</>
-	);
+	return <JobsClient jobs={jobs} />;
 }

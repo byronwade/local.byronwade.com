@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
@@ -35,6 +35,10 @@ export default function DomainsManagement() {
 	const [domains, setDomains] = useState(mockDomains);
 	const [newDomain, setNewDomain] = useState("");
 	const [isAddingDomain, setIsAddingDomain] = useState(false);
+
+	useEffect(() => {
+		document.title = "Domains & URLs - LocalHub - Thorbis";
+	}, []);
 
 	const getStatusBadge = (status) => {
 		const statusConfig = {

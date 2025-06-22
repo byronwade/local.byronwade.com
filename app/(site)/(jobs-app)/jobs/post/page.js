@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Head from "next/head";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -123,21 +122,8 @@ export default function PostJobPage() {
 
 	const progress = (step / 3) * 100;
 
-	const jsonLd = {
-		"@context": "https://schema.org",
-		"@type": "WebPage",
-		name: "Post a Job",
-		description: "Post a job to our platform and find qualified candidates.",
-		url: "https://local.byronwade.com/jobs/post",
-	};
-
 	return (
 		<div className="max-w-2xl mx-auto">
-			<Head>
-				<title>Post a Job</title>
-				<meta name="description" content="Post a job to our platform and find qualified candidates." />
-				<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-			</Head>
 			<Progress value={progress} className="mb-8" />
 			{step === 1 && <Step1 nextStep={nextStep} formData={formData} setFormData={setFormData} />}
 			{step === 2 && <Step2 nextStep={nextStep} prevStep={prevStep} formData={formData} setFormData={setFormData} />}

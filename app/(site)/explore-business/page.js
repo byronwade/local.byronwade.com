@@ -1,12 +1,17 @@
 "use client";
-import React, { useState } from "react";
-import { Button } from "@components/ui/button";
+import React, { useState, useMemo } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 import { Badge } from "@components/ui/badge";
-import { Card } from "@components/ui/card";
+import { Button } from "@components/ui/button";
 import { TrendingUp, Award, Users, Zap, CheckCircle, ArrowRight, Target, Sparkles, Building, Phone, Globe, Search, Star, Shield, Clock, Eye, MessageCircle, BarChart3, Megaphone, CreditCard, Calendar, MapPin, Crown } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 export default function ExploreBusinessPage() {
 	const [selectedSolution, setSelectedSolution] = useState(null);
+	const [searchTerm, setSearchTerm] = useState("");
+	const [selectedCategory, setSelectedCategory] = useState("all");
 
 	// Business Solutions Data
 	const businessSolutions = [
@@ -129,177 +134,214 @@ export default function ExploreBusinessPage() {
 		{ label: "Customer Satisfaction", value: "96%", description: "Client satisfaction rate" },
 	];
 
+	const jsonLd = {
+		"@context": "https://schema.org",
+		"@type": "WebPage",
+		name: "Explore Local Businesses",
+		description: "Discover and explore local businesses across various categories and locations",
+		url: "https://local.byronwade.com/explore-business",
+		mainEntity: {
+			"@type": "ItemList",
+			name: "Local Business Directory",
+			description: "Comprehensive directory of local businesses with reviews and contact information",
+		},
+		breadcrumb: {
+			"@type": "BreadcrumbList",
+			itemListElement: [
+				{
+					"@type": "ListItem",
+					position: 1,
+					item: {
+						"@id": "https://local.byronwade.com",
+						name: "Thorbis",
+					},
+				},
+				{
+					"@type": "ListItem",
+					position: 2,
+					item: {
+						"@id": "https://local.byronwade.com/explore-business",
+						name: "Explore Businesses",
+					},
+				},
+			],
+		},
+	};
+
 	return (
-		<div className="min-h-screen bg-background">
-			{/* Hero Section */}
-			<section className="px-4 py-20 mx-auto max-w-7xl sm:px-6 lg:px-8">
-				<div className="text-center">
-					<div className="inline-flex items-center px-4 py-2 mb-6 space-x-2 rounded-full bg-primary/10 text-primary border border-primary/20">
-						<TrendingUp className="w-4 h-4" />
-						<span className="text-sm font-medium">🚀 Business Solutions</span>
-					</div>
-
-					<h1 className="mb-6 text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-						Grow Your Business with <span className="text-primary">Thorbis</span>
-					</h1>
-
-					<p className="max-w-3xl mx-auto mb-10 text-lg leading-relaxed text-muted-foreground sm:text-xl">Comprehensive business solutions designed to help you attract more customers, increase revenue, and build a stronger online presence. Join thousands of successful businesses already growing with Thorbis.</p>
-
-					<div className="flex flex-col justify-center gap-4 sm:flex-row">
-						<Button size="lg" className="h-12 px-8 text-white shadow-lg bg-primary hover:bg-primary/90">
-							<Sparkles className="w-5 h-5 mr-2" />
-							Get Started Today
-						</Button>
-						<Button variant="outline" size="lg" className="h-12 px-8 border-border hover:bg-muted">
-							<Phone className="w-5 h-5 mr-2" />
-							Schedule Consultation
-						</Button>
-					</div>
-				</div>
-			</section>
-
-			{/* Stats Section */}
-			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8 bg-muted/30">
-				<div className="grid grid-cols-2 gap-8 lg:grid-cols-4">
-					{stats.map((stat, index) => (
-						<div key={index} className="text-center">
-							<div className="text-3xl font-bold text-primary lg:text-4xl">{stat.value}</div>
-							<div className="mt-1 text-sm font-medium text-foreground">{stat.label}</div>
-							<div className="mt-1 text-xs text-muted-foreground">{stat.description}</div>
+		<>
+			<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+			<div className="min-h-screen bg-background">
+				{/* Hero Section */}
+				<section className="px-4 py-20 mx-auto max-w-7xl sm:px-6 lg:px-8">
+					<div className="text-center">
+						<div className="inline-flex items-center px-4 py-2 mb-6 space-x-2 rounded-full bg-primary/10 text-primary border border-primary/20">
+							<TrendingUp className="w-4 h-4" />
+							<span className="text-sm font-medium">🚀 Business Solutions</span>
 						</div>
-					))}
-				</div>
-			</section>
 
-			{/* Business Solutions Grid */}
-			<section className="px-4 py-20 mx-auto max-w-7xl sm:px-6 lg:px-8">
-				<div className="mb-16 text-center">
-					<h2 className="mb-4 text-3xl font-bold text-foreground sm:text-4xl">Complete Business Growth Solutions</h2>
-					<p className="max-w-3xl mx-auto text-lg text-muted-foreground">Everything you need to take your business to the next level. Each solution is designed to work together for maximum impact.</p>
-				</div>
+						<h1 className="mb-6 text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+							Grow Your Business with <span className="text-primary">Thorbis</span>
+						</h1>
 
-				<div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-					{businessSolutions.map((solution) => {
-						const Icon = solution.icon;
-						const isSelected = selectedSolution === solution.id;
+						<p className="max-w-3xl mx-auto mb-10 text-lg leading-relaxed text-muted-foreground sm:text-xl">Comprehensive business solutions designed to help you attract more customers, increase revenue, and build a stronger online presence. Join thousands of successful businesses already growing with Thorbis.</p>
 
-						return (
-							<Card key={solution.id} className={`p-6 transition-all duration-300 cursor-pointer hover:shadow-xl hover:scale-105 ${isSelected ? "ring-2 ring-primary shadow-xl scale-105" : ""} ${solution.popular ? "border-primary/50 bg-primary/5" : ""}`} onClick={() => setSelectedSolution(isSelected ? null : solution.id)}>
-								{solution.popular && (
-									<div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-										<Badge className="text-white bg-primary">Most Popular</Badge>
-									</div>
-								)}
+						<div className="flex flex-col justify-center gap-4 sm:flex-row">
+							<Button size="lg" className="h-12 px-8 text-white shadow-lg bg-primary hover:bg-primary/90">
+								<Sparkles className="w-5 h-5 mr-2" />
+								Get Started Today
+							</Button>
+							<Button variant="outline" size="lg" className="h-12 px-8 border-border hover:bg-muted">
+								<Phone className="w-5 h-5 mr-2" />
+								Schedule Consultation
+							</Button>
+						</div>
+					</div>
+				</section>
 
-								<div className="relative">
-									<div className={`inline-flex items-center justify-center w-12 h-12 mb-4 rounded-xl ${solution.color}`}>
-										<Icon className="w-6 h-6 text-white" />
-									</div>
+				{/* Stats Section */}
+				<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8 bg-muted/30">
+					<div className="grid grid-cols-2 gap-8 lg:grid-cols-4">
+						{stats.map((stat, index) => (
+							<div key={index} className="text-center">
+								<div className="text-3xl font-bold text-primary lg:text-4xl">{stat.value}</div>
+								<div className="mt-1 text-sm font-medium text-foreground">{stat.label}</div>
+								<div className="mt-1 text-xs text-muted-foreground">{stat.description}</div>
+							</div>
+						))}
+					</div>
+				</section>
 
-									<h3 className="mb-2 text-xl font-bold text-foreground">{solution.title}</h3>
-									<p className="mb-3 text-sm font-medium text-primary">{solution.subtitle}</p>
-									<p className="mb-4 leading-relaxed text-muted-foreground">{solution.description}</p>
+				{/* Business Solutions Grid */}
+				<section className="px-4 py-20 mx-auto max-w-7xl sm:px-6 lg:px-8">
+					<div className="mb-16 text-center">
+						<h2 className="mb-4 text-3xl font-bold text-foreground sm:text-4xl">Complete Business Growth Solutions</h2>
+						<p className="max-w-3xl mx-auto text-lg text-muted-foreground">Everything you need to take your business to the next level. Each solution is designed to work together for maximum impact.</p>
+					</div>
 
-									{isSelected && (
-										<div className="mb-4 space-y-2">
-											{solution.features.map((feature, index) => (
-												<div key={index} className="flex items-center space-x-2">
-													<CheckCircle className="flex-shrink-0 w-4 h-4 text-green-500" />
-													<span className="text-sm text-foreground">{feature}</span>
-												</div>
-											))}
+					<div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+						{businessSolutions.map((solution) => {
+							const Icon = solution.icon;
+							const isSelected = selectedSolution === solution.id;
+
+							return (
+								<Card key={solution.id} className={`p-6 transition-all duration-300 cursor-pointer hover:shadow-xl hover:scale-105 ${isSelected ? "ring-2 ring-primary shadow-xl scale-105" : ""} ${solution.popular ? "border-primary/50 bg-primary/5" : ""}`} onClick={() => setSelectedSolution(isSelected ? null : solution.id)}>
+									{solution.popular && (
+										<div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+											<Badge className="text-white bg-primary">Most Popular</Badge>
 										</div>
 									)}
 
-									<div className="flex items-center justify-between pt-4 border-t border-border">
-										<div>
-											<p className="text-sm font-medium text-foreground">{solution.pricing}</p>
+									<div className="relative">
+										<div className={`inline-flex items-center justify-center w-12 h-12 mb-4 rounded-xl ${solution.color}`}>
+											<Icon className="w-6 h-6 text-white" />
 										</div>
-										<Button size="sm" className="bg-primary hover:bg-primary/90">
-											{isSelected ? "Get Started" : "Learn More"}
-											<ArrowRight className="w-4 h-4 ml-2" />
-										</Button>
+
+										<h3 className="mb-2 text-xl font-bold text-foreground">{solution.title}</h3>
+										<p className="mb-3 text-sm font-medium text-primary">{solution.subtitle}</p>
+										<p className="mb-4 leading-relaxed text-muted-foreground">{solution.description}</p>
+
+										{isSelected && (
+											<div className="mb-4 space-y-2">
+												{solution.features.map((feature, index) => (
+													<div key={index} className="flex items-center space-x-2">
+														<CheckCircle className="flex-shrink-0 w-4 h-4 text-green-500" />
+														<span className="text-sm text-foreground">{feature}</span>
+													</div>
+												))}
+											</div>
+										)}
+
+										<div className="flex items-center justify-between pt-4 border-t border-border">
+											<div>
+												<p className="text-sm font-medium text-foreground">{solution.pricing}</p>
+											</div>
+											<Button size="sm" className="bg-primary hover:bg-primary/90">
+												{isSelected ? "Get Started" : "Learn More"}
+												<ArrowRight className="w-4 h-4 ml-2" />
+											</Button>
+										</div>
 									</div>
+								</Card>
+							);
+						})}
+					</div>
+				</section>
+
+				{/* Success Stories */}
+				<section className="px-4 py-20 mx-auto max-w-7xl sm:px-6 lg:px-8 bg-muted/30">
+					<div className="mb-16 text-center">
+						<h2 className="mb-4 text-3xl font-bold text-foreground">Success Stories</h2>
+						<p className="text-lg text-muted-foreground">See how businesses like yours are thriving with Thorbis</p>
+					</div>
+
+					<div className="grid gap-8 md:grid-cols-3">
+						{[
+							{
+								business: "Wade's Plumbing & Septic",
+								industry: "Home Services",
+								growth: "312% revenue increase",
+								quote: "Thorbis transformed our business. We went from struggling to find customers to being booked solid for months ahead.",
+								avatar: "https://i.pravatar.cc/150?img=1",
+							},
+							{
+								business: "Mario's Italian Bistro",
+								industry: "Restaurant",
+								growth: "4.8x more reservations",
+								quote: "The review management and local SEO services helped us become the top-rated Italian restaurant in our area.",
+								avatar: "https://i.pravatar.cc/150?img=2",
+							},
+							{
+								business: "Elite Auto Repair",
+								industry: "Automotive",
+								growth: "250% online visibility",
+								quote: "Our phone hasn't stopped ringing since we started with Thorbis. The lead generation system is incredible.",
+								avatar: "https://i.pravatar.cc/150?img=3",
+							},
+						].map((story, index) => (
+							<Card key={index} className="p-6 transition-all duration-200 hover:shadow-lg">
+								<div className="mb-4">
+									<div className="flex items-center space-x-3">
+										<img src={story.avatar} alt={story.business} className="w-12 h-12 rounded-full" />
+										<div>
+											<h4 className="font-semibold text-foreground">{story.business}</h4>
+											<p className="text-sm text-muted-foreground">{story.industry}</p>
+										</div>
+									</div>
+								</div>
+								<p className="mb-4 italic text-foreground">&ldquo;{story.quote}&rdquo;</p>
+								<div className="pt-4 border-t border-border">
+									<Badge className="text-green-700 bg-green-100 border-green-200">{story.growth}</Badge>
 								</div>
 							</Card>
-						);
-					})}
-				</div>
-			</section>
-
-			{/* Success Stories */}
-			<section className="px-4 py-20 mx-auto max-w-7xl sm:px-6 lg:px-8 bg-muted/30">
-				<div className="mb-16 text-center">
-					<h2 className="mb-4 text-3xl font-bold text-foreground">Success Stories</h2>
-					<p className="text-lg text-muted-foreground">See how businesses like yours are thriving with Thorbis</p>
-				</div>
-
-				<div className="grid gap-8 md:grid-cols-3">
-					{[
-						{
-							business: "Wade's Plumbing & Septic",
-							industry: "Home Services",
-							growth: "312% revenue increase",
-							quote: "Thorbis transformed our business. We went from struggling to find customers to being booked solid for months ahead.",
-							avatar: "https://i.pravatar.cc/150?img=1",
-						},
-						{
-							business: "Mario's Italian Bistro",
-							industry: "Restaurant",
-							growth: "4.8x more reservations",
-							quote: "The review management and local SEO services helped us become the top-rated Italian restaurant in our area.",
-							avatar: "https://i.pravatar.cc/150?img=2",
-						},
-						{
-							business: "Elite Auto Repair",
-							industry: "Automotive",
-							growth: "250% online visibility",
-							quote: "Our phone hasn't stopped ringing since we started with Thorbis. The lead generation system is incredible.",
-							avatar: "https://i.pravatar.cc/150?img=3",
-						},
-					].map((story, index) => (
-						<Card key={index} className="p-6 transition-all duration-200 hover:shadow-lg">
-							<div className="mb-4">
-								<div className="flex items-center space-x-3">
-									<img src={story.avatar} alt={story.business} className="w-12 h-12 rounded-full" />
-									<div>
-										<h4 className="font-semibold text-foreground">{story.business}</h4>
-										<p className="text-sm text-muted-foreground">{story.industry}</p>
-									</div>
-								</div>
-							</div>
-							<p className="mb-4 italic text-foreground">&ldquo;{story.quote}&rdquo;</p>
-							<div className="pt-4 border-t border-border">
-								<Badge className="text-green-700 bg-green-100 border-green-200">{story.growth}</Badge>
-							</div>
-						</Card>
-					))}
-				</div>
-			</section>
-
-			{/* CTA Section */}
-			<section className="px-4 py-20 mx-auto max-w-7xl sm:px-6 lg:px-8">
-				<Card className="p-8 lg:p-12 bg-primary text-primary-foreground">
-					<div className="text-center">
-						<TrendingUp className="w-16 h-16 mx-auto mb-6" />
-						<h2 className="mb-4 text-3xl font-bold">Ready to Grow Your Business?</h2>
-						<p className="max-w-3xl mx-auto mb-8 text-lg opacity-90">Join thousands of successful businesses that have transformed their growth with Thorbis. Start your journey to increased revenue, more customers, and stronger online presence today.</p>
-
-						<div className="flex flex-col justify-center gap-4 sm:flex-row">
-							<Button size="lg" variant="secondary" className="px-8 py-4 text-lg font-semibold">
-								<Sparkles className="w-5 h-5 mr-3" />
-								Start Free Trial
-							</Button>
-							<Button size="lg" variant="outline" className="px-8 py-4 text-lg font-semibold border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10">
-								<Phone className="w-5 h-5 mr-3" />
-								Talk to an Expert
-							</Button>
-						</div>
-
-						<p className="mt-6 text-sm opacity-75">No long-term contracts • Cancel anytime • 30-day money-back guarantee</p>
+						))}
 					</div>
-				</Card>
-			</section>
-		</div>
+				</section>
+
+				{/* CTA Section */}
+				<section className="px-4 py-20 mx-auto max-w-7xl sm:px-6 lg:px-8">
+					<Card className="p-8 lg:p-12 bg-primary text-primary-foreground">
+						<div className="text-center">
+							<TrendingUp className="w-16 h-16 mx-auto mb-6" />
+							<h2 className="mb-4 text-3xl font-bold">Ready to Grow Your Business?</h2>
+							<p className="max-w-3xl mx-auto mb-8 text-lg opacity-90">Join thousands of successful businesses that have transformed their growth with Thorbis. Start your journey to increased revenue, more customers, and stronger online presence today.</p>
+
+							<div className="flex flex-col justify-center gap-4 sm:flex-row">
+								<Button size="lg" variant="secondary" className="px-8 py-4 text-lg font-semibold">
+									<Sparkles className="w-5 h-5 mr-3" />
+									Start Free Trial
+								</Button>
+								<Button size="lg" variant="outline" className="px-8 py-4 text-lg font-semibold border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10">
+									<Phone className="w-5 h-5 mr-3" />
+									Talk to an Expert
+								</Button>
+							</div>
+
+							<p className="mt-6 text-sm opacity-75">No long-term contracts • Cancel anytime • 30-day money-back guarantee</p>
+						</div>
+					</Card>
+				</section>
+			</div>
+		</>
 	);
 }

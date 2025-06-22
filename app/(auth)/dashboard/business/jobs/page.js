@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
@@ -19,6 +19,14 @@ export default function Jobs() {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [expiredPage, setExpiredPage] = useState(1);
 	const jobsPerPage = 12;
+
+	useEffect(() => {
+		document.title = "Job Management - Business Dashboard - Thorbis";
+	}, []);
+
+	useEffect(() => {
+		document.title = "Job Management - Business Dashboard - Thorbis";
+	}, []);
 
 	// Mock jobs data - in real app this would come from API with algorithm matching
 	const jobs = useMemo(

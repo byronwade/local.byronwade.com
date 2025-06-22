@@ -1,3 +1,8 @@
+export const metadata = {
+	title: "Billing Management - Admin Dashboard - Thorbis",
+	description: "Manage system billing overview, payment methods and financial administration.",
+};
+
 import React from "react";
 
 export default function Billing() {

@@ -1,12 +1,12 @@
 "use client";
 import { useState } from "react";
-import Head from "next/head";
 import { Users, Calendar, MessageCircle, MapPin, Building, Star, Plus, Search, Filter, UserPlus, Handshake, GraduationCap, Briefcase, Globe, Award, Rss, ThumbsUp, Share2, Check } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -427,48 +427,29 @@ export default function NetworkPage() {
 		setFeed([newPost, ...feed]);
 	};
 
-	const jsonLd = {
-		"@context": "https://schema.org",
-		"@type": "ProfilePage",
-		name: "My Network",
-		description: "Connect with business owners, join industry groups, and stay updated with the latest news.",
-		mainEntity: {
-			"@type": "Person",
-			name: networkingData.currentUser.name,
-			jobTitle: networkingData.currentUser.title,
-			image: networkingData.currentUser.avatar,
-			url: `https://local.byronwade.com/profile/${networkingData.currentUser.id}`,
-		},
-	};
-
 	return (
-		<div>
-			<Head>
-				<title>My Network | Localbyronwade</title>
-				<meta name="description" content="Connect with business owners, join industry groups, and stay updated with the latest news." />
-				<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-			</Head>
-			<div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-start">
-				<aside className="md:col-span-1 space-y-4 sticky top-6">
-					<ProfileCard user={networkingData.currentUser} />
-					<MyNetworkCard user={networkingData.currentUser} />
-				</aside>
+		<div className="grid grid-cols-1 md:grid-cols-4 gap-8 items-start">
+			{/* Left Column */}
+			<aside className="md:col-span-1 space-y-8 sticky top-[-8px]">
+				<ProfileCard user={networkingData.currentUser} />
+				<MyNetworkCard user={networkingData.currentUser} />
+			</aside>
 
-				<main className="md:col-span-2 space-y-6">
-					<CreatePostCard user={networkingData.currentUser} onPost={handlePost} />
-					{feed.map((post) => (
-						<PostCard key={post.id} post={post} />
-					))}
-				</main>
-
-				<aside className="md:col-span-1 space-y-4 sticky top-6">
-					<NewsCard newsItems={networkingData.news} />
-					<PeopleYouMayKnow people={networkingData.peopleYouMayKnow} />
-					<SuggestedBusinessesCard businesses={networkingData.suggestedBusinesses} />
-					<TrendingGroupsCard groups={networkingData.trendingGroups} />
-					<UpcomingMeetupsCard meetups={networkingData.upcomingMeetups} />
-				</aside>
+			{/* Center Column */}
+			<div className="md:col-span-2 space-y-4">
+				<CreatePostCard user={networkingData.currentUser} onPost={handlePost} />
+				{feed.map((post) => (
+					<PostCard key={post.id} post={post} />
+				))}
 			</div>
+
+			{/* Right Column */}
+			<aside className="md:col-span-1 space-y-8 sticky top-[-8px]">
+				<SuggestedBusinessesCard businesses={networkingData.suggestedBusinesses} />
+				<TrendingGroupsCard groups={networkingData.trendingGroups} />
+				<UpcomingMeetupsCard meetups={networkingData.upcomingMeetups} />
+				<NewsCard newsItems={networkingData.news} />
+			</aside>
 		</div>
 	);
 }

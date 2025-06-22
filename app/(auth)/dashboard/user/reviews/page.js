@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
@@ -17,12 +17,20 @@ export default function Reviews() {
 	const [filterRating, setFilterRating] = useState("all");
 	const [filterStatus, setFilterStatus] = useState("all");
 	const [editingReview, setEditingReview] = useState(null);
+
+	React.useEffect(() => {
+		document.title = "My Reviews - User Dashboard - Thorbis";
+	}, []);
 	const [editForm, setEditForm] = useState({
 		rating: 5,
 		title: "",
 		content: "",
 		photos: [],
 	});
+
+	useEffect(() => {
+		document.title = "My Reviews - User Dashboard - Thorbis";
+	}, []);
 
 	// Mock reviews data - in real app this would come from API
 	const reviews = useMemo(

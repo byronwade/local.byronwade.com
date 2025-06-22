@@ -3,11 +3,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Download, TrendingUp, DollarSign, FileText } from "lucide-react";
 
-export const metadata = {
-	title: "Investor Relations",
-	description: "Financial highlights, reports, and resources for our shareholders and potential investors.",
-};
-
 const financialHighlights = [
 	{ metric: "YOY Revenue Growth", value: "45%", change: "increase" },
 	{ metric: "Active Users (MAU)", value: "2.5 Million", change: "increase" },
@@ -20,33 +15,98 @@ const investorResources = [
 	{ title: "SEC Filings", date: "Ongoing", link: "#" },
 ];
 
+export const metadata = {
+	title: "Investor Relations - Financial Reports & Shareholder Information | Thorbis",
+	description: "Access Thorbis investor relations information, financial reports, SEC filings, and shareholder resources. Learn about our growth, performance, and long-term value creation.",
+	keywords: ["investor relations", "financial reports", "SEC filings", "shareholder information", "earnings", "annual reports", "thorbis stock"],
+	openGraph: {
+		title: "Investor Relations - Financial Reports & Shareholder Information | Thorbis",
+		description: "Access Thorbis investor relations information, financial reports, SEC filings, and shareholder resources. Learn about our growth, performance, and long-term value creation.",
+		url: "https://local.byronwade.com/investor-relations",
+		siteName: "Thorbis",
+		images: [
+			{
+				url: "https://local.byronwade.com/og-investor-relations.jpg",
+				width: 1200,
+				height: 630,
+				alt: "Thorbis Investor Relations",
+			},
+		],
+		locale: "en_US",
+		type: "website",
+	},
+	twitter: {
+		card: "summary_large_image",
+		title: "Investor Relations - Thorbis",
+		description: "Access financial reports, SEC filings, and shareholder information for Thorbis.",
+		images: ["https://local.byronwade.com/og-investor-relations.jpg"],
+	},
+	alternates: {
+		canonical: "https://local.byronwade.com/investor-relations",
+	},
+};
+
 export default function InvestorRelationsPage() {
 	const jsonLd = {
 		"@context": "https://schema.org",
 		"@type": "WebPage",
-		name: metadata.title,
-		description: metadata.description,
+		name: "Investor Relations",
+		description: "Thorbis investor relations, financial reports, and shareholder information",
 		url: "https://local.byronwade.com/investor-relations",
-		isPartOf: {
-			"@type": "WebSite",
-			name: "Inbox Zero",
-			url: "https://local.byronwade.com",
-		},
 		mainEntity: {
-			"@type": "ItemList",
-			name: "Investor Resources",
-			itemListElement: investorResources.map((resource, index) => ({
-				"@type": "ListItem",
-				position: index + 1,
-				item: {
-					"@type": "Article",
-					headline: resource.title,
-					datePublished: resource.date,
-					url: `https://local.byronwade.com${resource.link}`,
+			"@type": "Organization",
+			name: "Thorbis",
+			url: "https://local.byronwade.com",
+			logo: "https://local.byronwade.com/ThorbisLogo.webp",
+			description: "Building the future of local commerce and creating long-term value for shareholders",
+			hasOfferCatalog: {
+				"@type": "OfferCatalog",
+				name: "Investor Resources",
+				itemListElement: [
+					{
+						"@type": "MediaObject",
+						name: "Q3 2023 Earnings Report",
+						datePublished: "2023-10-26",
+						encodingFormat: "application/pdf",
+					},
+					{
+						"@type": "MediaObject",
+						name: "2023 Annual Shareholder Letter",
+						datePublished: "2023-08-15",
+						encodingFormat: "application/pdf",
+					},
+					{
+						"@type": "MediaObject",
+						name: "SEC Filings",
+						description: "Ongoing regulatory filings and disclosures",
+					},
+				],
+			},
+			knowsAbout: ["Local Business Platform", "Revenue Growth", "Customer Acquisition", "Enterprise Solutions"],
+		},
+		breadcrumb: {
+			"@type": "BreadcrumbList",
+			itemListElement: [
+				{
+					"@type": "ListItem",
+					position: 1,
+					item: {
+						"@id": "https://local.byronwade.com",
+						name: "Thorbis",
+					},
 				},
-			})),
+				{
+					"@type": "ListItem",
+					position: 2,
+					item: {
+						"@id": "https://local.byronwade.com/investor-relations",
+						name: "Investor Relations",
+					},
+				},
+			],
 		},
 	};
+
 	return (
 		<>
 			<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />

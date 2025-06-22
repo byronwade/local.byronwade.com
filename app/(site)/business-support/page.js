@@ -1,13 +1,39 @@
+export const metadata = {
+	title: "Business Support - Help & Resources for Business Owners | Thorbis",
+	description: "Get dedicated support for your business on Thorbis. Access help documentation, contact our support team, and find resources to grow your business successfully.",
+	keywords: ["business support", "business help", "customer service", "business resources", "business assistance", "thorbis support"],
+	openGraph: {
+		title: "Business Support - Help & Resources for Business Owners | Thorbis",
+		description: "Get dedicated support for your business on Thorbis. Access help documentation, contact our support team, and find resources to grow your business successfully.",
+		url: "https://local.byronwade.com/business-support",
+		siteName: "Thorbis",
+		images: [
+			{
+				url: "https://local.byronwade.com/og-business-support.jpg",
+				width: 1200,
+				height: 630,
+				alt: "Business Support on Thorbis",
+			},
+		],
+		locale: "en_US",
+		type: "website",
+	},
+	twitter: {
+		card: "summary_large_image",
+		title: "Business Support - Thorbis",
+		description: "Get dedicated support and resources to grow your business successfully.",
+		images: ["https://local.byronwade.com/og-business-support.jpg"],
+	},
+	alternates: {
+		canonical: "https://local.byronwade.com/business-support",
+	},
+};
+
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Search, LifeBuoy, BookOpen } from "lucide-react";
+import { Search, LifeBuoy, BookOpen, MessageCircle, Book, Phone, Mail, Clock, Users, Headphones, FileText } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-
-export const metadata = {
-	title: "Business Support - Get Help and Resources",
-	description: "Access resources, popular articles, and contact support to make the most of your business page.",
-};
 
 const popularArticles = [
 	{ title: "How to respond to reviews", link: "#" },
@@ -20,26 +46,48 @@ export default function BusinessSupportPage() {
 	const jsonLd = {
 		"@context": "https://schema.org",
 		"@type": "WebPage",
-		name: metadata.title,
-		description: metadata.description,
+		name: "Business Support",
+		description: "Comprehensive support and resources for business owners using Thorbis platform",
 		url: "https://local.byronwade.com/business-support",
-		isPartOf: {
-			"@type": "WebSite",
-			name: "Inbox Zero",
-			url: "https://local.byronwade.com",
-		},
 		mainEntity: {
-			"@type": "ItemList",
-			name: "Popular Articles",
-			itemListElement: popularArticles.map((article, index) => ({
-				"@type": "ListItem",
-				position: index + 1,
-				item: {
-					"@type": "Article",
-					name: article.title,
-					url: `https://local.byronwade.com/business-support${article.link}`,
+			"@type": "CustomerService",
+			name: "Thorbis Business Support",
+			description: "Dedicated support services for business customers",
+			serviceType: "Business Support",
+			provider: {
+				"@type": "Organization",
+				name: "Thorbis",
+			},
+			availableChannel: [
+				{
+					"@type": "ContactPoint",
+					contactType: "Customer Service",
+					telephone: "+1-800-THORBIS",
+					email: "business-support@thorbis.com",
+					availableLanguage: "English",
 				},
-			})),
+			],
+		},
+		breadcrumb: {
+			"@type": "BreadcrumbList",
+			itemListElement: [
+				{
+					"@type": "ListItem",
+					position: 1,
+					item: {
+						"@id": "https://local.byronwade.com",
+						name: "Thorbis",
+					},
+				},
+				{
+					"@type": "ListItem",
+					position: 2,
+					item: {
+						"@id": "https://local.byronwade.com/business-support",
+						name: "Business Support",
+					},
+				},
+			],
 		},
 	};
 
@@ -49,54 +97,137 @@ export default function BusinessSupportPage() {
 			<div className="bg-background text-foreground">
 				{/* Hero Section */}
 				<div className="bg-muted">
-					<div className="py-24 px-4 lg:px-24 max-w-5xl mx-auto text-center">
-						<LifeBuoy className="w-16 h-16 mx-auto text-primary mb-4" />
-						<h1 className="text-4xl md:text-6xl font-extrabold tracking-tighter">Business Support</h1>
-						<p className="mt-4 text-lg md:text-xl max-w-3xl mx-auto text-muted-foreground">Resources to help you make the most of your Thorbis business page.</p>
-						<div className="mt-8 max-w-2xl mx-auto relative">
-							<Input placeholder="Search for help..." className="h-14 pl-12 text-lg" />
-							<Search className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-muted-foreground" />
-						</div>
+					<div className="px-4 py-24 mx-auto max-w-5xl text-center lg:px-24">
+						<Headphones className="w-16 h-16 mx-auto text-primary mb-4" />
+						<h1 className="text-4xl font-extrabold tracking-tighter md:text-6xl">Business Support</h1>
+						<p className="mx-auto mt-4 max-w-3xl text-lg md:text-xl text-muted-foreground">Get the help you need to succeed. Our dedicated business support team is here to assist you every step of the way.</p>
 					</div>
 				</div>
 
-				{/* Resources Section */}
-				<div className="py-24 px-4 lg:px-24">
-					<div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12">
-						{/* Popular Articles */}
-						<Card>
-							<CardHeader>
-								<CardTitle className="flex items-center gap-2">
-									<BookOpen className="w-6 h-6" />
-									Popular Articles
-								</CardTitle>
-							</CardHeader>
-							<CardContent>
-								<ul className="space-y-3">
-									{popularArticles.map((article) => (
-										<li key={article.title}>
-											<Link href={article.link} className="text-primary hover:underline">
-												{article.title}
-											</Link>
-										</li>
-									))}
-								</ul>
-							</CardContent>
-						</Card>
+				{/* Support Options */}
+				<div className="px-4 py-24 lg:px-24">
+					<div className="mx-auto max-w-6xl">
+						<div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+							{/* Live Chat */}
+							<Card>
+								<CardHeader className="text-center">
+									<MessageCircle className="w-12 h-12 mx-auto text-primary mb-2" />
+									<CardTitle>Live Chat Support</CardTitle>
+								</CardHeader>
+								<CardContent>
+									<p className="text-muted-foreground mb-4">Get instant help with our live chat feature. Available during business hours for immediate assistance.</p>
+									<div className="flex items-center mb-4">
+										<Clock className="w-4 h-4 mr-2 text-muted-foreground" />
+										<span className="text-sm">Mon-Fri 9AM-6PM CT</span>
+									</div>
+									<Button className="w-full" asChild>
+										<Link href="/contact-support">Start Live Chat</Link>
+									</Button>
+								</CardContent>
+							</Card>
 
-						{/* Contact Support */}
-						<Card>
-							<CardHeader>
-								<CardTitle>Contact Us</CardTitle>
-								<CardDescription>Can&apos;t find what you&apos;re looking for?</CardDescription>
-							</CardHeader>
-							<CardContent>
-								<p className="mb-4">Our support team is happy to help.</p>
-								<Button asChild>
-									<Link href="/contact-support">Get in Touch</Link>
-								</Button>
-							</CardContent>
-						</Card>
+							{/* Email Support */}
+							<Card>
+								<CardHeader className="text-center">
+									<Mail className="w-12 h-12 mx-auto text-primary mb-2" />
+									<CardTitle>Email Support</CardTitle>
+								</CardHeader>
+								<CardContent>
+									<p className="text-muted-foreground mb-4">Send us detailed questions and we&apos;ll respond within 24 hours with comprehensive solutions.</p>
+									<div className="flex items-center mb-4">
+										<Clock className="w-4 h-4 mr-2 text-muted-foreground" />
+										<span className="text-sm">Response within 24 hours</span>
+									</div>
+									<Button variant="outline" className="w-full" asChild>
+										<Link href="mailto:business-support@thorbis.com">Send Email</Link>
+									</Button>
+								</CardContent>
+							</Card>
+
+							{/* Phone Support */}
+							<Card>
+								<CardHeader className="text-center">
+									<Phone className="w-12 h-12 mx-auto text-primary mb-2" />
+									<CardTitle>Phone Support</CardTitle>
+								</CardHeader>
+								<CardContent>
+									<p className="text-muted-foreground mb-4">Speak directly with our business support specialists for complex issues or urgent matters.</p>
+									<div className="flex items-center mb-4">
+										<Clock className="w-4 h-4 mr-2 text-muted-foreground" />
+										<span className="text-sm">Mon-Fri 9AM-6PM CT</span>
+									</div>
+									<Button variant="outline" className="w-full" asChild>
+										<Link href="tel:+1-800-THORBIS">Call Now</Link>
+									</Button>
+								</CardContent>
+							</Card>
+						</div>
+
+						{/* Resources Section */}
+						<div className="mt-16">
+							<h2 className="text-3xl font-bold text-center mb-8">Business Resources</h2>
+							<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+								<Card>
+									<CardHeader>
+										<div className="flex items-center">
+											<Book className="w-8 h-8 mr-3 text-primary" />
+											<CardTitle>Help Documentation</CardTitle>
+										</div>
+									</CardHeader>
+									<CardContent>
+										<p className="text-muted-foreground mb-4">Comprehensive guides and tutorials to help you make the most of your Thorbis business account.</p>
+										<Button variant="outline" asChild>
+											<Link href="/help-center">View Documentation</Link>
+										</Button>
+									</CardContent>
+								</Card>
+
+								<Card>
+									<CardHeader>
+										<div className="flex items-center">
+											<Users className="w-8 h-8 mr-3 text-primary" />
+											<CardTitle>Community Forum</CardTitle>
+										</div>
+									</CardHeader>
+									<CardContent>
+										<p className="text-muted-foreground mb-4">Connect with other business owners, share experiences, and get advice from the community.</p>
+										<Button variant="outline" disabled>
+											Coming Soon
+										</Button>
+									</CardContent>
+								</Card>
+
+								<Card>
+									<CardHeader>
+										<div className="flex items-center">
+											<FileText className="w-8 h-8 mr-3 text-primary" />
+											<CardTitle>Best Practices</CardTitle>
+										</div>
+									</CardHeader>
+									<CardContent>
+										<p className="text-muted-foreground mb-4">Learn proven strategies and best practices to optimize your business presence and attract more customers.</p>
+										<Button variant="outline" asChild>
+											<Link href="/business-success-stories">View Case Studies</Link>
+										</Button>
+									</CardContent>
+								</Card>
+
+								<Card>
+									<CardHeader>
+										<div className="flex items-center">
+											<MessageCircle className="w-8 h-8 mr-3 text-primary" />
+											<CardTitle>FAQ</CardTitle>
+										</div>
+									</CardHeader>
+									<CardContent>
+										<p className="text-muted-foreground mb-4">Find quick answers to the most commonly asked questions about business accounts and features.</p>
+										<Button variant="outline" asChild>
+											<Link href="/faq">View FAQ</Link>
+										</Button>
+									</CardContent>
+								</Card>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 import { Button } from "@components/ui/button";
 import { Badge } from "@components/ui/badge";
@@ -60,6 +60,10 @@ export default function Analytics() {
 	const [dateRange, setDateRange] = useState("30days");
 	const [selectedDate, setSelectedDate] = useState(new Date());
 	const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+
+	useEffect(() => {
+		document.title = "Analytics Dashboard - LocalHub - Thorbis";
+	}, []);
 
 	const formatGrowth = (growth) => {
 		const isPositive = growth > 0;
