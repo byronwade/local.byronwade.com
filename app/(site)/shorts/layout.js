@@ -1,5 +1,4 @@
-"use client";
-import { useEffect } from "react";
+import ShortsLayoutClient from "./ShortsLayoutClient";
 
 /**
  * Custom layout for the shorts page that completely hides the default header and footer.
@@ -9,45 +8,19 @@ import { useEffect } from "react";
  * @param {React.ReactNode} props.children - The shorts page content.
  * @returns {JSX.Element} The shorts page layout without any default site elements.
  */
+export const metadata = {
+	title: "Business Shorts - Thorbis",
+	description: "Discover local businesses through short-form videos. Watch business tips, behind-the-scenes content, and local business stories.",
+	robots: "index, follow",
+};
+
+export const viewport = {
+	width: "device-width",
+	initialScale: 1,
+	maximumScale: 1,
+	userScalable: false,
+};
+
 export default function ShortsLayout({ children }) {
-	// Hide the main header and other site elements when this layout is active
-	useEffect(() => {
-		// Hide main header
-		const header = document.getElementById("header");
-		if (header) {
-			header.style.display = "none";
-		}
-
-		// Hide footer if it exists
-		const footer = document.querySelector("footer");
-		if (footer) {
-			footer.style.display = "none";
-		}
-
-		// Hide any notification banners or other site-wide elements
-		const notificationBanners = document.querySelectorAll("[data-notification], .notification-banner, .banner");
-		notificationBanners.forEach((banner) => {
-			banner.style.display = "none";
-		});
-
-		// Cleanup function to restore elements when leaving shorts page
-		return () => {
-			// Restore main header
-			if (header) {
-				header.style.display = "";
-			}
-
-			// Restore footer
-			if (footer) {
-				footer.style.display = "";
-			}
-
-			// Restore notification banners
-			notificationBanners.forEach((banner) => {
-				banner.style.display = "";
-			});
-		};
-	}, []);
-
-	return <div className="min-h-screen bg-background">{children}</div>;
+	return <ShortsLayoutClient>{children}</ShortsLayoutClient>;
 }

@@ -1,7 +1,7 @@
 // components/SidebarItem.js
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { cn } from "@utils";
+import { cn } from "@lib/utils";
 
 export default function SidebarItem({ href, text, className }) {
 	const pathname = usePathname();

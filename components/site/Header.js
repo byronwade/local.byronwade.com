@@ -71,6 +71,53 @@ export default function Header() {
 		window.location.href = "/search";
 	};
 
+	// Function to determine page context and branding
+	const getPageContext = () => {
+		if (pathname.startsWith("/search")) {
+			return {
+				title: "Thorbis",
+				subtitle: "Business Search",
+				gradient: "from-blue-500/20 to-green-500/20",
+			};
+		}
+		if (pathname.startsWith("/shorts")) {
+			return {
+				title: "Thorbis",
+				subtitle: "Business Shorts",
+				gradient: "from-blue-500/20 to-green-500/20",
+			};
+		}
+		if (pathname.startsWith("/networking")) {
+			return {
+				title: "Networking",
+				subtitle: "Connect & Grow",
+				gradient: "from-purple-500/20 to-pink-500/20",
+			};
+		}
+		if (pathname.startsWith("/events")) {
+			return {
+				title: "Thorbis",
+				subtitle: "Local Events",
+				gradient: "from-orange-500/20 to-red-500/20",
+			};
+		}
+		if (pathname.startsWith("/neighborhoods")) {
+			return {
+				title: "Thorbis",
+				subtitle: "Neighborhoods",
+				gradient: "from-green-500/20 to-blue-500/20",
+			};
+		}
+		// Default branding
+		return {
+			title: "Thorbis",
+			subtitle: "Local Business Directory",
+			gradient: "from-blue-500/20 to-green-500/20",
+		};
+	};
+
+	const pageContext = getPageContext();
+
 	// Check if we're on any search page
 	const isSearchMapPage = pathname.startsWith("/search");
 
@@ -80,12 +127,12 @@ export default function Header() {
 				<div className="flex flex-row items-center space-x-6 w-full">
 					<Link href="/" className="flex items-center space-x-3 text-xl font-bold group">
 						<div className="relative">
-							<Image src="/ThorbisLogo.webp" alt="Thorbis" width={50} height={50} className="w-12 h-12 transition-transform duration-200 group-hover:scale-105" />
-							<div className="absolute inset-0 bg-gradient-to-r rounded-full opacity-0 transition-opacity duration-200 from-blue-500/20 to-green-500/20 group-hover:opacity-100" />
+							<Image src="/ThorbisLogo.webp" alt={pageContext.title} width={50} height={50} className="w-12 h-12 transition-transform duration-200 group-hover:scale-105" />
+							<div className={`absolute inset-0 bg-gradient-to-r rounded-full opacity-0 transition-opacity duration-200 ${pageContext.gradient} group-hover:opacity-100`} />
 						</div>
 						<div className="hidden sm:block">
-							<h1 className="text-lg font-bold leading-none text-foreground">Thorbis</h1>
-							<p className="text-xs text-muted-foreground">Local Business Directory</p>
+							<h1 className="text-lg font-bold leading-none text-foreground">{pageContext.title}</h1>
+							<p className="text-xs text-muted-foreground">{pageContext.subtitle}</p>
 						</div>
 					</Link>
 					<div className="hidden items-center w-full max-w-2xl md:flex">

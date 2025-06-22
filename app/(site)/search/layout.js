@@ -15,7 +15,7 @@ export default function SearchLayout({ children }) {
 	return (
 		<>
 			<div
-				className="h-screen w-screen overflow-hidden bg-background antialiased"
+				className="w-full bg-background antialiased"
 				style={{
 					fontSmooth: "always",
 					WebkitFontSmoothing: "antialiased",

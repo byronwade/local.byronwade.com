@@ -1,4 +1,4 @@
-import { cn } from "@utils";
+import { cn } from "@lib/utils";
 
 export default function Marquee({ className, reverse, pauseOnHover = false, children, vertical = false, repeat = 4, ...props }) {
 	return (

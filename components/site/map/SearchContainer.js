@@ -16,7 +16,6 @@ import useBusinessStore from "@store/useBusinessStore";
 import useSearchStore from "@store/useSearchStore";
 import FullScreenMapSkeleton from "@components/site/map/FullScreenMapSkeleton";
 import LiveActivityFeed from "@components/site/map/LiveActivityFeed";
-import Header from "@components/site/Header";
 import UnifiedAIChat from "@components/shared/ai/UnifiedAIChat";
 import { useSearchParams } from "next/navigation";
 
@@ -34,6 +33,31 @@ const SearchContainer = ({ searchParams: propSearchParams }) => {
 	const activeCardRef = useRef(null);
 	const [isAISidebarOpen, setIsAISidebarOpen] = useState(false);
 	const [showMap, setShowMap] = useState(true);
+	const [headerHeight, setHeaderHeight] = useState(0);
+
+	useEffect(() => {
+		// Calculate header height
+		const calculateHeaderHeight = () => {
+			const header = document.querySelector("#header");
+			if (header) {
+				const height = header.offsetHeight;
+				setHeaderHeight(height);
+				console.log("Header height calculated:", height);
+			}
+		};
+
+		// Calculate on mount and resize
+		calculateHeaderHeight();
+		window.addEventListener("resize", calculateHeaderHeight);
+
+		// Multiple checks to ensure accurate calculation
+		const timeouts = [setTimeout(calculateHeaderHeight, 100), setTimeout(calculateHeaderHeight, 500), setTimeout(calculateHeaderHeight, 1000)];
+
+		return () => {
+			window.removeEventListener("resize", calculateHeaderHeight);
+			timeouts.forEach((timeout) => clearTimeout(timeout));
+		};
+	}, []);
 
 	useEffect(() => {
 		// Initialize with mock data immediately
@@ -105,14 +129,13 @@ const SearchContainer = ({ searchParams: propSearchParams }) => {
 		setShowMap(!showMap);
 	};
 
+	// Calculate the content height by subtracting header height from viewport height
+	const contentHeight = `calc(100vh - ${headerHeight}px)`;
+
 	return (
-        <div className="h-screen w-full flex flex-col bg-background overflow-hidden">
-            {/* Main Header from Homepage */}
-            <div className="flex-shrink-0">
-				<Header />
-			</div>
-            {/* Main Content Area */}
-            <div className="flex-1 min-h-0 relative">
+		<div className="w-full flex flex-col bg-background overflow-hidden" style={{ height: contentHeight }}>
+			{/* Main Content Area */}
+			<div className="flex-1 min-h-0 relative">
 				{showMap ? (
 					<ResizablePanelGroup direction="horizontal" className="h-full" onLayout={handlePanelResize}>
 						{/* Sidebar Panel - Better minimum width for proper header layout */}
@@ -140,8 +163,8 @@ const SearchContainer = ({ searchParams: propSearchParams }) => {
 					</ResizablePanelGroup>
 				) : (
 					/* List-only view - Full width */
-					(<div className="h-full w-full transition-all duration-500 ease-in-out bg-background">
-                        <div className="h-full overflow-hidden relative">
+					<div className="h-full w-full transition-all duration-500 ease-in-out bg-background">
+						<div className="h-full overflow-hidden relative">
 							{/* Business List - Full Width View */}
 							<div className={`absolute inset-0 transition-all duration-500 ease-in-out ${!isAISidebarOpen ? "transform translate-x-0 opacity-100 z-10" : "transform -translate-x-full opacity-0 z-0"}`}>
 								<BusinessCardList businesses={filteredBusinesses} loading={loading} onBusinessSelect={handleBusinessSelect} activeBusinessId={activeBusinessId} activeCardRef={activeCardRef} onAIClick={handleAIClick} showMap={showMap} onMapToggle={handleMapToggle} listMode="full" />
@@ -150,11 +173,11 @@ const SearchContainer = ({ searchParams: propSearchParams }) => {
 							{/* AI Chat Sidebar */}
 							<div className={`absolute inset-0 transition-all duration-500 ease-in-out ${isAISidebarOpen ? "transform translate-x-0 opacity-100 z-10" : "transform translate-x-full opacity-0 z-0"}`}>{isAISidebarOpen && <UnifiedAIChat isOpen={isAISidebarOpen} onClose={handleAIClose} mode="sidebar" />}</div>
 						</div>
-                    </div>)
+					</div>
 				)}
 			</div>
-            {/* Loading Overlay */}
-            {loading && (
+			{/* Loading Overlay */}
+			{loading && (
 				<div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 flex items-center justify-center">
 					<div className="bg-card rounded-lg p-6 shadow-2xl flex items-center gap-3 border border-border">
 						<div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
@@ -162,8 +185,8 @@ const SearchContainer = ({ searchParams: propSearchParams }) => {
 					</div>
 				</div>
 			)}
-        </div>
-    );
+		</div>
+	);
 };
 
 export default SearchContainer;
