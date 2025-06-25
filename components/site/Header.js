@@ -321,10 +321,138 @@ export default function Header() {
 					)}
 				</div>
 
-				<div className="flex items-center space-x-2 md:hidden">
+				{/* Mobile Controls */}
+				<div className="flex items-center space-x-2 lg:hidden">
 					<Button variant="ghost" size="icon" onClick={handleMobileSearch} className="text-muted-foreground hover:text-foreground">
 						<Search className="w-5 h-5" />
 					</Button>
+					
+					{/* Mobile Menu */}
+					<Drawer open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+						<DrawerTrigger asChild>
+							<Button variant="outline" size="icon" className="border-border/50 hover:bg-accent hover:text-accent-foreground">
+								<Menu className="w-4 h-4" />
+							</Button>
+						</DrawerTrigger>
+						<DrawerContent className="px-4 py-6 max-h-[90vh] bg-card/95 backdrop-blur-md border-t border-border/50">
+							{/* Mobile Search Bar */}
+							<div className="mb-6">
+								<div className="flex gap-2 items-center p-3 bg-muted rounded-lg border border-border/50">
+									<Search className="w-4 h-4 text-muted-foreground" />
+									<input
+										type="text"
+										placeholder="Search for businesses..."
+										className="flex-1 placeholder-muted-foreground text-foreground bg-transparent border-none outline-none"
+										onKeyDown={(e) => {
+											if (e.key === "Enter" && e.target.value.trim()) {
+												window.location.href = `/search?query=${encodeURIComponent(e.target.value.trim())}`;
+											}
+										}}
+									/>
+								</div>
+							</div>
+
+							<nav>
+								<ul className="space-y-3">
+									<li>
+										<Link href="/" onClick={() => setMobileMenuOpen(false)} className="flex items-center py-2 px-3 rounded-lg hover:bg-muted transition-colors">
+											<span className="text-foreground font-medium">Home</span>
+										</Link>
+									</li>
+									<li>
+										<Link href="/categories" onClick={() => setMobileMenuOpen(false)} className="flex items-center py-2 px-3 rounded-lg hover:bg-muted transition-colors">
+											<span className="text-foreground font-medium">Categories</span>
+										</Link>
+									</li>
+									<li>
+										<Link href="/cities" onClick={() => setMobileMenuOpen(false)} className="flex items-center py-2 px-3 rounded-lg hover:bg-muted transition-colors">
+											<span className="text-foreground font-medium">Cities</span>
+										</Link>
+									</li>
+									<li>
+										<Link href="/businesses" onClick={() => setMobileMenuOpen(false)} className="flex items-center py-2 px-3 rounded-lg hover:bg-muted transition-colors">
+											<span className="text-foreground font-medium">Businesses</span>
+										</Link>
+									</li>
+									<li>
+										<Link href="/ads" onClick={() => setMobileMenuOpen(false)} className="flex items-center py-2 px-3 rounded-lg hover:bg-muted transition-colors">
+											<span className="text-foreground font-medium">Ads</span>
+										</Link>
+									</li>
+									{user ? (
+										<>
+											<li>
+												<Link href="/dashboard/user" onClick={() => setMobileMenuOpen(false)} className="flex items-center py-2 px-3 rounded-lg hover:bg-muted transition-colors">
+													<span className="text-foreground font-medium">Dashboard</span>
+												</Link>
+											</li>
+											<li>
+												<Link href="/dashboard/user/jobs/create" onClick={() => setMobileMenuOpen(false)} className="flex items-center py-2 px-3 rounded-lg hover:bg-muted transition-colors">
+													<span className="text-foreground font-medium">Post a Job</span>
+												</Link>
+											</li>
+											<li>
+												<Link href="/dashboard/user/reviews/create" onClick={() => setMobileMenuOpen(false)} className="flex items-center py-2 px-3 rounded-lg hover:bg-muted transition-colors">
+													<span className="text-foreground font-medium">Write Review</span>
+												</Link>
+											</li>
+											<li>
+												<Button variant="outline" onClick={handleLogout} className="w-full justify-start">
+													Logout
+												</Button>
+											</li>
+										</>
+									) : (
+										<>
+											<li>
+												<Link href="/login" onClick={() => setMobileMenuOpen(false)} className="flex items-center py-2 px-3 rounded-lg hover:bg-muted transition-colors">
+													<span className="text-foreground font-medium">Login</span>
+												</Link>
+											</li>
+											<li>
+												<Link href="/onboarding" onClick={() => setMobileMenuOpen(false)} className="flex items-center py-2 px-3 rounded-lg hover:bg-muted transition-colors">
+													<span className="text-foreground font-medium">Sign Up</span>
+												</Link>
+											</li>
+										</>
+									)}
+									<li>
+										<div className="py-2 px-3">
+											<DropdownMenu>
+												<DropdownMenuTrigger asChild>
+													<Button variant="outline" className="w-full justify-start">
+														Add a Business
+													</Button>
+												</DropdownMenuTrigger>
+												<DropdownMenuContent className="w-56 bg-card/95 backdrop-blur-md border border-border/50">
+													<DropdownMenuItem asChild>
+														<Link href="/add-a-business" onClick={() => setMobileMenuOpen(false)}>
+															Add a Business
+														</Link>
+													</DropdownMenuItem>
+													<DropdownMenuItem asChild>
+														<Link href="/claim-a-business" onClick={() => setMobileMenuOpen(false)}>
+															Claim your business
+														</Link>
+													</DropdownMenuItem>
+													<DropdownMenuItem asChild>
+														<Link href="/explore-business" onClick={() => setMobileMenuOpen(false)}>
+															Explore Thorbis for Business
+														</Link>
+													</DropdownMenuItem>
+													<DropdownMenuItem asChild>
+														<Link href="/localhub" onClick={() => setMobileMenuOpen(false)}>
+															Build Your Local Directory
+														</Link>
+													</DropdownMenuItem>
+												</DropdownMenuContent>
+											</DropdownMenu>
+										</div>
+									</li>
+								</ul>
+							</nav>
+						</DrawerContent>
+					</Drawer>
 				</div>
 
 				<CommandDialog open={open} onOpenChange={setOpen}>
@@ -338,128 +466,6 @@ export default function Header() {
 						</CommandGroup>
 					</CommandList>
 				</CommandDialog>
-
-				<Drawer open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-					<DrawerTrigger asChild>
-						<Button variant="outline" size="icon" className="flex md:hidden">
-							<Menu className="w-4 h-4" />
-						</Button>
-					</DrawerTrigger>
-					<DrawerContent className="p-4 h-5/6 text-white bg-black">
-						{/* Mobile Search Bar */}
-						<div className="mb-6">
-							<div className="flex gap-2 items-center p-3 bg-gray-800 rounded-lg">
-								<Search className="w-4 h-4 text-gray-400" />
-								<input
-									type="text"
-									placeholder="Search for businesses..."
-									className="flex-1 placeholder-gray-400 text-white bg-transparent border-none outline-none"
-									onKeyDown={(e) => {
-										if (e.key === "Enter" && e.target.value.trim()) {
-											window.location.href = `/search?query=${encodeURIComponent(e.target.value.trim())}`;
-										}
-									}}
-								/>
-							</div>
-						</div>
-
-						<nav>
-							<ul className="space-y-4">
-								<li>
-									<Link href="/" onClick={() => setMobileMenuOpen(false)}>
-										Home
-									</Link>
-								</li>
-								<li>
-									<Link href="/categories" onClick={() => setMobileMenuOpen(false)}>
-										Categories
-									</Link>
-								</li>
-								<li>
-									<Link href="/cities" onClick={() => setMobileMenuOpen(false)}>
-										Cities
-									</Link>
-								</li>
-								<li>
-									<Link href="/businesses" onClick={() => setMobileMenuOpen(false)}>
-										Businesses
-									</Link>
-								</li>
-								<li>
-									<Link href="/ads" onClick={() => setMobileMenuOpen(false)}>
-										Ads
-									</Link>
-								</li>
-								{user ? (
-									<>
-										<li>
-											<Link href="/dashboard/user" onClick={() => setMobileMenuOpen(false)}>
-												Dashboard
-											</Link>
-										</li>
-										<li>
-											<Link href="/dashboard/user/jobs/create" onClick={() => setMobileMenuOpen(false)}>
-												Post a Job
-											</Link>
-										</li>
-										<li>
-											<Link href="/dashboard/user/reviews/create" onClick={() => setMobileMenuOpen(false)}>
-												Write Review
-											</Link>
-										</li>
-										<li>
-											<Button variant="outline" onClick={handleLogout}>
-												Logout
-											</Button>
-										</li>
-									</>
-								) : (
-									<>
-										<li>
-											<Link href="/login" onClick={() => setMobileMenuOpen(false)}>
-												Login
-											</Link>
-										</li>
-										<li>
-											<Link href="/onboarding" onClick={() => setMobileMenuOpen(false)}>
-												Sign Up
-											</Link>
-										</li>
-									</>
-								)}
-								<li>
-									<DropdownMenu>
-										<DropdownMenuTrigger asChild>
-											<Button variant="outline">Add a Business</Button>
-										</DropdownMenuTrigger>
-										<DropdownMenuContent className="w-56 bg-white">
-											<DropdownMenuItem asChild>
-												<Link href="/add-a-business" onClick={() => setMobileMenuOpen(false)}>
-													Add a Business
-												</Link>
-											</DropdownMenuItem>
-											<DropdownMenuItem asChild>
-												<Link href="/claim-a-business" onClick={() => setMobileMenuOpen(false)}>
-													Claim your business
-												</Link>
-											</DropdownMenuItem>
-											<DropdownMenuItem asChild>
-												<Link href="/explore-business" onClick={() => setMobileMenuOpen(false)}>
-													Explore Thorbis for Business
-												</Link>
-											</DropdownMenuItem>
-											<DropdownMenuItem asChild>
-												<Link href="/localhub" onClick={() => setMobileMenuOpen(false)}>
-													Build Your Local Directory
-												</Link>
-											</DropdownMenuItem>
-										</DropdownMenuContent>
-									</DropdownMenu>
-								</li>
-							</ul>
-						</nav>
-					</DrawerContent>
-				</Drawer>
 			</div>
 		</div>
 	);
