@@ -391,7 +391,7 @@ export default function DeleteDirectory({ params }) {
 										<AlertTriangle className="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5 flex-shrink-0" />
 										<div className="flex-1">
 											<div className="flex items-center space-x-2 mb-2">
-												<input type="checkbox" id="dataLoss" checked={understandDataLoss} onChange={(e) => setUnderstandDataLoss(e.target.checked)} className="rounded border-gray-300" />
+												<input type="checkbox" id="dataLoss" checked={understandDataLoss} onChange={(e) => setUnderstandDataLoss(e.target.checked)} className="rounded border-neutral-700" />
 												<label htmlFor="dataLoss" className="font-medium text-red-900 dark:text-red-100">
 													I understand that ALL data will be permanently lost
 												</label>
@@ -408,7 +408,7 @@ export default function DeleteDirectory({ params }) {
 										<Building2 className="w-5 h-5 text-orange-600 dark:text-orange-400 mt-0.5 flex-shrink-0" />
 										<div className="flex-1">
 											<div className="flex items-center space-x-2 mb-2">
-												<input type="checkbox" id="businessImpact" checked={understandBusinessImpact} onChange={(e) => setUnderstandBusinessImpact(e.target.checked)} className="rounded border-gray-300" />
+												<input type="checkbox" id="businessImpact" checked={understandBusinessImpact} onChange={(e) => setUnderstandBusinessImpact(e.target.checked)} className="rounded border-neutral-700" />
 												<label htmlFor="businessImpact" className="font-medium text-orange-900 dark:text-orange-100">
 													I understand the impact on businesses
 												</label>
@@ -423,7 +423,7 @@ export default function DeleteDirectory({ params }) {
 										<Shield className="w-5 h-5 text-yellow-600 dark:text-yellow-400 mt-0.5 flex-shrink-0" />
 										<div className="flex-1">
 											<div className="flex items-center space-x-2 mb-2">
-												<input type="checkbox" id="legalImplications" checked={understandLegalImplications} onChange={(e) => setUnderstandLegalImplications(e.target.checked)} className="rounded border-gray-300" />
+												<input type="checkbox" id="legalImplications" checked={understandLegalImplications} onChange={(e) => setUnderstandLegalImplications(e.target.checked)} className="rounded border-neutral-700" />
 												<label htmlFor="legalImplications" className="font-medium text-yellow-900 dark:text-yellow-100">
 													I understand legal and compliance implications
 												</label>
@@ -438,7 +438,7 @@ export default function DeleteDirectory({ params }) {
 										<FileText className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
 										<div className="flex-1">
 											<div className="flex items-center space-x-2 mb-2">
-												<input type="checkbox" id="backupData" checked={hasBackedUpData} onChange={(e) => setHasBackedUpData(e.target.checked)} className="rounded border-gray-300" />
+												<input type="checkbox" id="backupData" checked={hasBackedUpData} onChange={(e) => setHasBackedUpData(e.target.checked)} className="rounded border-neutral-700" />
 												<label htmlFor="backupData" className="font-medium text-blue-900 dark:text-blue-100">
 													I have backed up all important data
 												</label>
@@ -453,7 +453,7 @@ export default function DeleteDirectory({ params }) {
 										<Lock className="w-5 h-5 text-purple-600 dark:text-purple-400 mt-0.5 flex-shrink-0" />
 										<div className="flex-1">
 											<div className="flex items-center space-x-2 mb-2">
-												<input type="checkbox" id="authorized" checked={isAuthorized} onChange={(e) => setIsAuthorized(e.target.checked)} className="rounded border-gray-300" />
+												<input type="checkbox" id="authorized" checked={isAuthorized} onChange={(e) => setIsAuthorized(e.target.checked)} className="rounded border-neutral-700" />
 												<label htmlFor="authorized" className="font-medium text-purple-900 dark:text-purple-100">
 													I have proper authorization to delete this directory
 												</label>

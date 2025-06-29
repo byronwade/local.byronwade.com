@@ -29,7 +29,7 @@ export default function BusinessRootLayout({ children }) {
 	// }
 
 	return (
-		<div>
+		<div className="bg-white dark:bg-neutral-900 min-h-screen">
 			<Header />
 			<main className="flex flex-col min-h-screen">{children}</main>
 		</div>

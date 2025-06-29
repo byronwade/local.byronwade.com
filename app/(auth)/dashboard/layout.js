@@ -1,5 +1,5 @@
 "use client";
 
 export default function DashboardRootLayout({ children }) {
-	return <div className="bg-background text-foreground dark:bg-background dark:text-foreground">{children}</div>;
+	return <div className="min-h-screen bg-white dark:bg-neutral-900 text-foreground">{children}</div>;
 }

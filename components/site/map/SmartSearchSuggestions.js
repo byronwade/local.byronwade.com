@@ -203,7 +203,7 @@ const SmartSearchSuggestions = ({ businesses = [], searchQuery = "", onSuggestio
 				</div>
 				<div className="flex flex-wrap gap-2">
 					{trendingSearches.slice(0, 4).map((trend, index) => (
-						<Button key={index} variant="ghost" size="sm" className={`text-xs h-6 hover:scale-105 transition-all ${trend.urgency === "high" ? "bg-red-50 hover:bg-red-100 text-red-700" : "bg-gray-50 hover:bg-gray-100"}`} onClick={() => onSuggestionClick?.(trend.query)}>
+						<Button key={index} variant="ghost" size="sm" className={`flex items-center gap-2 p-2 rounded-lg transition-colors cursor-pointer ${trend.urgency === "high" ? "bg-red-50 hover:bg-red-100 text-red-700" : "bg-neutral-800 hover:bg-neutral-700"}`} onClick={() => onSuggestionClick?.(trend.query)}>
 							<Search className="w-3 h-3 mr-1" />
 							{trend.query}
 							<Badge variant="outline" className="ml-2 text-xs">

@@ -2032,7 +2032,7 @@ export default function BusinessProfile() {
 								</CardHeader>
 								<CardContent className="space-y-4">
 									<div className="p-8 text-center rounded-lg border-2 border-dashed border-border">
-										<Image className="mx-auto mb-4 w-12 h-12 text-muted-foreground" />
+										<Image className="mx-auto mb-4 w-12 h-12 text-muted-foreground" alt="Upload icon" />
 										<h3 className="mb-2 text-lg font-medium">Upload Photos</h3>
 										<p className="mb-4 text-muted-foreground">Drag and drop your images here, or click to browse</p>
 										<Button variant="outline" onClick={() => fileInputRef.current?.click()}>

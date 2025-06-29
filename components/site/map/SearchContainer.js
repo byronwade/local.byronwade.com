@@ -133,14 +133,14 @@ const SearchContainer = ({ searchParams: propSearchParams }) => {
 	const contentHeight = `calc(100vh - ${headerHeight}px)`;
 
 	return (
-		<div className="w-full flex flex-col bg-background overflow-hidden" style={{ height: contentHeight }}>
+		<div className="w-full flex flex-col bg-white dark:bg-neutral-900 overflow-hidden" style={{ height: contentHeight }}>
 			{/* Main Content Area */}
 			<div className="flex-1 min-h-0 relative">
 				{showMap ? (
 					<ResizablePanelGroup direction="horizontal" className="h-full" onLayout={handlePanelResize}>
 						{/* Sidebar Panel - Better minimum width for proper header layout */}
 						<ResizablePanel defaultSize={activeBusinessId ? 35 : 28} minSize={22} maxSize={85} className="lg:max-w-[45%] md:max-w-[65%] sm:max-w-[80%] max-w-[95%]">
-							<div className="h-full bg-card border-r border-border overflow-hidden relative">
+							<div className="h-full bg-white dark:bg-neutral-900 border-r border-neutral-800 dark:border-neutral-700 overflow-hidden relative">
 								{/* Business List - Default View */}
 								<div className={`absolute inset-0 transition-all duration-500 ease-in-out ${!isAISidebarOpen ? "transform translate-x-0 opacity-100 z-10" : "transform -translate-x-full opacity-0 z-0"}`}>
 									<BusinessCardList businesses={filteredBusinesses} loading={loading} onBusinessSelect={handleBusinessSelect} activeBusinessId={activeBusinessId} activeCardRef={activeCardRef} onAIClick={handleAIClick} showMap={showMap} onMapToggle={handleMapToggle} />
@@ -163,7 +163,7 @@ const SearchContainer = ({ searchParams: propSearchParams }) => {
 					</ResizablePanelGroup>
 				) : (
 					/* List-only view - Full width */
-					<div className="h-full w-full transition-all duration-500 ease-in-out bg-background">
+					<div className="h-full w-full transition-all duration-500 ease-in-out bg-white dark:bg-neutral-900">
 						<div className="h-full overflow-hidden relative">
 							{/* Business List - Full Width View */}
 							<div className={`absolute inset-0 transition-all duration-500 ease-in-out ${!isAISidebarOpen ? "transform translate-x-0 opacity-100 z-10" : "transform -translate-x-full opacity-0 z-0"}`}>
@@ -179,7 +179,7 @@ const SearchContainer = ({ searchParams: propSearchParams }) => {
 			{/* Loading Overlay */}
 			{loading && (
 				<div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 flex items-center justify-center">
-					<div className="bg-card rounded-lg p-6 shadow-2xl flex items-center gap-3 border border-border">
+					<div className="bg-white dark:bg-neutral-900 rounded-lg p-6 shadow-2xl flex items-center gap-3 border border-neutral-800 dark:border-neutral-700">
 						<div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
 						<span className="text-sm font-medium text-card-foreground">Loading businesses...</span>
 					</div>

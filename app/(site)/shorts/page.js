@@ -416,7 +416,7 @@ const ShortsPage = () => {
 
 		window.addEventListener("keydown", handleKeyPress);
 		return () => window.removeEventListener("keydown", handleKeyPress);
-	}, [currentVideoIndex, mute]);
+	}, [currentVideoIndex, mute, handleScroll]);
 
 	const categories = ["all", "plumbing", "restaurant", "automotive", "beauty", "real estate", "landscaping", "electrical", "cleaning", "hvac"];
 

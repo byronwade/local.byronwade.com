@@ -165,7 +165,7 @@ export default function Activity() {
 	};
 
 	return (
-		<div className="px-4 py-16 space-y-8 w-full lg:px-24">
+		<div className="px-4 py-16 space-y-8 w-full lg:px-24 bg-white dark:bg-neutral-900">
 			{/* Header */}
 			<div className="flex justify-between items-center space-x-6">
 				<div>

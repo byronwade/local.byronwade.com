@@ -178,7 +178,7 @@ export default function JobDetailPage() {
 		};
 
 		loadJobData();
-	}, [params.id, router]);
+	}, [params.id, router, mockJobs]);
 
 	const getStatusColor = (status) => {
 		switch (status) {

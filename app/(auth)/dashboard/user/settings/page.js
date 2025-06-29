@@ -424,7 +424,7 @@ export default function Settings() {
 	};
 
 	return (
-		<div className="w-full px-4 lg:px-24 py-16 space-y-8">
+		<div className="w-full px-4 lg:px-24 py-16 space-y-8 bg-white dark:bg-neutral-900">
 			<div className="grid w-full gap-2">
 				<h1 className="text-4xl">Settings</h1>
 				<p className="text-muted-foreground">Manage your account settings and preferences.</p>

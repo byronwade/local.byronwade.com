@@ -348,7 +348,7 @@ const FullSearchBox = () => {
 					<div className="flex flex-row flex-wrap flex-1 gap-1 sm:gap-2">
 						<FilterDropdown />
 						<SortDropdown />
-						<LocationDropdown onLocationChange={handleLocationChange} value={location.value || ""} updateLocationError={updateLocationError} />
+						<LocationDropdown size="default" onLocationChange={handleLocationChange} value={location.value || ""} updateLocationError={updateLocationError} />
 					</div>
 				</div>
 				{errors.location && touched.location && <p className="text-sm text-red-500">{errors.location}</p>}

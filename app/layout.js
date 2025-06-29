@@ -17,7 +17,7 @@ export default function RootLayout({ children }) {
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<head />
-			<body className={cn("min-h-screen bg-background text-foreground font-sans antialiased", fontSans.variable)}>
+			<body className={cn("min-h-screen bg-neutral-950 dark:bg-neutral-950 text-foreground font-sans antialiased", fontSans.variable)}>
 				<ErrorBoundary>
 					<ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange storageKey="thorbis-theme">
 						<LanguageProvider initialLocale="en">

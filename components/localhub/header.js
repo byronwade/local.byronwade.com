@@ -82,7 +82,7 @@ export default function Header() {
 	};
 
 	return (
-		<div className="sticky top-0 z-[60] bg-card/95 backdrop-blur-md border-b border-border/50">
+		<div className="sticky top-0 z-[60] bg-neutral-950/95 dark:bg-neutral-950/95 backdrop-blur-md border-b border-neutral-900 dark:border-neutral-900">
 			<div className="flex gap-6 justify-between items-center px-4 py-3 mx-auto w-full lg:px-24">
 				{/* Left Section - Logo and LocalHub Info */}
 				<div className="flex flex-row items-center space-x-6 w-full">
@@ -112,7 +112,7 @@ export default function Header() {
 									<ChevronDown className="w-4 h-4 text-muted-foreground" />
 								</div>
 							</DropdownMenuTrigger>
-							<DropdownMenuContent className="w-80 z-[90] bg-card/95 backdrop-blur-md border border-border/50">
+							<DropdownMenuContent className="w-80 z-[90] bg-neutral-950/95 backdrop-blur-md border border-neutral-900">
 								<DropdownMenuLabel>Your LocalHub Directories</DropdownMenuLabel>
 								<DropdownMenuSeparator />
 								{mockDirectories.map((directory) => (
@@ -157,7 +157,6 @@ export default function Header() {
 						</DropdownMenu>
 					</div>
 				</div>
-
 				{/* Right Section - Navigation and User Menu */}
 				<div className="hidden space-x-1 lg:flex xl:space-x-2">
 					{navigation.map((item) => {
@@ -170,26 +169,23 @@ export default function Header() {
 							</Link>
 						);
 					})}
-				</div>;
-
-				{
-					/* User Controls */
-				}
+				</div>
+				;{/* User Controls */}
 				<div className="flex items-center space-x-2">
 					{/* Notifications */}
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<Button variant="ghost" size="sm" className="relative p-2 w-9 h-9 text-muted-foreground hover:text-foreground hover:bg-accent">
 								<Bell className="w-5 h-5" />
-								<span className="absolute top-1 right-1 w-2.5 h-2.5 bg-purple-500 rounded-full border-2 border-white dark:border-gray-800"></span>
+								<span className="absolute top-1 right-1 w-2.5 h-2.5 bg-purple-500 rounded-full border-2 border-white dark:border-neutral-800"></span>
 							</Button>
 						</DropdownMenuTrigger>
-						<DropdownMenuContent className="w-80 z-[80] bg-card/95 backdrop-blur-md border border-border/50">
-							<div className="flex justify-between items-center p-3 border-b border-border/50">
-								<h3 className="font-semibold text-foreground">LocalHub Notifications</h3>
-								<Badge variant="secondary" className="text-xs">
-									3 new
-								</Badge>
+						<DropdownMenuContent className="w-80 z-[90] bg-neutral-950/95 backdrop-blur-md border border-neutral-900">
+							<div className="flex justify-between items-center p-3 border-b border-neutral-800/50 dark:border-neutral-700/50">
+								<span className="text-sm font-medium">Notifications</span>
+								<Button variant="ghost" size="sm" className="h-auto p-0 text-xs text-muted-foreground hover:text-foreground">
+									Mark all as read
+								</Button>
 							</div>
 							<div className="overflow-y-auto max-h-96">
 								<DropdownMenuItem className="flex items-start p-4 space-x-3">
@@ -222,14 +218,14 @@ export default function Header() {
 								</Avatar>
 							</Button>
 						</DropdownMenuTrigger>
-						<DropdownMenuContent className="w-56 z-[80] bg-card/95 backdrop-blur-md border border-border/50">
-							<div className="flex items-center p-3 space-x-3 border-b border-border/50">
+						<DropdownMenuContent className="w-56 z-[80] bg-neutral-950/95 backdrop-blur-md border border-neutral-900">
+							<div className="flex items-center p-3 space-x-3 border-b border-neutral-800/50 dark:border-neutral-700/50">
 								<Avatar className="w-8 h-8">
 									<AvatarImage src={`https://vercel.com/api/www/avatar?u=${user?.email?.split("@")[0] || "localhub"}&s=64`} />
 									<AvatarFallback>{user?.user_metadata?.first_name?.[0] || user?.email?.[0]?.toUpperCase() || "L"}</AvatarFallback>
 								</Avatar>
 								<div className="flex-1 min-w-0">
-									<p className="text-sm font-medium truncate text-foreground">{user?.user_metadata?.first_name || user?.email?.split("@")[0] || "LocalHub Owner"}</p>
+									<p className="text-sm font-medium truncate text-foreground">{user?.user_metadata?.first_name || user?.email?.split("@")[0] || "LocalHub"}</p>
 									<p className="text-xs truncate text-muted-foreground">{user?.email}</p>
 								</div>
 							</div>
@@ -312,7 +308,7 @@ export default function Header() {
 							</SheetHeader>
 
 							{/* Mobile Directory Switcher */}
-							<div className="p-4 mt-6 border-b border-border/50">
+							<div className="p-4 mt-6 border-b border-neutral-800/50 dark:border-neutral-700/50">
 								<div className="flex items-center p-3 space-x-3 rounded-lg bg-accent/50">
 									<div className="flex flex-shrink-0 justify-center items-center w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg">
 										<MapPin className="w-5 h-5 text-white" />
@@ -383,7 +379,8 @@ export default function Header() {
 							</nav>
 						</SheetContent>
 					</Sheet>
-				</div>;
+				</div>
+				;
 			</div>
 		</div>
 	);

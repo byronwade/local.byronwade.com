@@ -9,6 +9,7 @@ import { MdVerifiedUser, MdGppGood, MdSecurity, MdRateReview, MdWork, MdCompare 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@components/ui/tooltip";
 import LanguageSelector from "@components/ui/language-selector";
 import { useLanguage } from "@context/LanguageContext";
+import { Twitter, Facebook, Instagram, Linkedin, Youtube } from "lucide-react";
 
 export default function Footer() {
 	const pathname = usePathname();
@@ -28,7 +29,7 @@ export default function Footer() {
 
 	return (
 		<>
-			<footer className="relative w-full bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 text-white">
+			<footer className="relative w-full text-gray-900 dark:text-white bg-neutral-900 dark:bg-neutral-900 border-t border-neutral-800 dark:border-neutral-900">
 				{/* Main Footer Content */}
 				<div className="px-4 py-20 lg:px-24">
 					{/* Top Section with Logo and Description */}
@@ -37,27 +38,30 @@ export default function Footer() {
 						<div className="lg:col-span-1">
 							<div className="flex items-center mb-6 space-x-4">
 								<Image src="/ThorbisLogo.webp" alt="Thorbis" width={60} height={60} className="w-auto h-12" />
-								<h1 className="text-3xl font-bold text-white">Thorbis</h1>
+								<h1 className="text-3xl font-bold text-gray-900 dark:text-white">Thorbis</h1>
 							</div>
-							<p className="mb-6 max-w-md text-lg leading-relaxed text-blue-100">{footer.trademark}</p>
-							<p className="mb-8 max-w-md text-base text-slate-300">{footer.mission}</p>
+							<p className="mb-6 max-w-md text-lg leading-relaxed text-gray-700 dark:text-gray-300">{footer.trademark}</p>
+							<p className="mb-8 max-w-md text-base text-gray-600 dark:text-gray-400">{footer.mission}</p>
 
 							{/* Social Links */}
 							<div className="flex mb-8 space-x-4">
-								<a href="#" className="p-3 rounded-full transition-all duration-300 bg-white/10 hover:bg-blue-500/30 hover:scale-110 border border-white/20">
-									<FaTwitter className="w-5 h-5 text-white" />
+								<a href="https://twitter.com/localhub" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-10 h-10 rounded-full bg-neutral-800 dark:bg-neutral-800 border border-neutral-900 dark:border-neutral-900 hover:bg-neutral-700 dark:hover:bg-neutral-700 hover:scale-110 border-neutral-900 dark:border-neutral-900">
+									<Twitter className="w-5 h-5" />
 								</a>
-								<a href="#" className="p-3 rounded-full transition-all duration-300 bg-white/10 hover:bg-blue-500/30 hover:scale-110 border border-white/20">
-									<FaLinkedin className="w-5 h-5 text-white" />
+								<a href="https://facebook.com/localhub" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-10 h-10 rounded-full bg-neutral-800 dark:bg-neutral-800 border border-neutral-900 dark:border-neutral-900 hover:bg-neutral-700 dark:hover:bg-neutral-700 hover:scale-110 border-neutral-900 dark:border-neutral-900">
+									<Facebook className="w-5 h-5" />
 								</a>
-								<a href="#" className="p-3 rounded-full transition-all duration-300 bg-white/10 hover:bg-blue-500/30 hover:scale-110 border border-white/20">
-									<FaInstagram className="w-5 h-5 text-white" />
+								<a href="https://instagram.com/localhub" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-10 h-10 rounded-full bg-neutral-800 dark:bg-neutral-800 border border-neutral-900 dark:border-neutral-900 hover:bg-neutral-700 dark:hover:bg-neutral-700 hover:scale-110 border-neutral-900 dark:border-neutral-900">
+									<Instagram className="w-5 h-5" />
 								</a>
-								<a href="#" className="p-3 rounded-full transition-all duration-300 bg-white/10 hover:bg-blue-500/30 hover:scale-110 border border-white/20">
-									<FaYoutube className="w-5 h-5 text-white" />
+								<a href="https://linkedin.com/company/localhub" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-10 h-10 rounded-full bg-neutral-800 dark:bg-neutral-800 border border-neutral-900 dark:border-neutral-900 hover:bg-neutral-700 dark:hover:bg-neutral-700 hover:scale-110 border-neutral-900 dark:border-neutral-900">
+									<Linkedin className="w-5 h-5" />
 								</a>
-								<a href="#" className="p-3 rounded-full transition-all duration-300 bg-white/10 hover:bg-blue-500/30 hover:scale-110 border border-white/20">
-									<FaDiscord className="w-5 h-5 text-white" />
+								<a href="https://youtube.com/localhub" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-10 h-10 rounded-full bg-neutral-800 dark:bg-neutral-800 border border-neutral-900 dark:border-neutral-900 hover:bg-neutral-700 dark:hover:bg-neutral-700 hover:scale-110 border-neutral-900 dark:border-neutral-900">
+									<Youtube className="w-5 h-5" />
+								</a>
+								<a href="#" className="p-3 rounded-full border transition-all duration-300 flex justify-center items-center w-10 h-10 rounded-full bg-neutral-800 dark:bg-neutral-800 border border-neutral-900 dark:border-neutral-900 hover:bg-neutral-700 dark:hover:bg-neutral-700 hover:scale-110 border-neutral-900 dark:border-neutral-900">
+									<FaDiscord className="w-5 h-5 text-gray-700 dark:text-gray-300" />
 								</a>
 							</div>
 
@@ -68,21 +72,21 @@ export default function Footer() {
 						{/* Trust Badges */}
 						<div className="lg:col-span-3">
 							<TooltipProvider>
-								<h3 className="mb-8 text-2xl font-bold text-white">{footer.trustTitle}</h3>
+								<h3 className="mb-8 text-2xl font-bold text-gray-900 dark:text-white">{footer.trustTitle}</h3>
 								<div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-6">
 									{/* Privacy Shield */}
 									<Tooltip>
 										<TooltipTrigger asChild>
-											<div className="group relative flex flex-col items-center p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/20 hover:bg-green-500/20 hover:border-green-400/40 transition-all duration-300 cursor-pointer">
-												<div className="flex items-center justify-center w-12 h-12 mb-3 rounded-lg bg-gradient-to-br from-green-400/30 to-green-600/30 border border-green-400/50">
+											<div className="flex relative flex-col items-center p-4 rounded-xl border backdrop-blur-sm transition-all duration-300 cursor-pointer group bg-white/5 border-white/20 hover:bg-green-500/20 hover:border-green-400/40">
+												<div className="flex justify-center items-center mb-3 w-12 h-12 bg-gradient-to-br rounded-lg border from-green-400/30 to-green-600/30 border-green-400/50">
 													<MdVerifiedUser className="w-6 h-6 text-green-300" />
 												</div>
-												<span className="text-sm font-medium text-white text-center">Privacy Shield</span>
-												<div className="absolute inset-0 rounded-xl bg-gradient-to-r from-green-400/10 to-green-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+												<span className="text-sm font-medium text-center text-white">Privacy Shield</span>
+												<div className="absolute inset-0 bg-gradient-to-r rounded-xl opacity-0 transition-opacity duration-300 from-green-400/10 to-green-600/10 group-hover:opacity-100"></div>
 											</div>
 										</TooltipTrigger>
-										<TooltipContent side="top" className="max-w-xs p-4 bg-white/95 backdrop-blur-sm text-slate-900 border border-white/20 shadow-2xl rounded-xl">
-											<div className="font-semibold text-green-700 mb-1">Privacy Shield</div>
+										<TooltipContent side="top" className="p-4 max-w-xs rounded-xl border shadow-2xl backdrop-blur-sm bg-white/95 text-slate-900 border-white/20">
+											<div className="mb-1 font-semibold text-green-700">Privacy Shield</div>
 											<div className="text-sm">Ensures your data is protected when transferred between the US and EU. We comply with strict privacy standards.</div>
 										</TooltipContent>
 									</Tooltip>
@@ -90,16 +94,16 @@ export default function Footer() {
 									{/* ISO 27001 */}
 									<Tooltip>
 										<TooltipTrigger asChild>
-											<div className="group relative flex flex-col items-center p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/20 hover:bg-blue-500/20 hover:border-blue-400/40 transition-all duration-300 cursor-pointer">
-												<div className="flex items-center justify-center w-12 h-12 mb-3 rounded-lg bg-gradient-to-br from-blue-400/30 to-blue-600/30 border border-blue-400/50">
+											<div className="flex relative flex-col items-center p-4 rounded-xl border backdrop-blur-sm transition-all duration-300 cursor-pointer group bg-white/5 border-white/20 hover:bg-blue-500/20 hover:border-blue-400/40">
+												<div className="flex justify-center items-center mb-3 w-12 h-12 bg-gradient-to-br rounded-lg border from-blue-400/30 to-blue-600/30 border-blue-400/50">
 													<FaCertificate className="w-6 h-6 text-blue-300" />
 												</div>
-												<span className="text-sm font-medium text-white text-center">ISO 27001</span>
-												<div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-400/10 to-blue-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+												<span className="text-sm font-medium text-center text-white">ISO 27001</span>
+												<div className="absolute inset-0 bg-gradient-to-r rounded-xl opacity-0 transition-opacity duration-300 from-blue-400/10 to-blue-600/10 group-hover:opacity-100"></div>
 											</div>
 										</TooltipTrigger>
-										<TooltipContent side="top" className="max-w-xs p-4 bg-white/95 backdrop-blur-sm text-slate-900 border border-white/20 shadow-2xl rounded-xl">
-											<div className="font-semibold text-blue-700 mb-1">ISO 27001</div>
+										<TooltipContent side="top" className="p-4 max-w-xs rounded-xl border shadow-2xl backdrop-blur-sm bg-white/95 text-slate-900 border-white/20">
+											<div className="mb-1 font-semibold text-blue-700">ISO 27001</div>
 											<div className="text-sm">International standard for information security management. We follow best practices to protect your data.</div>
 										</TooltipContent>
 									</Tooltip>
@@ -107,16 +111,16 @@ export default function Footer() {
 									{/* SOC2 */}
 									<Tooltip>
 										<TooltipTrigger asChild>
-											<div className="group relative flex flex-col items-center p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/20 hover:bg-purple-500/20 hover:border-purple-400/40 transition-all duration-300 cursor-pointer">
-												<div className="flex items-center justify-center w-12 h-12 mb-3 rounded-lg bg-gradient-to-br from-purple-400/30 to-purple-600/30 border border-purple-400/50">
+											<div className="flex relative flex-col items-center p-4 rounded-xl border backdrop-blur-sm transition-all duration-300 cursor-pointer group bg-white/5 border-white/20 hover:bg-purple-500/20 hover:border-purple-400/40">
+												<div className="flex justify-center items-center mb-3 w-12 h-12 bg-gradient-to-br rounded-lg border from-purple-400/30 to-purple-600/30 border-purple-400/50">
 													<FaAward className="w-6 h-6 text-purple-300" />
 												</div>
-												<span className="text-sm font-medium text-white text-center">SOC2</span>
-												<div className="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-400/10 to-purple-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+												<span className="text-sm font-medium text-center text-white">SOC2</span>
+												<div className="absolute inset-0 bg-gradient-to-r rounded-xl opacity-0 transition-opacity duration-300 from-purple-400/10 to-purple-600/10 group-hover:opacity-100"></div>
 											</div>
 										</TooltipTrigger>
-										<TooltipContent side="top" className="max-w-xs p-4 bg-white/95 backdrop-blur-sm text-slate-900 border border-white/20 shadow-2xl rounded-xl">
-											<div className="font-semibold text-purple-700 mb-1">SOC2</div>
+										<TooltipContent side="top" className="p-4 max-w-xs rounded-xl border shadow-2xl backdrop-blur-sm bg-white/95 text-slate-900 border-white/20">
+											<div className="mb-1 font-semibold text-purple-700">SOC2</div>
 											<div className="text-sm">Our systems are audited for security, availability, and confidentiality. Your data is handled with care.</div>
 										</TooltipContent>
 									</Tooltip>
@@ -124,16 +128,16 @@ export default function Footer() {
 									{/* CCPA */}
 									<Tooltip>
 										<TooltipTrigger asChild>
-											<div className="group relative flex flex-col items-center p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/20 hover:bg-orange-500/20 hover:border-orange-400/40 transition-all duration-300 cursor-pointer">
-												<div className="flex items-center justify-center w-12 h-12 mb-3 rounded-lg bg-gradient-to-br from-orange-400/30 to-orange-600/30 border border-orange-400/50">
+											<div className="flex relative flex-col items-center p-4 rounded-xl border backdrop-blur-sm transition-all duration-300 cursor-pointer group bg-white/5 border-white/20 hover:bg-orange-500/20 hover:border-orange-400/40">
+												<div className="flex justify-center items-center mb-3 w-12 h-12 bg-gradient-to-br rounded-lg border from-orange-400/30 to-orange-600/30 border-orange-400/50">
 													<MdGppGood className="w-6 h-6 text-orange-300" />
 												</div>
-												<span className="text-sm font-medium text-white text-center">CCPA</span>
-												<div className="absolute inset-0 rounded-xl bg-gradient-to-r from-orange-400/10 to-orange-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+												<span className="text-sm font-medium text-center text-white">CCPA</span>
+												<div className="absolute inset-0 bg-gradient-to-r rounded-xl opacity-0 transition-opacity duration-300 from-orange-400/10 to-orange-600/10 group-hover:opacity-100"></div>
 											</div>
 										</TooltipTrigger>
-										<TooltipContent side="top" className="max-w-xs p-4 bg-white/95 backdrop-blur-sm text-slate-900 border border-white/20 shadow-2xl rounded-xl">
-											<div className="font-semibold text-orange-700 mb-1">CCPA</div>
+										<TooltipContent side="top" className="p-4 max-w-xs rounded-xl border shadow-2xl backdrop-blur-sm bg-white/95 text-slate-900 border-white/20">
+											<div className="mb-1 font-semibold text-orange-700">CCPA</div>
 											<div className="text-sm">Gives California residents control over their personal information. We honor your privacy rights.</div>
 										</TooltipContent>
 									</Tooltip>
@@ -141,16 +145,16 @@ export default function Footer() {
 									{/* GDPR */}
 									<Tooltip>
 										<TooltipTrigger asChild>
-											<div className="group relative flex flex-col items-center p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/20 hover:bg-indigo-500/20 hover:border-indigo-400/40 transition-all duration-300 cursor-pointer">
-												<div className="flex items-center justify-center w-12 h-12 mb-3 rounded-lg bg-gradient-to-br from-indigo-400/30 to-indigo-600/30 border border-indigo-400/50">
+											<div className="flex relative flex-col items-center p-4 rounded-xl border backdrop-blur-sm transition-all duration-300 cursor-pointer group bg-white/5 border-white/20 hover:bg-indigo-500/20 hover:border-indigo-400/40">
+												<div className="flex justify-center items-center mb-3 w-12 h-12 bg-gradient-to-br rounded-lg border from-indigo-400/30 to-indigo-600/30 border-indigo-400/50">
 													<MdSecurity className="w-6 h-6 text-indigo-300" />
 												</div>
-												<span className="text-sm font-medium text-white text-center">GDPR</span>
-												<div className="absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-400/10 to-indigo-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+												<span className="text-sm font-medium text-center text-white">GDPR</span>
+												<div className="absolute inset-0 bg-gradient-to-r rounded-xl opacity-0 transition-opacity duration-300 from-indigo-400/10 to-indigo-600/10 group-hover:opacity-100"></div>
 											</div>
 										</TooltipTrigger>
-										<TooltipContent side="top" className="max-w-xs p-4 bg-white/95 backdrop-blur-sm text-slate-900 border border-white/20 shadow-2xl rounded-xl">
-											<div className="font-semibold text-indigo-700 mb-1">GDPR</div>
+										<TooltipContent side="top" className="p-4 max-w-xs rounded-xl border shadow-2xl backdrop-blur-sm bg-white/95 text-slate-900 border-white/20">
+											<div className="mb-1 font-semibold text-indigo-700">GDPR</div>
 											<div className="text-sm">EU&apos;s data protection law. We are committed to transparency and user control over personal data.</div>
 										</TooltipContent>
 									</Tooltip>
@@ -158,16 +162,16 @@ export default function Footer() {
 									{/* HIPAA */}
 									<Tooltip>
 										<TooltipTrigger asChild>
-											<div className="group relative flex flex-col items-center p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/20 hover:bg-teal-500/20 hover:border-teal-400/40 transition-all duration-300 cursor-pointer">
-												<div className="flex items-center justify-center w-12 h-12 mb-3 rounded-lg bg-gradient-to-br from-teal-400/30 to-teal-600/30 border border-teal-400/50">
+											<div className="flex relative flex-col items-center p-4 rounded-xl border backdrop-blur-sm transition-all duration-300 cursor-pointer group bg-white/5 border-white/20 hover:bg-teal-500/20 hover:border-teal-400/40">
+												<div className="flex justify-center items-center mb-3 w-12 h-12 bg-gradient-to-br rounded-lg border from-teal-400/30 to-teal-600/30 border-teal-400/50">
 													<FaBriefcaseMedical className="w-6 h-6 text-teal-300" />
 												</div>
-												<span className="text-sm font-medium text-white text-center">HIPAA</span>
-												<div className="absolute inset-0 rounded-xl bg-gradient-to-r from-teal-400/10 to-teal-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+												<span className="text-sm font-medium text-center text-white">HIPAA</span>
+												<div className="absolute inset-0 bg-gradient-to-r rounded-xl opacity-0 transition-opacity duration-300 from-teal-400/10 to-teal-600/10 group-hover:opacity-100"></div>
 											</div>
 										</TooltipTrigger>
-										<TooltipContent side="top" className="max-w-xs p-4 bg-white/95 backdrop-blur-sm text-slate-900 border border-white/20 shadow-2xl rounded-xl">
-											<div className="font-semibold text-teal-700 mb-1">HIPAA</div>
+										<TooltipContent side="top" className="p-4 max-w-xs rounded-xl border shadow-2xl backdrop-blur-sm bg-white/95 text-slate-900 border-white/20">
+											<div className="mb-1 font-semibold text-teal-700">HIPAA</div>
 											<div className="text-sm">Protects your health information. We meet strict standards for medical data privacy and security.</div>
 										</TooltipContent>
 									</Tooltip>
@@ -178,93 +182,93 @@ export default function Footer() {
 
 					{/* Compare Alternatives Section */}
 					<div className="mb-16">
-						<div className="text-center mb-12">
-							<h3 className="text-2xl font-bold text-white mb-4 flex items-center justify-center gap-3">
+						<div className="mb-12 text-center">
+							<h3 className="flex gap-3 justify-center items-center mb-4 text-2xl font-bold text-white">
 								<MdCompare className="w-6 h-6 text-blue-300" />
 								{footer.compareTitle}
 							</h3>
-							<p className="text-lg text-slate-300 max-w-2xl mx-auto">{footer.compareDescription}</p>
+							<p className="mx-auto max-w-2xl text-lg text-slate-300">{footer.compareDescription}</p>
 						</div>
 						<div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-9">
 							<Link href="/yelp-alternative" className="group">
-								<div className="flex flex-col items-center p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/20 hover:bg-red-500/20 hover:border-red-400/40 transition-all duration-300">
-									<div className="flex items-center justify-center w-12 h-12 mb-3 rounded-lg bg-white/10 border border-white/20">
+								<div className="flex flex-col items-center p-4 rounded-xl border backdrop-blur-sm transition-all duration-300 bg-white/5 border-white/20 hover:bg-red-500/20 hover:border-red-400/40">
+									<div className="flex justify-center items-center mb-3 w-12 h-12 rounded-lg border bg-white/10 border-white/20">
 										<SiYelp className="w-6 h-6 text-white" />
 									</div>
-									<span className="text-sm font-medium text-white text-center">vs Yelp</span>
-									<FaArrowRight className="w-4 h-4 text-slate-400 mt-2 group-hover:translate-x-1 group-hover:text-white transition-all duration-300" />
+									<span className="text-sm font-medium text-center text-white">vs Yelp</span>
+									<FaArrowRight className="mt-2 w-4 h-4 transition-all duration-300 text-slate-400 group-hover:translate-x-1 group-hover:text-white" />
 								</div>
 							</Link>
 							<Link href="/google-business-alternative" className="group">
-								<div className="flex flex-col items-center p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/20 hover:bg-blue-500/20 hover:border-blue-400/40 transition-all duration-300">
-									<div className="flex items-center justify-center w-12 h-12 mb-3 rounded-lg bg-white/10 border border-white/20">
+								<div className="flex flex-col items-center p-4 rounded-xl border backdrop-blur-sm transition-all duration-300 bg-white/5 border-white/20 hover:bg-blue-500/20 hover:border-blue-400/40">
+									<div className="flex justify-center items-center mb-3 w-12 h-12 rounded-lg border bg-white/10 border-white/20">
 										<SiGoogle className="w-6 h-6 text-white" />
 									</div>
-									<span className="text-sm font-medium text-white text-center">vs Google Business</span>
-									<FaArrowRight className="w-4 h-4 text-slate-400 mt-2 group-hover:translate-x-1 group-hover:text-white transition-all duration-300" />
+									<span className="text-sm font-medium text-center text-white">vs Google Business</span>
+									<FaArrowRight className="mt-2 w-4 h-4 transition-all duration-300 text-slate-400 group-hover:translate-x-1 group-hover:text-white" />
 								</div>
 							</Link>
 							<Link href="/tripadvisor-alternative" className="group">
-								<div className="flex flex-col items-center p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/20 hover:bg-green-500/20 hover:border-green-400/40 transition-all duration-300">
-									<div className="flex items-center justify-center w-12 h-12 mb-3 rounded-lg bg-white/10 border border-white/20">
+								<div className="flex flex-col items-center p-4 rounded-xl border backdrop-blur-sm transition-all duration-300 bg-white/5 border-white/20 hover:bg-green-500/20 hover:border-green-400/40">
+									<div className="flex justify-center items-center mb-3 w-12 h-12 rounded-lg border bg-white/10 border-white/20">
 										<SiTripadvisor className="w-6 h-6 text-white" />
 									</div>
-									<span className="text-sm font-medium text-white text-center">vs TripAdvisor</span>
-									<FaArrowRight className="w-4 h-4 text-slate-400 mt-2 group-hover:translate-x-1 group-hover:text-white transition-all duration-300" />
+									<span className="text-sm font-medium text-center text-white">vs TripAdvisor</span>
+									<FaArrowRight className="mt-2 w-4 h-4 transition-all duration-300 text-slate-400 group-hover:translate-x-1 group-hover:text-white" />
 								</div>
 							</Link>
 							<Link href="/angies-list-alternative" className="group">
-								<div className="flex flex-col items-center p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/20 hover:bg-pink-500/20 hover:border-pink-400/40 transition-all duration-300">
-									<div className="flex items-center justify-center w-12 h-12 mb-3 rounded-lg bg-white/10 border border-white/20">
+								<div className="flex flex-col items-center p-4 rounded-xl border backdrop-blur-sm transition-all duration-300 bg-white/5 border-white/20 hover:bg-pink-500/20 hover:border-pink-400/40">
+									<div className="flex justify-center items-center mb-3 w-12 h-12 rounded-lg border bg-white/10 border-white/20">
 										<MdRateReview className="w-6 h-6 text-white" />
 									</div>
-									<span className="text-sm font-medium text-white text-center">vs Angie&apos;s List</span>
-									<FaArrowRight className="w-4 h-4 text-slate-400 mt-2 group-hover:translate-x-1 group-hover:text-white transition-all duration-300" />
+									<span className="text-sm font-medium text-center text-white">vs Angie&apos;s List</span>
+									<FaArrowRight className="mt-2 w-4 h-4 transition-all duration-300 text-slate-400 group-hover:translate-x-1 group-hover:text-white" />
 								</div>
 							</Link>
 							<Link href="/booking-alternative" className="group">
-								<div className="flex flex-col items-center p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/20 hover:bg-cyan-500/20 hover:border-cyan-400/40 transition-all duration-300">
-									<div className="flex items-center justify-center w-12 h-12 mb-3 rounded-lg bg-white/10 border border-white/20">
+								<div className="flex flex-col items-center p-4 rounded-xl border backdrop-blur-sm transition-all duration-300 bg-white/5 border-white/20 hover:bg-cyan-500/20 hover:border-cyan-400/40">
+									<div className="flex justify-center items-center mb-3 w-12 h-12 rounded-lg border bg-white/10 border-white/20">
 										<FaBuilding className="w-6 h-6 text-white" />
 									</div>
-									<span className="text-sm font-medium text-white text-center">vs Booking.com</span>
-									<FaArrowRight className="w-4 h-4 text-slate-400 mt-2 group-hover:translate-x-1 group-hover:text-white transition-all duration-300" />
+									<span className="text-sm font-medium text-center text-white">vs Booking.com</span>
+									<FaArrowRight className="mt-2 w-4 h-4 transition-all duration-300 text-slate-400 group-hover:translate-x-1 group-hover:text-white" />
 								</div>
 							</Link>
 							<Link href="/expedia-alternative" className="group">
-								<div className="flex flex-col items-center p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/20 hover:bg-orange-500/20 hover:border-orange-400/40 transition-all duration-300">
-									<div className="flex items-center justify-center w-12 h-12 mb-3 rounded-lg bg-white/10 border border-white/20">
+								<div className="flex flex-col items-center p-4 rounded-xl border backdrop-blur-sm transition-all duration-300 bg-white/5 border-white/20 hover:bg-orange-500/20 hover:border-orange-400/40">
+									<div className="flex justify-center items-center mb-3 w-12 h-12 rounded-lg border bg-white/10 border-white/20">
 										<SiExpedia className="w-6 h-6 text-white" />
 									</div>
-									<span className="text-sm font-medium text-white text-center">vs Expedia</span>
-									<FaArrowRight className="w-4 h-4 text-slate-400 mt-2 group-hover:translate-x-1 group-hover:text-white transition-all duration-300" />
+									<span className="text-sm font-medium text-center text-white">vs Expedia</span>
+									<FaArrowRight className="mt-2 w-4 h-4 transition-all duration-300 text-slate-400 group-hover:translate-x-1 group-hover:text-white" />
 								</div>
 							</Link>
 							<Link href="/yellow-pages-alternative" className="group">
-								<div className="flex flex-col items-center p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/20 hover:bg-yellow-500/20 hover:border-yellow-400/40 transition-all duration-300">
-									<div className="flex items-center justify-center w-12 h-12 mb-3 rounded-lg bg-white/10 border border-white/20">
+								<div className="flex flex-col items-center p-4 rounded-xl border backdrop-blur-sm transition-all duration-300 bg-white/5 border-white/20 hover:bg-yellow-500/20 hover:border-yellow-400/40">
+									<div className="flex justify-center items-center mb-3 w-12 h-12 rounded-lg border bg-white/10 border-white/20">
 										<FaBookOpen className="w-6 h-6 text-white" />
 									</div>
-									<span className="text-sm font-medium text-white text-center">vs Yellow Pages</span>
-									<FaArrowRight className="w-4 h-4 text-slate-400 mt-2 group-hover:translate-x-1 group-hover:text-white transition-all duration-300" />
+									<span className="text-sm font-medium text-center text-white">vs Yellow Pages</span>
+									<FaArrowRight className="mt-2 w-4 h-4 transition-all duration-300 text-slate-400 group-hover:translate-x-1 group-hover:text-white" />
 								</div>
 							</Link>
 							<Link href="/bark-alternative" className="group">
-								<div className="flex flex-col items-center p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/20 hover:bg-emerald-500/20 hover:border-emerald-400/40 transition-all duration-300">
-									<div className="flex items-center justify-center w-12 h-12 mb-3 rounded-lg bg-white/10 border border-white/20">
+								<div className="flex flex-col items-center p-4 rounded-xl border backdrop-blur-sm transition-all duration-300 bg-white/5 border-white/20 hover:bg-emerald-500/20 hover:border-emerald-400/40">
+									<div className="flex justify-center items-center mb-3 w-12 h-12 rounded-lg border bg-white/10 border-white/20">
 										<MdWork className="w-6 h-6 text-white" />
 									</div>
-									<span className="text-sm font-medium text-white text-center">vs Bark.com</span>
-									<FaArrowRight className="w-4 h-4 text-slate-400 mt-2 group-hover:translate-x-1 group-hover:text-white transition-all duration-300" />
+									<span className="text-sm font-medium text-center text-white">vs Bark.com</span>
+									<FaArrowRight className="mt-2 w-4 h-4 transition-all duration-300 text-slate-400 group-hover:translate-x-1 group-hover:text-white" />
 								</div>
 							</Link>
 							<Link href="/thumbtack-alternative" className="group">
-								<div className="flex flex-col items-center p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/20 hover:bg-purple-500/20 hover:border-purple-400/40 transition-all duration-300">
-									<div className="flex items-center justify-center w-12 h-12 mb-3 rounded-lg bg-white/10 border border-white/20">
+								<div className="flex flex-col items-center p-4 rounded-xl border backdrop-blur-sm transition-all duration-300 bg-white/5 border-white/20 hover:bg-purple-500/20 hover:border-purple-400/40">
+									<div className="flex justify-center items-center mb-3 w-12 h-12 rounded-lg border bg-white/10 border-white/20">
 										<SiThumbtack className="w-6 h-6 text-white" />
 									</div>
-									<span className="text-sm font-medium text-white text-center">vs Thumbtack</span>
-									<FaArrowRight className="w-4 h-4 text-slate-400 mt-2 group-hover:translate-x-1 group-hover:text-white transition-all duration-300" />
+									<span className="text-sm font-medium text-center text-white">vs Thumbtack</span>
+									<FaArrowRight className="mt-2 w-4 h-4 transition-all duration-300 text-slate-400 group-hover:translate-x-1 group-hover:text-white" />
 								</div>
 							</Link>
 						</div>
@@ -273,7 +277,7 @@ export default function Footer() {
 					{/* Navigation Links */}
 					<div className="grid grid-cols-2 gap-12 mb-16 md:grid-cols-4 lg:grid-cols-6">
 						<div>
-							<h3 className="mb-6 text-lg font-semibold tracking-wide uppercase text-white">{footer.sections.about}</h3>
+							<h3 className="mb-6 text-lg font-semibold tracking-wide text-white uppercase">{footer.sections.about}</h3>
 							<div className="space-y-4">
 								<a href="/about-us" className="block text-sm transition-colors duration-200 hover:text-blue-300 text-slate-300">
 									{footer.links.aboutUs}
@@ -297,7 +301,7 @@ export default function Footer() {
 						</div>
 
 						<div>
-							<h3 className="mb-6 text-lg font-semibold tracking-wide uppercase text-white">{footer.sections.support}</h3>
+							<h3 className="mb-6 text-lg font-semibold tracking-wide text-white uppercase">{footer.sections.support}</h3>
 							<div className="space-y-4">
 								<a href="/mobile" className="block text-sm transition-colors duration-200 hover:text-blue-300 text-slate-300">
 									{footer.links.mobile}
@@ -321,7 +325,7 @@ export default function Footer() {
 						</div>
 
 						<div>
-							<h3 className="mb-6 text-lg font-semibold tracking-wide uppercase text-white">{footer.sections.business}</h3>
+							<h3 className="mb-6 text-lg font-semibold tracking-wide text-white uppercase">{footer.sections.business}</h3>
 							<div className="space-y-4">
 								<a href="/business" className="block text-sm transition-colors duration-200 hover:text-blue-300 text-slate-300">
 									{footer.links.businessForBusiness}
@@ -345,7 +349,7 @@ export default function Footer() {
 						</div>
 
 						<div>
-							<h3 className="mb-6 text-lg font-semibold tracking-wide uppercase text-white">{footer.sections.legal}</h3>
+							<h3 className="mb-6 text-lg font-semibold tracking-wide text-white uppercase">{footer.sections.legal}</h3>
 							<div className="space-y-4">
 								<a href="/terms" className="block text-sm transition-colors duration-200 hover:text-blue-300 text-slate-300">
 									{footer.links.terms}
@@ -369,7 +373,7 @@ export default function Footer() {
 						</div>
 
 						<div>
-							<h3 className="mb-6 text-lg font-semibold tracking-wide uppercase text-white">{footer.sections.resources}</h3>
+							<h3 className="mb-6 text-lg font-semibold tracking-wide text-white uppercase">{footer.sections.resources}</h3>
 							<div className="space-y-4">
 								<a href="/blog" className="block text-sm transition-colors duration-200 hover:text-blue-300 text-slate-300">
 									{footer.links.blog}
@@ -393,7 +397,7 @@ export default function Footer() {
 						</div>
 
 						<div>
-							<h3 className="mb-6 text-lg font-semibold tracking-wide uppercase text-white">{footer.sections.partners}</h3>
+							<h3 className="mb-6 text-lg font-semibold tracking-wide text-white uppercase">{footer.sections.partners}</h3>
 							<div className="space-y-4">
 								<a href="/partners" className="block text-sm transition-colors duration-200 hover:text-blue-300 text-slate-300">
 									{footer.links.partnerships}
@@ -419,20 +423,20 @@ export default function Footer() {
 
 					{/* Bottom Section */}
 					<div className="pt-8 border-t border-white/20">
-						<div className="flex flex-col items-center justify-between space-y-4 md:flex-row md:space-y-0">
+						<div className="flex flex-col justify-between items-center space-y-4 md:flex-row md:space-y-0">
 							<div className="flex items-center space-x-6 text-sm text-slate-400">
 								<span>{footer.copyright}</span>
 								<span>•</span>
 								<span>{footer.madeWith}</span>
 							</div>
 							<div className="flex items-center space-x-6">
-								<a href="/sitemap" className="text-sm text-slate-400 hover:text-blue-300 transition-colors">
+								<a href="/sitemap" className="text-sm transition-colors text-slate-400 hover:text-blue-300">
 									{footer.links.sitemap}
 								</a>
-								<a href="/status" className="text-sm text-slate-400 hover:text-blue-300 transition-colors">
+								<a href="/status" className="text-sm transition-colors text-slate-400 hover:text-blue-300">
 									{footer.links.status}
 								</a>
-								<a href="/feedback" className="text-sm text-slate-400 hover:text-blue-300 transition-colors">
+								<a href="/feedback" className="text-sm transition-colors text-slate-400 hover:text-blue-300">
 									{footer.links.feedback}
 								</a>
 							</div>
@@ -447,25 +451,25 @@ export default function Footer() {
 // Loading skeleton for footer
 function FooterSkeleton() {
 	return (
-		<footer className="relative w-full bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 text-white">
+		<footer className="relative w-full text-white bg-gradient-to-br via-blue-900 from-slate-900 to-slate-800">
 			<div className="px-4 py-20 lg:px-24">
 				<div className="animate-pulse">
 					<div className="grid grid-cols-1 gap-16 mb-20 lg:grid-cols-4">
 						<div className="lg:col-span-1">
 							<div className="flex items-center mb-6 space-x-4">
-								<div className="w-12 h-12 bg-white/20 rounded"></div>
-								<div className="w-24 h-8 bg-white/20 rounded"></div>
+								<div className="w-12 h-12 rounded bg-white/20"></div>
+								<div className="w-24 h-8 rounded bg-white/20"></div>
 							</div>
 							<div className="space-y-4">
-								<div className="w-full h-4 bg-white/20 rounded"></div>
-								<div className="w-3/4 h-4 bg-white/20 rounded"></div>
+								<div className="w-full h-4 rounded bg-white/20"></div>
+								<div className="w-3/4 h-4 rounded bg-white/20"></div>
 							</div>
 						</div>
 						<div className="lg:col-span-3">
-							<div className="w-48 h-8 bg-white/20 rounded mb-8"></div>
+							<div className="mb-8 w-48 h-8 rounded bg-white/20"></div>
 							<div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-6">
 								{Array.from({ length: 6 }).map((_, i) => (
-									<div key={i} className="h-24 bg-white/10 rounded-xl"></div>
+									<div key={i} className="h-24 rounded-xl bg-white/10"></div>
 								))}
 							</div>
 						</div>

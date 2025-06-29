@@ -1,7 +1,7 @@
 // components/FilterDropdown.js
 import React from "react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuCheckboxItem } from "@components/ui/dropdown-menu";
-import { ChevronRight, ChevronDown, X } from "react-feather";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuCheckboxItem, DropdownMenuLabel, DropdownMenuSeparator } from "@components/ui/dropdown-menu";
+import { ChevronRight, ChevronDown, X, Star, Clock, DollarSign } from "react-feather";
 import { Button } from "@components/ui/button";
 import { FunnelIcon } from "@heroicons/react/24/solid";
 
@@ -22,17 +22,27 @@ const FilterDropdown = () => {
 					</Button>
 				</div>
 			</div>
-			<DropdownMenuContent className="mt-2 bg-black rounded-md shadow-lg w-80">
+			<DropdownMenuContent className="w-80">
+				<DropdownMenuLabel>Filter Options</DropdownMenuLabel>
+				<DropdownMenuSeparator />
 				<DropdownMenuGroup>
 					<DropdownMenuItem asChild>
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
-								<DropdownMenuItem className="flex items-center justify-between w-full text-white bg-transparent border-none">
-									Ratings
-									<ChevronRight className="w-4 h-4" />
+								<DropdownMenuItem className="flex items-center gap-3 py-2.5">
+									<div className="w-8 h-8 rounded-lg bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center">
+										<Star className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />
+									</div>
+									<div className="flex flex-col">
+										<span className="text-sm font-medium">Ratings</span>
+										<span className="text-xs text-muted-foreground">Filter by star rating</span>
+									</div>
+									<ChevronRight className="w-4 h-4 ml-auto opacity-60" />
 								</DropdownMenuItem>
 							</DropdownMenuTrigger>
-							<DropdownMenuContent className="ml-6 bg-black rounded-md shadow-lg w-80">
+							<DropdownMenuContent className="w-64">
+								<DropdownMenuLabel>Star Ratings</DropdownMenuLabel>
+								<DropdownMenuSeparator />
 								<DropdownMenuGroup>
 									<DropdownMenuCheckboxItem>1 Star & Above</DropdownMenuCheckboxItem>
 									<DropdownMenuCheckboxItem>2 Stars & Above</DropdownMenuCheckboxItem>
@@ -46,12 +56,20 @@ const FilterDropdown = () => {
 					<DropdownMenuItem asChild>
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
-								<DropdownMenuItem className="flex items-center justify-between w-full text-white bg-transparent border-none">
-									Hours Open
-									<ChevronRight className="w-4 h-4" />
+								<DropdownMenuItem className="flex items-center gap-3 py-2.5">
+									<div className="w-8 h-8 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+										<Clock className="w-4 h-4 text-green-600 dark:text-green-400" />
+									</div>
+									<div className="flex flex-col">
+										<span className="text-sm font-medium">Hours Open</span>
+										<span className="text-xs text-muted-foreground">Filter by availability</span>
+									</div>
+									<ChevronRight className="w-4 h-4 ml-auto opacity-60" />
 								</DropdownMenuItem>
 							</DropdownMenuTrigger>
-							<DropdownMenuContent className="ml-6 bg-black rounded-md shadow-lg w-80">
+							<DropdownMenuContent className="w-64">
+								<DropdownMenuLabel>Availability</DropdownMenuLabel>
+								<DropdownMenuSeparator />
 								<DropdownMenuGroup>
 									<DropdownMenuCheckboxItem>Open Now</DropdownMenuCheckboxItem>
 									<DropdownMenuCheckboxItem>Open 24/7</DropdownMenuCheckboxItem>
@@ -62,12 +80,20 @@ const FilterDropdown = () => {
 					<DropdownMenuItem asChild>
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
-								<DropdownMenuItem className="flex items-center justify-between w-full text-white bg-transparent border-none">
-									Price
-									<ChevronRight className="w-4 h-4" />
+								<DropdownMenuItem className="flex items-center gap-3 py-2.5">
+									<div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+										<DollarSign className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+									</div>
+									<div className="flex flex-col">
+										<span className="text-sm font-medium">Price</span>
+										<span className="text-xs text-muted-foreground">Filter by price range</span>
+									</div>
+									<ChevronRight className="w-4 h-4 ml-auto opacity-60" />
 								</DropdownMenuItem>
 							</DropdownMenuTrigger>
-							<DropdownMenuContent className="ml-6 bg-black rounded-md shadow-lg w-80">
+							<DropdownMenuContent className="w-64">
+								<DropdownMenuLabel>Price Range</DropdownMenuLabel>
+								<DropdownMenuSeparator />
 								<DropdownMenuGroup>
 									<DropdownMenuCheckboxItem>$</DropdownMenuCheckboxItem>
 									<DropdownMenuCheckboxItem>$$</DropdownMenuCheckboxItem>

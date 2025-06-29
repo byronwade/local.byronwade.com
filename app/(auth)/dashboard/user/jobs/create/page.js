@@ -632,7 +632,7 @@ export default function CreateJobPage() {
 														<Trash2 className="w-4 h-4" />
 													</Button>
 												</div>
-												<img src={photo} alt={`Project photo ${index + 1}`} className="object-cover w-full h-full rounded-lg" />
+												<Image src={photo} alt={`Project photo ${index + 1}`} width={400} height={400} className="object-cover w-full h-full rounded-lg" />
 											</div>
 										))}
 										{formData.images.length < 10 && (

@@ -312,7 +312,7 @@ const MapContainer = React.forwardRef((props, ref) => {
 			<div className="absolute bottom-6 right-6 z-10">
 				<div className="flex flex-col gap-2">
 					{/* Basic Zoom and Location Controls */}
-					<div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200/50 dark:border-gray-700/50 p-2">
+					<div className="bg-neutral-900/95 dark:bg-neutral-800/95 backdrop-blur-sm rounded-lg shadow-lg border border-neutral-800/50 dark:border-neutral-700/50 p-2">
 						<div className="flex gap-1">
 							<Button variant="ghost" size="sm" onClick={() => mapRef.current?.zoomIn()} className="h-8 w-8 p-0">
 								<Plus className="w-4 h-4" />

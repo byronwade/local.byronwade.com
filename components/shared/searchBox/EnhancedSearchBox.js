@@ -9,7 +9,6 @@ import { Separator } from "@components/ui/separator";
 import { Card, CardContent } from "@components/ui/card";
 import { Search, MapPin, X, History, Star, TrendingUp, Target } from "lucide-react";
 import AiButton from "@components/shared/searchBox/AiButton";
-import LocationDropdown from "@components/shared/searchBox/LocationDropdown";
 import useSearchStore from "@store/useSearchStore";
 import useBusinessStore from "@store/useBusinessStore";
 

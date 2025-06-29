@@ -98,7 +98,7 @@ const SearchBarOnly = () => {
 					</div>
 				</div>
 				<div className="relative flex items-center space-x-2">
-					<LocationDropdown onLocationChange={handleLocationChange} value={location.value || ""} updateLocationError={updateLocationError} />
+					<LocationDropdown size="small" onLocationChange={handleLocationChange} value={location.value || ""} updateLocationError={updateLocationError} />
 					<AiButton showBeta={false} />
 					<Button size="icon" className={`${isFormValid ? "bg-primary !border-primary-dark" : ""} flex items-center justify-center h-6 gap-2 px-2 py-2 text-sm font-medium transition-colors rounded-md select-none ring-offset-background focus-visible:ring-offset-2 shrink-0 whitespace-nowrap focus-visible:outline-none focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 sm:px-3`} type="submit" disabled={!isFormValid || loading}>
 						{loading ? <Loader2 className="w-4 h-4 animate-spin" /> : isFormValid ? <ArrowRight className="w-4 h-4" /> : <Search className="w-4 h-4" />}

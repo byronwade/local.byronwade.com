@@ -42,14 +42,14 @@ export default function Header() {
 	];
 
 	return (
-		<div className="sticky top-0 z-[60] bg-card/95 backdrop-blur-md border-b border-border/50 w-full">
-			<div className="flex items-center justify-between w-full gap-6 py-3 px-6">
+		<div className="sticky top-0 z-[60] bg-neutral-950/95 dark:bg-neutral-950/95 backdrop-blur-md border-b border-neutral-900 dark:border-neutral-900 w-full">
+			<div className="flex gap-6 justify-between items-center px-6 py-3 w-full">
 				{/* Left Section - Logo and Business Info */}
-				<div className="flex flex-row items-center w-full space-x-6">
+				<div className="flex flex-row items-center space-x-6 w-full">
 					<Link href="/" className="flex items-center space-x-3 text-xl font-bold group">
 						<div className="relative">
 							<Image src="/ThorbisLogo.webp" alt="Thorbis Admin" width={50} height={50} className="w-12 h-12 transition-transform duration-200 group-hover:scale-105" />
-							<div className="absolute inset-0 transition-opacity duration-200 rounded-full opacity-0 bg-gradient-to-r from-red-500/20 to-orange-500/20 group-hover:opacity-100" />
+							<div className="absolute inset-0 bg-gradient-to-r rounded-full opacity-0 transition-opacity duration-200 from-red-500/20 to-orange-500/20 group-hover:opacity-100" />
 						</div>
 						<div className="hidden sm:block">
 							<h1 className="text-lg font-bold leading-none text-foreground">Thorbis Admin</h1>
@@ -63,7 +63,7 @@ export default function Header() {
 						const isActive = pathname === item.href || (item.href !== "/dashboard/admin" && pathname.startsWith(item.href));
 						return (
 							<Link key={item.href} href={item.href} passHref>
-								<Button variant={isActive ? "default" : "ghost"} size="sm" className={`text-sm font-medium transition-colors ${isActive ? "bg-primary/5 text-primary border border-primary/20 hover:text-white" : "hover:text-white hover:bg-muted"}`}>
+								<Button variant={isActive ? "default" : "ghost"} size="sm" className={`text-sm font-medium transition-colors ${isActive ? "border bg-primary/5 text-primary border-primary/20 hover:text-white" : "hover:text-white hover:bg-muted"}`}>
 									{item.text}
 								</Button>
 							</Link>
@@ -75,21 +75,21 @@ export default function Header() {
 					{/* Notifications */}
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
-							<Button variant="ghost" size="sm" className="relative p-2 h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-accent">
+							<Button variant="ghost" size="sm" className="relative p-2 w-9 h-9 text-muted-foreground hover:text-foreground hover:bg-accent">
 								<Bell className="w-5 h-5" />
-								<span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 border-2 border-white dark:border-gray-800 rounded-full"></span>
+								<span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-neutral-800"></span>
 							</Button>
 						</DropdownMenuTrigger>
-						<DropdownMenuContent className="w-80 z-[80] bg-card/95 backdrop-blur-md border border-border/50">
-							<div className="flex items-center justify-between p-3 border-b border-border/50">
+						<DropdownMenuContent className="w-80 z-[80] bg-neutral-950/95 backdrop-blur-md border border-neutral-900">
+							<div className="flex justify-between items-center p-3 border-b border-border/50">
 								<h3 className="font-semibold text-foreground">Admin Notifications</h3>
 								<Badge variant="destructive" className="text-xs">
 									5 new
 								</Badge>
 							</div>
-							<div className="overflow-y-auto max-h-96">
+							<div className="overflow-y-auto max-h-64">
 								<DropdownMenuItem className="flex items-start p-4 space-x-3">
-									<div className="flex-shrink-0 w-2 h-2 mt-2 bg-red-500 rounded-full"></div>
+									<div className="flex-shrink-0 mt-2 w-2 h-2 bg-red-500 rounded-full"></div>
 									<div className="flex-1 min-w-0">
 										<p className="text-sm font-medium text-foreground">System Alert</p>
 										<p className="mt-1 text-xs text-muted-foreground">High server load detected</p>
@@ -97,7 +97,7 @@ export default function Header() {
 									</div>
 								</DropdownMenuItem>
 								<DropdownMenuItem className="flex items-start p-4 space-x-3">
-									<div className="flex-shrink-0 w-2 h-2 mt-2 bg-orange-500 rounded-full"></div>
+									<div className="flex-shrink-0 mt-2 w-2 h-2 bg-orange-500 rounded-full"></div>
 									<div className="flex-1 min-w-0">
 										<p className="text-sm font-medium text-foreground">New user registration</p>
 										<p className="mt-1 text-xs text-muted-foreground">User requires approval</p>
@@ -111,14 +111,14 @@ export default function Header() {
 					{/* User Avatar Menu */}
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
-							<Button variant="outline" size="sm" className="p-0 border rounded-full shadow-sm h-9 w-9 border-input bg-background hover:bg-accent hover:text-accent-foreground hover:border-primary">
+							<Button variant="outline" size="sm" className="p-0 w-9 h-9 rounded-full border shadow-sm border-input bg-background hover:bg-accent hover:text-accent-foreground hover:border-primary">
 								<Avatar className="w-8 h-8">
 									<AvatarImage src={`https://vercel.com/api/www/avatar?u=${user?.email?.split("@")[0] || "admin"}&s=64`} />
 									<AvatarFallback>{user?.user_metadata?.first_name?.[0] || user?.email?.[0]?.toUpperCase() || "A"}</AvatarFallback>
 								</Avatar>
 							</Button>
 						</DropdownMenuTrigger>
-						<DropdownMenuContent className="w-56 z-[80] bg-card/95 backdrop-blur-md border border-border/50">
+						<DropdownMenuContent className="w-56 z-[80] bg-neutral-950/95 backdrop-blur-md border border-neutral-900">
 							<div className="flex items-center p-3 space-x-3 border-b border-border/50">
 								<Avatar className="w-8 h-8">
 									<AvatarImage src={`https://vercel.com/api/www/avatar?u=${user?.email?.split("@")[0] || "admin"}&s=64`} />
@@ -132,7 +132,7 @@ export default function Header() {
 							<DropdownMenuGroup>
 								<DropdownMenuItem asChild>
 									<Link href="/dashboard/admin/settings">
-										<Settings className="w-4 h-4 mr-2" />
+										<Settings className="mr-2 w-4 h-4" />
 										<span>Settings</span>
 									</Link>
 								</DropdownMenuItem>
@@ -156,7 +156,7 @@ export default function Header() {
 								<Menu className="w-4 h-4" />
 							</Button>
 						</SheetTrigger>
-						<SheetContent className="bg-card/95 backdrop-blur-md">
+						<SheetContent className="backdrop-blur-md bg-card/95">
 							<SheetHeader>
 								<SheetTitle>Admin Menu</SheetTitle>
 							</SheetHeader>
@@ -167,7 +167,7 @@ export default function Header() {
 										return (
 											<li key={item.href}>
 												<Link href={item.href} onClick={() => setMobileMenuOpen(false)}>
-													<Button variant={isActive ? "default" : "ghost"} className={`w-full justify-start ${isActive ? "bg-primary/5 text-primary border border-primary/20" : ""}`}>
+													<Button variant={isActive ? "default" : "ghost"} className={`w-full justify-start ${isActive ? "border bg-primary/5 text-primary border-primary/20" : ""}`}>
 														{item.text}
 													</Button>
 												</Link>

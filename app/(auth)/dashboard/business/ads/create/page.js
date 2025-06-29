@@ -18,7 +18,7 @@ import { toast } from "@components/ui/use-toast";
 // Enhanced Map Placeholder with better visual design
 function MapPlaceholder({ location, radius, isValid }) {
 	return (
-		<div className={`w-full h-56 rounded-lg border-2 transition-all duration-300 ${isValid ? "bg-gradient-to-br from-green-50 to-blue-50 dark:from-green-950/30 dark:to-blue-950/30 border-green-200 dark:border-green-700" : "bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900/40 dark:to-gray-800/30 border-gray-200 dark:border-gray-700"} flex items-center justify-center mb-6`}>
+		<div className={`w-full h-32 rounded-lg bg-gradient-to-r from-gray-900/40 dark:to-gray-800/30 border-neutral-800 dark:border-neutral-700"} flex items-center justify-center mb-6`}>
 			<div className="text-center">
 				<MapPin className={`w-12 h-12 mx-auto mb-3 ${isValid ? "text-green-600 dark:text-green-400" : "text-gray-400 dark:text-gray-500"}`} />
 				<p className="font-semibold text-lg text-foreground mb-1">Target Area Preview</p>

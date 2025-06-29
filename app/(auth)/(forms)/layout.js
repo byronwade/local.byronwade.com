@@ -31,7 +31,7 @@ export default function AuthFormsLayout({ children }) {
 					</div>
 				</div>
 			</div>
-			<div className="overflow-y-auto relative bg-gray-100 md:shadow-panel md:border-l md:border-gray-200 dark:md:border-gray-950 dark:bg-dark-950">
+			<div className="overflow-y-auto relative bg-gray-100 md:shadow-panel md:border-l md:border-neutral-800 dark:md:border-neutral-950 dark:bg-dark-950">
 				{/* Back Button - Top Left of Right Panel */}
 				<div className="absolute top-5 left-5 z-10">
 					<Link href="/">

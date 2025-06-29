@@ -241,7 +241,7 @@ const ReportBusiness = () => {
 				{currentStep !== steps.findIndex((step) => step.name === "Report Submitted") && (
 					<div className="flex justify-between mt-10">
 						{currentStep > 0 && currentStep !== steps.findIndex((step) => step.name === "activeUser") && (
-							<Button variant="outline" type="button" onClick={prevStep} className="mt-2 border-gray-300 dark:border-neutral-800">
+							<Button variant="outline" type="button" onClick={prevStep} className="mt-2 border-neutral-700 dark:border-neutral-800">
 								<ArrowLeft className="w-4 h-4 mr-2" /> Back
 							</Button>
 						)}

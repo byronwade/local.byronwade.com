@@ -74,7 +74,7 @@ export function Blog() {
 				{posts.slice(0, visiblePosts).map((post) => (
 					<article key={post.id} className="relative flex flex-col gap-8 isolate lg:flex-row">
 						<div className="relative aspect-[16/9] sm:aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
-							<Image alt="" src={post.imageUrl} width={1000} height={1000} className="absolute inset-0 object-cover w-full h-full rounded-md bg-gray-50" objectFit="cover" />
+							<Image alt="" src={post.imageUrl} width={1000} height={1000} className="absolute inset-0 object-cover w-full h-full rounded-md bg-neutral-800" objectFit="cover" />
 							<div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10" />
 						</div>
 						<div>
@@ -97,7 +97,7 @@ export function Blog() {
 							</div>
 							<div className="flex pt-6">
 								<div className="relative flex items-center gap-x-4">
-									<Image alt="" src={post.author.imageUrl} width={40} height={40} className="w-10 h-10 rounded-full bg-gray-50" />
+									<Image alt="" src={post.author.imageUrl} width={40} height={40} className="w-10 h-10 rounded-full bg-neutral-800" />
 									<div className="text-sm leading-6">
 										<p className="font-semibold text-gray-900 dark:text-white">
 											<Link href={post.author.href}>

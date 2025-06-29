@@ -32,16 +32,16 @@ export default function AdminLayout({ children }) {
 
 	return (
 		<SidebarProvider>
-			<div className="flex flex-col w-full min-h-screen">
+			<div className="flex flex-col w-full min-h-screen bg-white dark:bg-neutral-900">
 				{/* Header spans full width */}
 				<Header />
 
 				{/* Content area with sidebar */}
 				<div className="relative flex flex-1 w-full">
 					<AppSidebar className="h-[calc(100vh-73px)] top-[73px] fixed left-0 z-30" />
-					<SidebarInset className="flex-1 w-full min-w-0 bg-muted/30">
+					<SidebarInset className="flex-1 w-full min-w-0">
 						{/* Minimalistic Toolbar */}
-						<div className="flex items-center w-full h-12 px-4 border-b bg-background/50 backdrop-blur-sm border-border/20">
+						<div className="flex items-center w-full h-12 px-4 border-b backdrop-blur-sm border-neutral-800/20 dark:border-neutral-700/20">
 							<SidebarTrigger className="w-8 h-8" />
 						</div>
 

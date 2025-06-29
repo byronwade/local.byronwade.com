@@ -46,7 +46,7 @@ export default function Header() {
 	];
 
 	return (
-		<div className="sticky top-0 z-[60] bg-card/95 backdrop-blur-md border-b border-border/50">
+		<div className="sticky top-0 z-[60] bg-neutral-950/95 dark:bg-neutral-950/95 backdrop-blur-md border-b border-neutral-900 dark:border-neutral-900">
 			<div className="flex gap-6 justify-between items-center px-4 py-3 mx-auto w-full lg:px-24">
 				{/* Left Section - Logo and User Info */}
 				<div className="flex flex-row items-center space-x-6 w-full">
@@ -71,7 +71,7 @@ export default function Header() {
 									<ChevronDown className="w-4 h-4" />
 								</Button>
 							</DropdownMenuTrigger>
-							<DropdownMenuContent className="w-56 z-[90] bg-card/95 backdrop-blur-md border border-border/50">
+							<DropdownMenuContent className="w-56 z-[90] bg-neutral-950/95 backdrop-blur-md border border-neutral-900">
 								<DropdownMenuLabel>Quick Actions</DropdownMenuLabel>
 								<DropdownMenuSeparator />
 								<DropdownMenuItem asChild>
@@ -134,7 +134,7 @@ export default function Header() {
 								<span className="absolute top-1 right-1 w-2.5 h-2.5 bg-blue-500 rounded-full border-2 border-white dark:border-gray-800"></span>
 							</Button>
 						</DropdownMenuTrigger>
-						<DropdownMenuContent className="w-80 z-[80] bg-card/95 backdrop-blur-md border border-border/50">
+						<DropdownMenuContent className="w-80 z-[80] bg-neutral-950/95 backdrop-blur-md border border-neutral-900">
 							<div className="flex justify-between items-center p-3 border-b border-border/50">
 								<h3 className="font-semibold text-foreground">Notifications</h3>
 								<Badge variant="secondary" className="text-xs">
@@ -172,7 +172,7 @@ export default function Header() {
 								</Avatar>
 							</Button>
 						</DropdownMenuTrigger>
-						<DropdownMenuContent className="w-56 z-[80] bg-card/95 backdrop-blur-md border border-border/50">
+						<DropdownMenuContent className="w-56 z-[80] bg-neutral-950/95 backdrop-blur-md border border-neutral-900">
 							<div className="flex items-center p-3 space-x-3 border-b border-border/50">
 								<Avatar className="w-8 h-8">
 									<AvatarImage src={`https://vercel.com/api/www/avatar?u=${user?.email?.split("@")[0] || "user"}&s=64`} />

@@ -272,7 +272,7 @@ const InteractiveSearchBox = () => {
 	return (
 		<div className="relative w-full max-w-5xl mx-auto">
 			{/* Main Search Bar */}
-			<Card className="shadow-lg border-2 border-gray-100 dark:border-gray-800">
+			<Card className="shadow-lg border-2 border-neutral-800 dark:border-neutral-700">
 				<CardContent className="p-4">
 					<div className="flex flex-col lg:flex-row gap-3">
 						{/* Search Input */}
@@ -293,7 +293,7 @@ const InteractiveSearchBox = () => {
 							<div className="relative">
 								<MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
 								<Input ref={locationInputRef} type="text" placeholder="Where?" value={location} onChange={(e) => setLocation(e.target.value)} className="pl-12 pr-12 h-14 text-base font-medium border-0 focus:ring-2 focus:ring-primary/20" />
-								<Button variant="ghost" size="sm" onClick={handleLocationDetect} className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 hover:bg-gray-100" title="Use current location">
+								<Button variant="ghost" size="sm" onClick={handleLocationDetect} className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 hover:bg-neutral-800" title="Use current location">
 									<Target className="w-4 h-4" />
 								</Button>
 							</div>
@@ -315,7 +315,7 @@ const InteractiveSearchBox = () => {
 
 					{/* Filters Panel */}
 					{showFilters && (
-						<div className="mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+						<div className="mt-4 p-4 bg-neutral-800 dark:bg-neutral-800 rounded-lg">
 							<div className="flex items-center justify-between mb-3">
 								<h3 className="font-medium">Filters</h3>
 								{hasActiveFilters && (
@@ -368,7 +368,7 @@ const InteractiveSearchBox = () => {
 
 			{/* Suggestions Dropdown */}
 			{showSuggestions && (
-				<div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-900 rounded-lg shadow-2xl border z-50 max-h-96 overflow-hidden">
+				<div className="absolute top-full left-0 right-0 mt-2 bg-neutral-900 dark:bg-neutral-900 rounded-lg shadow-2xl border z-50 max-h-96 overflow-hidden">
 					<ScrollArea className="max-h-96">
 						{isLoading ? (
 							<div className="p-6 text-center">
@@ -381,7 +381,7 @@ const InteractiveSearchBox = () => {
 								{query && (
 									<>
 										<div className="px-4 py-2">
-											<button onClick={() => handleSearch()} className="flex items-center gap-3 w-full text-left hover:bg-gray-50 dark:hover:bg-gray-800 p-3 rounded-lg transition-colors">
+											<button onClick={() => handleSearch()} className="flex items-center gap-3 w-full text-left hover:bg-neutral-800 dark:hover:bg-neutral-800 p-3 rounded-lg transition-colors">
 												<div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
 													<Search className="w-5 h-5 text-primary" />
 												</div>
@@ -403,8 +403,8 @@ const InteractiveSearchBox = () => {
 											{suggestions.map((suggestion, index) => {
 												const Icon = suggestion.icon;
 												return (
-													<button key={index} onClick={() => handleSuggestionClick(suggestion)} className={`flex items-center gap-3 w-full text-left p-3 rounded-lg transition-all ${selectedSuggestionIndex === index ? "bg-primary/10 text-primary shadow-sm" : "hover:bg-gray-50 dark:hover:bg-gray-800"}`}>
-														<div className={`w-10 h-10 rounded-lg flex items-center justify-center ${suggestion.type === "business" ? "bg-green-100 dark:bg-green-900" : "bg-gray-100 dark:bg-gray-800"}`}>
+													<button key={index} onClick={() => handleSuggestionClick(suggestion)} className={`flex items-center gap-3 w-full text-left p-3 rounded-lg transition-all ${selectedSuggestionIndex === index ? "bg-primary/10 text-primary shadow-sm" : "hover:bg-neutral-800 dark:hover:bg-neutral-800"}`}>
+														<div className={`w-10 h-10 rounded-lg flex items-center justify-center ${suggestion.type === "business" ? "bg-green-100 dark:bg-green-900" : "bg-neutral-800 dark:bg-neutral-800"}`}>
 															<Icon className="w-5 h-5 text-gray-600 dark:text-gray-300" />
 														</div>
 														<div className="flex-1 min-w-0">
@@ -437,8 +437,8 @@ const InteractiveSearchBox = () => {
 												</Button>
 											</div>
 											{recentSearches.slice(0, 5).map((search, index) => (
-												<button key={index} onClick={() => handleSearch(search.query, search.location)} className="flex items-center gap-3 w-full text-left hover:bg-gray-50 dark:hover:bg-gray-800 p-3 rounded-lg transition-colors">
-													<div className="w-10 h-10 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
+												<button key={index} onClick={() => handleSearch(search.query, search.location)} className="flex items-center gap-3 w-full text-left hover:bg-neutral-800 dark:hover:bg-neutral-800 p-3 rounded-lg transition-colors">
+													<div className="w-10 h-10 bg-neutral-800 dark:bg-neutral-800 rounded-lg flex items-center justify-center">
 														<History className="w-5 h-5 text-gray-500" />
 													</div>
 													<div className="flex-1 min-w-0">
@@ -465,10 +465,10 @@ const InteractiveSearchBox = () => {
 														setQuery(category);
 														handleSearch(category, location);
 													}}
-													className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-left"
+													className={`flex items-center gap-2 p-2 rounded-lg hover:bg-neutral-800 dark:hover:bg-neutral-800 transition-colors text-left ${selectedSuggestionIndex === category ? "bg-primary/10 text-primary shadow-sm" : ""}`}
 												>
 													<TrendingUp className="w-4 h-4 text-gray-400" />
-													<span className="text-sm font-medium">{category}</span>
+													<span className={`text-sm font-medium ${selectedSuggestionIndex === category ? "text-primary" : "text-gray-400"}`}>{category}</span>
 												</button>
 											))}
 										</div>

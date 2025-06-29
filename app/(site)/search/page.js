@@ -85,11 +85,13 @@ const jsonLd = {
 	},
 };
 
-export default function Search({ searchParams }) {
+export default async function Search({ searchParams }) {
+	const awaitedSearchParams = await searchParams;
+
 	return (
 		<>
 			{/* Always show the map-based search interface */}
-			<SearchContainer searchParams={searchParams} />
+			<SearchContainer searchParams={awaitedSearchParams} />
 			<Script data-testid="ldjson" id="json" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd, null, "\t") }} />
 		</>
 	);

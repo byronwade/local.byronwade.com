@@ -64,7 +64,7 @@ export default function ContactUsForm() {
 											Name <span className="text-red-500">*</span>
 										</FormLabel>
 										<FormControl>
-											<Input {...field} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-primary focus:border-primary dark:focus:border-primary dark:focus-within:border-primary" />
+											<Input {...field} className="bg-white border border-neutral-700 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-primary focus:border-primary dark:focus:border-primary dark:focus-within:border-primary" />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
@@ -79,7 +79,7 @@ export default function ContactUsForm() {
 											Email <span className="text-red-500">*</span>
 										</FormLabel>
 										<FormControl>
-											<Input {...field} type="email" className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-primary focus:border-primary dark:focus:border-primary dark:focus-within:border-primary" />
+											<Input {...field} type="email" className="bg-white border border-neutral-700 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-primary focus:border-primary dark:focus:border-primary dark:focus-within:border-primary" />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
@@ -94,7 +94,7 @@ export default function ContactUsForm() {
 											Phone Number <span className="text-red-500">*</span>
 										</FormLabel>
 										<FormControl>
-											<Input {...field} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-primary focus:border-primary dark:focus:border-primary dark:focus-within:border-primary" />
+											<Input {...field} className="bg-white border border-neutral-700 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-primary focus:border-primary dark:focus:border-primary dark:focus-within:border-primary" />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
@@ -109,7 +109,7 @@ export default function ContactUsForm() {
 											Subject <span className="text-red-500">*</span>
 										</FormLabel>
 										<FormControl>
-											<Input {...field} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-primary focus:border-primary dark:focus:border-primary dark:focus-within:border-primary" />
+											<Input {...field} className="bg-white border border-neutral-700 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-primary focus:border-primary dark:focus:border-primary dark:focus-within:border-primary" />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
@@ -124,7 +124,7 @@ export default function ContactUsForm() {
 											Message <span className="text-red-500">*</span>
 										</FormLabel>
 										<FormControl>
-											<Textarea {...field} className="bg-white border border-gray-300 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-primary focus:border-primary dark:focus:border-primary dark:focus-within:border-primary" />
+											<Textarea {...field} className="bg-white border border-neutral-700 dark:border-neutral-800 dark:bg-neutral-900 focus-within:border-primary focus:border-primary dark:focus:border-primary dark:focus-within:border-primary" />
 										</FormControl>
 										<FormMessage />
 									</FormItem>

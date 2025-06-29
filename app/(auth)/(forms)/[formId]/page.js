@@ -39,7 +39,8 @@ const businessCategories = ["Restaurants & Food", "Health & Medical", "Home Serv
 
 const businessHours = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
-export default function FormPage({ params }) {
+export default function FormPage() {
+	const params = useParams();
 	// The formType can be 'add-a-business', 'claim-a-business', etc.
 	const formType = params.formId;
 

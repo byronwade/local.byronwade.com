@@ -17,6 +17,7 @@ import { Switch } from "@components/ui/switch";
 import { Progress } from "@components/ui/progress";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@components/ui/dialog";
 import { ALL_CATEGORIES } from "@components/site/categories/AllCategoriesPage";
+import Image from "next/image";
 
 // Mock job data - in real app this would come from API based on job ID
 const mockJob = {
@@ -453,7 +454,7 @@ export default function JobDetailPage({ params }) {
 									{job.images && job.images.length > 0 ? (
 										job.images.map((photo, index) => (
 											<div key={index} className="relative group aspect-square">
-												<img src={photo} alt={`Project photo ${index + 1}`} className="object-cover w-full h-full rounded-lg" />
+												<Image src={photo} alt={`Project photo ${index + 1}`} width={400} height={400} className="object-cover w-full h-full rounded-lg" />
 											</div>
 										))
 									) : (

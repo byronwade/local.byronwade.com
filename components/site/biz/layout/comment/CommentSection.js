@@ -20,7 +20,7 @@ const CommentSection = () => {
 	};
 
 	return (
-		<div className="flex w-full p-4 bg-gray-900 rounded-b-md">
+		<div className="flex w-full p-4 bg-neutral-900 rounded-b-md">
 			<div className="flex flex-col w-full h-auto space-y-4">
 				{comments.map((comment) => (
 					<Comment key={comment.id} comment={comment} handleReplyClick={handleReplyClick} replyBox={replyBox} replyText={replyText} setReplyText={setReplyText} handleAddReply={handleAddReply} />

@@ -505,12 +505,7 @@ const BusinessMarkers = () => {
 
 		return (
 			<div
-				className={`
-					w-4 h-4 rounded-full border-2 border-white cursor-pointer transition-all duration-200 ease-out
-					${isActive ? "scale-150 z-50" : isHovered ? "scale-125 z-40" : "scale-100 z-30"}
-					${isOpen ? "bg-blue-500" : "bg-gray-400"}
-					${business.isSponsored ? "ring-2 ring-yellow-400 ring-opacity-75" : ""}
-				`}
+				className={`w-8 h-8 rounded-full border-2 border-white shadow-lg flex items-center justify-center cursor-pointer transition-all duration-200 ${isOpen ? "bg-blue-500" : "bg-neutral-700"}`}
 				style={{
 					transformOrigin: "center",
 					boxShadow: isActive ? "0 4px 12px rgba(0,0,0,0.3)" : "0 2px 6px rgba(0,0,0,0.2)",
@@ -667,9 +662,9 @@ const BusinessMarkers = () => {
 	const shouldShowPopup = popupBusiness && showPopup && currentZoom >= 10;
 
 	return (
-        <>
-            {markers}
-            {shouldShowPopup && (
+		<>
+			{markers}
+			{shouldShowPopup && (
 				<Popup
 					latitude={popupBusiness.coordinates.lat}
 					longitude={popupBusiness.coordinates.lng}
@@ -687,7 +682,7 @@ const BusinessMarkers = () => {
 					}}
 				>
 					<div
-						className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 p-4 min-w-[300px] max-w-[350px]"
+						className="bg-neutral-900 dark:bg-neutral-800 rounded-xl shadow-2xl border border-neutral-700 dark:border-neutral-700 p-4 min-w-[300px] max-w-[350px]"
 						style={{
 							// Enhanced font rendering for crisp text on maps
 							fontFamily: "'Roboto', 'Helvetica Neue', 'Arial', sans-serif",
@@ -933,8 +928,8 @@ const BusinessMarkers = () => {
 					</div>
 				</Popup>
 			)}
-        </>
-    );
+		</>
+	);
 };
 
 export default memo(BusinessMarkers);

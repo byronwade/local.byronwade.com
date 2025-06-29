@@ -81,13 +81,13 @@ const BusinessCardSkeleton = ({ showPulse = true }) => (
 	<Card className="mb-3 border-l-4 border-l-transparent">
 		<CardContent className="p-4">
 			<div className="flex gap-3">
-				<div className={`w-16 h-16 rounded-lg bg-gray-200 ${showPulse ? "animate-pulse" : ""}`} />
+				<div className={`w-16 h-16 rounded-lg bg-neutral-800 ${showPulse ? "animate-pulse" : ""}`} />
 				<div className="flex-1 space-y-2">
-					<div className={`h-4 bg-gray-200 rounded w-3/4 ${showPulse ? "animate-pulse" : ""}`} />
-					<div className={`h-3 bg-gray-200 rounded w-1/2 ${showPulse ? "animate-pulse" : ""}`} />
+					<div className={`h-4 bg-neutral-800 rounded w-3/4 ${showPulse ? "animate-pulse" : ""}`} />
+					<div className={`h-3 bg-neutral-800 rounded w-1/2 ${showPulse ? "animate-pulse" : ""}`} />
 					<div className="flex gap-2">
-						<div className={`h-5 bg-gray-200 rounded-full w-16 ${showPulse ? "animate-pulse" : ""}`} />
-						<div className={`h-5 bg-gray-200 rounded-full w-20 ${showPulse ? "animate-pulse" : ""}`} />
+						<div className={`h-5 bg-neutral-800 rounded-full w-16 ${showPulse ? "animate-pulse" : ""}`} />
+						<div className={`h-5 bg-neutral-800 rounded-full w-20 ${showPulse ? "animate-pulse" : ""}`} />
 					</div>
 				</div>
 			</div>
@@ -195,7 +195,7 @@ const EmptyStateWithPsychology = ({ searchQuery, onRetry, onExpandArea }) => (
 				Search wider area
 			</button>
 
-			<button onClick={onRetry} className="flex items-center justify-center w-full gap-2 px-4 py-3 text-gray-700 transition-colors bg-gray-100 rounded-lg hover:bg-gray-200">
+			<button onClick={onRetry} className="flex items-center justify-center w-full gap-2 px-4 py-3 text-gray-700 transition-colors bg-neutral-800 rounded-lg hover:bg-neutral-700">
 				<Clock className="w-4 h-4" />
 				Try again
 			</button>

@@ -106,7 +106,7 @@ const EnhancedBusinessHeader = ({ businesses = [], activeBusinessId, onFilterCli
 
 				{/* Search Context & Personalization */}
 				{searchContext && (
-					<div className="mb-3 p-3 bg-white/60 dark:bg-gray-800/60 rounded-lg border border-blue-100">
+					<div className="mb-3 p-3 bg-neutral-900/60 dark:bg-neutral-800/60 rounded-lg border border-blue-100">
 						<div className="flex items-start gap-2">
 							<Sparkles className="w-4 h-4 text-blue-500 mt-0.5 flex-shrink-0" />
 							<div className="text-sm">
@@ -204,9 +204,9 @@ const EnhancedBusinessHeader = ({ businesses = [], activeBusinessId, onFilterCli
 
 			{/* No Results State with Psychology */}
 			{insights.total === 0 && (
-				<div className="p-6 text-center border-t bg-gray-50/50">
+				<div className="p-6 text-center border-t bg-neutral-800/50">
 					<div className="max-w-sm mx-auto">
-						<div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+						<div className="w-12 h-12 bg-neutral-800 rounded-full flex items-center justify-center mx-auto mb-3">
 							<MapPin className="w-6 h-6 text-gray-400" />
 						</div>
 						<h3 className="font-medium text-gray-900 mb-2">No businesses found</h3>

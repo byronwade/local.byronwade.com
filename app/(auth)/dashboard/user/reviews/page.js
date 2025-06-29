@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Textarea } from "@components/ui/textarea";
 import { Label } from "@components/ui/label";
 import { Search, Star, Calendar, MapPin, Edit, Trash2, Eye, ExternalLink, Shield, CheckCircle, AlertCircle, Upload, Camera, Link as LinkIcon, Copy, Download } from "react-feather";
+import Image from "next/image";
 
 export default function Reviews() {
 	const [searchTerm, setSearchTerm] = useState("");
@@ -411,8 +412,21 @@ export default function Reviews() {
 													</div>
 													<div className="flex space-x-2">
 														{review.photos.map((photo, index) => (
-															<div key={index} className="w-16 h-16 rounded-md bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-																<img src={photo} alt={`Review photo ${index + 1}`} className="w-full h-full object-cover rounded-md" />
+															<div key={index} className="relative w-20 h-20 rounded-md bg-gray-100 dark:bg-gray-800">
+																<Image src={photo} alt={`Review photo ${index + 1}`} width={400} height={400} className="w-full h-full object-cover rounded-md" />
+																<Button
+																	variant="ghost"
+																	size="sm"
+																	onClick={() =>
+																		setEditForm({
+																			...editForm,
+																			photos: editForm.photos.filter((_, i) => i !== index),
+																		})
+																	}
+																	className="absolute top-0 right-0 h-6 w-6 p-0 bg-red-500 text-white hover:bg-red-600"
+																>
+																	×
+																</Button>
 															</div>
 														))}
 													</div>
@@ -502,7 +516,7 @@ export default function Reviews() {
 							<div className="mt-2 flex space-x-2">
 								{editForm.photos.map((photo, index) => (
 									<div key={index} className="relative w-20 h-20 rounded-md bg-gray-100 dark:bg-gray-800">
-										<img src={photo} alt={`Photo ${index + 1}`} className="w-full h-full object-cover rounded-md" />
+										<Image src={photo} alt={`Photo ${index + 1}`} width={400} height={400} className="w-full h-full object-cover rounded-md" />
 										<Button
 											variant="ghost"
 											size="sm"
