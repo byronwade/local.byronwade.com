@@ -11,9 +11,9 @@ import { Button } from "@components/ui/button";
 import { TooltipProvider } from "@components/ui/tooltip";
 import AutocompleteSuggestions from "@components/shared/searchBox/AutocompleteSuggestions";
 import { Loader2 } from "lucide-react";
-import useSearchStore from "@store/useSearchStore";
-import useBusinessStore from "@store/useBusinessStore";
-import useMapStore from "@store/useMapStore";
+import { useSearchStore } from "@store/search";
+import { useBusinessStore } from "@store/business";
+import { useMapStore } from "@store/map";
 import debounce from "lodash/debounce";
 import { Input } from "@components/ui/input";
 import { Badge } from "@components/ui/badge";
@@ -22,7 +22,7 @@ import { Separator } from "@components/ui/separator";
 
 const FullSearchBox = () => {
 	const { searchQuery, setSearchQuery, location, setLocation, errors, setErrors, touched, setTouched, suggestions, loading, fetchAutocompleteSuggestions } = useSearchStore();
-	const { fetchFilteredBusinesses, fetchBusinesses, initializeWithMockData, filteredBusinesses } = useBusinessStore();
+	const { fetchFilteredBusinesses, fetchBusinesses, initializeWithSupabaseData, filteredBusinesses } = useBusinessStore();
 	const { getMapBounds, getMapZoom } = useMapStore();
 	const [autocompleteOpen, setAutocompleteOpen] = useState(false);
 	const [isFormValid, setIsFormValid] = useState(false);
@@ -40,8 +40,8 @@ const FullSearchBox = () => {
 
 	// Initialize mock data on component mount
 	useEffect(() => {
-		initializeWithMockData();
-	}, [initializeWithMockData]);
+		initializeWithSupabaseData();
+	}, [initializeWithSupabaseData]);
 
 	useEffect(() => {
 		const queryParam = searchParams.get("q") || searchParams.get("query") || "";

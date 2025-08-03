@@ -13,7 +13,7 @@ import { Bell, ChevronDown, Settings, LogOut, Eye, Building2, DollarSign, Menu, 
 import { SunIcon, MoonIcon } from "@heroicons/react/24/outline";
 import { RiComputerFill } from "react-icons/ri";
 import { useTheme } from "next-themes";
-import useAuthStore from "@store/useAuthStore";
+import { useAuthStore } from "@store/auth";
 
 const navigation = [
 	{ name: "Dashboard", href: "/dashboard/localhub" },
@@ -88,7 +88,7 @@ export default function Header() {
 				<div className="flex flex-row items-center space-x-6 w-full">
 					<Link href="/" className="flex items-center space-x-3 text-xl font-bold group">
 						<div className="relative">
-							<Image src="/ThorbisLogo.webp" alt="Thorbis LocalHub" width={50} height={50} className="w-12 h-12 transition-transform duration-200 group-hover:scale-105" />
+							<Image src="/logos/ThorbisLogo.webp" alt="Thorbis LocalHub" width={50} height={50} className="w-12 h-12 transition-transform duration-200 group-hover:scale-105" />
 							<div className="absolute inset-0 bg-gradient-to-r rounded-full opacity-0 transition-opacity duration-200 from-purple-500/20 to-pink-500/20 group-hover:opacity-100" />
 						</div>
 						<div className="hidden sm:block">

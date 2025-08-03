@@ -1,47 +1,143 @@
 import JobsClient from "./JobsClient";
+import { JobDataFetchers } from "@lib/supabase/server";
+import { Suspense } from "react";
 
-const mockJobs = [
-	{
-		id: "job1",
-		title: "Senior Frontend Developer",
-		company: "Innovate Solutions",
-		logo: "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=100&h=100&fit=crop",
-		location: "Springfield, IL",
-		isRemote: true,
-		type: "Full-time",
-		posted: "2d ago",
-		description: "Detailed description for Senior Frontend Developer...",
-		salary: "$120,000 - $150,000",
-	},
-	{
-		id: "job2",
-		title: "Logistics Coordinator",
-		company: "Riverstone Logistics",
-		logo: "https://images.unsplash.com/photo-1577563908411-5077b6dc7624?w=100&h=100&fit=crop",
-		location: "Springfield, IL",
-		isRemote: false,
-		type: "Full-time",
-		posted: "1w ago",
-		description: "Detailed description for Logistics Coordinator...",
-		salary: "$55,000 - $65,000",
-	},
-	{
-		id: "job3",
-		title: "Construction Project Manager",
-		company: "Apex Construction",
-		logo: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=100&h=100&fit=crop",
-		location: "Springfield, IL",
-		isRemote: false,
-		type: "Contract",
-		posted: "5d ago",
-		description: "Detailed description for Construction Project Manager...",
-		salary: "$90,000 - $110,000",
-	},
-];
+// Transform Supabase job data to match client component expectations
+function transformJobData(job) {
+	const formatSalary = (min, max) => {
+		if (!min && !max) return "Salary not specified";
+		if (min && max) return `$${min.toLocaleString()} - $${max.toLocaleString()}`;
+		if (min) return `$${min.toLocaleString()}+`;
+		return `Up to $${max.toLocaleString()}`;
+	};
 
-export default async function JobsPage() {
-	// In a real application, you would fetch jobs from an API
-	const jobs = mockJobs;
+	const formatPostedDate = (dateString) => {
+		const date = new Date(dateString);
+		const now = new Date();
+		const diffTime = Math.abs(now - date);
+		const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-	return <JobsClient jobs={jobs} />;
+		if (diffDays === 1) return "1d ago";
+		if (diffDays < 7) return `${diffDays}d ago`;
+		if (diffDays < 30) return `${Math.ceil(diffDays / 7)}w ago`;
+		return `${Math.ceil(diffDays / 30)}m ago`;
+	};
+
+	return {
+		id: job.id,
+		title: job.title,
+		company: job.companies?.name || "Company",
+		logo: job.companies?.logo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(job.companies?.name || "Company")}&background=0ea5e9&color=fff`,
+		location: job.location,
+		isRemote: job.remote_ok,
+		type: job.job_type || "Full-time",
+		posted: formatPostedDate(job.created_at),
+		description: job.description?.substring(0, 200) + "..." || "No description available",
+		salary: formatSalary(job.salary_min, job.salary_max),
+		skills: job.skills_required || [],
+		experienceLevel: job.experience_level,
+		benefits: job.benefits || [],
+		applicationDeadline: job.application_deadline,
+		companyInfo: {
+			id: job.companies?.id,
+			industry: job.companies?.industry,
+			size: job.companies?.company_size,
+			website: job.companies?.website,
+		},
+	};
+}
+
+async function getJobsData(searchParams) {
+	const params = {
+		search: searchParams.search || searchParams.q || "",
+		location: searchParams.location || "",
+		jobType: searchParams.type || "",
+		remote: searchParams.remote === "true" ? true : searchParams.remote === "false" ? false : undefined,
+		salaryMin: searchParams.salary_min ? parseInt(searchParams.salary_min) : undefined,
+		limit: parseInt(searchParams.limit || "20"),
+		offset: parseInt(searchParams.offset || "0"),
+	};
+
+	const { data: jobsResult, error } = await JobDataFetchers.getJobs(params);
+
+	if (error) {
+		console.error("Failed to fetch jobs:", error);
+		return { jobs: [], total: 0, hasMore: false };
+	}
+
+	return {
+		jobs: jobsResult?.jobs?.map(transformJobData) || [],
+		total: jobsResult?.total || 0,
+		hasMore: jobsResult?.hasMore || false,
+	};
+}
+
+export async function generateMetadata({ searchParams }) {
+	const awaitedSearchParams = await searchParams;
+	const query = awaitedSearchParams.search || awaitedSearchParams.q || "";
+	const location = awaitedSearchParams.location || "";
+
+	let title = "Find Jobs Near You - Thorbis";
+	let description = "Discover exciting job opportunities from top companies. Search by location, job type, and salary to find your perfect career match.";
+
+	if (query && location) {
+		title = `${query} Jobs in ${location} - Thorbis`;
+		description = `Find ${query} jobs in ${location}. Browse the latest opportunities and apply today.`;
+	} else if (query) {
+		title = `${query} Jobs - Thorbis`;
+		description = `Find ${query} jobs across various locations. Browse the latest opportunities and apply today.`;
+	} else if (location) {
+		title = `Jobs in ${location} - Thorbis`;
+		description = `Find jobs in ${location}. Browse the latest opportunities from top companies and apply today.`;
+	}
+
+	return {
+		title,
+		description,
+		keywords: ["jobs", "careers", "employment", "hiring", query, location].filter(Boolean),
+		openGraph: {
+			title,
+			description,
+			type: "website",
+		},
+	};
+}
+
+// Loading skeleton component
+function JobsListingSkeleton() {
+	return (
+		<div className="space-y-4">
+			{Array.from({ length: 5 }).map((_, i) => (
+				<div key={i} className="border rounded-lg p-4 animate-pulse">
+					<div className="flex items-center gap-4">
+						<div className="w-12 h-12 bg-gray-300 rounded"></div>
+						<div className="flex-1">
+							<div className="h-4 bg-gray-300 rounded w-1/3 mb-2"></div>
+							<div className="h-3 bg-gray-200 rounded w-1/4"></div>
+						</div>
+						<div className="hidden md:flex gap-2">
+							<div className="h-6 bg-gray-200 rounded w-16"></div>
+							<div className="h-6 bg-gray-200 rounded w-20"></div>
+						</div>
+					</div>
+				</div>
+			))}
+		</div>
+	);
+}
+
+async function JobsList({ searchParams }) {
+	const jobsData = await getJobsData(searchParams);
+
+	return <JobsClient jobs={jobsData.jobs} searchMetadata={jobsData} searchParams={searchParams} />;
+}
+
+export default async function JobsPage({ searchParams }) {
+	const awaitedSearchParams = await searchParams;
+
+	return (
+		<Suspense fallback={<JobsListingSkeleton />}>
+			<JobsList searchParams={awaitedSearchParams} />
+		</Suspense>
+	);
 }

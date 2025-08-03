@@ -17,6 +17,7 @@ export default function JobDetailPage() {
 	const router = useRouter();
 	const [job, setJob] = useState(null);
 	const [isLoading, setIsLoading] = useState(true);
+	const [jobId, setJobId] = useState(null);
 
 	// Mock jobs data - in real app this would come from API
 	const mockJobs = [
@@ -157,10 +158,28 @@ export default function JobDetailPage() {
 		},
 	];
 
+	// Handle Next.js 15 params as promises
+	useEffect(() => {
+		const loadParams = async () => {
+			try {
+				// In Next.js 15, params may be a promise
+				const resolvedParams = await Promise.resolve(params);
+				setJobId(resolvedParams.id);
+			} catch (error) {
+				console.error("Error loading params:", error);
+				// Fallback to direct access for backward compatibility
+				setJobId(params?.id);
+			}
+		};
+
+		loadParams();
+	}, [params]);
+
 	// Load job data
 	useEffect(() => {
+		if (!jobId) return;
+
 		const loadJobData = () => {
-			const jobId = params.id;
 			const foundJob = mockJobs.find((j) => j.id === jobId);
 
 			if (!foundJob) {
@@ -178,7 +197,7 @@ export default function JobDetailPage() {
 		};
 
 		loadJobData();
-	}, [params.id, router, mockJobs]);
+	}, [jobId, router, mockJobs]);
 
 	const getStatusColor = (status) => {
 		switch (status) {

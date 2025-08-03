@@ -1,12 +1,14 @@
 import "./globals.css";
 import { Inter as FontSans } from "next/font/google";
-import { ThemeProvider } from "@context/ThemeContext";
-import { LanguageProvider } from "@context/LanguageContext";
-import { Toaster } from "@components/ui/toaster";
-import ErrorBoundary from "@components/shared/ErrorBoundary";
-import { cn } from "@lib/utils";
+import { ThemeProvider } from "@/context/ThemeContext";
+import { LanguageProvider } from "@/context/LanguageContext";
+import { StatsigProvider } from "@/context/StatsigContext";
+import { Toaster } from "@/components/ui/toaster";
+import ErrorBoundary from "@/components/shared/ErrorBoundary";
+import AnalyticsInitializer from "@/components/shared/AnalyticsInitializer";
+import { cn } from "@/lib/utils";
 
-import { AuthProvider } from "@context/AuthContext";
+import { AuthProvider } from "@/context/AuthContext";
 
 const fontSans = FontSans({
 	subsets: ["latin"],
@@ -22,8 +24,11 @@ export default function RootLayout({ children }) {
 					<ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange storageKey="thorbis-theme">
 						<LanguageProvider initialLocale="en">
 							<AuthProvider>
-								{children}
-								<Toaster />
+								<StatsigProvider>
+									<AnalyticsInitializer />
+									{children}
+									<Toaster />
+								</StatsigProvider>
 							</AuthProvider>
 						</LanguageProvider>
 					</ThemeProvider>

@@ -8,111 +8,43 @@ import { Input } from "@components/ui/input";
 import { Calendar, MapPin, Clock, Users, Search, Filter, Plus, Heart, Share2, Bookmark, MoreHorizontal, ChevronDown, Star, Tag, Globe, Lock, Music, Camera, Coffee, ShoppingBag, GraduationCap, Heart as HeartIcon, MessageCircle, ExternalLink } from "lucide-react";
 import Image from "next/image";
 
-// Mock data for Facebook-style events
-const eventsData = {
-	upcoming: [
-		{
-			id: 1,
-			title: "Local Business Networking Mixer",
-			description: "Join fellow business owners for an evening of networking, drinks, and collaboration opportunities. Perfect for expanding your professional network.",
-			date: "2024-02-15",
-			time: "18:00",
-			location: "Downtown Business Center",
-			address: "123 Main St, Downtown",
-			category: "Networking",
-			organizer: "Business Growth Network",
-			organizerAvatar: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=100&h=100&fit=crop",
-			image: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=400&h=300&fit=crop",
-			attendees: 47,
-			interested: 89,
-			price: "Free",
-			isOnline: false,
-			isVerified: true,
-			tags: ["Networking", "Business", "Professional"],
-			distance: "0.5 miles away",
-		},
-		{
-			id: 2,
-			title: "Food Truck Festival 2024",
-			description: "A celebration of local cuisine featuring 20+ food trucks, live music, and family activities. Don't miss the best local food in one place!",
-			date: "2024-02-18",
-			time: "12:00",
-			location: "Central Park",
-			address: "456 Park Ave, Downtown",
-			category: "Food & Drink",
-			organizer: "Local Food Association",
-			organizerAvatar: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=100&h=100&fit=crop",
-			image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop",
-			attendees: 234,
-			interested: 567,
-			price: "$5",
-			isOnline: false,
-			isVerified: true,
-			tags: ["Food", "Music", "Family"],
-			distance: "1.2 miles away",
-		},
-		{
-			id: 3,
-			title: "Tech Startup Meetup",
-			description: "Monthly meetup for tech entrepreneurs, developers, and investors. Share ideas, find collaborators, and learn from successful founders.",
-			date: "2024-02-20",
-			time: "19:00",
-			location: "Innovation Hub",
-			address: "789 Tech Blvd, Innovation District",
-			category: "Technology",
-			organizer: "Tech Community",
-			organizerAvatar: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=100&h=100&fit=crop",
-			image: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=300&fit=crop",
-			attendees: 89,
-			interested: 156,
-			price: "Free",
-			isOnline: false,
-			isVerified: true,
-			tags: ["Technology", "Startup", "Networking"],
-			distance: "2.1 miles away",
-		},
-		{
-			id: 4,
-			title: "Yoga in the Park",
-			description: "Join us for a relaxing morning yoga session in the beautiful park setting. All levels welcome, bring your own mat.",
-			date: "2024-02-22",
-			time: "08:00",
-			location: "Riverside Park",
-			address: "321 River Rd, Riverside",
-			category: "Health & Wellness",
-			organizer: "Wellness Collective",
-			organizerAvatar: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=100&h=100&fit=crop",
-			image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=300&fit=crop",
-			attendees: 23,
-			interested: 45,
-			price: "$10",
-			isOnline: false,
-			isVerified: false,
-			tags: ["Yoga", "Wellness", "Outdoor"],
-			distance: "0.8 miles away",
-		},
-		{
-			id: 5,
-			title: "Art Gallery Opening",
-			description: "Opening night for local artists showcasing contemporary works. Wine and cheese reception included.",
-			date: "2024-02-25",
-			time: "18:30",
-			location: "Modern Art Gallery",
-			address: "654 Art St, Arts District",
-			category: "Arts & Culture",
-			organizer: "Local Artists Guild",
-			organizerAvatar: "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=100&h=100&fit=crop",
-			image: "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&h=300&fit=crop",
-			attendees: 67,
-			interested: 123,
-			price: "$15",
-			isOnline: false,
-			isVerified: true,
-			tags: ["Art", "Culture", "Wine"],
-			distance: "1.5 miles away",
-		},
-	],
-};
+// Transform Supabase event data to component format
+function transformEventData(supabaseEvents) {
+	return supabaseEvents.map((event) => {
+		const startDate = new Date(event.start_date);
+		const eventCategory = event.tags && event.tags.length > 0 ? event.tags[0] : "General";
+
+		return {
+			id: event.id,
+			title: event.title,
+			description: event.description,
+			date: event.start_date.split("T")[0], // Get just the date part
+			time: startDate.toLocaleTimeString("en-US", {
+				hour: "2-digit",
+				minute: "2-digit",
+				hour12: false,
+			}),
+			location: event.venue || event.location,
+			address: event.location,
+			category: eventCategory,
+			organizer: event.organizer?.name || "Event Organizer",
+			organizerAvatar: event.organizer?.avatar_url || "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=100&h=100&fit=crop",
+			image: event.featured_image || "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop",
+			attendees: event.current_attendees || 0,
+			interested: Math.floor((event.current_attendees || 0) * 1.5), // Estimate interested people
+			price: event.price === "0" || !event.price ? "Free" : `$${event.price}`,
+			isOnline: event.is_virtual,
+			isVerified: true, // Assume all events in database are verified
+			tags: event.tags || [eventCategory],
+			distance: "Local area", // Default distance
+			slug: event.slug,
+			currency: event.currency,
+			maxAttendees: event.max_attendees,
+			virtualUrl: event.virtual_url,
+			endDate: event.end_date,
+		};
+	});
+}
 
 const categories = ["All Events", "Networking", "Food & Drink", "Music", "Technology", "Health & Wellness", "Arts & Culture", "Sports", "Education", "Family"];
 const dateFilters = ["Today", "This Week", "This Weekend", "Next Week", "This Month"];
@@ -273,19 +205,24 @@ const SidebarFilter = React.memo(({ searchQuery, setSearchQuery, selectedCategor
 
 SidebarFilter.displayName = "SidebarFilter";
 
-export default function EventsClient() {
+export default function EventsClient({ initialEvents = [] }) {
 	const [searchQuery, setSearchQuery] = useState("");
 	const [selectedCategory, setSelectedCategory] = useState("All Events");
 	const [selectedDateFilter, setSelectedDateFilter] = useState("This Week");
 
+	// Transform and memoize events data
+	const transformedEvents = useMemo(() => {
+		return transformEventData(initialEvents);
+	}, [initialEvents]);
+
 	// Memoized filtered events to prevent unnecessary recalculations
 	const filteredEvents = useMemo(() => {
-		return eventsData.upcoming.filter((event) => {
+		return transformedEvents.filter((event) => {
 			const matchesSearch = event.title.toLowerCase().includes(searchQuery.toLowerCase()) || event.description.toLowerCase().includes(searchQuery.toLowerCase()) || event.organizer.toLowerCase().includes(searchQuery.toLowerCase());
 			const matchesCategory = selectedCategory === "All Events" || event.category === selectedCategory;
 			return matchesSearch && matchesCategory;
 		});
-	}, [searchQuery, selectedCategory]);
+	}, [transformedEvents, searchQuery, selectedCategory]);
 
 	// Memoized handlers
 	const handleResetFilters = useCallback(() => {

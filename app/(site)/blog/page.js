@@ -29,9 +29,33 @@ export const metadata = {
 	},
 };
 
-import React from "react";
+import React, { Suspense } from "react";
+import { ContentDataFetchers } from "@lib/supabase/server";
 
-export default function Blog() {
+// Get blog data from Supabase
+async function getBlogData() {
+	try {
+		const [blogPostsResult, categories] = await Promise.all([ContentDataFetchers.getBlogPosts({ limit: 10 }), ContentDataFetchers.getBlogCategories()]);
+
+		return {
+			posts: blogPostsResult.posts,
+			categories,
+			total: blogPostsResult.total,
+			hasMore: blogPostsResult.hasMore,
+		};
+	} catch (error) {
+		console.error("Error fetching blog data:", error);
+		return {
+			posts: [],
+			categories: [],
+			total: 0,
+			hasMore: false,
+		};
+	}
+}
+
+// Blog content component
+function BlogContent({ posts, categories }) {
 	const jsonLd = {
 		"@context": "https://schema.org",
 		"@type": "Blog",
@@ -42,6 +66,18 @@ export default function Blog() {
 			"@type": "Organization",
 			name: "Thorbis",
 		},
+		blogPost: posts.map((post) => ({
+			"@type": "BlogPosting",
+			headline: post.title,
+			url: `https://local.byronwade.com/blog/${post.slug}`,
+			datePublished: post.published_at,
+			author: {
+				"@type": "Person",
+				name: post.author?.name || "Anonymous",
+			},
+			image: post.featured_image,
+			description: post.excerpt,
+		})),
 	};
 
 	return (
@@ -53,9 +89,21 @@ export default function Blog() {
 						<div className="sticky top-36">
 							<aside>
 								<div className="p-6 mb-6 font-medium text-gray-500 bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400">
-									<h1 className="mb-2 font-bold text-gray-900 uppercase dark:text-white">Flowbite Blog</h1>
-									<p className="text-sm text-gray-500 dark:text-gray-400">Blog posts, articles, and tutorials about web development and design.</p>
+									<h1 className="mb-2 font-bold text-gray-900 uppercase dark:text-white">Thorbis Business Blog</h1>
+									<p className="text-sm text-gray-500 dark:text-gray-400">Business insights, tips, and industry news for local businesses.</p>
 								</div>
+								{categories.length > 0 && (
+									<div className="p-6 mb-6 font-medium text-gray-500 bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400">
+										<h4 className="mb-4 font-bold text-gray-900 uppercase dark:text-white">Categories</h4>
+										<div className="flex flex-wrap">
+											{categories.map((category) => (
+												<a key={category.id} className="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 hover:bg-blue-200 dark:hover:bg-blue-300 dark:text-blue-800 mb-2" href={`/blog/category/${category.slug}`}>
+													#{category.name}
+												</a>
+											))}
+										</div>
+									</div>
+								)}
 								<div className="p-6 mb-6 font-medium text-gray-500 bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400">
 									<h4 className="mb-4 font-bold text-gray-900 uppercase dark:text-white">Resources</h4>
 									<a className="inline-flex items-center justify-center w-full p-5 mb-4 text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-white" href="/docs/getting-started/introduction/">
@@ -189,317 +237,164 @@ export default function Blog() {
 						</div>
 					</div>
 					<div className="w-full max-w-2xl mx-auto pt-14">
-						<div className="divide-y divide-gray-200 dark:divide-gray-700">
-							<article className="py-6">
-								<div className="flex items-center justify-between mb-3 text-gray-500">
-									<div>
-										<a className="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 hover:bg-blue-200 dark:hover:bg-blue-300 dark:text-blue-800 mb-2" href="/blog/tag/tailwind-css/">
-											#Tailwind CSS
-										</a>
-										<a className="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 hover:bg-blue-200 dark:hover:bg-blue-300 dark:text-blue-800 mb-2" href="/blog/tag/flowbite/">
-											#Flowbite
-										</a>
-										<a className="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 hover:bg-blue-200 dark:hover:bg-blue-300 dark:text-blue-800 mb-2" href="/blog/tag/figma/">
-											#Figma
-										</a>
-									</div>
-									<span className="text-sm">
-										Published <time dateTime={1718705116000}>a month ago</time>
-									</span>
-								</div>
-								<h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white hover:underline">
-									<a href="/blog/e-commerce-ui-has-been-launched/">We have launched over 80+ components in E-commerce UI and there&apos;s more to come!</a>
-								</h2>
-								<p className="mb-5 text-gray-500 dark:text-gray-400">I am thrilled to share the latest updates from Flowbite! Since our last communication, our team has been hard at work, and we are excited to announce the launch of over 85 new E-commerce UI components and blocks.</p>
-								<div className="flex items-center justify-between">
-									<a className="flex items-center space-x-2" href="/blog/author/zoltan/">
-										<img className="rounded-full w-7 h-7" src="https://www.gravatar.com/avatar/be85a3bc61ad70c85c9b3411dc07cb2d?s=250&r=x&d=mp" alt="Zoltán Szőgyényi profile picture" />
-										<span className="font-medium dark:text-white">Zoltán Szőgyényi</span>
-									</a>
-									<a className="inline-flex items-center font-medium text-blue-600 hover:underline dark:text-blue-500" href="/blog/e-commerce-ui-has-been-launched/">
-										Read more
-										<svg className="w-4 h-4 ml-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-											<path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
-										</svg>
-									</a>
-								</div>
-							</article>
-							<article className="py-6">
-								<div className="flex items-center justify-between mb-3 text-gray-500">
-									<div>
-										<a className="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 hover:bg-blue-200 dark:hover:bg-blue-300 dark:text-blue-800 mb-2" href="/blog/tag/flowbite/">
-											#Flowbite
-										</a>
-									</div>
-									<span className="text-sm">
-										Published <time dateTime={1677146503000}>a year ago</time>
-									</span>
-								</div>
-								<h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white hover:underline">
-									<a href="/blog/state-of-flowbite-2022/">State of Flowbite: learn more about our results from 2022 and what we plan to build this year</a>
-								</h2>
-								<p className="mb-5 text-gray-500 dark:text-gray-400">Learn more about the results, achievements and plans for the future by reading the &quot;State of Flowbite 2022&quot; including the open-source development of the Flowbite Library, the release of new UI components, features, and more.</p>
-								<div className="flex items-center justify-between">
-									<a className="flex items-center space-x-2" href="/blog/author/zoltan/">
-										<img className="rounded-full w-7 h-7" src="https://www.gravatar.com/avatar/be85a3bc61ad70c85c9b3411dc07cb2d?s=250&r=x&d=mp" alt="Zoltán Szőgyényi profile picture" />
-										<span className="font-medium dark:text-white">Zoltán Szőgyényi</span>
-									</a>
-									<a className="inline-flex items-center font-medium text-blue-600 hover:underline dark:text-blue-500" href="/blog/state-of-flowbite-2022/">
-										Read more
-										<svg className="w-4 h-4 ml-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-											<path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
-										</svg>
-									</a>
-								</div>
-							</article>
-							<article className="py-6">
-								<div className="flex items-center justify-between mb-3 text-gray-500">
-									<div>
-										<a className="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 hover:bg-blue-200 dark:hover:bg-blue-300 dark:text-blue-800 mb-2" href="/blog/tag/laravel/">
-											#Laravel
-										</a>
-										<a className="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 hover:bg-blue-200 dark:hover:bg-blue-300 dark:text-blue-800 mb-2" href="/blog/tag/flowbite/">
-											#Flowbite
-										</a>
-										<a className="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 hover:bg-blue-200 dark:hover:bg-blue-300 dark:text-blue-800 mb-2" href="/blog/tag/alpine-js/">
-											#Alpine.js
-										</a>
-									</div>
-									<span className="text-sm">
-										Published <time dateTime={1673849524000}>2 years ago</time>
-									</span>
-								</div>
-								<h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white hover:underline">
-									<a href="/blog/how-to-use-flowbite-ui-components-with-laravel-and-alpine-js/">How to use Flowbite UI components with Laravel and Alpine.js to build an admin dashboard</a>
-								</h2>
-								<p className="mb-5 text-gray-500 dark:text-gray-400">In this tutorial, we&apos;re going to create a simple admin dashboard using free Flowbite UI components, Laravel, and a bit of Alpine.js for interactivity.</p>
-								<div className="flex items-center justify-between">
-									<a className="flex items-center space-x-2" href="/blog/author/rich/">
-										<img className="rounded-full w-7 h-7" src="https://publisher.flowbite.com/content/images/2023/01/1605304654466.jpg" alt="Rich Klein profile picture" />
-										<span className="font-medium dark:text-white">Rich Klein</span>
-									</a>
-									<a className="inline-flex items-center font-medium text-blue-600 hover:underline dark:text-blue-500" href="/blog/how-to-use-flowbite-ui-components-with-laravel-and-alpine-js/">
-										Read more
-										<svg className="w-4 h-4 ml-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-											<path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
-										</svg>
-									</a>
-								</div>
-							</article>
-							<article className="py-6">
-								<div className="flex items-center justify-between mb-3 text-gray-500">
-									<div>
-										<a className="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 hover:bg-blue-200 dark:hover:bg-blue-300 dark:text-blue-800 mb-2" href="/blog/tag/flowbite/">
-											#Flowbite
-										</a>
-										<a className="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 hover:bg-blue-200 dark:hover:bg-blue-300 dark:text-blue-800 mb-2" href="/blog/tag/next-js/">
-											#Next.js
-										</a>
-									</div>
-									<span className="text-sm">
-										Published <time dateTime={1671533980000}>2 years ago</time>
-									</span>
-								</div>
-								<h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white hover:underline">
-									<a href="/blog/learn-how-to-use-flowbite-blocks-with-a-headless-next-js-cms/">Learn how to use Flowbite Blocks with Next.js and a Headless CMS</a>
-								</h2>
-								<p className="mb-5 text-gray-500 dark:text-gray-400">Get started with this guide to learn how to use the Flowbite Blocks collection together with a headless CMS based on Next.js</p>
-								<div className="flex items-center justify-between">
-									<a className="flex items-center space-x-2" href="/blog/author/david/">
-										<img className="rounded-full w-7 h-7" src="https://publisher.flowbite.com/content/images/2022/12/david-dumont-profile-picture.jpeg" alt="David Dumont profile picture" />
-										<span className="font-medium dark:text-white">David Dumont</span>
-									</a>
-									<a className="inline-flex items-center font-medium text-blue-600 hover:underline dark:text-blue-500" href="/blog/learn-how-to-use-flowbite-blocks-with-a-headless-next-js-cms/">
-										Read more
-										<svg className="w-4 h-4 ml-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-											<path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
-										</svg>
-									</a>
-								</div>
-							</article>
-							<article className="py-6">
-								<div className="flex items-center justify-between mb-3 text-gray-500">
-									<div>
-										<a className="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 hover:bg-blue-200 dark:hover:bg-blue-300 dark:text-blue-800 mb-2" href="/blog/tag/angular/">
-											#Angular
-										</a>
-									</div>
-									<span className="text-sm">
-										Published <time dateTime={1667903925000}>2 years ago</time>
-									</span>
-								</div>
-								<h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white hover:underline">
-									<a href="/blog/top-10-scalable-angularjs-frameworks/">Top 10 Scalable AngularJS Frameworks for Your Next Web Development Project</a>
-								</h2>
-								<p className="mb-5 text-gray-500 dark:text-gray-400">Learn more about the most popular and scalable AngularJS frameworks by reading this article and how they can save you time developing advanced web applications.</p>
-								<div className="flex items-center justify-between">
-									<a className="flex items-center space-x-2" href="/blog/author/harikrishna/">
-										<img className="rounded-full w-7 h-7" src="https://publisher.flowbite.com/content/images/2022/11/Author-Headshot.jpg" alt="Harikrishna Kundariya profile picture" />
-										<span className="font-medium dark:text-white">Harikrishna Kundariya</span>
-									</a>
-									<a className="inline-flex items-center font-medium text-blue-600 hover:underline dark:text-blue-500" href="/blog/top-10-scalable-angularjs-frameworks/">
-										Read more
-										<svg className="w-4 h-4 ml-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-											<path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
-										</svg>
-									</a>
-								</div>
-							</article>
-							<article className="py-6">
-								<div className="flex items-center justify-between mb-3 text-gray-500">
-									<div>
-										<a className="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 hover:bg-blue-200 dark:hover:bg-blue-300 dark:text-blue-800 mb-2" href="/blog/tag/tailwind-css/">
-											#Tailwind CSS
-										</a>
-										<a className="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 hover:bg-blue-200 dark:hover:bg-blue-300 dark:text-blue-800 mb-2" href="/blog/tag/flowbite/">
-											#Flowbite
-										</a>
-									</div>
-									<span className="text-sm">
-										Published <time dateTime={1666093551000}>2 years ago</time>
-									</span>
-								</div>
-								<h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white hover:underline">
-									<a href="/blog/tailwind-css-vs-bootstrap/">Bootstrap vs Tailwind CSS - what are the differences and which one should you choose?</a>
-								</h2>
-								<p className="mb-5 text-gray-500 dark:text-gray-400">Learn more about the differences between Bootstrap and Tailwind CSS in this article where we compare the usage and features of each CSS framework and which one to choose for your next project based on your needs.</p>
-								<div className="flex items-center justify-between">
-									<a className="flex items-center space-x-2" href="/blog/author/zoltan/">
-										<img className="rounded-full w-7 h-7" src="https://www.gravatar.com/avatar/be85a3bc61ad70c85c9b3411dc07cb2d?s=250&r=x&d=mp" alt="Zoltán Szőgyényi profile picture" />
-										<span className="font-medium dark:text-white">Zoltán Szőgyényi</span>
-									</a>
-									<a className="inline-flex items-center font-medium text-blue-600 hover:underline dark:text-blue-500" href="/blog/tailwind-css-vs-bootstrap/">
-										Read more
-										<svg className="w-4 h-4 ml-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-											<path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
-										</svg>
-									</a>
-								</div>
-							</article>
-							<article className="py-6">
-								<div className="flex items-center justify-between mb-3 text-gray-500">
-									<div>
-										<a className="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 hover:bg-blue-200 dark:hover:bg-blue-300 dark:text-blue-800 mb-2" href="/blog/tag/flowbite/">
-											#Flowbite
-										</a>
-									</div>
-									<span className="text-sm">
-										Published <time dateTime={1665745538000}>2 years ago</time>
-									</span>
-								</div>
-								<h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white hover:underline">
-									<a href="/blog/introducing-the-flowbite-blog-a-resource-by-the-community-for-the-community/">Introducing the Flowbite Blog - a brand new resource built for the community about web development and design</a>
-								</h2>
-								<p className="mb-5 text-gray-500 dark:text-gray-400">Read more about the introduction of a new resource in the Flowbite ecosystem, our own blog. Learn how you can also contribute to this new resource area.</p>
-								<div className="flex items-center justify-between">
-									<a className="flex items-center space-x-2" href="/blog/author/zoltan/">
-										<img className="rounded-full w-7 h-7" src="https://www.gravatar.com/avatar/be85a3bc61ad70c85c9b3411dc07cb2d?s=250&r=x&d=mp" alt="Zoltán Szőgyényi profile picture" />
-										<span className="font-medium dark:text-white">Zoltán Szőgyényi</span>
-									</a>
-									<a className="inline-flex items-center font-medium text-blue-600 hover:underline dark:text-blue-500" href="/blog/introducing-the-flowbite-blog-a-resource-by-the-community-for-the-community/">
-										Read more
-										<svg className="w-4 h-4 ml-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-											<path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
-										</svg>
-									</a>
-								</div>
-							</article>
-						</div>
+						{posts.length > 0 ? (
+							<div className="divide-y divide-gray-200 dark:divide-gray-700">
+								{posts.map((post) => {
+									const publishedDate = new Date(post.published_at);
+									const timeAgo = formatTimeAgo(publishedDate);
+
+									return (
+										<article key={post.id} className="py-6">
+											<div className="flex items-center justify-between mb-3 text-gray-500">
+												<div>
+													{post.category && (
+														<a className="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 hover:bg-blue-200 dark:hover:bg-blue-300 dark:text-blue-800 mb-2" href={`/blog/category/${post.category.slug}`}>
+															#{post.category.name}
+														</a>
+													)}
+													{post.tags &&
+														post.tags.map((tag, index) => (
+															<span key={index} className="bg-gray-100 text-gray-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-gray-200 hover:bg-gray-200 dark:hover:bg-gray-300 dark:text-gray-800 mb-2">
+																#{tag}
+															</span>
+														))}
+												</div>
+												<span className="text-sm">
+													Published <time dateTime={post.published_at}>{timeAgo}</time>
+												</span>
+											</div>
+											<h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white hover:underline">
+												<a href={`/blog/${post.slug}`}>{post.title}</a>
+											</h2>
+											<p className="mb-5 text-gray-500 dark:text-gray-400">{post.excerpt}</p>
+											<div className="flex items-center justify-between">
+												<div className="flex items-center space-x-2">
+													{post.author?.avatar_url && <img className="rounded-full w-7 h-7" src={post.author.avatar_url} alt={`${post.author.name} profile picture`} />}
+													<span className="font-medium dark:text-white">{post.author?.name || "Anonymous"}</span>
+													{post.reading_time && <span className="text-sm text-gray-500">• {post.reading_time} min read</span>}
+												</div>
+												<a className="inline-flex items-center font-medium text-blue-600 hover:underline dark:text-blue-500" href={`/blog/${post.slug}`}>
+													Read more
+													<svg className="w-4 h-4 ml-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+														<path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+													</svg>
+												</a>
+											</div>
+										</article>
+									);
+								})}
+							</div>
+						) : (
+							<div className="text-center py-12">
+								<h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No blog posts yet</h3>
+								<p className="text-gray-500 dark:text-gray-400">Check back soon for the latest business insights and tips.</p>
+							</div>
+						)}
 					</div>
 					<aside className="hidden lg:block lg:w-80" aria-labelledby="sidebar-label">
 						<div className="sticky top-36">
 							<h3 id="sidebar-label" className="sr-only">
 								Sidebar
 							</h3>
-							<div className="lg:ml-auto">
-								<div id="carbonads">
-									<span>
-										<span className="carbon-wrap">
-											<a href="https://srv.carbonads.net/ads/click/x/GTND427LCVYD52QUCAB4YKQUCV7DKK3YFTYIVZ3JCA7D627LCEAI45QKCAYDE5QEC67DL23MCY7D65QLF67DV5QKC6SI6KJECAYDEK3EHJNCLSIZ" className="carbon-img" target="_blank" rel="noopener sponsored">
-												<img src="https://srv.carbonads.net/static/30242/719965462940ad21c4bd0152867ef8e38cb4fc3f" alt="ads via Carbon" border={0} height={100} width={130} data-no-statview="no" style={{ maxWidth: 130 }} />
+							{categories.length > 0 && (
+								<div className="p-6 pb-4 mb-6 font-medium text-gray-500 bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400">
+									<h4 className="mb-4 font-bold text-gray-900 uppercase dark:text-white">Blog Categories</h4>
+									<div className="space-y-2">
+										{categories.map((category) => (
+											<a key={category.id} className="block py-2 px-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" href={`/blog/category/${category.slug}`}>
+												<div className="font-medium text-gray-900 dark:text-white">{category.name}</div>
+												{category.description && <div className="text-sm text-gray-500 dark:text-gray-400">{category.description}</div>}
 											</a>
-											<a href="https://srv.carbonads.net/ads/click/x/GTND427LCVYD52QUCAB4YKQUCV7DKK3YFTYIVZ3JCA7D627LCEAI45QKCAYDE5QEC67DL23MCY7D65QLF67DV5QKC6SI6KJECAYDEK3EHJNCLSIZ" className="carbon-text" target="_blank" rel="noopener sponsored">
-												Implement Auth0 in any app in just 5 minutes. Start building today.
-											</a>
-										</span>
-										<a href="http://carbonads.net/?utm_source=flowbitedesign&utm_medium=ad_via_link&utm_campaign=in_unit&utm_term=carbon" className="carbon-poweredby" target="_blank" rel="noopener sponsored">
-											ads via Carbon
-										</a>
-										<div className="carbon-pixels" style={{ display: "none" }}>
-											<img src="https://segment.prod.bidr.io/associate-segment?buzz_key=dsp&segment_key=dsp-19103" border={0} height={1} width={1} alt="ads via Carbon" style={{ display: "none" }} />
-											<img src="https://secure.adnxs.com/seg?add=37012074&t=2" border={0} height={1} width={1} alt="ads via Carbon" style={{ display: "none" }} />
-										</div>
-									</span>
+										))}
+									</div>
 								</div>
-							</div>
-							<div className="p-6 pb-4 mt-6 mb-6 font-medium text-gray-500 bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400">
-								<h4 className="mb-4 font-bold text-gray-900 uppercase dark:text-white">Recommended topics</h4>
-								<div className="flex flex-wrap">
-									<a className="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 hover:bg-blue-200 dark:hover:bg-blue-300 dark:text-blue-800 mb-2" href="/blog/tag/alpine-js/">
-										#Alpine.js
-									</a>
-									<a className="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 hover:bg-blue-200 dark:hover:bg-blue-300 dark:text-blue-800 mb-2" href="/blog/tag/angular/">
-										#Angular
-									</a>
-									<a className="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 hover:bg-blue-200 dark:hover:bg-blue-300 dark:text-blue-800 mb-2" href="/blog/tag/figma/">
-										#Figma
-									</a>
-									<a className="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 hover:bg-blue-200 dark:hover:bg-blue-300 dark:text-blue-800 mb-2" href="/blog/tag/flowbite/">
-										#Flowbite
-									</a>
-									<a className="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 hover:bg-blue-200 dark:hover:bg-blue-300 dark:text-blue-800 mb-2" href="/blog/tag/laravel/">
-										#Laravel
-									</a>
-									<a className="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 hover:bg-blue-200 dark:hover:bg-blue-300 dark:text-blue-800 mb-2" href="/blog/tag/next-js/">
-										#Next.js
-									</a>
-									<a className="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 hover:bg-blue-200 dark:hover:bg-blue-300 dark:text-blue-800 mb-2" href="/blog/tag/tailwind-css/">
-										#Tailwind CSS
-									</a>
-								</div>
-							</div>
-							<div className="p-6 mb-6 font-medium text-gray-500 bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400">
-								<h4 className="mb-4 font-bold text-gray-900 uppercase dark:text-white">Community authors</h4>
-								<ul className="space-y-4 text-gray-500 dark:text-gray-400">
-									<li>
-										<a className="flex items-start" href="/blog/author/rich/">
-											<div className="mr-3 shrink-0">
-												<img className="w-6 h-6 mt-1 rounded-full" src="https://publisher.flowbite.com/content/images/2023/01/1605304654466.jpg" alt="Rich Klein profile picture" />
-											</div>
-											<div className="mr-3">
-												<span className="block font-medium text-gray-900 dark:text-white">Rich Klein</span>
-												<span className="text-sm">Technical writer, web developer, and customer success specialist.</span>
-											</div>
-										</a>
-									</li>
-									<li>
-										<a className="flex items-start" href="/blog/author/zoltan/">
-											<div className="mr-3 shrink-0">
-												<img className="w-6 h-6 mt-1 rounded-full" src="https://www.gravatar.com/avatar/be85a3bc61ad70c85c9b3411dc07cb2d?s=250&r=x&d=mp" alt="Zoltán Szőgyényi profile picture" />
-											</div>
-											<div className="mr-3">
-												<span className="block font-medium text-gray-900 dark:text-white">Zoltán Szőgyényi</span>
-												<span className="text-sm">Open-source contributor. Currently building Flowbite.</span>
-											</div>
-										</a>
-									</li>
-									<li>
-										<a className="flex items-start" href="/blog/author/harikrishna/">
-											<div className="mr-3 shrink-0">
-												<img className="w-6 h-6 mt-1 rounded-full" src="https://publisher.flowbite.com/content/images/2022/11/Author-Headshot.jpg" alt="Harikrishna Kundariya profile picture" />
-											</div>
-											<div className="mr-3">
-												<span className="block font-medium text-gray-900 dark:text-white">Harikrishna Kundariya</span>
-												<span className="text-sm">Marketer, developer, IoT, ChatBot &amp; Blockchain savvy, CEO of eSparkBiz.</span>
-											</div>
-										</a>
-									</li>
-								</ul>
+							)}
+							<div className="p-6 mb-6 text-gray-500 bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400">
+								<h4 className="mb-4 font-bold text-gray-900 uppercase dark:text-white">About Our Blog</h4>
+								<p className="mb-4 text-sm text-gray-500 dark:text-gray-400">Stay up-to-date with the latest business insights, local market trends, and tips for growing your business.</p>
+								<a className="text-white block text-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 w-full" href="/contact">
+									Submit a Guest Post
+								</a>
 							</div>
 						</div>
 					</aside>
 				</div>
 			</main>
 		</>
+	);
+}
+
+// Utility function to format time ago
+function formatTimeAgo(date) {
+	const now = new Date();
+	const diffInMilliseconds = now - date;
+	const diffInSeconds = Math.floor(diffInMilliseconds / 1000);
+	const diffInMinutes = Math.floor(diffInSeconds / 60);
+	const diffInHours = Math.floor(diffInMinutes / 60);
+	const diffInDays = Math.floor(diffInHours / 24);
+	const diffInWeeks = Math.floor(diffInDays / 7);
+	const diffInMonths = Math.floor(diffInDays / 30);
+	const diffInYears = Math.floor(diffInDays / 365);
+
+	if (diffInSeconds < 60) {
+		return "just now";
+	} else if (diffInMinutes < 60) {
+		return `${diffInMinutes} minute${diffInMinutes > 1 ? "s" : ""} ago`;
+	} else if (diffInHours < 24) {
+		return `${diffInHours} hour${diffInHours > 1 ? "s" : ""} ago`;
+	} else if (diffInDays < 7) {
+		return `${diffInDays} day${diffInDays > 1 ? "s" : ""} ago`;
+	} else if (diffInWeeks < 4) {
+		return `${diffInWeeks} week${diffInWeeks > 1 ? "s" : ""} ago`;
+	} else if (diffInMonths < 12) {
+		return `${diffInMonths} month${diffInMonths > 1 ? "s" : ""} ago`;
+	} else {
+		return `${diffInYears} year${diffInYears > 1 ? "s" : ""} ago`;
+	}
+}
+
+// Loading component for Suspense
+function BlogLoading() {
+	return (
+		<main className="bg-white dark:bg-black">
+			<div className="container flex justify-between px-4 mx-auto">
+				<div className="w-full max-w-2xl mx-auto pt-14">
+					<div className="divide-y divide-gray-200 dark:divide-gray-700">
+						{[...Array(5)].map((_, i) => (
+							<article key={i} className="py-6">
+								<div className="flex items-center justify-between mb-3">
+									<div className="flex space-x-2">
+										<div className="h-6 w-16 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+										<div className="h-6 w-20 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+									</div>
+									<div className="h-4 w-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+								</div>
+								<div className="h-8 w-3/4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-2"></div>
+								<div className="h-4 w-full bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-1"></div>
+								<div className="h-4 w-5/6 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-5"></div>
+								<div className="flex items-center justify-between">
+									<div className="flex items-center space-x-2">
+										<div className="h-7 w-7 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"></div>
+										<div className="h-4 w-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+									</div>
+									<div className="h-4 w-20 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+								</div>
+							</article>
+						))}
+					</div>
+				</div>
+			</div>
+		</main>
+	);
+}
+
+// Main server component
+export default async function Blog() {
+	const { posts, categories } = await getBlogData();
+
+	return (
+		<Suspense fallback={<BlogLoading />}>
+			<BlogContent posts={posts} categories={categories} />
+		</Suspense>
 	);
 }

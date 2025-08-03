@@ -14,7 +14,7 @@ const UnauthorizedNotification = () => {
 	if (loading || !isInitialized) {
 		return (
 			<div className="flex justify-center w-full">
-				<Image src="/ThorbisLogo.webp" alt="Thorbis Logo" width={100} height={100} className="w-[60px] h-[60px] animate-breathe" />
+				<Image src="/logos/ThorbisLogo.webp" alt="Thorbis Logo" width={100} height={100} className="w-[60px] h-[60px] animate-breathe" />
 			</div>
 		);
 	}

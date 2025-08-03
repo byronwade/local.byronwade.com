@@ -13,27 +13,34 @@ import { Drawer, DrawerContent, DrawerTrigger } from "@components/ui/drawer";
 import { ChevronDown, Menu, Search, Bell, Plus, CheckCircle, Shield, MapPin, User, Settings, X } from "react-feather";
 import { Bot, Sparkles } from "lucide-react";
 import SearchBarHeader from "@components/shared/searchBox/SearchBarHeader";
-import useAuthStore from "@store/useAuthStore";
+import { useAuth } from "@context/AuthContext";
+import { useUserProfile } from "@hooks/useUserProfile";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Header() {
 	const [open, setOpen] = useState(false);
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 	const pathname = usePathname();
-	const { user, userRoles, logout, setUser, setUserRoles, initializeAuth } = useAuthStore((state) => ({
-		user: state.user,
-		userRoles: state.userRoles,
-		logout: state.logout,
-		setUser: state.setUser,
-		setUserRoles: state.setUserRoles,
-		initializeAuth: state.initializeAuth,
-	}));
+	const { user, userRoles, logout, isAuthenticated, getDisplayName, getAvatarUrl } = useAuth();
+	const { profile } = useUserProfile();
 
-	console.log(userRoles);
+	// Helper function to get avatar with Vercel avatar API fallback
+	const getAvatarWithFallback = () => {
+		const avatarUrl = getAvatarUrl();
+		if (avatarUrl) {
+			return avatarUrl;
+		}
 
-	useEffect(() => {
-		initializeAuth();
-	}, [setUser, setUserRoles, initializeAuth]);
+		// Fallback to Vercel avatar API if no avatar is set (consistent with other components)
+		if (user?.email) {
+			const username = user.email.split("@")[0] || "user";
+			return `https://vercel.com/api/www/avatar?u=${username}&s=200`;
+		}
+
+		return "/placeholder-avatar.svg";
+	};
+
+	// Avatar fallback system ready
 
 	useEffect(() => {
 		const down = (e) => {
@@ -128,7 +135,7 @@ export default function Header() {
 				<div className="flex flex-row items-center space-x-6 w-full">
 					<Link href="/" className="flex items-center space-x-3 text-xl font-bold group">
 						<div className="relative">
-							<Image src="/ThorbisLogo.webp" alt={pageContext.title} width={50} height={50} className="w-12 h-12 transition-transform duration-200 group-hover:scale-105" />
+							<Image src="/logos/ThorbisLogo.webp" alt={pageContext.title} width={50} height={50} className="w-12 h-12 transition-transform duration-200 group-hover:scale-105" priority />
 							<div className={`absolute inset-0 rounded-full opacity-0 transition-opacity duration-200 ${pageContext.gradient} group-hover:opacity-100`} />
 						</div>
 						<div className="hidden sm:block">
@@ -292,7 +299,7 @@ export default function Header() {
 								<DropdownMenuTrigger asChild>
 									<Button variant="ghost" size="sm" className="relative flex items-center justify-center h-10 w-10 rounded-full border border-neutral-900 bg-neutral-900 dark:bg-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-800 hover:border-neutral-900 dark:hover:border-neutral-900" aria-label="User menu">
 										<div className="flex overflow-hidden relative mx-auto w-8 h-8 rounded-full shrink-0">
-											<Image src={user?.image || "/placeholder-avatar.svg"} alt={user?.name || "User"} fill className="object-cover" />
+											<Image src={getAvatarWithFallback()} alt={getDisplayName()} fill sizes="32px" className="object-cover" />
 										</div>
 									</Button>
 								</DropdownMenuTrigger>
@@ -301,10 +308,10 @@ export default function Header() {
 										{/* User Info Header */}
 										<div className="flex items-center p-3 space-x-3 border-b border-neutral-800/50 dark:border-neutral-700/50">
 											<div className="flex overflow-hidden relative w-10 h-10 rounded-full shrink-0 border border-neutral-700 dark:border-neutral-700">
-												<Image src={user?.image || "/placeholder-avatar.svg"} alt={user?.name || "User"} fill className="object-cover" />
+												<Image src={getAvatarWithFallback()} alt={getDisplayName()} fill sizes="40px" className="object-cover" />
 											</div>
 											<div className="flex-1 min-w-0">
-												<p className="text-sm font-medium text-foreground truncate">{user?.name || "Guest User"}</p>
+												<p className="text-sm font-medium text-foreground truncate">{getDisplayName()}</p>
 												<p className="text-xs text-muted-foreground truncate">{user?.email || "guest@example.com"}</p>
 											</div>
 										</div>
@@ -389,7 +396,7 @@ export default function Header() {
 									{/* Menu Header */}
 									<div className="flex items-center justify-between p-4 border-b border-neutral-800">
 										<Link href="/" className="flex items-center space-x-2" onClick={() => setMobileMenuOpen(false)}>
-											<Image src="/ThorbisLogo.webp" alt="Thorbis" width={32} height={32} />
+											<Image src="/logos/ThorbisLogo.webp" alt="Thorbis" width={32} height={32} />
 											<h2 className="text-lg font-semibold">Thorbis</h2>
 										</Link>
 										<Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(false)}>
@@ -401,9 +408,9 @@ export default function Header() {
 									<div className="p-6 border-b border-neutral-800 bg-gradient-to-b from-neutral-900 to-neutral-950">
 										{user ? (
 											<div className="flex items-center gap-4">
-												<Image src={user.image || "/placeholder-avatar.svg"} alt={user.name || "User"} width={48} height={48} className="rounded-full object-cover border-2 border-neutral-700" />
+												<Image src={getAvatarWithFallback()} alt={getDisplayName()} width={48} height={48} className="rounded-full object-cover border-2 border-neutral-700" />
 												<div className="flex-grow">
-													<p className="font-semibold text-lg">{user.name}</p>
+													<p className="font-semibold text-lg">{getDisplayName()}</p>
 													<p className="text-sm text-muted-foreground">{user.email}</p>
 												</div>
 											</div>

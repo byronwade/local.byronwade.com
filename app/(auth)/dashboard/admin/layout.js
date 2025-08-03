@@ -5,10 +5,10 @@ import Header from "@components/admin/header";
 import { AppSidebar } from "@components/admin/app-sidebar";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@components/ui/sidebar";
 import { redirect } from "next/navigation";
-import useAuthStore from "@store/useAuthStore";
+import { useAuth } from "@context/AuthContext";
 
 export default function AdminLayout({ children }) {
-	const { user, userRoles, loading } = useAuthStore((state) => state);
+	const { user, userRoles, loading, isAuthenticated } = useAuth();
 
 	// Authorization checks temporarily disabled for development
 	// useEffect(() => {
@@ -25,7 +25,7 @@ export default function AdminLayout({ children }) {
 	// if (loading) {
 	// 	return (
 	// 		<div className="flex items-center justify-center w-full h-screen align-middle">
-	// 			<Image src="/ThorbisLogo.webp" alt="Thorbis Logo" width={200} height={100} className="w-[60px] h-[60px] animate-breathe" />
+	// 			<Image src="/logos/ThorbisLogo.webp" alt="Thorbis Logo" width={200} height={100} className="w-[60px] h-[60px] animate-breathe" />
 	// 		</div>
 	// 	);
 	// }

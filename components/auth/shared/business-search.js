@@ -9,7 +9,7 @@ import { ScrollArea } from "@components/ui/scroll-area";
 import { Separator } from "@components/ui/separator";
 import { Search, MapPin, Phone, Globe, Star, Building2, CheckCircle, AlertTriangle, Plus, Loader2, X, ExternalLink } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import useBusinessStore from "@store/useBusinessStore";
+import { useBusinessStore } from "@store/business";
 import { useToast } from "@components/ui/use-toast";
 import Image from "next/image";
 
@@ -22,13 +22,13 @@ export default function BusinessSearch({ onBusinessSelect, mode = "claim" }) {
 	const [showNoResults, setShowNoResults] = useState(false);
 	const searchTimeoutRef = useRef(null);
 
-	const { filteredBusinesses, fetchBusinesses, initializeWithMockData } = useBusinessStore();
+	const { filteredBusinesses, fetchBusinesses, initializeWithSupabaseData } = useBusinessStore();
 	const { toast } = useToast();
 
 	// Initialize mock data
 	useEffect(() => {
-		initializeWithMockData();
-	}, [initializeWithMockData]);
+		initializeWithSupabaseData();
+	}, [initializeWithSupabaseData]);
 
 	// Debounced search function
 	const debouncedSearch = useCallback(

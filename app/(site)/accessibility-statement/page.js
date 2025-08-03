@@ -51,7 +51,7 @@ export default function AccessibilityStatementPage() {
 				name: "Thorbis",
 				logo: {
 					"@type": "ImageObject",
-					url: "https://local.byronwade.com/ThorbisLogo.webp",
+					url: "https://local.byronwade.com/logos/ThorbisLogo.webp",
 				},
 			},
 			accessibilityAPI: "ARIA",

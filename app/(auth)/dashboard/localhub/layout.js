@@ -3,13 +3,13 @@ import Image from "next/image";
 import Header from "@components/localhub/header";
 import { useEffect } from "react";
 import { redirect } from "next/navigation";
-import useAuthStore from "@store/useAuthStore";
+import { useAuth } from "@context/AuthContext";
 
 export default function LocalHubLayout({ children }) {
-	const { user, userRoles, loading } = useAuthStore((state) => state);
+	const { user, userRoles, loading, isAuthenticated } = useAuth();
 
 	useEffect(() => {
-		if (!loading && !user) {
+		if (!loading && !isAuthenticated) {
 			redirect("/login");
 		}
 		console.log("User:", user);
@@ -17,12 +17,12 @@ export default function LocalHubLayout({ children }) {
 		if (!loading && user && (!Array.isArray(userRoles) || !userRoles.some((role) => ["user", "business_user", "admin"].includes(role)))) {
 			redirect("/unauthorized");
 		}
-	}, [user, userRoles, loading]);
+	}, [user, userRoles, loading, isAuthenticated]);
 
 	if (loading) {
 		return (
 			<div className="flex items-center justify-center w-full h-screen align-middle">
-				<Image src="/ThorbisLogo.webp" alt="Thorbis Logo" width={200} height={100} className="w-[60px] h-[60px] animate-breathe" />
+				<Image src="/logos/ThorbisLogo.webp" alt="Thorbis Logo" width={200} height={100} className="w-[60px] h-[60px] animate-breathe" />
 			</div>
 		);
 	}

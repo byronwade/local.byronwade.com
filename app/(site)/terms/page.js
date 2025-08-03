@@ -52,7 +52,7 @@ export default function TermsPage() {
 				name: "Thorbis",
 				logo: {
 					"@type": "ImageObject",
-					url: "https://local.byronwade.com/ThorbisLogo.webp",
+					url: "https://local.byronwade.com/logos/ThorbisLogo.webp",
 				},
 			},
 			about: ["Legal Agreement", "User Responsibilities", "Service Terms", "Platform Rules", "Account Terms"],

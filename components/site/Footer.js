@@ -37,7 +37,7 @@ export default function Footer() {
 						{/* Logo and Brand Section */}
 						<div className="lg:col-span-1">
 							<div className="flex items-center mb-6 space-x-4">
-								<Image src="/ThorbisLogo.webp" alt="Thorbis" width={60} height={60} className="w-auto h-12" />
+								<Image src="/logos/ThorbisLogo.webp" alt="Thorbis" width={60} height={60} className="w-auto h-12" />
 								<h1 className="text-3xl font-bold text-gray-900 dark:text-white">Thorbis</h1>
 							</div>
 							<p className="mb-6 max-w-md text-lg leading-relaxed text-gray-700 dark:text-gray-300">{footer.trademark}</p>

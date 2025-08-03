@@ -5,8 +5,9 @@ import { Button } from "@components/ui/button";
 import { Badge } from "@components/ui/badge";
 import { ScrollArea } from "@components/ui/scroll-area";
 import { X, Star, Phone, Globe, MapPin, Clock, Share2, Heart, ExternalLink, Navigation, DollarSign, Wifi, CreditCard, ParkingCircle as Parking, Accessibility, ChevronLeft, ChevronRight, TrendingUp, Users, Award } from "lucide-react";
-import useBusinessStore from "@store/useBusinessStore";
-import useMapStore from "@store/useMapStore";
+import { useBusinessStore } from "@store/business";
+import { useMapStore } from "@store/map";
+import { logger } from "@lib/utils/logger";
 
 const BusinessInfoPanel = () => {
 	const { activeBusinessId, filteredBusinesses, setActiveBusinessId } = useBusinessStore();
@@ -19,19 +20,19 @@ const BusinessInfoPanel = () => {
 
 	// Debug logging
 	useEffect(() => {
-		console.log("BusinessInfoPanel - activeBusinessId:", activeBusinessId, "business found:", business?.name);
-		console.log("BusinessInfoPanel - filteredBusinesses count:", filteredBusinesses.length);
+		logger.debug("BusinessInfoPanel - activeBusinessId:", activeBusinessId, "business found:", business?.name);
+		logger.debug("BusinessInfoPanel - filteredBusinesses count:", filteredBusinesses.length);
 		if (activeBusinessId && !business) {
-			console.log("BusinessInfoPanel - No business found with ID:", activeBusinessId);
-			console.log(
+			logger.debug("BusinessInfoPanel - No business found with ID:", activeBusinessId);
+			logger.debug(
 				"Available business IDs:",
 				filteredBusinesses.map((b) => b.id)
 			);
 		}
 		if (business) {
-			console.log("BusinessInfoPanel - Showing panel for business:", business.name);
+			logger.debug("BusinessInfoPanel - Showing panel for business:", business.name);
 		} else {
-			console.log("BusinessInfoPanel - No business to show, panel hidden");
+			logger.debug("BusinessInfoPanel - No business to show, panel hidden");
 		}
 	}, [activeBusinessId, business, filteredBusinesses]);
 

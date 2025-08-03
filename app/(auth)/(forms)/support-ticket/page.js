@@ -6,7 +6,7 @@ import ActiveUser from "@components/auth/shared/active-user";
 import LoginPage from "@components/auth/login";
 import { Button } from "@components/ui/button";
 import { ArrowRight, ArrowLeft } from "react-feather";
-import useFormStore from "@store/useFormStore";
+import { useFormStore } from "@store/ui";
 import useAuth from "@hooks/useAuth";
 import SupportInfo from "@components/auth/support/support-info";
 
@@ -41,7 +41,7 @@ const AddBusiness = () => {
 	if (loading || !isInitialized) {
 		return (
 			<div className="flex justify-center w-full">
-				<Image src="/ThorbisLogo.webp" alt="Thorbis Logo" width={200} height={100} className="w-[60px] h-[60px] animate-breathe" />
+				<Image src="/logos/ThorbisLogo.webp" alt="Thorbis Logo" width={200} height={100} className="w-[60px] h-[60px] animate-breathe" />
 			</div>
 		);
 	}

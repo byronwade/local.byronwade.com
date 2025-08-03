@@ -13,14 +13,30 @@ import { BarChart3, Zap, Building2, Plus } from "lucide-react";
 import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
 import { RiComputerFill } from "react-icons/ri";
 import { useTheme } from "next-themes";
-import useAuthStore from "@store/useAuthStore";
+import { useAuth } from "@context/AuthContext";
 
 export default function Header() {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 	const pathname = usePathname();
 	const { setTheme, theme, resolvedTheme } = useTheme();
-	const { user, userRoles, logout } = useAuthStore();
+	const { user, userRoles, logout, getDisplayName, getAvatarUrl } = useAuth();
 	const [primaryColor, setPrimaryColor] = useState("theme-default");
+
+	// Helper function to get avatar with Vercel avatar API fallback (consistent with site header)
+	const getAvatarWithFallback = () => {
+		const avatarUrl = getAvatarUrl();
+		if (avatarUrl) {
+			return avatarUrl;
+		}
+
+		// Fallback to Vercel avatar API if no avatar is set (consistent with other components)
+		if (user?.email) {
+			const username = user.email.split("@")[0] || "user";
+			return `https://vercel.com/api/www/avatar?u=${username}&s=64`;
+		}
+
+		return "/placeholder-avatar.svg";
+	};
 
 	const handleLogout = async () => {
 		try {
@@ -52,7 +68,7 @@ export default function Header() {
 				<div className="flex flex-row items-center space-x-6 w-full">
 					<Link href="/" className="flex items-center space-x-3 text-xl font-bold group">
 						<div className="relative">
-							<Image src="/ThorbisLogo.webp" alt="Thorbis User" width={50} height={50} className="w-12 h-12 transition-transform duration-200 group-hover:scale-105" />
+							<Image src="/logos/ThorbisLogo.webp" alt="Thorbis User" width={50} height={50} className="w-12 h-12 transition-transform duration-200 group-hover:scale-105" />
 							<div className="absolute inset-0 bg-gradient-to-r rounded-full opacity-0 transition-opacity duration-200 from-blue-500/20 to-purple-500/20 group-hover:opacity-100" />
 						</div>
 						<div className="hidden sm:block">
@@ -167,19 +183,19 @@ export default function Header() {
 						<DropdownMenuTrigger asChild>
 							<Button variant="outline" size="sm" className="p-0 w-9 h-9 rounded-full border shadow-sm border-input bg-background hover:bg-accent hover:text-accent-foreground hover:border-primary">
 								<Avatar className="w-8 h-8">
-									<AvatarImage src={`https://vercel.com/api/www/avatar?u=${user?.email?.split("@")[0] || "user"}&s=64`} />
-									<AvatarFallback>{user?.user_metadata?.first_name?.[0] || user?.email?.[0]?.toUpperCase() || "U"}</AvatarFallback>
+									<AvatarImage src={getAvatarWithFallback()} />
+									<AvatarFallback>{getDisplayName()?.charAt(0)?.toUpperCase() || "U"}</AvatarFallback>
 								</Avatar>
 							</Button>
 						</DropdownMenuTrigger>
 						<DropdownMenuContent className="w-56 z-[80] bg-neutral-950/95 backdrop-blur-md border border-neutral-900">
 							<div className="flex items-center p-3 space-x-3 border-b border-border/50">
 								<Avatar className="w-8 h-8">
-									<AvatarImage src={`https://vercel.com/api/www/avatar?u=${user?.email?.split("@")[0] || "user"}&s=64`} />
-									<AvatarFallback>{user?.user_metadata?.first_name?.[0] || user?.email?.[0]?.toUpperCase() || "U"}</AvatarFallback>
+									<AvatarImage src={getAvatarWithFallback()} />
+									<AvatarFallback>{getDisplayName()?.charAt(0)?.toUpperCase() || "U"}</AvatarFallback>
 								</Avatar>
 								<div className="flex-1 min-w-0">
-									<p className="text-sm font-medium truncate text-foreground">{user?.user_metadata?.first_name || user?.email?.split("@")[0] || "User"}</p>
+									<p className="text-sm font-medium truncate text-foreground">{getDisplayName()}</p>
 									<p className="text-xs truncate text-muted-foreground">{user?.email}</p>
 								</div>
 							</div>

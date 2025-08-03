@@ -1,90 +1,97 @@
-import { Button } from "@components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
-import { Badge } from "@components/ui/badge";
-import { ChevronRight, Search, MapPin, Star, Clock, Shield, TrendingUp, Award, DollarSign, Briefcase, Home as HomeIcon, Coffee, ShoppingBag, Heart, Truck, Scissors, Calendar, CheckCircle, Users, BookOpen, BarChart, Zap, Phone, MessageSquare, Globe, Navigation, Percent, Filter, AlertCircle, ArrowRight } from "react-feather";
-import ScrollSection from "@components/site/home/ScrollSection";
-import HeroSection from "@components/site/home/HeroSection";
-import BusinessCard from "@components/site/home/BusinessCard";
-import { generateBusinesses } from "@lib/businessDataGenerator";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { ChevronRight, Search, MapPin, Star, Clock, Shield, TrendingUp, Award, DollarSign, Briefcase, Home as HomeIcon, Coffee, ShoppingBag, Heart, Truck, Scissors, Calendar, CheckCircle, Users, BookOpen, BarChart, Zap, Phone, MessageSquare, Globe, Navigation, Percent, Filter, AlertCircle, ArrowRight } from "lucide-react";
+import ScrollSection from "@/components/site/home/ScrollSection";
+import HeroSection from "@/components/site/home/HeroSection";
+import BusinessCard from "@/components/site/home/BusinessCard";
 import Image from "next/image";
 import Link from "next/link";
-import { Separator } from "@components/ui/separator";
+import { Separator } from "@/components/ui/separator";
+import { Suspense } from "react";
 
-// Generate businesses for the home page - much more data
-const allBusinesses = generateBusinesses(200);
+// Force dynamic rendering to prevent build hanging
+export const dynamic = 'force-dynamic';
 
-// Categorize businesses for different sections
-const restaurantBusinesses = allBusinesses.slice(0, 20).map((business) => ({
-	...business,
-	image: business.photos?.[0] || "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=1",
-	category: "Restaurant",
-	price: business.priceLevel || "$$",
-}));
+// Loading component for sections
+function SectionSkeleton() {
+	return (
+		<div className="space-y-4">
+			<div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+				{Array.from({ length: 8 }).map((_, i) => (
+					<div key={i} className="animate-pulse">
+						<div className="bg-gray-200 dark:bg-gray-700 h-48 rounded-lg mb-2"></div>
+						<div className="bg-gray-200 dark:bg-gray-700 h-4 rounded mb-1"></div>
+						<div className="bg-gray-200 dark:bg-gray-700 h-4 rounded w-3/4"></div>
+					</div>
+				))}
+			</div>
+		</div>
+	);
+}
 
-const homeServiceBusinesses = allBusinesses.slice(20, 40).map((business) => ({
-	...business,
-	image: business.photos?.[0] || "https://images.pexels.com/photos/4239031/pexels-photo-4239031.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=1",
-	category: "Home Services",
-	price: business.priceLevel || "$$$",
-}));
+// Transform business data to match existing component interface
+function transformBusinessForCard(business) {
+	return {
+		id: business.id,
+		name: business.name,
+		description: business.description,
+		image: business.photos?.[0] || "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=1",
+		rating: business.rating || 0,
+		reviewCount: business.review_count || 0,
+		price: business.price_range || "$$",
+		location: `${business.city}, ${business.state}`,
+		category: business.business_categories?.[0]?.category?.name || "Business",
+		slug: business.slug,
+	};
+}
 
-const healthBusinesses = allBusinesses.slice(40, 60).map((business) => ({
-	...business,
-	image: business.photos?.[0] || "https://images.pexels.com/photos/3992933/pexels-photo-3992933.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=1",
-	category: "Health & Medical",
-	price: business.priceLevel || "$$",
-}));
+// Categorize businesses by type for different sections
+function categorizeBusinesses(businesses) {
+	const categories = {
+		restaurants: [],
+		homeServices: [],
+		health: [],
+		shopping: [],
+		beauty: [],
+		automotive: [],
+		entertainment: [],
+		fitness: [],
+		pet: [],
+	};
 
-const shoppingBusinesses = allBusinesses.slice(60, 80).map((business) => ({
-	...business,
-	image: business.photos?.[0] || "https://images.pexels.com/photos/3965545/pexels-photo-3965545.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=1",
-	category: "Shopping",
-	price: business.priceLevel || "$$",
-}));
+	businesses.forEach((business) => {
+		const categoryName = business.business_categories?.[0]?.category?.name?.toLowerCase() || "";
+		const categorySlug = business.business_categories?.[0]?.category?.slug?.toLowerCase() || "";
 
-const beautyBusinesses = allBusinesses.slice(80, 100).map((business) => ({
-	...business,
-	image: business.photos?.[0] || "https://images.pexels.com/photos/3065209/pexels-photo-3065209.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=1",
-	category: "Beauty & Spa",
-	price: business.priceLevel || "$$$",
-}));
+		if (categoryName.includes("restaurant") || categoryName.includes("food") || categorySlug.includes("restaurant")) {
+			categories.restaurants.push(business);
+		} else if (categoryName.includes("home") || categoryName.includes("service") || categorySlug.includes("home")) {
+			categories.homeServices.push(business);
+		} else if (categoryName.includes("health") || categoryName.includes("medical") || categorySlug.includes("health")) {
+			categories.health.push(business);
+		} else if (categoryName.includes("shop") || categoryName.includes("retail") || categorySlug.includes("shopping")) {
+			categories.shopping.push(business);
+		} else if (categoryName.includes("beauty") || categoryName.includes("spa") || categorySlug.includes("beauty")) {
+			categories.beauty.push(business);
+		} else if (categoryName.includes("auto") || categoryName.includes("car") || categorySlug.includes("automotive")) {
+			categories.automotive.push(business);
+		} else if (categoryName.includes("entertainment") || categorySlug.includes("entertainment")) {
+			categories.entertainment.push(business);
+		} else if (categoryName.includes("fitness") || categoryName.includes("gym") || categorySlug.includes("fitness")) {
+			categories.fitness.push(business);
+		} else if (categoryName.includes("pet") || categorySlug.includes("pet")) {
+			categories.pet.push(business);
+		} else {
+			// Distribute remaining businesses across categories
+			const keys = Object.keys(categories);
+			const randomKey = keys[Math.floor(Math.random() * keys.length)];
+			categories[randomKey].push(business);
+		}
+	});
 
-const automotiveBusinesses = allBusinesses.slice(100, 120).map((business) => ({
-	...business,
-	image: business.photos?.[0] || "https://images.pexels.com/photos/170811/pexels-photo-170811.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=1",
-	category: "Automotive",
-	price: business.priceLevel || "$$",
-}));
-
-const entertainmentBusinesses = allBusinesses.slice(120, 140).map((business) => ({
-	...business,
-	image: business.photos?.[0] || "https://images.pexels.com/photos/274950/pexels-photo-274950.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=1",
-	category: "Entertainment",
-	price: business.priceLevel || "$$",
-}));
-
-const fitnessBusinesses = allBusinesses.slice(140, 160).map((business) => ({
-	...business,
-	image: business.photos?.[0] || "https://images.pexels.com/photos/2294361/pexels-photo-2294361.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=1",
-	category: "Fitness & Sports",
-	price: business.priceLevel || "$$",
-}));
-
-const petBusinesses = allBusinesses.slice(160, 180).map((business) => ({
-	...business,
-	image: business.photos?.[0] || "https://images.pexels.com/photos/1108099/pexels-photo-1108099.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=1",
-	category: "Pet Services",
-	price: business.priceLevel || "$$",
-}));
-
-// Transform for general sections
-const transformBusiness = (business) => ({
-	...business,
-	image: business.photos?.[0] || business.logo || "https://images.pexels.com/photos/577769/pexels-photo-577769.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=1",
-	category: business.categories?.[0] || business.type || "Business",
-	location: business.address?.split(",").slice(-2).join(",").trim() || "Local Area",
-	price: business.priceLevel || business.price || "$$",
-});
+	return categories;
+}
 
 // Popular searches by intent
 const popularByIntent = {
@@ -143,7 +150,238 @@ export const metadata = {
 	ogLocale: "en_US",
 };
 
-export default function Home() {
+// Server-side data fetching using API routes
+async function getHomePageData() {
+	try {
+		// Get base URL with proper fallbacks for build time
+		const baseUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.VERCEL_URL || "http://localhost:3000";
+		const apiUrl = baseUrl.startsWith('http') ? baseUrl : `https://${baseUrl}`;
+		
+		const response = await fetch(`${apiUrl}/api/business/featured`, {
+			cache: "force-cache",
+			next: { revalidate: 300 }, // Revalidate every 5 minutes
+		});
+
+		if (!response.ok) {
+			throw new Error(`API request failed: ${response.status}`);
+		}
+
+		const apiData = await response.json();
+		const businesses = apiData.businesses || [];
+		const categories = categorizeBusinesses(businesses);
+
+		return {
+			businesses,
+			categories,
+		};
+	} catch (error) {
+		console.error("Failed to fetch home page businesses:", error);
+		return { businesses: [], categories: categorizeBusinesses([]) };
+	}
+}
+
+// Home page sections with real data
+async function BusinessSections({ categories }) {
+	return (
+		<>
+			{/* FOOD & DINING SECTION */}
+			{categories.restaurants.length > 0 && (
+				<div className="space-y-12">
+					<div className="flex justify-between items-center">
+						<div>
+							<h2 className="flex gap-2 items-center text-2xl font-semibold">
+								<Coffee className="w-6 h-6 text-orange-600" />
+								Food & Dining
+							</h2>
+							<p className="mt-1 text-muted-foreground">Restaurants, cafes, bars, and delivery</p>
+						</div>
+						<Button variant="ghost" asChild>
+							<Link href="/categories/restaurants" className="flex gap-2 items-center">
+								View all <ChevronRight className="w-4 h-4" />
+							</Link>
+						</Button>
+					</div>
+
+					{/* Open Now - Restaurants */}
+					<ScrollSection title="Open Now" subtitle="Currently serving" link="/search?category=restaurants&open=true">
+						{categories.restaurants.slice(0, 10).map((business) => (
+							<BusinessCard
+								key={business.id}
+								business={{
+									...transformBusinessForCard(business),
+									status: "Open",
+								}}
+							/>
+						))}
+					</ScrollSection>
+
+					{/* Top Rated Restaurants */}
+					{categories.restaurants.length > 10 && (
+						<ScrollSection title="Top Rated" subtitle="Highest rated dining experiences" link="/search?category=restaurants&rating=4.5">
+							{categories.restaurants.slice(10, 20).map((business) => (
+								<BusinessCard key={business.id} business={transformBusinessForCard(business)} />
+							))}
+						</ScrollSection>
+					)}
+				</div>
+			)}
+
+			<Separator />
+
+			{/* HOME & SERVICES SECTION */}
+			{categories.homeServices.length > 0 && (
+				<div className="space-y-12">
+					<div className="flex justify-between items-center">
+						<div>
+							<h2 className="flex gap-2 items-center text-2xl font-semibold">
+								<HomeIcon className="w-6 h-6 text-blue-600" />
+								Home & Professional Services
+							</h2>
+							<p className="mt-1 text-muted-foreground">Contractors, repairs, cleaning, and more</p>
+						</div>
+						<Button variant="ghost" asChild>
+							<Link href="/categories/home-services" className="flex gap-2 items-center">
+								View all <ChevronRight className="w-4 h-4" />
+							</Link>
+						</Button>
+					</div>
+
+					{/* Emergency Services */}
+					<ScrollSection title="24/7 Emergency Services" subtitle="Available anytime you need them" link="/search?category=home-services&emergency=true">
+						{categories.homeServices.slice(0, 10).map((business) => (
+							<BusinessCard
+								key={business.id}
+								business={{
+									...transformBusinessForCard(business),
+									badge: "24/7",
+								}}
+							/>
+						))}
+					</ScrollSection>
+
+					{/* Popular Home Services */}
+					{categories.homeServices.length > 10 && (
+						<ScrollSection title="Popular Services" subtitle="Most booked this month" link="/search?category=home-services&sort=popular">
+							{categories.homeServices.slice(10, 20).map((business) => (
+								<BusinessCard key={business.id} business={transformBusinessForCard(business)} />
+							))}
+						</ScrollSection>
+					)}
+				</div>
+			)}
+
+			<Separator />
+
+			{/* HEALTH & WELLNESS SECTION */}
+			{(categories.health.length > 0 || categories.beauty.length > 0 || categories.fitness.length > 0) && (
+				<div className="space-y-12">
+					<div className="flex justify-between items-center">
+						<div>
+							<h2 className="flex gap-2 items-center text-2xl font-semibold">
+								<Heart className="w-6 h-6 text-red-600" />
+								Health & Wellness
+							</h2>
+							<p className="mt-1 text-muted-foreground">Doctors, dentists, fitness, and spa services</p>
+						</div>
+						<Button variant="ghost" asChild>
+							<Link href="/categories/health-medical" className="flex gap-2 items-center">
+								View all <ChevronRight className="w-4 h-4" />
+							</Link>
+						</Button>
+					</div>
+
+					{/* Medical Services */}
+					{categories.health.length > 0 && (
+						<ScrollSection title="Medical & Dental" subtitle="Healthcare providers near you" link="/search?category=health-medical">
+							{categories.health.map((business) => (
+								<BusinessCard key={business.id} business={transformBusinessForCard(business)} />
+							))}
+						</ScrollSection>
+					)}
+
+					{/* Beauty & Spa */}
+					{categories.beauty.length > 0 && (
+						<ScrollSection title="Beauty & Relaxation" subtitle="Salons, spas, and wellness centers" link="/search?category=beauty-spa">
+							{categories.beauty.map((business) => (
+								<BusinessCard key={business.id} business={transformBusinessForCard(business)} />
+							))}
+						</ScrollSection>
+					)}
+
+					{/* Fitness */}
+					{categories.fitness.length > 0 && (
+						<ScrollSection title="Fitness & Sports" subtitle="Gyms, yoga, and training facilities" link="/search?category=fitness-sports">
+							{categories.fitness.map((business) => (
+								<BusinessCard key={business.id} business={transformBusinessForCard(business)} />
+							))}
+						</ScrollSection>
+					)}
+				</div>
+			)}
+
+			<Separator />
+
+			{/* SHOPPING & RETAIL SECTION */}
+			{categories.shopping.length > 0 && (
+				<div className="space-y-12">
+					<div className="flex justify-between items-center">
+						<div>
+							<h2 className="flex gap-2 items-center text-2xl font-semibold">
+								<ShoppingBag className="w-6 h-6 text-purple-600" />
+								Shopping & Retail
+							</h2>
+							<p className="mt-1 text-muted-foreground">Stores, boutiques, and specialty shops</p>
+						</div>
+						<Button variant="ghost" asChild>
+							<Link href="/categories/shopping" className="flex gap-2 items-center">
+								View all <ChevronRight className="w-4 h-4" />
+							</Link>
+						</Button>
+					</div>
+
+					<ScrollSection title="Local Shops & Boutiques" subtitle="Unique finds in your neighborhood" link="/search?category=shopping">
+						{categories.shopping.map((business) => (
+							<BusinessCard key={business.id} business={transformBusinessForCard(business)} />
+						))}
+					</ScrollSection>
+				</div>
+			)}
+
+			<Separator />
+
+			{/* AUTOMOTIVE SECTION */}
+			{categories.automotive.length > 0 && (
+				<div className="space-y-12">
+					<div className="flex justify-between items-center">
+						<div>
+							<h2 className="flex gap-2 items-center text-2xl font-semibold">
+								<Truck className="w-6 h-6 text-green-600" />
+								Automotive
+							</h2>
+							<p className="mt-1 text-muted-foreground">Auto repair, detailing, and services</p>
+						</div>
+						<Button variant="ghost" asChild>
+							<Link href="/categories/automotive" className="flex gap-2 items-center">
+								View all <ChevronRight className="w-4 h-4" />
+							</Link>
+						</Button>
+					</div>
+
+					<ScrollSection title="Auto Services" subtitle="Repair shops, oil changes, and detailing" link="/search?category=automotive">
+						{categories.automotive.map((business) => (
+							<BusinessCard key={business.id} business={transformBusinessForCard(business)} />
+						))}
+					</ScrollSection>
+				</div>
+			)}
+		</>
+	);
+}
+
+export default async function Home() {
+	// Fetch data on the server using Supabase SSR
+	const { businesses, categories } = await getHomePageData();
+
 	return (
 		<main className="bg-white dark:bg-neutral-900">
 			{/* Enhanced Hero Section */}
@@ -229,191 +467,41 @@ export default function Home() {
 
 					<Separator />
 
-					{/* FOOD & DINING SECTION */}
-					<div className="space-y-12">
-						<div className="flex justify-between items-center">
-							<div>
-								<h2 className="flex gap-2 items-center text-2xl font-semibold">
-									<Coffee className="w-6 h-6 text-orange-600" />
-									Food & Dining
-								</h2>
-								<p className="mt-1 text-muted-foreground">Restaurants, cafes, bars, and delivery</p>
-							</div>
-							<Button variant="ghost" asChild>
-								<Link href="/categories/restaurants" className="flex gap-2 items-center">
-									View all <ChevronRight className="w-4 h-4" />
-								</Link>
-							</Button>
-						</div>
-
-						{/* Open Now - Restaurants */}
-						<ScrollSection title="Open Now" subtitle="Currently serving" link="/search?category=restaurants&open=true">
-							{restaurantBusinesses.slice(0, 10).map((business) => (
-								<BusinessCard key={business.id} business={{ ...business, status: "Open" }} />
-							))}
-						</ScrollSection>
-
-						{/* Top Rated Restaurants */}
-						<ScrollSection title="Top Rated" subtitle="Highest rated dining experiences" link="/search?category=restaurants&rating=4.5">
-							{restaurantBusinesses.slice(10, 20).map((business) => (
-								<BusinessCard key={business.id} business={business} />
-							))}
-						</ScrollSection>
-					</div>
-
-					<Separator />
-
-					{/* HOME & SERVICES SECTION */}
-					<div className="space-y-12">
-						<div className="flex justify-between items-center">
-							<div>
-								<h2 className="flex gap-2 items-center text-2xl font-semibold">
-									<HomeIcon className="w-6 h-6 text-blue-600" />
-									Home & Professional Services
-								</h2>
-								<p className="mt-1 text-muted-foreground">Contractors, repairs, cleaning, and more</p>
-							</div>
-							<Button variant="ghost" asChild>
-								<Link href="/categories/home-services" className="flex gap-2 items-center">
-									View all <ChevronRight className="w-4 h-4" />
-								</Link>
-							</Button>
-						</div>
-
-						{/* Emergency Services */}
-						<ScrollSection title="24/7 Emergency Services" subtitle="Available anytime you need them" link="/search?category=home-services&emergency=true">
-							{homeServiceBusinesses.slice(0, 10).map((business) => (
-								<BusinessCard key={business.id} business={{ ...business, badge: "24/7" }} />
-							))}
-						</ScrollSection>
-
-						{/* Popular Home Services */}
-						<ScrollSection title="Popular Services" subtitle="Most booked this month" link="/search?category=home-services&sort=popular">
-							{homeServiceBusinesses.slice(10, 20).map((business) => (
-								<BusinessCard key={business.id} business={business} />
-							))}
-						</ScrollSection>
-					</div>
-
-					<Separator />
-
-					{/* HEALTH & WELLNESS SECTION */}
-					<div className="space-y-12">
-						<div className="flex justify-between items-center">
-							<div>
-								<h2 className="flex gap-2 items-center text-2xl font-semibold">
-									<Heart className="w-6 h-6 text-red-600" />
-									Health & Wellness
-								</h2>
-								<p className="mt-1 text-muted-foreground">Doctors, dentists, fitness, and spa services</p>
-							</div>
-							<Button variant="ghost" asChild>
-								<Link href="/categories/health-medical" className="flex gap-2 items-center">
-									View all <ChevronRight className="w-4 h-4" />
-								</Link>
-							</Button>
-						</div>
-
-						{/* Medical Services */}
-						<ScrollSection title="Medical & Dental" subtitle="Healthcare providers near you" link="/search?category=health-medical">
-							{healthBusinesses.map((business) => (
-								<BusinessCard key={business.id} business={business} />
-							))}
-						</ScrollSection>
-
-						{/* Beauty & Spa */}
-						<ScrollSection title="Beauty & Relaxation" subtitle="Salons, spas, and wellness centers" link="/search?category=beauty-spa">
-							{beautyBusinesses.map((business) => (
-								<BusinessCard key={business.id} business={business} />
-							))}
-						</ScrollSection>
-
-						{/* Fitness */}
-						<ScrollSection title="Fitness & Sports" subtitle="Gyms, yoga, and training facilities" link="/search?category=fitness-sports">
-							{fitnessBusinesses.map((business) => (
-								<BusinessCard key={business.id} business={business} />
-							))}
-						</ScrollSection>
-					</div>
-
-					<Separator />
-
-					{/* SHOPPING & RETAIL SECTION */}
-					<div className="space-y-12">
-						<div className="flex justify-between items-center">
-							<div>
-								<h2 className="flex gap-2 items-center text-2xl font-semibold">
-									<ShoppingBag className="w-6 h-6 text-purple-600" />
-									Shopping & Retail
-								</h2>
-								<p className="mt-1 text-muted-foreground">Stores, boutiques, and specialty shops</p>
-							</div>
-							<Button variant="ghost" asChild>
-								<Link href="/categories/shopping" className="flex gap-2 items-center">
-									View all <ChevronRight className="w-4 h-4" />
-								</Link>
-							</Button>
-						</div>
-
-						<ScrollSection title="Local Shops & Boutiques" subtitle="Unique finds in your neighborhood" link="/search?category=shopping">
-							{shoppingBusinesses.map((business) => (
-								<BusinessCard key={business.id} business={business} />
-							))}
-						</ScrollSection>
-					</div>
-
-					<Separator />
-
-					{/* AUTOMOTIVE SECTION */}
-					<div className="space-y-12">
-						<div className="flex justify-between items-center">
-							<div>
-								<h2 className="flex gap-2 items-center text-2xl font-semibold">
-									<Truck className="w-6 h-6 text-green-600" />
-									Automotive
-								</h2>
-								<p className="mt-1 text-muted-foreground">Auto repair, detailing, and services</p>
-							</div>
-							<Button variant="ghost" asChild>
-								<Link href="/categories/automotive" className="flex gap-2 items-center">
-									View all <ChevronRight className="w-4 h-4" />
-								</Link>
-							</Button>
-						</div>
-
-						<ScrollSection title="Auto Services" subtitle="Repair shops, oil changes, and detailing" link="/search?category=automotive">
-							{automotiveBusinesses.map((business) => (
-								<BusinessCard key={business.id} business={business} />
-							))}
-						</ScrollSection>
-					</div>
+					{/* Dynamic Business Sections with SSR Data */}
+					<Suspense fallback={<SectionSkeleton />}>
+						<BusinessSections categories={categories} />
+					</Suspense>
 
 					<Separator />
 
 					{/* TRENDING & NEW SECTION */}
-					<div className="space-y-12">
-						<div>
-							<h2 className="flex gap-2 items-center text-2xl font-semibold">
-								<TrendingUp className="w-6 h-6 text-indigo-600" />
-								Trending & New
-							</h2>
-							<p className="mt-1 text-muted-foreground">What&apos;s popular and recently added</p>
+					{businesses.length > 0 && (
+						<div className="space-y-12">
+							<div>
+								<h2 className="flex gap-2 items-center text-2xl font-semibold">
+									<TrendingUp className="w-6 h-6 text-indigo-600" />
+									Trending & New
+								</h2>
+								<p className="mt-1 text-muted-foreground">What&apos;s popular and recently added</p>
+							</div>
+
+							{/* Trending This Week */}
+							<ScrollSection title="Trending This Week" subtitle="Most visited businesses" link="/trending">
+								{businesses.slice(0, 20).map((business) => (
+									<BusinessCard key={business.id} business={transformBusinessForCard(business)} />
+								))}
+							</ScrollSection>
+
+							{/* Recently Added */}
+							{businesses.length > 20 && (
+								<ScrollSection title="New Businesses" subtitle="Recently joined our platform" link="/search?sort=newest">
+									{businesses.slice(-20).map((business) => (
+										<BusinessCard key={business.id} business={transformBusinessForCard(business)} />
+									))}
+								</ScrollSection>
+							)}
 						</div>
-
-						{/* Trending This Week */}
-						<ScrollSection title="Trending This Week" subtitle="Most visited businesses" link="/trending">
-							{allBusinesses.slice(0, 20).map((business) => (
-								<BusinessCard key={business.id} business={transformBusiness(business)} />
-							))}
-						</ScrollSection>
-
-						{/* New on Thorbis */}
-						<ScrollSection title="New Businesses" subtitle="Recently joined our platform" link="/search?sort=newest">
-							{allBusinesses.slice(180, 200).map((business) => (
-								<BusinessCard key={business.id} business={transformBusiness(business)} />
-							))}
-						</ScrollSection>
-					</div>
+					)}
 
 					{/* Business Owner CTA */}
 					<section className="p-8 rounded-2xl bg-muted/50 lg:p-12">

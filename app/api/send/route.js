@@ -3,10 +3,16 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { renderEmail } from "@lib/utils/renderEmail";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resendApiKey = process.env.RESEND_API_KEY;
+const resend = resendApiKey ? new Resend(resendApiKey) : null;
 
 export async function POST(req) {
 	const { emailType, to, subject, firstName, url } = await req.json();
+
+	if (!resendApiKey) {
+		console.warn("RESEND_API_KEY not configured - email functionality disabled");
+		return NextResponse.json({ message: "Email service not configured" }, { status: 503 });
+	}
 
 	try {
 		const emailHTML = await renderEmail(emailType, { firstName, url });

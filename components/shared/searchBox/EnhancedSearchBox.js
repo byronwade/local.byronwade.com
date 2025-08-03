@@ -9,8 +9,8 @@ import { Separator } from "@components/ui/separator";
 import { Card, CardContent } from "@components/ui/card";
 import { Search, MapPin, X, History, Star, TrendingUp, Target } from "lucide-react";
 import AiButton from "@components/shared/searchBox/AiButton";
-import useSearchStore from "@store/useSearchStore";
-import useBusinessStore from "@store/useBusinessStore";
+import { useSearchStore } from "@store/search";
+import { useBusinessStore } from "@store/business";
 
 const EnhancedSearchBox = () => {
 	const router = useRouter();
@@ -28,12 +28,12 @@ const EnhancedSearchBox = () => {
 	const locationInputRef = useRef(null);
 
 	const { setSearchQuery, setLocation: setStoreLocation } = useSearchStore();
-	const { filteredBusinesses, fetchBusinesses, initializeWithMockData } = useBusinessStore();
+	const { filteredBusinesses, fetchBusinesses, initializeWithSupabaseData } = useBusinessStore();
 
-	// Initialize mock data on component mount
+	// Initialize Supabase data on component mount
 	useEffect(() => {
-		initializeWithMockData();
-	}, [initializeWithMockData]);
+		initializeWithSupabaseData();
+	}, [initializeWithSupabaseData]);
 
 	// Initialize from URL params
 	useEffect(() => {

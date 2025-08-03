@@ -1,7 +1,7 @@
 "use client";
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import { ArrowRight, ChevronLeft, ChevronRight } from "react-feather";
-import { Button } from "@components/ui/button";
+import { Button } from "@/components/ui/button";
 
 export default function ScrollSection({ title, link, children, subtitle, category }) {
 	const scrollContainerRef = useRef(null);

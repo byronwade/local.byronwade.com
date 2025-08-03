@@ -1,0 +1,376 @@
+name: 🎯 Code Quality & Compliance
+
+on:
+  push:
+    branches: [main, develop, feature/*, hotfix/*]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+concurrency:
+  group: quality-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '20'
+  BUN_VERSION: 'latest'
+  SONAR_PROJECT_KEY: 'thorbis-local-business-directory'
+
+jobs:
+  # Code Quality Analysis
+  code-quality:
+    name: 🔍 Code Quality Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Shallow clones should be disabled for better analysis
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      # ESLint with custom rules
+      - name: Run ESLint
+        run: |
+          bun run lint:ci
+          bun run lint:report
+        continue-on-error: true
+
+      # TypeScript strict checks
+      - name: TypeScript Strict Check
+        run: |
+          bun run type-check:strict
+          bun run type-check:report
+
+      # Code formatting check
+      - name: Prettier Format Check
+        run: bun run format:check
+
+      # Complexity analysis
+      - name: Code Complexity Analysis
+        run: |
+          bun add -g complexity-report
+          complexity-report --format json --output complexity-report.json src/
+
+      # Run tests with coverage
+      - name: Run Tests with Coverage
+        run: |
+          bun run test:coverage
+          bun run test:integration:coverage
+        env:
+          NODE_ENV: test
+
+      # SonarCloud analysis
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      # Upload coverage to Codecov
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage/lcov.info
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
+
+      # Technical debt analysis
+      - name: Technical Debt Analysis
+        run: |
+          bun add -g jscpd
+          jscpd --reporters html,json --output ./reports/code-duplication .
+
+      - name: Upload Quality Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: quality-reports
+          path: |
+            reports/
+            coverage/
+            complexity-report.json
+
+  # Performance Analysis
+  performance-analysis:
+    name: ⚡ Performance Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build for analysis
+        run: bun run build
+
+      # Bundle size analysis
+      - name: Bundle Size Analysis
+        run: |
+          bun add -g bundlesize
+          bun run analyze:bundle
+
+      # Performance budget check
+      - name: Performance Budget Check
+        run: |
+          bun add -g bundle-buddy
+          bun run check:performance-budget
+
+      # Webpack bundle analyzer
+      - name: Webpack Bundle Analysis
+        run: |
+          bun run analyze:webpack
+          # Generate bundle analysis report
+
+      - name: Upload Performance Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-reports
+          path: |
+            .next/analyze/
+            bundle-report.json
+
+  # Accessibility Compliance
+  accessibility-audit:
+    name: ♿ Accessibility Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build application
+        run: bun run build
+
+      - name: Start application
+        run: |
+          bun run start &
+          sleep 10
+        env:
+          PORT: 3000
+
+      # Lighthouse accessibility audit
+      - name: Lighthouse Accessibility Audit
+        run: |
+          bun add -g @lhci/cli
+          lhci autorun --collect.url=http://localhost:3000
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
+      # axe-core accessibility testing
+      - name: axe-core Accessibility Test
+        run: |
+          bun add -g @axe-core/cli
+          axe http://localhost:3000 --reporter json --output-file axe-results.json
+
+      - name: Upload Accessibility Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: accessibility-reports
+          path: |
+            .lighthouseci/
+            axe-results.json
+
+  # Code Architecture Analysis
+  architecture-analysis:
+    name: 🏗️ Architecture Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      # Dependency analysis
+      - name: Dependency Graph Analysis
+        run: |
+          bun add -g madge
+          madge --image dependency-graph.svg --format amd src/
+          madge --circular src/
+
+      # Component architecture analysis
+      - name: Component Architecture Analysis
+        run: |
+          bun add -g react-scanner
+          react-scanner components/ --report=json > component-analysis.json
+
+      # API route analysis
+      - name: API Route Analysis
+        run: |
+          find app/api -name "*.js" -o -name "*.ts" | xargs wc -l
+          # Add custom API analysis script here
+
+      - name: Upload Architecture Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: architecture-reports
+          path: |
+            dependency-graph.svg
+            component-analysis.json
+
+  # Documentation Quality
+  documentation-quality:
+    name: 📚 Documentation Quality
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      # Documentation linting
+      - name: Lint Documentation
+        run: |
+          bun add -g markdownlint-cli
+          markdownlint docs/ README.md --config .markdownlint.json
+
+      # Check for required documentation
+      - name: Required Documentation Check
+        run: |
+          required_docs=(
+            "README.md"
+            "docs/api.md"
+            "docs/deployment.md"
+            "docs/security.md"
+            "docs/contributing.md"
+            "CHANGELOG.md"
+            "SECURITY.md"
+          )
+          
+          missing_docs=()
+          for doc in "${required_docs[@]}"; do
+            if [[ ! -f "$doc" ]]; then
+              missing_docs+=("$doc")
+            fi
+          done
+          
+          if [[ ${#missing_docs[@]} -gt 0 ]]; then
+            echo "❌ Missing required documentation:"
+            printf '%s\n' "${missing_docs[@]}"
+            exit 1
+          else
+            echo "✅ All required documentation found"
+          fi
+
+      # API documentation generation and validation
+      - name: API Documentation Validation
+        run: |
+          # Generate API documentation from OpenAPI specs
+          bun add -g @apidevtools/swagger-parser
+          # Add validation script here
+
+  # Compliance Checks
+  compliance-audit:
+    name: 📋 Compliance Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: GDPR Compliance Check
+        run: |
+          # Check for GDPR compliance markers
+          echo "Checking GDPR compliance..."
+          grep -r "gdpr\|GDPR\|data-protection\|privacy" --include="*.js" --include="*.ts" --include="*.jsx" --include="*.tsx" . || echo "No GDPR markers found"
+
+      - name: Security Headers Compliance
+        run: |
+          # Check for security headers in configuration
+          if [[ -f "next.config.js" ]]; then
+            grep -E "(X-Frame-Options|Content-Security-Policy|X-Content-Type-Options)" next.config.js || echo "⚠️  Security headers not found in next.config.js"
+          fi
+
+      - name: Environment Variable Security Check
+        run: |
+          # Check for exposed secrets in environment variables
+          grep -r "API_KEY\|SECRET\|PASSWORD" --include="*.env.example" . || echo "✅ No exposed secrets in example files"
+
+      - name: Cookie Compliance Check
+        run: |
+          # Check for cookie consent implementation
+          grep -r "cookie.*consent\|gdpr.*cookie" --include="*.js" --include="*.ts" --include="*.jsx" --include="*.tsx" . || echo "⚠️  Cookie consent implementation not found"
+
+  # Quality Gates
+  quality-gate:
+    name: 🚪 Quality Gate
+    runs-on: ubuntu-latest
+    needs: [code-quality, performance-analysis, accessibility-audit, architecture-analysis, documentation-quality, compliance-audit]
+    if: always()
+    steps:
+      - name: Quality Gate Evaluation
+        run: |
+          echo "# 🎯 Quality Gate Results" >> $GITHUB_STEP_SUMMARY
+          echo "## Analysis Results:" >> $GITHUB_STEP_SUMMARY
+          echo "- **Code Quality**: ${{ needs.code-quality.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Performance Analysis**: ${{ needs.performance-analysis.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Accessibility Audit**: ${{ needs.accessibility-audit.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Architecture Analysis**: ${{ needs.architecture-analysis.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Documentation Quality**: ${{ needs.documentation-quality.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Compliance Audit**: ${{ needs.compliance-audit.result }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: Fail on Quality Issues
+        if: contains(needs.*.result, 'failure')
+        run: |
+          echo "❌ Quality gate failed. Please fix the issues before merging."
+          exit 1
+
+      - name: Quality Success Notification
+        if: success()
+        run: |
+          echo "✅ All quality checks passed!"
+          curl -X POST "${{ secrets.SLACK_WEBHOOK_URL }}" \
+            -H 'Content-type: application/json' \
+            --data '{
+              "text": "✅ Quality gate passed for ${{ github.repository }}",
+              "attachments": [{
+                "color": "good",
+                "fields": [{
+                  "title": "Branch",
+                  "value": "${{ github.ref_name }}",
+                  "short": true
+                }, {
+                  "title": "Commit",
+                  "value": "${{ github.sha }}",
+                  "short": true
+                }]
+              }]
+            }'

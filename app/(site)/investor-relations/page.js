@@ -57,7 +57,7 @@ export default function InvestorRelationsPage() {
 			"@type": "Organization",
 			name: "Thorbis",
 			url: "https://local.byronwade.com",
-			logo: "https://local.byronwade.com/ThorbisLogo.webp",
+			logo: "https://local.byronwade.com/logos/ThorbisLogo.webp",
 			description: "Building the future of local commerce and creating long-term value for shareholders",
 			hasOfferCatalog: {
 				"@type": "OfferCatalog",

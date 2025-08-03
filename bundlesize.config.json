@@ -1,0 +1,39 @@
+{
+  "files": [
+    {
+      "path": "apps/main/.next/static/js/*.js",
+      "maxSize": "250kb",
+      "compression": "gzip"
+    },
+    {
+      "path": "apps/main/.next/static/css/*.css",
+      "maxSize": "50kb",
+      "compression": "gzip"
+    },
+    {
+      "path": "apps/main/.next/static/chunks/pages/*.js",
+      "maxSize": "100kb",
+      "compression": "gzip"
+    },
+    {
+      "path": "apps/main/.next/static/chunks/framework-*.js",
+      "maxSize": "150kb",
+      "compression": "gzip"
+    },
+    {
+      "path": "apps/main/.next/static/chunks/main-*.js",
+      "maxSize": "80kb",
+      "compression": "gzip"
+    },
+    {
+      "path": "apps/main/.next/static/chunks/webpack-*.js",
+      "maxSize": "10kb",
+      "compression": "gzip"
+    }
+  ],
+  "defaultCompression": "gzip",
+  "ci": {
+    "trackBranches": ["main", "develop"],
+    "repoBranchBase": "main"
+  }
+}

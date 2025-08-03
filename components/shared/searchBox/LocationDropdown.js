@@ -6,9 +6,9 @@ import { X, ChevronDown, MapPin, Navigation, Globe, Home } from "react-feather";
 import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
 import { Loader2 } from "lucide-react";
-import useSearchStore from "@store/useSearchStore";
-import useMapStore from "@store/useMapStore";
-import useBusinessStore from "@store/useBusinessStore";
+import { useSearchStore } from "@store/search";
+import { useMapStore } from "@store/map";
+import { useBusinessStore } from "@store/business";
 import { debounce } from "lodash";
 
 const LocationDropdown = ({ className, size = "default" }) => {
@@ -96,7 +96,7 @@ const LocationDropdown = ({ className, size = "default" }) => {
 			const position = await new Promise((resolve, reject) => {
 				navigator.geolocation.getCurrentPosition(resolve, reject, {
 					enableHighAccuracy: true,
-					timeout: 10000,
+					timeout: 15000, // Increased timeout
 					maximumAge: 300000, // 5 minutes
 				});
 			});
@@ -108,35 +108,67 @@ const LocationDropdown = ({ className, size = "default" }) => {
 
 			// Validate coordinates
 			if (typeof lat === "number" && typeof lng === "number" && !isNaN(lat) && !isNaN(lng) && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
-				// Reverse geocode to get address
-				const { city, state } = await fetchCityAndStateFromCoordinates(lat, lng);
-				const locationString = `${city}, ${state}`;
+				try {
+					// Reverse geocode to get address
+					const result = await fetchCityAndStateFromCoordinates(lat, lng);
+					console.log("Reverse geocode result:", result);
 
-				console.log("Location string:", locationString);
-				setLocation({
-					lat,
-					lng,
-					value: locationString,
-					city: locationString,
-					error: false,
-					loading: false,
-				});
-				setActiveBusinessId(null);
-				updateURL({ location: locationString });
-				centerOn(lat, lng);
+					// Handle case where city or state might be undefined
+					const city = result?.city || "Unknown";
+					const state = result?.state || "Location";
+					const locationString = `${city}, ${state}`;
+
+					console.log("Location string:", locationString);
+					setLocation({
+						lat,
+						lng,
+						value: locationString,
+						city: locationString,
+						error: false,
+						loading: false,
+					});
+					setActiveBusinessId(null);
+					updateURL({ location: locationString });
+					centerOn(lat, lng);
+				} catch (reverseGeocodeError) {
+					console.error("Reverse geocoding failed:", reverseGeocodeError);
+					// Still set the location with coordinates, just use a generic location name
+					const fallbackLocation = `Location (${lat.toFixed(4)}, ${lng.toFixed(4)})`;
+					setLocation({
+						lat,
+						lng,
+						value: fallbackLocation,
+						city: fallbackLocation,
+						error: false,
+						loading: false,
+					});
+					setActiveBusinessId(null);
+					updateURL({ location: fallbackLocation });
+					centerOn(lat, lng);
+				}
 			} else {
 				throw new Error("Invalid coordinates received");
 			}
 		} catch (error) {
 			console.error("Geolocation error:", error);
+			console.error("Error details:", {
+				name: error.name,
+				message: error.message,
+				code: error.code,
+				stack: error.stack,
+			});
+
 			let errorMessage = "Unable to get your location";
 
-			if (error.code === 1) {
-				errorMessage = "Location access denied. Please enable location services.";
-			} else if (error.code === 2) {
-				errorMessage = "Location unavailable. Please try again.";
-			} else if (error.code === 3) {
+			// Handle geolocation API errors
+			if (error.code === 1 || error.code === error.PERMISSION_DENIED) {
+				errorMessage = "Location access denied. Please enable location services in your browser.";
+			} else if (error.code === 2 || error.code === error.POSITION_UNAVAILABLE) {
+				errorMessage = "Location unavailable. Please check your internet connection.";
+			} else if (error.code === 3 || error.code === error.TIMEOUT) {
 				errorMessage = "Location request timed out. Please try again.";
+			} else if (error.message) {
+				errorMessage = error.message;
 			}
 
 			setLocation({

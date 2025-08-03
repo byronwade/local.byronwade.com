@@ -21,7 +21,7 @@ export function JobsHeader() {
 				<div className="flex items-center gap-x-8">
 					<Link href="/" className="flex items-center space-x-3 text-xl font-bold group">
 						<div className="relative">
-							<Image src="/ThorbisLogo.webp" alt="Thorbis Jobs" width={50} height={50} className="w-12 h-12 transition-transform duration-200 group-hover:scale-105" />
+							<Image src="/logos/ThorbisLogo.webp" alt="Thorbis Jobs" width={50} height={50} className="w-12 h-12 transition-transform duration-200 group-hover:scale-105" />
 							<div className="absolute inset-0 transition-opacity duration-200 rounded-full opacity-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 group-hover:opacity-100" />
 						</div>
 						<div className="hidden sm:block">

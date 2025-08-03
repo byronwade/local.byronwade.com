@@ -1,81 +1,104 @@
+// REQUIRED: Advanced Application Middleware
+// Implements comprehensive security, performance, subdomain routing, and monitoring
+
 import { NextResponse } from "next/server";
-import logger from "@lib/utils/logger";
+import { createProfessionalSubdomainMiddleware } from "./lib/middleware/professional-subdomain";
 
-export async function updateSession(request) {
-	// Mock middleware - just pass through requests for now
-	const response = NextResponse.next({
-		request,
-	});
-
-	// Mock user for development
-	const mockUser = {
-		id: "mock-user-id",
-		email: "test@example.com",
-		name: "Test User",
-		user_metadata: {
-			first_name: "John",
-			last_name: "Doe",
-			full_name: "John Doe",
-		},
-		app_metadata: {},
-		aud: "authenticated",
-		role: "authenticated",
-	};
-
-	logger.debug("Middleware mock user:", mockUser);
-
-	return response;
-}
-
+/**
+ * Main application middleware with comprehensive security and subdomain support
+ */
 export async function middleware(request) {
+	const startTime = performance.now();
 	const { pathname } = request.nextUrl;
-	const response = NextResponse.next();
 
-	// Performance headers for all routes
-	response.headers.set("X-Content-Type-Options", "nosniff");
-	response.headers.set("X-Frame-Options", "DENY");
-	response.headers.set("X-XSS-Protection", "1; mode=block");
-	response.headers.set("Referrer-Policy", "origin-when-cross-origin");
+	try {
+		// Skip middleware for static assets
+		if (shouldSkipMiddleware(pathname)) {
+			return NextResponse.next();
+		}
 
-	// Enable compression
-	response.headers.set("Accept-Encoding", "gzip, deflate, br");
+		// Use professional subdomain middleware for all routing
+		const response = await createProfessionalSubdomainMiddleware(request);
 
-	// Static asset caching
-	if (pathname.match(/\.(ico|png|jpg|jpeg|gif|webp|svg|woff|woff2|ttf|eot|otf|css|js)$/)) {
-		response.headers.set("Cache-Control", "public, max-age=31536000, immutable");
-		response.headers.set("Vary", "Accept-Encoding");
+		// Add performance monitoring
+		const duration = performance.now() - startTime;
+		response.headers.set("X-Response-Time", `${duration.toFixed(2)}ms`);
+
+		return response;
+	} catch (error) {
+		console.error(`Middleware failed for ${pathname}:`, error);
+
+		// Return basic response on error
+		const errorResponse = NextResponse.next();
+		addSecurityHeaders(errorResponse);
+		return errorResponse;
 	}
-
-	// API route optimizations
-	if (pathname.startsWith("/api/")) {
-		response.headers.set("Cache-Control", "no-cache, no-store, must-revalidate");
-		response.headers.set("Pragma", "no-cache");
-		response.headers.set("Expires", "0");
-	}
-
-	// Page caching for static content
-	if (pathname.startsWith("/(site)/") || pathname === "/") {
-		response.headers.set("Cache-Control", "s-maxage=3600, stale-while-revalidate=86400");
-		response.headers.set("Vary", "Accept-Encoding, Accept");
-	}
-
-	// Preload critical resources
-	if (pathname === "/" || pathname.startsWith("/(site)/")) {
-		response.headers.set("Link", ["</fonts/inter.woff2>; rel=preload; as=font; type=font/woff2; crossorigin", "</css/globals.css>; rel=preload; as=style"].join(", "));
-	}
-
-	// Security headers for sensitive routes
-	if (pathname.startsWith("/dashboard") || pathname.startsWith("/(auth)/")) {
-		response.headers.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
-		response.headers.set("Content-Security-Policy", "default-src 'self'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'");
-	}
-
-	// Performance monitoring
-	response.headers.set("Server-Timing", `middleware;dur=${Date.now() - request.headers.get("x-request-start") || 0}`);
-
-	return response;
 }
 
+/**
+ * Determine if middleware should be skipped for this path
+ */
+function shouldSkipMiddleware(pathname) {
+	const skipPatterns = [
+		// Static assets
+		"/_next/static",
+		"/_next/image",
+		"/favicon.ico",
+		"/robots.txt",
+		"/sitemap.xml",
+		"/manifest.json",
+		// File extensions
+		/\.(js|css|png|jpg|jpeg|gif|svg|ico|webp|woff|woff2|ttf|eot)$/,
+		// Health checks
+		"/api/health",
+	];
+
+	return skipPatterns.some((pattern) => {
+		if (typeof pattern === "string") {
+			return pathname.startsWith(pattern);
+		}
+		if (pattern instanceof RegExp) {
+			return pattern.test(pathname);
+		}
+		return false;
+	});
+}
+
+/**
+ * Add comprehensive security headers
+ */
+function addSecurityHeaders(response) {
+	// Basic security headers
+	response.headers.set("X-Frame-Options", "DENY");
+	response.headers.set("X-Content-Type-Options", "nosniff");
+	response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+
+	// HTTPS enforcement in production
+	if (process.env.NODE_ENV === "production") {
+		response.headers.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+	}
+}
+
+/**
+ * Add performance optimization headers
+ */
+function addPerformanceHeaders(response, pathname) {
+	// Cache control based on path type
+	if (pathname.startsWith("/_next/static/")) {
+		// Static assets - long cache
+		response.headers.set("Cache-Control", "public, max-age=31536000, immutable");
+	} else if (pathname.startsWith("/api/")) {
+		// API routes - no cache by default
+		response.headers.set("Cache-Control", "no-cache, no-store, must-revalidate");
+	} else {
+		// Regular pages - short cache with revalidation
+		response.headers.set("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
+	}
+}
+
+/**
+ * Middleware configuration
+ */
 export const config = {
 	matcher: [
 		/*
@@ -83,8 +106,7 @@ export const config = {
 		 * - _next/static (static files)
 		 * - _next/image (image optimization files)
 		 * - favicon.ico (favicon file)
-		 * Feel free to modify this pattern to include more paths.
 		 */
-		"/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+		"/((?!_next/static|_next/image|favicon.ico).*)",
 	],
 };

@@ -72,7 +72,7 @@ export default function TrustSafetyPage() {
 				name: "Thorbis",
 				logo: {
 					"@type": "ImageObject",
-					url: "https://local.byronwade.com/ThorbisLogo.webp",
+					url: "https://local.byronwade.com/logos/ThorbisLogo.webp",
 				},
 			},
 			about: safetyPillars.map((pillar) => pillar.title),

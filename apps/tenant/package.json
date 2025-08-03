@@ -1,0 +1,27 @@
+{
+  "name": "@thorbis/tenant",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tenant platform for Thorbis - Subdomain-specific business directories",
+  "scripts": {
+    "dev": "next dev -p 3001",
+    "build": "next build",
+    "start": "next start -p 3001",
+    "lint": "next lint",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "@shared/components": "workspace:*",
+    "@shared/lib": "workspace:*",
+    "@shared/types": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "typescript": "latest"
+  }
+}

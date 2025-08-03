@@ -1,6 +1,6 @@
 import React from "react";
 import { Source, Layer } from "react-map-gl";
-import useBusinessStore from "@store/useBusinessStore";
+import { useBusinessStore } from "@store/business";
 import { point, featureCollection, buffer } from "@turf/turf";
 
 // Function to generate GeoJSON for service areas

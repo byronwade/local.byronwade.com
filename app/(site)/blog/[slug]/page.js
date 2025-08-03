@@ -1,113 +1,207 @@
-import React from "react";
+import React, { Suspense } from "react";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { ContentDataFetchers } from "@lib/supabase/server";
 
-const allPosts = [
-	{
-		slug: "e-commerce-ui-has-been-launched",
-		title: "We have launched over 80+ components in E-commerce UI and there's more to come!",
-		description: "I am thrilled to share the latest updates from Flowbite! Since our last communication, our team has been hard at work, and we are excited to announce the launch of over 85 new E-commerce UI components and blocks.",
-		author: "Zoltán Szőgyényi",
-		authorImage: "https://www.gravatar.com/avatar/be85a3bc61ad70c85c9b3411dc07cb2d?s=250&r=x&d=mp",
-		date: "2023-06-23",
-		tags: ["Tailwind CSS", "Flowbite", "Figma"],
-	},
-	{
-		slug: "state-of-flowbite-2022",
-		title: "State of Flowbite: learn more about our results from 2022 and what we plan to build this year",
-		description: 'Learn more about the results, achievements and plans for the future by reading the "State of Flowbite 2022" including the open-source development of the Flowbite Library, the release of new UI components, features, and more.',
-		author: "Zoltán Szőgyényi",
-		authorImage: "https://www.gravatar.com/avatar/be85a3bc61ad70c85c9b3411dc07cb2d?s=250&r=x&d=mp",
-		date: "2022-02-22",
-		tags: ["Flowbite"],
-	},
-	// ... other posts
-];
+// Get blog post data from Supabase
+async function getBlogPostData(slug) {
+	try {
+		const [post, relatedPosts] = await Promise.all([
+			ContentDataFetchers.getBlogPostBySlug(slug),
+			// Get related posts after we have the main post
+			slug ? ContentDataFetchers.getBlogPosts({ limit: 4 }) : { posts: [] },
+		]);
 
-const PostPage = ({ params }) => {
-	const post = allPosts.find((p) => p.slug === params.slug);
+		if (!post) {
+			return null;
+		}
 
-	if (!post) {
-		return <div>Post not found</div>;
+		// Get related posts from the same category
+		const relatedPostsFromCategory = post.category?.id ? await ContentDataFetchers.getRelatedBlogPosts(post.id, post.category.id, 4) : relatedPosts.posts.filter((p) => p.id !== post.id).slice(0, 4);
+
+		return {
+			post,
+			relatedPosts: relatedPostsFromCategory,
+		};
+	} catch (error) {
+		console.error("Error fetching blog post data:", error);
+		return null;
+	}
+}
+
+// Generate metadata for SEO
+export async function generateMetadata({ params }) {
+	const { slug } = await params;
+	const data = await getBlogPostData(slug);
+
+	if (!data?.post) {
+		return {
+			title: "Post Not Found",
+			description: "The requested blog post could not be found.",
+		};
 	}
 
-	const relatedArticles = allPosts.filter((p) => p.slug !== params.slug).slice(0, 4);
+	const { post } = data;
+
+	return {
+		title: post.meta_title || post.title,
+		description: post.meta_description || post.excerpt,
+		keywords: post.tags ? post.tags.join(", ") : undefined,
+		authors: [{ name: post.author?.name || "Anonymous" }],
+		openGraph: {
+			title: post.title,
+			description: post.excerpt,
+			type: "article",
+			publishedTime: post.published_at,
+			modifiedTime: post.updated_at,
+			authors: [post.author?.name || "Anonymous"],
+			images: post.featured_image ? [post.featured_image] : undefined,
+			url: `https://local.byronwade.com/blog/${post.slug}`,
+		},
+		twitter: {
+			card: "summary_large_image",
+			title: post.title,
+			description: post.excerpt,
+			images: post.featured_image ? [post.featured_image] : undefined,
+		},
+		alternates: {
+			canonical: `https://local.byronwade.com/blog/${post.slug}`,
+		},
+	};
+}
+
+// Blog post content component
+function PostContent({ post, relatedPosts }) {
+	const jsonLd = {
+		"@context": "https://schema.org",
+		"@type": "BlogPosting",
+		headline: post.title,
+		description: post.excerpt,
+		image: post.featured_image,
+		author: {
+			"@type": "Person",
+			name: post.author?.name || "Anonymous",
+			url: post.author?.bio ? `https://local.byronwade.com/author/${post.author.id}` : undefined,
+		},
+		publisher: {
+			"@type": "Organization",
+			name: "Thorbis",
+			logo: {
+				"@type": "ImageObject",
+				url: "https://local.byronwade.com/logo.png",
+			},
+		},
+		datePublished: post.published_at,
+		dateModified: post.updated_at,
+		mainEntityOfPage: {
+			"@type": "WebPage",
+			"@id": `https://local.byronwade.com/blog/${post.slug}`,
+		},
+	};
 
 	return (
 		<>
+			<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 			<main className="pt-8 pb-16 lg:pt-16 lg:pb-24">
 				<div className="flex justify-center max-w-screen-xl px-4 mx-auto">
 					<article className="w-full max-w-2xl format format-sm sm:format-base lg:format-lg format-blue dark:format-invert">
 						<header className="mb-4 lg:mb-6 not-format">
+							{/* Featured Image */}
+							{post.featured_image && (
+								<div className="mb-6">
+									<img src={post.featured_image} alt={post.title} className="w-full rounded-lg" />
+								</div>
+							)}
+
+							{/* Category and Tags */}
+							<div className="flex items-center gap-2 mb-4">
+								{post.category && <Badge variant="secondary">{post.category.name}</Badge>}
+								{post.tags &&
+									post.tags.map((tag, index) => (
+										<Badge key={index} variant="outline">
+											{tag}
+										</Badge>
+									))}
+							</div>
+
 							<div className="flex items-center mb-6 not-italic">
 								<div className="inline-flex items-center mr-3 text-sm">
 									<Avatar className="w-16 h-16 mr-4">
-										<AvatarImage src={post.authorImage} alt={post.author} />
-										<AvatarFallback>{post.author.charAt(0)}</AvatarFallback>
+										<AvatarImage src={post.author?.avatar_url} alt={post.author?.name || "Anonymous"} />
+										<AvatarFallback>{(post.author?.name || "A").charAt(0)}</AvatarFallback>
 									</Avatar>
 									<div>
-										<a href="#" rel="author" className="text-xl font-bold">
-											{post.author}
-										</a>
-										<p className="text-base text-muted-foreground">{post.description.substring(0, 50)}...</p>
-										<p className="text-base text-muted-foreground">
-											<time pubdate="true" dateTime={post.date} title={new Date(post.date).toLocaleDateString()}>
-												{new Date(post.date).toLocaleDateString("en-US", {
+										<div className="text-xl font-bold">{post.author?.name || "Anonymous"}</div>
+										{post.author?.bio && <p className="text-base text-muted-foreground">{post.author.bio}</p>}
+										<div className="flex items-center gap-4 text-base text-muted-foreground">
+											<time pubdate="true" dateTime={post.published_at} title={new Date(post.published_at).toLocaleDateString()}>
+												{new Date(post.published_at).toLocaleDateString("en-US", {
 													year: "numeric",
 													month: "long",
 													day: "numeric",
 												})}
 											</time>
-										</p>
+											{post.reading_time && <span>• {post.reading_time} min read</span>}
+											{post.view_count && <span>• {post.view_count} views</span>}
+										</div>
 									</div>
 								</div>
 							</div>
 							<h1 className="mb-4 text-3xl font-extrabold leading-tight lg:mb-6 lg:text-4xl">{post.title}</h1>
+							{post.excerpt && <p className="text-xl text-muted-foreground mb-6 leading-relaxed">{post.excerpt}</p>}
 						</header>
 
-						<div className="space-y-4">
-							<p className="lead">Flowbite is an open-source library of UI components built with the utility-first classes from Tailwind CSS. It also includes interactive elements such as dropdowns, modals, datepickers.</p>
-							<p>Before going digital, you might benefit from scribbling down some ideas in a sketchbook. This way, you can think things through before committing to an actual design project.</p>
-							<p>
-								But then I found a <a href="https://flowbite.com">component library based on Tailwind CSS called Flowbite</a>. It comes with the most commonly used UI components, such as buttons, navigation bars, cards, form elements, and more which are conveniently built with the utility classes from Tailwind CSS.
-							</p>
-							<figure>
-								<img src="https://flowbite.s3.amazonaws.com/typography-plugin/typography-image-1.png" alt="Digital art" className="w-full rounded-lg" />
-								<figcaption className="text-center text-muted-foreground">Digital art by Anonymous</figcaption>
-							</figure>
-							<h2>Getting started with Flowbite</h2>
-							<p>First of all you need to understand how Flowbite works. This library is not another framework. Rather, it is a set of components based on Tailwind CSS that you can just copy-paste from the documentation.</p>
-							<p>It also includes a JavaScript file that enables interactive components, such as modals, dropdowns, and datepickers which you can optionally include into your project via CDN or NPM.</p>
+						<div className="prose prose-lg dark:prose-invert max-w-none">
+							{/* Render the actual blog content */}
+							<div dangerouslySetInnerHTML={{ __html: post.content }} />
 						</div>
 					</article>
 				</div>
 			</main>
 
-			<aside aria-label="Related articles" className="py-8 lg:py-24 bg-muted/20">
-				<div className="max-w-screen-xl px-4 mx-auto">
-					<h2 className="mb-8 text-2xl font-bold">Related articles</h2>
-					<div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
-						{relatedArticles.map((article) => (
-							<article key={article.slug} className="max-w-xs">
-								<Link href={`/blog/${article.slug}`}>
-									<img src={`https://flowbite.s3.amazonaws.com/blocks/marketing-ui/article/blog-${Math.floor(Math.random() * 4) + 1}.png`} className="mb-5 rounded-lg" alt={`Image for ${article.title}`} />
-								</Link>
-								<h2 className="mb-2 text-xl font-bold leading-tight">
-									<Link href={`/blog/${article.slug}`}>{article.title}</Link>
-								</h2>
-								<p className="mb-4 text-muted-foreground">{article.description.substring(0, 100)}...</p>
-								<Button asChild variant="link" className="p-0">
-									<Link href={`/blog/${article.slug}`}>Read more</Link>
-								</Button>
-							</article>
-						))}
+			{relatedPosts && relatedPosts.length > 0 && (
+				<aside aria-label="Related articles" className="py-8 lg:py-24 bg-muted/20">
+					<div className="max-w-screen-xl px-4 mx-auto">
+						<h2 className="mb-8 text-2xl font-bold">Related articles</h2>
+						<div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
+							{relatedPosts.map((article) => (
+								<article key={article.slug} className="max-w-xs">
+									<Link href={`/blog/${article.slug}`}>
+										{article.featured_image ? (
+											<img src={article.featured_image} className="mb-5 rounded-lg w-full h-48 object-cover" alt={article.title} />
+										) : (
+											<div className="mb-5 rounded-lg w-full h-48 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+												<span className="text-gray-500 dark:text-gray-400">No image</span>
+											</div>
+										)}
+									</Link>
+									<h2 className="mb-2 text-xl font-bold leading-tight">
+										<Link href={`/blog/${article.slug}`} className="hover:underline">
+											{article.title}
+										</Link>
+									</h2>
+									<p className="mb-4 text-muted-foreground">{article.excerpt ? (article.excerpt.length > 100 ? article.excerpt.substring(0, 100) + "..." : article.excerpt) : "Read this article to learn more..."}</p>
+									<div className="flex items-center justify-between mb-4">
+										<div className="flex items-center space-x-2">
+											{article.author?.avatar_url && <img className="rounded-full w-6 h-6" src={article.author.avatar_url} alt={`${article.author.name} profile`} />}
+											<span className="text-sm font-medium text-muted-foreground">{article.author?.name || "Anonymous"}</span>
+										</div>
+										{article.reading_time && <span className="text-sm text-muted-foreground">{article.reading_time} min read</span>}
+									</div>
+									<Button asChild variant="link" className="p-0">
+										<Link href={`/blog/${article.slug}`}>Read more</Link>
+									</Button>
+								</article>
+							))}
+						</div>
 					</div>
-				</div>
-			</aside>
+				</aside>
+			)}
 
 			<section className="py-16">
 				<div className="max-w-screen-xl px-4 py-8 mx-auto lg:py-16 lg:px-6">
@@ -141,12 +235,65 @@ const PostPage = ({ params }) => {
 			</section>
 		</>
 	);
-};
+}
 
-export default PostPage;
+// Loading component for Suspense
+function PostLoading() {
+	return (
+		<main className="pt-8 pb-16 lg:pt-16 lg:pb-24">
+			<div className="flex justify-center max-w-screen-xl px-4 mx-auto">
+				<article className="w-full max-w-2xl">
+					<header className="mb-4 lg:mb-6">
+						{/* Image skeleton */}
+						<div className="mb-6 h-64 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"></div>
 
-export async function generateStaticParams() {
-	return allPosts.map((post) => ({
-		slug: post.slug,
-	}));
+						{/* Tags skeleton */}
+						<div className="flex items-center gap-2 mb-4">
+							<div className="h-6 w-20 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+							<div className="h-6 w-16 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+						</div>
+
+						{/* Author skeleton */}
+						<div className="flex items-center mb-6">
+							<div className="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse mr-4"></div>
+							<div>
+								<div className="h-6 w-32 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-2"></div>
+								<div className="h-4 w-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+							</div>
+						</div>
+
+						{/* Title skeleton */}
+						<div className="h-10 w-3/4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-4"></div>
+						<div className="h-6 w-full bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-2"></div>
+						<div className="h-6 w-5/6 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+					</header>
+
+					{/* Content skeleton */}
+					<div className="space-y-4">
+						{[...Array(8)].map((_, i) => (
+							<div key={i} className="h-4 w-full bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+						))}
+					</div>
+				</article>
+			</div>
+		</main>
+	);
+}
+
+// Main server component
+export default async function PostPage({ params }) {
+	const { slug } = await params;
+	const data = await getBlogPostData(slug);
+
+	if (!data) {
+		notFound();
+	}
+
+	const { post, relatedPosts } = data;
+
+	return (
+		<Suspense fallback={<PostLoading />}>
+			<PostContent post={post} relatedPosts={relatedPosts} />
+		</Suspense>
+	);
 }

@@ -1,0 +1,15 @@
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="400" height="300" fill="#F3F4F6"/>
+  
+  <!-- Mountain/landscape icon -->
+  <path d="M100 200L140 140L180 180L220 120L260 160L300 100L340 140L400 200V300H0V200H100Z" fill="#D1D5DB"/>
+  
+  <!-- Sun/circle -->
+  <circle cx="320" cy="80" r="25" fill="#E5E7EB"/>
+  
+  <!-- Image icon in center -->
+  <rect x="170" y="120" width="60" height="60" rx="8" fill="#9CA3AF"/>
+  <circle cx="185" cy="135" r="8" fill="#F3F4F6"/>
+  <path d="M175 155L185 145L195 155L205 145L215 155V165H175V155Z" fill="#F3F4F6"/>
+</svg>

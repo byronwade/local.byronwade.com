@@ -51,7 +51,7 @@ export default function ContentGuidelinesPage() {
 				name: "Thorbis",
 				logo: {
 					"@type": "ImageObject",
-					url: "https://local.byronwade.com/ThorbisLogo.webp",
+					url: "https://local.byronwade.com/logos/ThorbisLogo.webp",
 				},
 			},
 			about: ["Content Quality", "Review Standards", "Community Guidelines", "Content Moderation", "Platform Rules"],

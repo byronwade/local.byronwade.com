@@ -1,0 +1,49 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "!.next/cache/**"],
+      "env": [
+        "NEXT_PUBLIC_MAIN_DOMAIN",
+        "NEXT_PUBLIC_TENANT_DOMAIN", 
+        "NEXT_PUBLIC_ADMIN_DOMAIN",
+        "NEXT_PUBLIC_API_DOMAIN",
+        "NEXT_PUBLIC_APP_URL",
+        "NEXT_PUBLIC_API_URL",
+        "VERCEL_TOKEN",
+        "VERCEL_PROJECT_ID",
+        "SUPABASE_URL",
+        "SUPABASE_ANON_KEY"
+      ]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true,
+      "env": [
+        "NEXT_PUBLIC_MAIN_DOMAIN",
+        "NEXT_PUBLIC_TENANT_DOMAIN",
+        "NEXT_PUBLIC_ADMIN_DOMAIN", 
+        "NEXT_PUBLIC_API_DOMAIN",
+        "NEXT_PUBLIC_APP_URL",
+        "NEXT_PUBLIC_API_URL",
+        "VERCEL_TOKEN",
+        "VERCEL_PROJECT_ID",
+        "SUPABASE_URL",
+        "SUPABASE_ANON_KEY"
+      ]
+    },
+    "lint": {
+      "outputs": []
+    },
+    "type-check": {
+      "dependsOn": ["^type-check"],
+      "outputs": []
+    }
+  },
+  "globalDependencies": [
+    ".env",
+    ".env.local",
+    ".env.production"
+  ]
+}

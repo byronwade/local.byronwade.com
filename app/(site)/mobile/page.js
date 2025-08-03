@@ -61,7 +61,7 @@ export default function MobilePage() {
 		author: {
 			"@type": "Organization",
 			name: "Thorbis",
-			logo: "https://local.byronwade.com/ThorbisLogo.webp",
+			logo: "https://local.byronwade.com/logos/ThorbisLogo.webp",
 		},
 		aggregateRating: {
 			"@type": "AggregateRating",

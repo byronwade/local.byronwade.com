@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Card } from "@components/ui/card";
 import { Button } from "@components/ui/button";
-import useAuthStore from "@store/useAuthStore";
+import { useAuthStore } from "@store/auth";
 
 export default function ActiveUser() {
 	const { user, logout } = useAuthStore((state) => state);
@@ -39,7 +39,7 @@ export default function ActiveUser() {
 			<p className="text-sm leading-6 text-left text-muted-foreground">Confirm this is your profile, so we can link a company to you.</p>
 			<Card className="relative flex flex-row justify-between p-2 mt-4 ">
 				<div className="flex flex-row">
-					<Image src="/ThorbisLogo.webp" alt="Thorbis Logo" width={100} height={100} className="inline-block w-12 h-12 rounded-md" />
+					<Image src="/logos/ThorbisLogo.webp" alt="Thorbis Logo" width={100} height={100} className="inline-block w-12 h-12 rounded-md" />
 					<div className="ml-4">
 						<h3>
 							{first_name} {last_name}

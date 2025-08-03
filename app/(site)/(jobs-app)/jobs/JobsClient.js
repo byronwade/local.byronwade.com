@@ -11,6 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const specialties = ["Product Design", "UX/UI Design", "Web Design", "Brand Design", "Animation", "Illustration"];
 
@@ -93,39 +94,132 @@ const JobListItem = ({ job }) => (
 	</Card>
 );
 
-export default function JobsClient({ jobs }) {
+export default function JobsClient({ jobs, searchMetadata, searchParams }) {
+	const router = useRouter();
+	const urlSearchParams = useSearchParams();
+	const [searchQuery, setSearchQuery] = useState(searchParams?.search || searchParams?.q || "");
+	const [location, setLocation] = useState(searchParams?.location || "");
+	const [isSearching, setIsSearching] = useState(false);
+
+	const handleSearch = async (e) => {
+		e.preventDefault();
+		if (isSearching) return;
+
+		setIsSearching(true);
+
+		// Build search params
+		const params = new URLSearchParams();
+		if (searchQuery.trim()) params.set("search", searchQuery.trim());
+		if (location.trim()) params.set("location", location.trim());
+
+		// Navigate to new search
+		router.push(`/jobs?${params.toString()}`);
+
+		setTimeout(() => setIsSearching(false), 1000);
+	};
+
+	const handleFilterChange = (key, value) => {
+		const params = new URLSearchParams(urlSearchParams);
+		if (value) {
+			params.set(key, value);
+		} else {
+			params.delete(key);
+		}
+		router.push(`/jobs?${params.toString()}`);
+	};
+
 	return (
 		<div className="flex flex-col gap-8">
 			{/* Search Card */}
 			<Card>
 				<CardContent className="p-4">
-					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-						<div className="relative lg:col-span-2">
-							<Input placeholder="Job title, keywords, or company" className="pl-10 h-12 text-base" />
-							<Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+					<form onSubmit={handleSearch}>
+						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+							<div className="relative lg:col-span-2">
+								<Input placeholder="Job title, keywords, or company" className="pl-10 h-12 text-base" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+								<Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+							</div>
+							<div className="relative lg:col-span-2">
+								<Input placeholder="City, state, or zip code" className="pl-10 h-12 text-base" value={location} onChange={(e) => setLocation(e.target.value)} />
+								<MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+							</div>
+							<Button type="submit" className="w-full h-12 text-base lg:col-span-1" disabled={isSearching}>
+								{isSearching ? "Searching..." : "Find Jobs"}
+							</Button>
 						</div>
-						<div className="relative lg:col-span-2">
-							<Input placeholder="City, state, or zip code" className="pl-10 h-12 text-base" />
-							<MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-						</div>
-						<Button className="w-full h-12 text-base lg:col-span-1">Find Jobs</Button>
-					</div>
+					</form>
 				</CardContent>
 			</Card>
 
+			{/* Results Summary */}
+			{searchMetadata && (
+				<div className="flex items-center justify-between">
+					<p className="text-muted-foreground">
+						{searchMetadata.total > 0 ? (
+							<>
+								Showing {jobs.length} of {searchMetadata.total} jobs
+							</>
+						) : (
+							"No jobs found"
+						)}
+						{searchMetadata.query && ` for "${searchMetadata.query}"`}
+						{searchMetadata.location && ` in ${searchMetadata.location}`}
+					</p>
+				</div>
+			)}
+
 			<div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
-				{/* Filters Sidebar */}
+				{/* Enhanced Filters Sidebar */}
 				<aside className="lg:col-span-1 sticky top-24">
-					<FilterSidebar />
+					<FilterSidebar onFilterChange={handleFilterChange} currentFilters={searchParams} />
 				</aside>
 
 				{/* Job List */}
 				<main className="lg:col-span-3">
-					<div className="space-y-4">
-						{jobs.map((job) => (
-							<JobListItem key={job.id} job={job} />
-						))}
-					</div>
+					{jobs.length > 0 ? (
+						<div className="space-y-4">
+							{jobs.map((job) => (
+								<JobListItem key={job.id} job={job} />
+							))}
+
+							{/* Load More Button */}
+							{searchMetadata?.hasMore && (
+								<div className="flex justify-center pt-8">
+									<Button
+										variant="outline"
+										onClick={() => {
+											const params = new URLSearchParams(urlSearchParams);
+											const currentOffset = parseInt(params.get("offset") || "0");
+											params.set("offset", (currentOffset + 20).toString());
+											router.push(`/jobs?${params.toString()}`);
+										}}
+									>
+										Load More Jobs
+									</Button>
+								</div>
+							)}
+						</div>
+					) : (
+						<Card>
+							<CardContent className="p-8 text-center">
+								<div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+									<Briefcase className="w-8 h-8 text-muted-foreground" />
+								</div>
+								<h3 className="text-lg font-semibold mb-2">No jobs found</h3>
+								<p className="text-muted-foreground mb-4">Try adjusting your search criteria or browse all available positions.</p>
+								<Button
+									variant="outline"
+									onClick={() => {
+										setSearchQuery("");
+										setLocation("");
+										router.push("/jobs");
+									}}
+								>
+									View All Jobs
+								</Button>
+							</CardContent>
+						</Card>
+					)}
 				</main>
 			</div>
 		</div>

@@ -1,5 +1,5 @@
 import React from "react";
-import Image from "next/image";
+import Image from "@/components/shared/Image";
 
 // Utility function to split the media array into main and additional images
 const splitMedia = (media) => {

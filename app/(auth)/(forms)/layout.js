@@ -16,7 +16,7 @@ export default function AuthFormsLayout({ children }) {
 					<div className="p-6 md:space-y-8 lg:space-y-20">
 						<div className="md:space-y-2 lg:space-y-6">
 							<Link href="/">
-								<Image src="/ThorbisLogo.webp" alt="Thorbis Logo" width={200} height={100} className="w-[60px] h-[60px]" />
+								<Image src="/logos/ThorbisLogo.webp" alt="Thorbis Logo" width={200} height={100} className="w-[60px] h-[60px]" />
 							</Link>
 							<div>
 								<div className="text-[22px] font-bold leading-[34px] ">

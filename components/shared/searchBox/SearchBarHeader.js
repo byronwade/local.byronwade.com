@@ -8,8 +8,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import BusinessCard from "@components/shared/searchBox/BusinessCard";
 import { Loader2, Bot, Sparkles } from "lucide-react";
 import { z } from "zod";
-import useSearchStore from "@store/useSearchStore";
-import useBusinessStore from "@store/useBusinessStore";
+import { useSearchStore } from "@store/search";
+import { useBusinessStore } from "@store/business";
 import { algoliaIndex } from "@lib/algoliaClient";
 import UnifiedAIChat from "@components/shared/ai/UnifiedAIChat";
 import { useDragDrop } from "@/hooks/useDragDrop";
@@ -20,7 +20,7 @@ const searchSchema = z.object({
 
 const SearchBarOnly = () => {
 	const { searchQuery, setSearchQuery, location, setLocation, errors, setErrors, touched, setTouched, suggestions, recentSearches, popularSearches, addRecentSearch, loadRecentSearches, fetchSearchSuggestions, activeDropdown, setActiveDropdown } = useSearchStore();
-	const { initializeWithMockData } = useBusinessStore();
+	const { initializeWithSupabaseData } = useBusinessStore();
 	const [loading, setLoading] = useState(false);
 	const [autocompleteOpen, setAutocompleteOpen] = useState(false);
 	const [isFormValid, setIsFormValid] = useState(false);
@@ -35,9 +35,9 @@ const SearchBarOnly = () => {
 
 	// Initialize mock data and load recent searches on component mount
 	useEffect(() => {
-		initializeWithMockData();
+		initializeWithSupabaseData();
 		loadRecentSearches();
-	}, [initializeWithMockData, loadRecentSearches]);
+	}, [initializeWithSupabaseData, loadRecentSearches]);
 
 	// Initialize speech recognition
 	useEffect(() => {

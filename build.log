@@ -1,9 +1,0 @@
-$ next build
-  ▲ Next.js 14.2.14
-  - Experiments (use with caution):
-    · turbo
-
-   Creating an optimized production build ...
-(node:31539) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
-(Use `node --trace-deprecation ...` to show where the warning was created)
-<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies

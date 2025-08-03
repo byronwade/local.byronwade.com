@@ -241,7 +241,7 @@ const ShortsHeader = ({ searchQuery, setSearchQuery, filter, setFilter, categori
 				<div className="flex items-center space-x-4">
 					<Link href="/" className="flex items-center space-x-3 text-xl font-bold group">
 						<div className="relative">
-							<Image src="/ThorbisLogo.webp" alt="Thorbis" width={50} height={50} className="w-10 h-10 transition-transform duration-200 group-hover:scale-105" />
+							<Image src="/logos/ThorbisLogo.webp" alt="Thorbis" width={50} height={50} className="w-10 h-10 transition-transform duration-200 group-hover:scale-105" />
 							<div className="absolute inset-0 bg-gradient-to-r rounded-full opacity-0 transition-opacity duration-200 from-blue-500/20 to-green-500/20 group-hover:opacity-100" />
 						</div>
 						<div className="hidden sm:block">

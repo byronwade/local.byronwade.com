@@ -1,34 +1,9 @@
 import { create } from "zustand";
 import debounce from "lodash/debounce";
-import { algoliaIndex } from "@lib/algoliaClient";
 import useMapStore from "./useMapStore";
-import { generateBusinesses, searchBusinessesByQuery } from "../lib/businessDataGenerator";
+import { logger } from "@lib/utils/logger";
 
-// Generate a large dataset of businesses using Faker.js
-let generatedBusinesses = [];
-let isGenerating = false;
-
-// Initialize businesses asynchronously
-const initializeBusinesses = async () => {
-	if (isGenerating || generatedBusinesses.length > 0) return generatedBusinesses;
-
-	isGenerating = true;
-	console.log("Generating businesses with Faker.js...");
-
-	try {
-		// Generate 5000 businesses for fast performance while still having variety
-		generatedBusinesses = generateBusinesses(5000);
-		console.log(`Generated ${generatedBusinesses.length} businesses successfully!`);
-	} catch (error) {
-		console.error("Failed to generate businesses:", error);
-		// Fallback to original mock data
-		generatedBusinesses = mockBusinesses;
-	} finally {
-		isGenerating = false;
-	}
-
-	return generatedBusinesses;
-};
+// Removed mock data generation - now using real Supabase data
 
 // Original mock businesses as fallback
 const mockBusinesses = [
@@ -162,77 +137,145 @@ const useBusinessStore = create((set, get) => ({
 
 	setInitialCoordinates: (lat, lng) => {
 		set({ initialCoordinates: { lat, lng } });
-		console.log("Initial coordinates set to:", { lat, lng });
+		logger.debug("Initial coordinates set to:", { lat, lng });
 	},
 
-	// Enhanced search method using mock data
+	// Enhanced search method using API endpoint
 	searchBusinesses: async (query = "", location = "") => {
 		try {
 			set({ loading: true });
 
-			// Use mock businesses for now
-			let results = [...mockBusinesses];
+			// Build search parameters
+			const searchParams = new URLSearchParams();
+			if (query) searchParams.append("query", query);
+			if (location) searchParams.append("location", location);
+			searchParams.append("limit", "50");
 
-			// Simple search filtering
-			if (query) {
-				const searchTerm = query.toLowerCase();
-				results = results.filter((business) => business.name.toLowerCase().includes(searchTerm) || business.description.toLowerCase().includes(searchTerm) || business.categories.some((cat) => cat.toLowerCase().includes(searchTerm)));
+			// Use API endpoint instead of direct Supabase calls
+			const response = await fetch(`/api/business/search?${searchParams.toString()}`);
+			if (!response.ok) {
+				throw new Error(`Search failed: ${response.statusText}`);
 			}
 
-			// For now, don't filter by location since we're using mock data
-			// Just return all businesses that match the query (or all if no query)
+			const searchResults = await response.json();
 
-			// Sort results by relevance (sponsored first, then by rating)
-			const sortedResults = results.sort((a, b) => {
-				if (a.isSponsored && !b.isSponsored) return -1;
-				if (!a.isSponsored && b.isSponsored) return 1;
-				return (b.ratings?.overall || 0) - (a.ratings?.overall || 0);
-			});
+			// Transform API results to match expected format
+			const transformedResults = searchResults.businesses.map((business) => ({
+				id: business.id,
+				name: business.name,
+				slug: business.slug,
+				description: business.description,
+				categories: business.categories || [],
+				ratings: { overall: business.rating },
+				reviewCount: business.reviewCount,
+				address: business.address,
+				phone: business.phone,
+				website: business.website,
+				hours: business.hours,
+				coordinates: business.coordinates,
+				isOpenNow: true, // TODO: Calculate based on hours
+				price: business.price_range || "$$",
+				statusMessage: `${business.reviewCount} reviews`,
+				isSponsored: business.featured || false,
+				logo: business.photos?.[0] || null,
+				city: business.city,
+				state: business.state,
+			}));
 
 			// Update both allBusinesses and filteredBusinesses for map view
 			set({
-				allBusinesses: sortedResults,
-				filteredBusinesses: sortedResults,
+				allBusinesses: transformedResults,
+				filteredBusinesses: transformedResults,
 				loading: false,
 			});
 
-			console.log(`Search completed: ${sortedResults.length} results for "${query}" in "${location}"`);
-			return sortedResults;
+			logger.debug(`Search completed: ${transformedResults.length} results for "${query}" in "${location}"`);
+			return transformedResults;
 		} catch (error) {
-			console.error("Failed to search businesses:", error);
+			logger.error("Failed to search businesses:", error);
 			set({ loading: false });
+
+			// Fallback to empty results
+			set({
+				allBusinesses: [],
+				filteredBusinesses: [],
+				loading: false,
+			});
 			return [];
 		}
 	},
 
 	// New method for general business fetching (used by search page)
+	// CRITICAL: Always return resolved arrays, never Promises
 	fetchBusinesses: async (query = "", location = "") => {
-		return get().searchBusinesses(query, location);
+		try {
+			const result = await get().searchBusinesses(query, location);
+
+			// Ensure we return an array, never a Promise
+			if (result instanceof Promise) {
+				logger.error("[fetchBusinesses] Result is a Promise, awaiting it");
+				const resolved = await result;
+				return Array.isArray(resolved) ? resolved : [];
+			}
+
+			return Array.isArray(result) ? result : [];
+		} catch (error) {
+			logger.error("[fetchBusinesses] Error:", error);
+			return []; // Always return empty array on error
+		}
 	},
 
-	// Initialize with generated data for immediate display
-	initializeWithMockData: async () => {
+	// Initialize with business data for immediate display
+	initializeWithSupabaseData: async () => {
 		try {
 			set({ loading: true });
 
-			// For now, use mock data immediately to avoid loading issues
-			console.log("Using mock business data for immediate display");
+			// Get featured/popular businesses via API
+			const response = await fetch("/api/business/featured");
+			if (!response.ok) {
+				throw new Error(`Failed to fetch featured businesses: ${response.statusText}`);
+			}
 
-			// Always show mock businesses regardless of search
+			const homePageData = await response.json();
+
+			// Transform API results to match expected format
+			const transformedBusinesses = homePageData.businesses.map((business) => ({
+				id: business.id,
+				name: business.name,
+				slug: business.slug,
+				description: business.description,
+				categories: business.categories || [],
+				ratings: { overall: business.rating },
+				reviewCount: business.reviewCount,
+				address: business.address,
+				phone: business.phone,
+				website: business.website,
+				hours: business.hours,
+				coordinates: business.coordinates,
+				isOpenNow: true, // TODO: Calculate based on hours
+				price: business.price_range || "$$",
+				statusMessage: `${business.reviewCount} reviews`,
+				isSponsored: business.featured || false,
+				logo: business.photos?.[0] || null,
+				city: business.city,
+				state: business.state,
+			}));
+
 			set({
-				allBusinesses: mockBusinesses,
-				filteredBusinesses: mockBusinesses,
+				allBusinesses: transformedBusinesses,
+				filteredBusinesses: transformedBusinesses,
 				loading: false,
 				initialLoad: false,
 			});
 
-			console.log("Initialized with mock business data");
+			logger.debug("Initialized with business data:", transformedBusinesses.length);
 		} catch (error) {
-			console.error("Failed to initialize with mock data:", error);
-			// Fallback to original mock data
+			logger.error("Failed to initialize with business data:", error);
+
+			// Fallback to empty results - better than mock data
 			set({
-				allBusinesses: mockBusinesses,
-				filteredBusinesses: mockBusinesses,
+				allBusinesses: [],
+				filteredBusinesses: [],
 				loading: false,
 				initialLoad: false,
 			});
@@ -255,21 +298,53 @@ const useBusinessStore = create((set, get) => ({
 		try {
 			set({ loading: true });
 
-			// Use generated businesses instead of API call
-			const businesses = await initializeBusinesses();
-
-			// Filter businesses by bounds
-			const boundsFiltered = businesses.filter((business) => {
-				const coords = business.coordinates;
-				if (!coords) return false;
-				const { lat, lng } = coords;
-				return lat >= bounds.south && lat <= bounds.north && lng >= bounds.west && lng <= bounds.east;
+			// Use existing API endpoint for map-based business fetching
+			const params = new URLSearchParams({
+				north: bounds.north.toString(),
+				south: bounds.south.toString(),
+				east: bounds.east.toString(),
+				west: bounds.west.toString(),
+				zoom: zoom.toString(),
 			});
 
-			console.log("Initial businesses fetched:", boundsFiltered.length);
+			if (query) {
+				params.append("query", query);
+			}
 
-			cache.set(bounds, boundsFiltered);
-			set({ allBusinesses: boundsFiltered, initialLoad: false, loading: false });
+			const response = await fetch(`/api/biz?${params.toString()}`);
+			if (!response.ok) {
+				throw new Error(`Failed to fetch businesses: ${response.statusText}`);
+			}
+
+			const data = await response.json();
+
+			// Transform API results to match expected format
+			const transformedBusinesses = data.businesses.map((business) => ({
+				id: business.id,
+				name: business.name,
+				slug: business.slug,
+				description: business.description,
+				categories: business.categories || [],
+				ratings: { overall: business.rating },
+				reviewCount: business.reviewCount,
+				address: business.address,
+				phone: business.phone,
+				website: business.website,
+				hours: business.hours,
+				coordinates: business.coordinates,
+				isOpenNow: true,
+				price: business.price_range || "$$",
+				statusMessage: `${business.reviewCount} reviews`,
+				isSponsored: business.featured || false,
+				logo: business.photos?.[0] || null,
+				city: business.city,
+				state: business.state,
+			}));
+
+			console.log("Initial businesses fetched:", transformedBusinesses.length);
+
+			cache.set(JSON.stringify(bounds), transformedBusinesses);
+			set({ allBusinesses: transformedBusinesses, initialLoad: false, loading: false });
 			get().filterBusinessesByBounds(bounds);
 		} catch (error) {
 			console.error("Failed to fetch businesses:", error);
@@ -295,27 +370,53 @@ const useBusinessStore = create((set, get) => ({
 		try {
 			set({ loading: true });
 
-			// Use generated businesses with search
-			const businesses = await initializeBusinesses();
-			let filteredBusinesses = businesses;
-
-			// Apply query filter if provided
-			if (query) {
-				filteredBusinesses = searchBusinessesByQuery(businesses, query);
-			}
-
-			// Apply bounds filter
-			filteredBusinesses = filteredBusinesses.filter((business) => {
-				const coords = business.coordinates;
-				if (!coords) return false;
-				const { lat, lng } = coords;
-				return lat >= bounds.south && lat <= bounds.north && lng >= bounds.west && lng <= bounds.east;
+			// Use existing API endpoint for map-based business fetching
+			const params = new URLSearchParams({
+				north: bounds.north.toString(),
+				south: bounds.south.toString(),
+				east: bounds.east.toString(),
+				west: bounds.west.toString(),
+				zoom: zoom.toString(),
 			});
 
-			console.log("Filtered businesses fetched:", filteredBusinesses.length);
+			if (query) {
+				params.append("query", query);
+			}
 
-			cache.set(bounds, filteredBusinesses);
-			set({ filteredBusinesses, loading: false });
+			const response = await fetch(`/api/biz?${params.toString()}`);
+			if (!response.ok) {
+				throw new Error(`Failed to fetch businesses: ${response.statusText}`);
+			}
+
+			const data = await response.json();
+
+			// Transform API results
+			const transformedBusinesses = data.businesses.map((business) => ({
+				id: business.id,
+				name: business.name,
+				slug: business.slug,
+				description: business.description,
+				categories: business.categories || [],
+				ratings: { overall: business.rating },
+				reviewCount: business.reviewCount,
+				address: business.address,
+				phone: business.phone,
+				website: business.website,
+				hours: business.hours,
+				coordinates: business.coordinates,
+				isOpenNow: true,
+				price: business.price_range || "$$",
+				statusMessage: `${business.reviewCount} reviews`,
+				isSponsored: business.featured || false,
+				logo: business.photos?.[0] || null,
+				city: business.city,
+				state: business.state,
+			}));
+
+			console.log("Filtered businesses fetched:", transformedBusinesses.length);
+
+			cache.set(JSON.stringify(bounds), transformedBusinesses);
+			set({ filteredBusinesses: transformedBusinesses, loading: false });
 		} catch (error) {
 			console.error("Failed to fetch businesses:", error);
 			set({ loading: false });

@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@components/ui/separator";
 import { MapPin, Star, Clock, Phone, Globe, Filter, Grid, List, Map } from "lucide-react";
 import { Skeleton } from "@components/ui/skeleton";
-import useBusinessStore from "@store/useBusinessStore";
+import { useBusinessStore } from "@store/business";
 import logger from "@lib/utils/logger";
 
 export default function SearchResults() {

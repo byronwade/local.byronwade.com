@@ -11,7 +11,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@components/ui/sheet";
 import { ChevronDown, Menu, Bell, Settings, Users, CreditCard, HelpCircle } from "react-feather";
 import { BarChart3, Shield } from "lucide-react";
-import useAuthStore from "@store/useAuthStore";
+import { useAuthStore } from "@store/auth";
 
 export default function Header() {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -48,7 +48,7 @@ export default function Header() {
 				<div className="flex flex-row items-center space-x-6 w-full">
 					<Link href="/" className="flex items-center space-x-3 text-xl font-bold group">
 						<div className="relative">
-							<Image src="/ThorbisLogo.webp" alt="Thorbis Admin" width={50} height={50} className="w-12 h-12 transition-transform duration-200 group-hover:scale-105" />
+							<Image src="/logos/ThorbisLogo.webp" alt="Thorbis Admin" width={50} height={50} className="w-12 h-12 transition-transform duration-200 group-hover:scale-105" />
 							<div className="absolute inset-0 bg-gradient-to-r rounded-full opacity-0 transition-opacity duration-200 from-red-500/20 to-orange-500/20 group-hover:opacity-100" />
 						</div>
 						<div className="hidden sm:block">

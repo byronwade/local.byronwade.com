@@ -12,7 +12,7 @@ import { Card, CardContent } from "@components/ui/card";
 import { Badge } from "@components/ui/badge";
 import { ArrowRight, ArrowLeft } from "react-feather";
 import { Star, MapPin, Phone, Building2, AlertTriangle } from "lucide-react";
-import useFormStore from "@store/useFormStore";
+import { useFormStore } from "@store/ui";
 import useAuth from "@hooks/useAuth";
 import WhatAreYouReporting from "@components/auth/report/what-are-you-reporting";
 import { Progress } from "@components/ui/progress";
@@ -215,7 +215,7 @@ const ReportBusiness = () => {
 	if (authLoading || !isInitialized) {
 		return (
 			<div className="flex justify-center w-full">
-				<Image src="/ThorbisLogo.webp" alt="Thorbis Logo" width={200} height={100} className="w-[60px] h-[60px] animate-breathe" />
+				<Image src="/logos/ThorbisLogo.webp" alt="Thorbis Logo" width={200} height={100} className="w-[60px] h-[60px] animate-breathe" />
 			</div>
 		);
 	}

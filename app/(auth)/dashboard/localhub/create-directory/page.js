@@ -13,7 +13,7 @@ import { useToast } from "@components/ui/use-toast";
 import { Alert, AlertDescription } from "@components/ui/alert";
 import { AlertTriangle, CheckCircle as CheckCircleIcon, ArrowLeft as ArrowLeftIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import useAuthStore from "@store/useAuthStore";
+import { useAuthStore } from "@store/auth";
 
 // Import the step components
 import DirectoryInfo from "@components/localhub/create-directory/directory-info";

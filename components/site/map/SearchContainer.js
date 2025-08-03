@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState, Suspense, useRef } from "react";
+import React, { useEffect, useState, Suspense, useRef, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, ChevronLeft, Settings, Filter, SortAsc, Grid, List, Maximize2, Activity } from "lucide-react";
@@ -12,12 +12,13 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@component
 import EnhancedSearchBox from "@components/shared/searchBox/EnhancedSearchBox";
 import BusinessCardList from "@components/site/map/BusinessCardList";
 import BusinessInfoPanel from "@components/site/map/BusinessInfoPanel";
-import useBusinessStore from "@store/useBusinessStore";
-import useSearchStore from "@store/useSearchStore";
+import { useBusinessStore } from "@store/business";
+import { useSearchStore } from "@store/search";
 import FullScreenMapSkeleton from "@components/site/map/FullScreenMapSkeleton";
 import LiveActivityFeed from "@components/site/map/LiveActivityFeed";
 import UnifiedAIChat from "@components/shared/ai/UnifiedAIChat";
 import { useSearchParams } from "next/navigation";
+import { logger } from "@lib/utils/logger";
 
 // Direct import instead of dynamic import
 import MapContainer from "@components/site/map/MapContainer";
@@ -25,7 +26,59 @@ import MapContainer from "@components/site/map/MapContainer";
 const SearchContainer = ({ searchParams: propSearchParams }) => {
 	const urlSearchParams = useSearchParams();
 	const searchParams = propSearchParams || urlSearchParams;
-	const { filteredBusinesses, activeBusinessId, selectedBusiness, setSelectedBusiness, clearSelectedBusiness, initializeWithMockData, loading, searchBusinesses, setActiveBusinessId } = useBusinessStore();
+	const { filteredBusinesses: rawFilteredBusinesses, activeBusinessId, selectedBusiness, setSelectedBusiness, clearSelectedBusiness, initializeWithSupabaseData, loading, searchBusinesses, setActiveBusinessId } = useBusinessStore();
+
+	// CRITICAL: Ensure filteredBusinesses is always a resolved array, never a Promise
+	const filteredBusinesses = useMemo(() => {
+		// EMERGENCY: Comprehensive Promise detection and logging
+		if (rawFilteredBusinesses instanceof Promise) {
+			console.error("[SearchContainer] CRITICAL: filteredBusinesses is a Promise!");
+			console.trace("Promise detected in SearchContainer");
+			logger.error("[SearchContainer] rawFilteredBusinesses is a Promise object");
+			return [];
+		}
+
+		if (rawFilteredBusinesses && typeof rawFilteredBusinesses.then === "function") {
+			console.error("[SearchContainer] CRITICAL: filteredBusinesses is Promise-like!");
+			console.trace("Promise-like object detected in SearchContainer");
+			logger.error("[SearchContainer] rawFilteredBusinesses is a Promise-like object");
+			return [];
+		}
+
+		// If not an array, convert or return empty array
+		if (!Array.isArray(rawFilteredBusinesses)) {
+			console.warn("[SearchContainer] rawFilteredBusinesses is not an array:", typeof rawFilteredBusinesses);
+			logger.warn("[SearchContainer] rawFilteredBusinesses type:", typeof rawFilteredBusinesses);
+
+			if (rawFilteredBusinesses && typeof rawFilteredBusinesses === "object" && rawFilteredBusinesses.length !== undefined) {
+				console.log("[SearchContainer] Converting array-like object to array");
+				return Array.from(rawFilteredBusinesses);
+			}
+			return [];
+		}
+
+		// Check if any items in the array are Promises
+		if (rawFilteredBusinesses.length > 0) {
+			const hasPromises = rawFilteredBusinesses.some((item, index) => {
+				const isPromise = item instanceof Promise || (item && typeof item.then === "function");
+				if (isPromise) {
+					console.error(`[SearchContainer] Found Promise at index ${index}:`, item);
+					logger.error(`[SearchContainer] Promise object found at array index ${index}`);
+				}
+				return isPromise;
+			});
+
+			if (hasPromises) {
+				console.error("[SearchContainer] Filtering out Promise objects from business array");
+				const cleanBusinesses = rawFilteredBusinesses.filter((item) => !(item instanceof Promise) && !(item && typeof item.then === "function"));
+				logger.warn(`[SearchContainer] Removed ${rawFilteredBusinesses.length - cleanBusinesses.length} Promise objects`);
+				return cleanBusinesses;
+			}
+		}
+
+		console.log("[SearchContainer] filteredBusinesses is valid array with", rawFilteredBusinesses.length, "items");
+		return rawFilteredBusinesses;
+	}, [rawFilteredBusinesses]);
 	const { searchQuery, searchLocation } = useSearchStore();
 	const [isLoading, setIsLoading] = useState(true);
 	const [panelSize, setPanelSize] = useState(25);
@@ -36,34 +89,55 @@ const SearchContainer = ({ searchParams: propSearchParams }) => {
 	const [headerHeight, setHeaderHeight] = useState(0);
 
 	useEffect(() => {
-		// Calculate header height
+		// Performance-optimized header height calculation
 		const calculateHeaderHeight = () => {
-			const header = document.querySelector("#header");
-			if (header) {
-				const height = header.offsetHeight;
-				setHeaderHeight(height);
-				console.log("Header height calculated:", height);
-			}
+			requestAnimationFrame(() => {
+				const header = document.querySelector("#header");
+				if (header) {
+					// Use getBoundingClientRect instead of offsetHeight for better performance
+					const rect = header.getBoundingClientRect();
+					const height = Math.round(rect.height);
+
+					// Only update if height actually changed to prevent unnecessary re-renders
+					setHeaderHeight((prevHeight) => {
+						if (prevHeight !== height) {
+							console.log("Header height updated:", height);
+							return height;
+						}
+						return prevHeight;
+					});
+				}
+			});
 		};
 
-		// Calculate on mount and resize
-		calculateHeaderHeight();
-		window.addEventListener("resize", calculateHeaderHeight);
+		// Debounced resize handler to prevent excessive calculations
+		let resizeTimeout;
+		const debouncedResize = () => {
+			clearTimeout(resizeTimeout);
+			resizeTimeout = setTimeout(calculateHeaderHeight, 100);
+		};
 
-		// Multiple checks to ensure accurate calculation
-		const timeouts = [setTimeout(calculateHeaderHeight, 100), setTimeout(calculateHeaderHeight, 500), setTimeout(calculateHeaderHeight, 1000)];
+		// Initial calculation with RAF to avoid blocking
+		calculateHeaderHeight();
+
+		// Add debounced resize listener
+		window.addEventListener("resize", debouncedResize, { passive: true });
+
+		// Single delayed calculation for dynamic content
+		const delayedCalculation = setTimeout(calculateHeaderHeight, 250);
 
 		return () => {
-			window.removeEventListener("resize", calculateHeaderHeight);
-			timeouts.forEach((timeout) => clearTimeout(timeout));
+			window.removeEventListener("resize", debouncedResize);
+			clearTimeout(resizeTimeout);
+			clearTimeout(delayedCalculation);
 		};
 	}, []);
 
 	useEffect(() => {
-		// Initialize with mock data immediately
-		initializeWithMockData();
+		// Initialize with Supabase data immediately
+		initializeWithSupabaseData();
 		setIsLoading(false);
-	}, [initializeWithMockData]);
+	}, [initializeWithSupabaseData]);
 
 	useEffect(() => {
 		if (filteredBusinesses.length > 0) {

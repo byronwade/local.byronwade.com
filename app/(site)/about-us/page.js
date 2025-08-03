@@ -68,7 +68,7 @@ export default function AboutPage() {
 		name: "Thorbis",
 		description: "Thorbis is a local business platform that empowers small businesses and connects communities through innovative technology and community-first approach.",
 		url: "https://local.byronwade.com",
-		logo: "https://local.byronwade.com/ThorbisLogo.webp",
+		logo: "https://local.byronwade.com/logos/ThorbisLogo.webp",
 		foundingDate: "2024",
 		founder: {
 			"@type": "Person",

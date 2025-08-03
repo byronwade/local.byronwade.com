@@ -1,50 +1,78 @@
 import { NextResponse } from "next/server";
-import algoliasearch from "algoliasearch";
-import businessesData from "@lib/businesses.json";
+import { BusinessDataFetchers } from "@lib/supabase/server";
+import { logger } from "@lib/utils/logger";
 
-const algoliaClient = algoliasearch(process.env.NEXT_PUBLIC_ALGOLIA_APP_ID || "mock-app-id", process.env.NEXT_PUBLIC_ALGOLIA_ADMIN_API_KEY || "mock-admin-key");
-const index = algoliaClient.initIndex("businesses");
-
-// Function to sync businesses from local JSON data to Algolia
-const syncLocalBusinessesToAlgolia = async () => {
+// Function to validate Supabase data integrity
+const validateSupabaseData = async () => {
 	try {
-		// Skip Algolia sync if no credentials provided (development mode)
-		if (!process.env.NEXT_PUBLIC_ALGOLIA_APP_ID || !process.env.NEXT_PUBLIC_ALGOLIA_ADMIN_API_KEY) {
-			console.log("Skipping Algolia sync - no credentials provided (development mode)");
-			return;
+		// Get a sample of businesses to verify data integrity
+		const searchResults = await BusinessDataFetchers.searchBusinesses({
+			limit: 10,
+		});
+
+		// Check if search results are valid
+		if (!searchResults || !searchResults.data || !searchResults.data.businesses) {
+			throw new Error("Invalid search results from BusinessDataFetchers");
 		}
 
-		const objects = businessesData.businesses.map((business) => ({
-			objectID: business.id,
-			...business,
-		}));
-		await index.saveObjects(objects);
-		console.log("Local businesses synced to Algolia successfully.");
+		const businessCount = searchResults.data.businesses.length;
+		logger.info(`Supabase data validation: Found ${businessCount} businesses`);
+
+		if (businessCount === 0) {
+			throw new Error("No businesses found in Supabase database");
+		}
+
+		// Check for required fields
+		const validBusinesses = searchResults.data.businesses.filter((business) => business.name && business.address && business.latitude && business.longitude);
+
+		const validationRate = (validBusinesses.length / businessCount) * 100;
+		logger.info(`Data validation rate: ${validationRate.toFixed(2)}%`);
+
+		if (validationRate < 80) {
+			logger.warn(`Low data quality detected: ${validationRate.toFixed(2)}% valid businesses`);
+		}
+
+		return {
+			total: businessCount,
+			valid: validBusinesses.length,
+			validationRate: validationRate,
+		};
 	} catch (error) {
-		console.error("Error syncing local businesses to Algolia:", error);
+		logger.error("Error validating Supabase data:", error);
+		throw error;
 	}
 };
 
-// Mock function to simulate API businesses sync (since we're not using real GraphQL)
-const syncApiBusinessesToAlgolia = async () => {
-	try {
-		console.log("Mock API businesses sync - skipping in development mode");
-		// In development mode, we don't sync from API since we're using mock data
-		return;
-	} catch (error) {
-		console.error("Error in mock API businesses sync:", error);
-	}
-};
-
-// Sync all businesses to Algolia
+// Health check for Supabase integration
 export async function GET() {
 	try {
-		await syncLocalBusinessesToAlgolia();
-		await syncApiBusinessesToAlgolia();
+		const startTime = performance.now();
 
-		return NextResponse.json({ message: "Data synced successfully (mock mode)" }, { status: 200 });
+		const validationResult = await validateSupabaseData();
+
+		const duration = performance.now() - startTime;
+		logger.performance(`Data validation completed in ${duration.toFixed(2)}ms`);
+
+		return NextResponse.json(
+			{
+				message: "Supabase data validation successful",
+				data: {
+					totalBusinesses: validationResult.total,
+					validBusinesses: validationResult.valid,
+					validationRate: `${validationResult.validationRate.toFixed(2)}%`,
+					responseTime: `${duration.toFixed(2)}ms`,
+				},
+			},
+			{ status: 200 }
+		);
 	} catch (error) {
-		console.error("Error syncing data:", error);
-		return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+		logger.error("Error in data validation:", error);
+		return NextResponse.json(
+			{
+				error: "Data validation failed",
+				message: error.message,
+			},
+			{ status: 500 }
+		);
 	}
 }

@@ -1,5 +1,27 @@
 import { Suspense } from "react";
 import EventsClient from "./EventsClient";
+import { ContentDataFetchers } from "@lib/supabase/server";
+
+// Get events data from Supabase
+async function getEventsData() {
+	try {
+		const eventsResult = await ContentDataFetchers.getEvents({
+			status: "upcoming",
+			limit: 50,
+		});
+
+		return {
+			events: eventsResult || [],
+			total: eventsResult?.length || 0,
+		};
+	} catch (error) {
+		console.error("Error fetching events data:", error);
+		return {
+			events: [],
+			total: 0,
+		};
+	}
+}
 
 export const metadata = {
 	title: "Local Events & Activities - Discover What's Happening | Thorbis",
@@ -44,54 +66,67 @@ export const metadata = {
 	},
 };
 
-// JSON-LD structured data
-const jsonLd = {
-	"@context": "https://schema.org",
-	"@type": "WebPage",
-	name: "Local Events",
-	description: "Discover and join local events and activities in your community",
-	url: "https://local.byronwade.com/events",
-	mainEntity: {
-		"@type": "ItemList",
-		name: "Local Events Listing",
-		description: "Community events, networking, and activities",
-		numberOfItems: 7,
-		itemListElement: [
-			{
+// Generate dynamic JSON-LD structured data
+function generateEventsJsonLd(events) {
+	return {
+		"@context": "https://schema.org",
+		"@type": "WebPage",
+		name: "Local Events",
+		description: "Discover and join local events and activities in your community",
+		url: "https://local.byronwade.com/events",
+		mainEntity: {
+			"@type": "ItemList",
+			name: "Local Events Listing",
+			description: "Community events, networking, and activities",
+			numberOfItems: events.length,
+			itemListElement: events.slice(0, 10).map((event, index) => ({
 				"@type": "Event",
-				name: "Local Business Networking Mixer",
-				description: "Join fellow business owners for an evening of networking, drinks, and collaboration opportunities.",
-				startDate: "2024-02-15T18:00:00",
+				name: event.title,
+				description: event.description,
+				startDate: `${event.start_date}${event.start_date.includes("T") ? "" : "T00:00:00"}`,
+				endDate: event.end_date ? `${event.end_date}${event.end_date.includes("T") ? "" : "T23:59:59"}` : undefined,
 				location: {
 					"@type": "Place",
-					name: "Downtown Business Center",
-					address: "123 Main St, Downtown",
+					name: event.venue || event.location,
+					address: event.location,
 				},
 				organizer: {
-					"@type": "Organization",
-					name: "Business Growth Network",
+					"@type": event.organizer?.name ? "Person" : "Organization",
+					name: event.organizer?.name || "Event Organizer",
 				},
-			},
-		],
-	},
-	breadcrumb: {
-		"@type": "BreadcrumbList",
-		itemListElement: [
-			{
-				"@type": "ListItem",
-				position: 1,
-				name: "Home",
-				item: "https://local.byronwade.com",
-			},
-			{
-				"@type": "ListItem",
-				position: 2,
-				name: "Events",
-				item: "https://local.byronwade.com/events",
-			},
-		],
-	},
-};
+				image: event.featured_image,
+				offers:
+					event.price && event.price !== "0"
+						? {
+								"@type": "Offer",
+								price: event.price,
+								priceCurrency: event.currency || "USD",
+						  }
+						: undefined,
+				eventStatus: "https://schema.org/EventScheduled",
+				eventAttendanceMode: event.is_virtual ? "https://schema.org/OnlineEventAttendanceMode" : "https://schema.org/OfflineEventAttendanceMode",
+				url: `https://local.byronwade.com/events/${event.slug || event.id}`,
+			})),
+		},
+		breadcrumb: {
+			"@type": "BreadcrumbList",
+			itemListElement: [
+				{
+					"@type": "ListItem",
+					position: 1,
+					name: "Home",
+					item: "https://local.byronwade.com",
+				},
+				{
+					"@type": "ListItem",
+					position: 2,
+					name: "Events",
+					item: "https://local.byronwade.com/events",
+				},
+			],
+		},
+	};
+}
 
 function EventsLoadingSkeleton() {
 	return (
@@ -110,13 +145,25 @@ function EventsLoadingSkeleton() {
 	);
 }
 
-export default function EventsPage() {
+// Events content component
+function EventsContent({ events }) {
+	const jsonLd = generateEventsJsonLd(events);
+
 	return (
 		<>
 			<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-			<Suspense fallback={<EventsLoadingSkeleton />}>
-				<EventsClient />
-			</Suspense>
+			<EventsClient initialEvents={events} />
 		</>
+	);
+}
+
+// Main server component
+export default async function EventsPage() {
+	const { events } = await getEventsData();
+
+	return (
+		<Suspense fallback={<EventsLoadingSkeleton />}>
+			<EventsContent events={events} />
+		</Suspense>
 	);
 }

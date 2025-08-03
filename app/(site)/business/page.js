@@ -67,7 +67,7 @@ export default function BusinessPage() {
 		provider: {
 			"@type": "Organization",
 			name: "Thorbis",
-			logo: "https://local.byronwade.com/ThorbisLogo.webp",
+			logo: "https://local.byronwade.com/logos/ThorbisLogo.webp",
 			url: "https://local.byronwade.com",
 		},
 		serviceType: "Business Listing Service",

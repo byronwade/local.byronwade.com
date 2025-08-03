@@ -1,0 +1,545 @@
+name: 📊 Monitoring & Observability
+
+on:
+  schedule:
+    - cron: '*/15 * * * *' # Every 15 minutes
+    - cron: '0 */6 * * *'  # Every 6 hours for deeper analysis
+  workflow_dispatch:
+    inputs:
+      monitoring_type:
+        description: 'Type of monitoring to run'
+        required: true
+        default: 'health-check'
+        type: choice
+        options:
+          - health-check
+          - performance-audit
+          - security-scan
+          - full-analysis
+          - incident-response
+      environment:
+        description: 'Environment to monitor'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+          - all
+
+concurrency:
+  group: monitoring-${{ github.event.inputs.monitoring_type || 'scheduled' }}
+  cancel-in-progress: false
+
+env:
+  NODE_VERSION: '20'
+  BUN_VERSION: 'latest'
+
+jobs:
+  # Health Check Matrix
+  health-check:
+    name: 🏥 Health Check
+    runs-on: ubuntu-latest
+    if: github.event.inputs.monitoring_type == 'health-check' || github.event.inputs.monitoring_type == 'full-analysis' || github.event_name == 'schedule'
+    strategy:
+      matrix:
+        environment: ${{ github.event.inputs.environment == 'all' && fromJson('["production", "staging"]') || fromJson(format('["{}"]', github.event.inputs.environment || 'production')) }}
+        service: [web, api, database, cdn, storage]
+    steps:
+      - name: Health Check - ${{ matrix.service }}
+        id: health-check
+        run: |
+          case "${{ matrix.service }}" in
+            "web")
+              url="https://${{ matrix.environment == 'production' && 'thorbis.com' || 'staging.thorbis.com' }}"
+              ;;
+            "api")
+              url="https://${{ matrix.environment == 'production' && 'api.thorbis.com' || 'api-staging.thorbis.com' }}/health"
+              ;;
+            "database")
+              # Database health check via API endpoint
+              url="https://${{ matrix.environment == 'production' && 'api.thorbis.com' || 'api-staging.thorbis.com' }}/health/database"
+              ;;
+            "cdn")
+              url="https://cdn.thorbis.com/health"
+              ;;
+            "storage")
+              url="https://${{ matrix.environment == 'production' && 'api.thorbis.com' || 'api-staging.thorbis.com' }}/health/storage"
+              ;;
+          esac
+          
+          echo "Checking health for ${{ matrix.service }} at $url"
+          
+          response=$(curl -s -w "%{http_code}:%{time_total}:%{size_download}" -o /dev/null "$url")
+          http_code=$(echo $response | cut -d: -f1)
+          response_time=$(echo $response | cut -d: -f2)
+          size=$(echo $response | cut -d: -f3)
+          
+          echo "http_code=$http_code" >> $GITHUB_OUTPUT
+          echo "response_time=$response_time" >> $GITHUB_OUTPUT
+          echo "size=$size" >> $GITHUB_OUTPUT
+          
+          if [[ $http_code -ge 200 && $http_code -lt 300 ]]; then
+            echo "status=healthy" >> $GITHUB_OUTPUT
+          else
+            echo "status=unhealthy" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Record Health Metrics
+        run: |
+          echo "Recording health metrics for ${{ matrix.service }} in ${{ matrix.environment }}"
+          
+          # Send metrics to monitoring system (e.g., DataDog, New Relic, etc.)
+          curl -X POST "${{ secrets.MONITORING_API_URL }}/metrics" \
+            -H "Authorization: Bearer ${{ secrets.MONITORING_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "metric": "health_check",
+              "environment": "${{ matrix.environment }}",
+              "service": "${{ matrix.service }}",
+              "status": "${{ steps.health-check.outputs.status }}",
+              "http_code": ${{ steps.health-check.outputs.http_code }},
+              "response_time": ${{ steps.health-check.outputs.response_time }},
+              "size": ${{ steps.health-check.outputs.size }},
+              "timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"
+            }'
+
+      - name: Alert on Health Issues
+        if: steps.health-check.outputs.status == 'unhealthy'
+        run: |
+          curl -X POST "${{ secrets.SLACK_ALERTS_WEBHOOK }}" \
+            -H 'Content-type: application/json' \
+            --data '{
+              "text": "🚨 Health check failed",
+              "attachments": [{
+                "color": "danger",
+                "fields": [{
+                  "title": "Service",
+                  "value": "${{ matrix.service }}",
+                  "short": true
+                }, {
+                  "title": "Environment",
+                  "value": "${{ matrix.environment }}",
+                  "short": true
+                }, {
+                  "title": "HTTP Code",
+                  "value": "${{ steps.health-check.outputs.http_code }}",
+                  "short": true
+                }, {
+                  "title": "Response Time",
+                  "value": "${{ steps.health-check.outputs.response_time }}s",
+                  "short": true
+                }]
+              }]
+            }'
+
+  # Performance Monitoring
+  performance-monitoring:
+    name: ⚡ Performance Monitoring
+    runs-on: ubuntu-latest
+    if: github.event.inputs.monitoring_type == 'performance-audit' || github.event.inputs.monitoring_type == 'full-analysis' || github.event_name == 'schedule'
+    strategy:
+      matrix:
+        environment: ${{ github.event.inputs.environment == 'all' && fromJson('["production", "staging"]') || fromJson(format('["{}"]', github.event.inputs.environment || 'production')) }}
+        page: [home, search, business-profile, user-dashboard]
+    steps:
+      - name: Setup Lighthouse CI
+        run: |
+          npm install -g @lhci/cli@latest
+
+      - name: Performance Audit - ${{ matrix.page }}
+        id: lighthouse
+        run: |
+          case "${{ matrix.page }}" in
+            "home")
+              url="https://${{ matrix.environment == 'production' && 'thorbis.com' || 'staging.thorbis.com' }}"
+              ;;
+            "search")
+              url="https://${{ matrix.environment == 'production' && 'thorbis.com' || 'staging.thorbis.com' }}/search"
+              ;;
+            "business-profile")
+              url="https://${{ matrix.environment == 'production' && 'thorbis.com' || 'staging.thorbis.com' }}/business/sample-business"
+              ;;
+            "user-dashboard")
+              url="https://${{ matrix.environment == 'production' && 'thorbis.com' || 'staging.thorbis.com' }}/dashboard"
+              ;;
+          esac
+          
+          echo "Running Lighthouse audit for $url"
+          
+          lhci autorun \
+            --collect.url="$url" \
+            --collect.numberOfRuns=3 \
+            --assert.assertions.performance=90 \
+            --assert.assertions.accessibility=100 \
+            --assert.assertions.best-practices=90 \
+            --assert.assertions.seo=90 \
+            --upload.target=filesystem \
+            --upload.outputDir=./lighthouse-results
+
+      - name: Extract Performance Metrics
+        id: metrics
+        run: |
+          # Extract key metrics from Lighthouse results
+          report=$(find ./lighthouse-results -name "*.json" | head -1)
+          
+          if [[ -f "$report" ]]; then
+            lcp=$(jq -r '.audits["largest-contentful-paint"].numericValue' "$report")
+            fid=$(jq -r '.audits["max-potential-fid"].numericValue' "$report")
+            cls=$(jq -r '.audits["cumulative-layout-shift"].numericValue' "$report")
+            performance_score=$(jq -r '.categories.performance.score * 100' "$report")
+            
+            echo "lcp=$lcp" >> $GITHUB_OUTPUT
+            echo "fid=$fid" >> $GITHUB_OUTPUT
+            echo "cls=$cls" >> $GITHUB_OUTPUT
+            echo "performance_score=$performance_score" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Send Performance Metrics
+        run: |
+          curl -X POST "${{ secrets.MONITORING_API_URL }}/metrics" \
+            -H "Authorization: Bearer ${{ secrets.MONITORING_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "metric": "lighthouse_performance",
+              "environment": "${{ matrix.environment }}",
+              "page": "${{ matrix.page }}",
+              "lcp": ${{ steps.metrics.outputs.lcp }},
+              "fid": ${{ steps.metrics.outputs.fid }},
+              "cls": ${{ steps.metrics.outputs.cls }},
+              "performance_score": ${{ steps.metrics.outputs.performance_score }},
+              "timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"
+            }'
+
+      - name: Upload Performance Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-results-${{ matrix.environment }}-${{ matrix.page }}
+          path: lighthouse-results/
+
+  # Application Metrics Collection
+  application-metrics:
+    name: 📈 Application Metrics
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' || github.event.inputs.monitoring_type == 'full-analysis'
+    strategy:
+      matrix:
+        environment: [production, staging]
+    steps:
+      - name: Collect API Metrics
+        id: api-metrics
+        run: |
+          # Collect API response times and error rates
+          base_url="https://${{ matrix.environment == 'production' && 'api.thorbis.com' || 'api-staging.thorbis.com' }}"
+          
+          endpoints=(
+            "/api/businesses"
+            "/api/search"
+            "/api/reviews"
+            "/api/users"
+            "/api/health"
+          )
+          
+          total_requests=0
+          successful_requests=0
+          total_response_time=0
+          
+          for endpoint in "${endpoints[@]}"; do
+            echo "Testing $base_url$endpoint"
+            
+            for i in {1..5}; do
+              response=$(curl -s -w "%{http_code}:%{time_total}" -o /dev/null "$base_url$endpoint")
+              http_code=$(echo $response | cut -d: -f1)
+              response_time=$(echo $response | cut -d: -f2)
+              
+              total_requests=$((total_requests + 1))
+              total_response_time=$(echo "$total_response_time + $response_time" | bc)
+              
+              if [[ $http_code -ge 200 && $http_code -lt 300 ]]; then
+                successful_requests=$((successful_requests + 1))
+              fi
+              
+              sleep 1
+            done
+          done
+          
+          avg_response_time=$(echo "scale=3; $total_response_time / $total_requests" | bc)
+          success_rate=$(echo "scale=2; $successful_requests * 100 / $total_requests" | bc)
+          
+          echo "avg_response_time=$avg_response_time" >> $GITHUB_OUTPUT
+          echo "success_rate=$success_rate" >> $GITHUB_OUTPUT
+
+      - name: Collect Database Metrics
+        id: db-metrics
+        run: |
+          # Collect database performance metrics via API
+          response=$(curl -s "${{ matrix.environment == 'production' && 'https://api.thorbis.com' || 'https://api-staging.thorbis.com' }}/health/database/metrics")
+          
+          if [[ $? -eq 0 ]]; then
+            connection_count=$(echo "$response" | jq -r '.connections.active // 0')
+            query_avg_time=$(echo "$response" | jq -r '.queries.avg_time // 0')
+            slow_queries=$(echo "$response" | jq -r '.queries.slow_count // 0')
+            
+            echo "connection_count=$connection_count" >> $GITHUB_OUTPUT
+            echo "query_avg_time=$query_avg_time" >> $GITHUB_OUTPUT
+            echo "slow_queries=$slow_queries" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Send Application Metrics
+        run: |
+          curl -X POST "${{ secrets.MONITORING_API_URL }}/metrics" \
+            -H "Authorization: Bearer ${{ secrets.MONITORING_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "metric": "application_performance",
+              "environment": "${{ matrix.environment }}",
+              "api_avg_response_time": ${{ steps.api-metrics.outputs.avg_response_time }},
+              "api_success_rate": ${{ steps.api-metrics.outputs.success_rate }},
+              "db_connection_count": ${{ steps.db-metrics.outputs.connection_count }},
+              "db_query_avg_time": ${{ steps.db-metrics.outputs.query_avg_time }},
+              "db_slow_queries": ${{ steps.db-metrics.outputs.slow_queries }},
+              "timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"
+            }'
+
+  # Security Monitoring
+  security-monitoring:
+    name: 🔒 Security Monitoring
+    runs-on: ubuntu-latest
+    if: github.event.inputs.monitoring_type == 'security-scan' || github.event.inputs.monitoring_type == 'full-analysis' || github.event_name == 'schedule'
+    strategy:
+      matrix:
+        environment: [production, staging]
+    steps:
+      - name: SSL Certificate Check
+        id: ssl-check
+        run: |
+          domain="${{ matrix.environment == 'production' && 'thorbis.com' || 'staging.thorbis.com' }}"
+          
+          # Check SSL certificate expiry
+          expiry_date=$(echo | openssl s_client -servername "$domain" -connect "$domain:443" 2>/dev/null | openssl x509 -noout -enddate | cut -d= -f2)
+          expiry_timestamp=$(date -d "$expiry_date" +%s)
+          current_timestamp=$(date +%s)
+          days_until_expiry=$(( (expiry_timestamp - current_timestamp) / 86400 ))
+          
+          echo "days_until_expiry=$days_until_expiry" >> $GITHUB_OUTPUT
+          
+          if [[ $days_until_expiry -lt 30 ]]; then
+            echo "ssl_status=warning" >> $GITHUB_OUTPUT
+          elif [[ $days_until_expiry -lt 7 ]]; then
+            echo "ssl_status=critical" >> $GITHUB_OUTPUT
+          else
+            echo "ssl_status=ok" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Security Headers Check
+        id: security-headers
+        run: |
+          url="https://${{ matrix.environment == 'production' && 'thorbis.com' || 'staging.thorbis.com' }}"
+          
+          headers=$(curl -s -I "$url")
+          
+          # Check for security headers
+          security_score=0
+          
+          if echo "$headers" | grep -qi "x-frame-options"; then
+            security_score=$((security_score + 1))
+          fi
+          
+          if echo "$headers" | grep -qi "x-content-type-options"; then
+            security_score=$((security_score + 1))
+          fi
+          
+          if echo "$headers" | grep -qi "content-security-policy"; then
+            security_score=$((security_score + 1))
+          fi
+          
+          if echo "$headers" | grep -qi "strict-transport-security"; then
+            security_score=$((security_score + 1))
+          fi
+          
+          if echo "$headers" | grep -qi "referrer-policy"; then
+            security_score=$((security_score + 1))
+          fi
+          
+          echo "security_score=$security_score" >> $GITHUB_OUTPUT
+
+      - name: Send Security Metrics
+        run: |
+          curl -X POST "${{ secrets.MONITORING_API_URL }}/metrics" \
+            -H "Authorization: Bearer ${{ secrets.MONITORING_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "metric": "security_monitoring",
+              "environment": "${{ matrix.environment }}",
+              "ssl_days_until_expiry": ${{ steps.ssl-check.outputs.days_until_expiry }},
+              "ssl_status": "${{ steps.ssl-check.outputs.ssl_status }}",
+              "security_headers_score": ${{ steps.security-headers.outputs.security_score }},
+              "timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"
+            }'
+
+      - name: SSL Expiry Alert
+        if: steps.ssl-check.outputs.ssl_status != 'ok'
+        run: |
+          curl -X POST "${{ secrets.SLACK_ALERTS_WEBHOOK }}" \
+            -H 'Content-type: application/json' \
+            --data '{
+              "text": "🔒 SSL Certificate Warning",
+              "attachments": [{
+                "color": "${{ steps.ssl-check.outputs.ssl_status == 'critical' && 'danger' || 'warning' }}",
+                "fields": [{
+                  "title": "Environment",
+                  "value": "${{ matrix.environment }}",
+                  "short": true
+                }, {
+                  "title": "Days Until Expiry",
+                  "value": "${{ steps.ssl-check.outputs.days_until_expiry }}",
+                  "short": true
+                }, {
+                  "title": "Status",
+                  "value": "${{ steps.ssl-check.outputs.ssl_status }}",
+                  "short": true
+                }]
+              }]
+            }'
+
+  # Synthetic Transaction Monitoring
+  synthetic-monitoring:
+    name: 🤖 Synthetic Monitoring
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' || github.event.inputs.monitoring_type == 'full-analysis'
+    strategy:
+      matrix:
+        environment: [production, staging]
+        transaction: [user-signup, business-search, review-submission]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Playwright
+        run: |
+          npm install -g playwright
+          playwright install chromium
+
+      - name: Run Synthetic Transaction - ${{ matrix.transaction }}
+        id: synthetic
+        run: |
+          base_url="https://${{ matrix.environment == 'production' && 'thorbis.com' || 'staging.thorbis.com' }}"
+          
+          case "${{ matrix.transaction }}" in
+            "user-signup")
+              # Run user signup synthetic test
+              result=$(playwright test tests/synthetic/user-signup.spec.js --base-url="$base_url")
+              ;;
+            "business-search")
+              # Run business search synthetic test
+              result=$(playwright test tests/synthetic/business-search.spec.js --base-url="$base_url")
+              ;;
+            "review-submission")
+              # Run review submission synthetic test
+              result=$(playwright test tests/synthetic/review-submission.spec.js --base-url="$base_url")
+              ;;
+          esac
+          
+          if [[ $? -eq 0 ]]; then
+            echo "status=success" >> $GITHUB_OUTPUT
+          else
+            echo "status=failure" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Send Synthetic Results
+        run: |
+          curl -X POST "${{ secrets.MONITORING_API_URL }}/metrics" \
+            -H "Authorization: Bearer ${{ secrets.MONITORING_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "metric": "synthetic_transaction",
+              "environment": "${{ matrix.environment }}",
+              "transaction": "${{ matrix.transaction }}",
+              "status": "${{ steps.synthetic.outputs.status }}",
+              "timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"
+            }'
+
+  # Incident Response
+  incident-response:
+    name: 🚨 Incident Response
+    runs-on: ubuntu-latest
+    if: github.event.inputs.monitoring_type == 'incident-response'
+    steps:
+      - name: Gather System Status
+        id: system-status
+        run: |
+          echo "Gathering comprehensive system status..."
+          
+          # Check all critical services
+          services=("web" "api" "database" "cdn" "storage")
+          failed_services=()
+          
+          for service in "${services[@]}"; do
+            # Simulate service health check
+            echo "Checking $service..."
+            # Add actual health check logic here
+          done
+          
+          echo "failed_services=${failed_services[*]}" >> $GITHUB_OUTPUT
+
+      - name: Create Incident Report
+        run: |
+          curl -X POST "${{ secrets.INCIDENT_MANAGEMENT_API }}" \
+            -H "Authorization: Bearer ${{ secrets.INCIDENT_MANAGEMENT_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "title": "Automated Incident Detection",
+              "description": "Incident detected via monitoring workflow",
+              "severity": "high",
+              "failed_services": "${{ steps.system-status.outputs.failed_services }}",
+              "detected_at": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'",
+              "triggered_by": "github-actions"
+            }'
+
+      - name: Emergency Notification
+        run: |
+          curl -X POST "${{ secrets.SLACK_EMERGENCY_WEBHOOK }}" \
+            -H 'Content-type: application/json' \
+            --data '{
+              "text": "🚨 INCIDENT DETECTED",
+              "attachments": [{
+                "color": "danger",
+                "fields": [{
+                  "title": "Failed Services",
+                  "value": "${{ steps.system-status.outputs.failed_services }}",
+                  "short": false
+                }, {
+                  "title": "Detection Time",
+                  "value": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'",
+                  "short": true
+                }, {
+                  "title": "Action Required",
+                  "value": "Immediate investigation needed",
+                  "short": true
+                }]
+              }]
+            }'
+
+  # Monitoring Summary
+  monitoring-summary:
+    name: 📊 Monitoring Summary
+    runs-on: ubuntu-latest
+    needs: [health-check, performance-monitoring, application-metrics, security-monitoring, synthetic-monitoring]
+    if: always()
+    steps:
+      - name: Generate Monitoring Report
+        run: |
+          echo "# 📊 Monitoring Report" >> $GITHUB_STEP_SUMMARY
+          echo "## System Health Overview:" >> $GITHUB_STEP_SUMMARY
+          echo "- **Health Checks**: ${{ needs.health-check.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Performance Monitoring**: ${{ needs.performance-monitoring.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Application Metrics**: ${{ needs.application-metrics.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Security Monitoring**: ${{ needs.security-monitoring.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Synthetic Monitoring**: ${{ needs.synthetic-monitoring.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Generated at**: $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> $GITHUB_STEP_SUMMARY
+
+      - name: Archive Monitoring Data
+        run: |
+          echo "Archiving monitoring data for historical analysis..."
+          # Archive data to long-term storage

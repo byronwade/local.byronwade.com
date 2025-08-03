@@ -1,23 +1,71 @@
-import React from "react";
+import React, { Suspense } from "react";
 import Link from "next/link";
 import { Button } from "@components/ui/button";
 import { Card, CardContent } from "@components/ui/card";
 import { Badge } from "@components/ui/badge";
 import { Input } from "@components/ui/input";
-import { generateBusinesses } from "@lib/businessDataGenerator";
+import { BusinessDataFetchers } from "@lib/supabase/server";
 import BusinessCard from "@components/site/home/BusinessCard";
 import ScrollSection from "@components/site/home/ScrollSection";
 import { Search, MapPin, Star, ChevronRight, Filter, TrendingUp, Users, Building, Grid3X3 } from "lucide-react";
+import { getReliableImageUrl } from "@lib/utils/reliableImageService";
 
-// Generate sample businesses for the page
-const allBusinesses = generateBusinesses(50);
-const featuredBusinesses = allBusinesses.slice(0, 12).map((business) => ({
-	...business,
-	image: business.photos?.[0] || business.logo || `https://images.unsplash.com/photo-${1560472354 + business.id}?w=400&h=300&fit=crop`,
-	category: business.categories?.[0] || business.type || "Business",
-	location: business.address?.split(",").slice(-2).join(",").trim() || "Local Area",
-	price: business.priceLevel || business.price || "$$",
-}));
+// Get categories and businesses data from Supabase
+async function getCategoriesData() {
+	try {
+		// Get featured businesses for the page
+		const businessesResult = await BusinessDataFetchers.searchBusinesses({
+			limit: 50,
+			featured: true,
+		});
+
+		// Check if we have valid data and handle potential errors
+		if (businessesResult?.error) {
+			console.error("Error fetching businesses:", businessesResult.error);
+			return {
+				featuredBusinesses: [],
+			};
+		}
+
+		const businesses = businessesResult?.data?.businesses || [];
+
+		// Transform businesses for display
+		const featuredBusinesses = businesses.slice(0, 12).map((business) => ({
+			id: business.id,
+			name: business.name,
+			slug: business.slug,
+			description: business.description,
+			image:
+				business.photos?.[0] ||
+				getReliableImageUrl({
+					category: business.categories?.[0]?.category?.name || "Business",
+					businessId: business.id,
+					width: 400,
+					height: 300,
+				}),
+			category: business.categories?.[0]?.category?.name || "Business",
+			location: `${business.city}, ${business.state}` || "Local Area",
+			price: business.price_range || "$$",
+			rating: business.rating,
+			reviewCount: business.review_count,
+			address: business.address,
+			categories: business.categories?.map((cat) => cat.category?.name) || [],
+			coordinates: {
+				lat: business.latitude,
+				lng: business.longitude,
+			},
+		}));
+
+		return {
+			featuredBusinesses,
+		};
+	} catch (error) {
+		console.error("Error fetching categories data:", error);
+		return {
+			featuredBusinesses: [],
+		};
+	}
+}
 
 // Expanded categories with subcategories for scalability
 const MAIN_CATEGORIES = [
@@ -147,7 +195,8 @@ export const metadata = {
 	},
 };
 
-export default function Categories() {
+// Categories Component
+function CategoriesContent({ featuredBusinesses }) {
 	return (
 		<main className="relative bg-background">
 			{/* Hero Section - Matching website style */}
@@ -333,3 +382,34 @@ export default function Categories() {
 	);
 }
 
+// Loading component for Suspense
+function CategoriesLoading() {
+	return (
+		<main className="relative bg-background">
+			<div className="px-4 py-16 lg:px-24">
+				<div className="max-w-6xl mx-auto">
+					<div className="mb-12 text-center">
+						<div className="h-12 bg-muted animate-pulse rounded-lg mb-4 max-w-md mx-auto" />
+						<div className="h-6 bg-muted animate-pulse rounded-lg max-w-2xl mx-auto" />
+					</div>
+					<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+						{Array.from({ length: 10 }).map((_, i) => (
+							<div key={i} className="h-48 bg-muted animate-pulse rounded-lg" />
+						))}
+					</div>
+				</div>
+			</div>
+		</main>
+	);
+}
+
+// Main server component
+export default async function Categories() {
+	const { featuredBusinesses } = await getCategoriesData();
+
+	return (
+		<Suspense fallback={<CategoriesLoading />}>
+			<CategoriesContent featuredBusinesses={featuredBusinesses} />
+		</Suspense>
+	);
+}

@@ -45,7 +45,7 @@ export default function DevelopersPage() {
 		provider: {
 			"@type": "Organization",
 			name: "Thorbis",
-			logo: "https://local.byronwade.com/ThorbisLogo.webp",
+			logo: "https://local.byronwade.com/logos/ThorbisLogo.webp",
 			url: "https://local.byronwade.com",
 		},
 		hasOfferCatalog: {

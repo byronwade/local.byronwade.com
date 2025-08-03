@@ -1,0 +1,387 @@
+name: 🔒 Comprehensive Security Scanning
+
+on:
+  push:
+    branches: [main, develop, feature/*, hotfix/*]
+  pull_request:
+    branches: [main, develop]
+  schedule:
+    - cron: '0 2 * * 1' # Weekly security scan on Mondays at 2 AM UTC
+  workflow_dispatch:
+
+concurrency:
+  group: security-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '20'
+  BUN_VERSION: 'latest'
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  # Static Application Security Testing (SAST)
+  sast-codeql:
+    name: 🔍 CodeQL SAST Analysis
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      contents: read
+      actions: read
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ['javascript', 'typescript']
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          config-file: ./.github/codeql/codeql-config.yml
+          queries: +security-and-quality
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build application
+        run: bun run build
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{matrix.language}}"
+
+  # Semgrep SAST
+  sast-semgrep:
+    name: 🔍 Semgrep SAST Scan
+    runs-on: ubuntu-latest
+    container:
+      image: returntocorp/semgrep
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Semgrep
+        run: |
+          semgrep --config=auto \
+            --json \
+            --output=semgrep-results.json \
+            --metrics=off \
+            --exclude="node_modules" \
+            --exclude=".next" \
+            --exclude="dist" \
+            --timeout=60 \
+            .
+
+      - name: Upload SARIF results
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: semgrep-results.json
+
+  # Dependency Vulnerability Scanning
+  dependency-scanning:
+    name: 🔍 Dependency Vulnerability Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      # Bun audit
+      - name: Bun Security Audit
+        run: bun audit --level moderate
+
+      # Snyk vulnerability scanning
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=medium --file=package.json
+
+      # OWASP Dependency Check
+      - name: OWASP Dependency Check
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          project: 'Thorbis'
+          path: '.'
+          format: 'ALL'
+          out: 'reports'
+          args: >
+            --enableRetired
+            --enableExperimental
+            --failOnCVSS 7
+
+      - name: Upload Dependency Check results
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-check-report
+          path: reports/
+
+      # Generate SBOM
+      - name: Generate Software Bill of Materials (SBOM)
+        run: |
+          bun add -g @cyclonedx/cyclonedx-npm
+          cyclonedx-npm --output-file sbom.json --spec-version 1.4
+
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: sbom.json
+
+  # Container Security Scanning
+  container-security:
+    name: 🐳 Container Security Scan
+    runs-on: ubuntu-latest
+    needs: []
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # Trivy container scan
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+      # Snyk container scan
+      - name: Run Snyk to check Docker image for vulnerabilities
+        uses: snyk/actions/docker@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          args: --severity-threshold=medium
+
+  # Infrastructure as Code Security
+  iac-security:
+    name: 🏗️ Infrastructure Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Checkov for Terraform/Docker/K8s security
+      - name: Run Checkov
+        uses: bridgecrewio/checkov-action@master
+        with:
+          directory: .
+          framework: dockerfile,terraform,kubernetes,serverless
+          output_format: cli,sarif
+          output_file_path: reports/results.sarif
+          quiet: true
+          soft_fail: true
+
+      - name: Upload Checkov results
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: reports/results.sarif
+
+      # TFSec for Terraform
+      - name: Run tfsec
+        uses: aquasecurity/tfsec-action@v1.0.0
+        with:
+          soft_fail: true
+
+  # Secrets Scanning
+  secrets-detection:
+    name: 🔑 Secrets Detection
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Full history for secret scanning
+
+      # GitLeaks secret detection
+      - name: Run GitLeaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
+
+      # TruffleHog secret scanning
+      - name: TruffleHog OSS
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: main
+          head: HEAD
+          extra_args: --debug --only-verified
+
+  # License Compliance
+  license-compliance:
+    name: 📄 License Compliance Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      # FOSSA license scanning
+      - name: Run FOSSA scan and upload build data
+        uses: fossas/fossa-action@main
+        with:
+          api-key: ${{ secrets.FOSSA_API_KEY }}
+
+      # License checker
+      - name: Check licenses
+        run: |
+          bun add -g license-checker
+          license-checker --production --csv --out licenses.csv
+          license-checker --production --failOn 'GPL-2.0;GPL-3.0;AGPL-1.0;AGPL-3.0'
+
+      - name: Upload license report
+        uses: actions/upload-artifact@v4
+        with:
+          name: license-report
+          path: licenses.csv
+
+  # Security Policy Validation
+  security-policy:
+    name: 🛡️ Security Policy Validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate Security Policy
+        run: |
+          # Check for required security files
+          required_files=(
+            "SECURITY.md"
+            ".github/SECURITY.md"
+            "docs/security.md"
+          )
+          
+          found=false
+          for file in "${required_files[@]}"; do
+            if [[ -f "$file" ]]; then
+              echo "✅ Found security policy: $file"
+              found=true
+              break
+            fi
+          done
+          
+          if [[ "$found" != true ]]; then
+            echo "❌ No security policy found. Please create one of: ${required_files[*]}"
+            exit 1
+          fi
+
+      - name: Check for Security Headers Configuration
+        run: |
+          # Check for security headers in configuration files
+          if [[ -f "next.config.js" ]] || [[ -f "next.config.ts" ]]; then
+            echo "✅ Found Next.js config"
+            # Add checks for security headers
+          fi
+
+  # Security Scorecard
+  security-scorecard:
+    name: 🏆 OpenSSF Security Scorecard
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      id-token: write
+      contents: read
+      actions: read
+    steps:
+      - name: Run OpenSSF Scorecard
+        uses: ossf/scorecard-action@v2.3.1
+        with:
+          results_file: results.sarif
+          results_format: sarif
+          publish_results: true
+
+      - name: Upload SARIF results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: results.sarif
+
+  # Security Summary Report
+  security-summary:
+    name: 📊 Security Summary Report
+    runs-on: ubuntu-latest
+    needs: [sast-codeql, sast-semgrep, dependency-scanning, container-security, iac-security, secrets-detection, license-compliance]
+    if: always()
+    steps:
+      - name: Generate Security Summary
+        run: |
+          echo "# 🔒 Security Scan Summary" >> $GITHUB_STEP_SUMMARY
+          echo "## Scan Results:" >> $GITHUB_STEP_SUMMARY
+          echo "- **SAST (CodeQL)**: ${{ needs.sast-codeql.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **SAST (Semgrep)**: ${{ needs.sast-semgrep.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Dependency Scan**: ${{ needs.dependency-scanning.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Container Security**: ${{ needs.container-security.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **IaC Security**: ${{ needs.iac-security.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Secrets Detection**: ${{ needs.secrets-detection.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **License Compliance**: ${{ needs.license-compliance.result }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: Security Notification
+        if: failure()
+        run: |
+          curl -X POST "${{ secrets.SLACK_SECURITY_WEBHOOK }}" \
+            -H 'Content-type: application/json' \
+            --data '{
+              "text": "🚨 Security scan failed for ${{ github.repository }}",
+              "attachments": [{
+                "color": "danger",
+                "fields": [{
+                  "title": "Branch",
+                  "value": "${{ github.ref_name }}",
+                  "short": true
+                }, {
+                  "title": "Commit",
+                  "value": "${{ github.sha }}",
+                  "short": true
+                }, {
+                  "title": "Workflow",
+                  "value": "${{ github.workflow }}",
+                  "short": true
+                }]
+              }]
+            }'

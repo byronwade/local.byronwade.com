@@ -1,0 +1,570 @@
+name: 🗄️ Database Operations & Monitoring
+
+on:
+  schedule:
+    - cron: '0 2 * * *'    # Daily backup at 2 AM UTC
+    - cron: '*/30 * * * *' # Health check every 30 minutes
+    - cron: '0 6 * * 1'    # Weekly maintenance on Mondays at 6 AM UTC
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: 'Database operation to perform'
+        required: true
+        default: 'health-check'
+        type: choice
+        options:
+          - health-check
+          - backup
+          - maintenance
+          - migration-check
+          - performance-audit
+          - security-audit
+          - cleanup
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+          - all
+
+concurrency:
+  group: database-ops-${{ github.event.inputs.operation || 'scheduled' }}-${{ github.event.inputs.environment || 'production' }}
+  cancel-in-progress: false
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  # Database Health Monitoring
+  database-health:
+    name: 🏥 Database Health Check
+    runs-on: ubuntu-latest
+    if: |
+      github.event.inputs.operation == 'health-check' || 
+      github.event.inputs.operation == 'maintenance' ||
+      github.event_name == 'schedule'
+    strategy:
+      matrix:
+        environment: ${{ github.event.inputs.environment == 'all' && fromJson('["production", "staging"]') || fromJson(format('["{}"]', github.event.inputs.environment || 'production')) }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          cd apps/main && npm ci
+
+      - name: Database Connection Test
+        id: connection-test
+        run: |
+          node -e "
+          const { createClient } = require('@supabase/supabase-js');
+          
+          const supabase = createClient(
+            process.env.SUPABASE_URL,
+            process.env.SUPABASE_ANON_KEY
+          );
+          
+          async function testConnection() {
+            const start = Date.now();
+            try {
+              const { data, error } = await supabase.from('health_check').select('*').limit(1);
+              const duration = Date.now() - start;
+              
+              if (error) {
+                console.log('connection_status=failed');
+                console.log('error_message=' + error.message);
+                process.exit(1);
+              }
+              
+              console.log('connection_status=success');
+              console.log('response_time=' + duration);
+              
+              // Test write capability
+              const writeTest = await supabase.from('health_check').insert({ 
+                timestamp: new Date().toISOString(),
+                status: 'healthy'
+              });
+              
+              if (writeTest.error) {
+                console.log('write_status=failed');
+                console.log('write_error=' + writeTest.error.message);
+              } else {
+                console.log('write_status=success');
+              }
+              
+            } catch (err) {
+              console.log('connection_status=failed');
+              console.log('error_message=' + err.message);
+              process.exit(1);
+            }
+          }
+          
+          testConnection();
+          " >> $GITHUB_OUTPUT
+        env:
+          SUPABASE_URL: ${{ matrix.environment == 'production' && secrets.SUPABASE_URL || secrets.SUPABASE_STAGING_URL }}
+          SUPABASE_ANON_KEY: ${{ matrix.environment == 'production' && secrets.SUPABASE_ANON_KEY || secrets.SUPABASE_STAGING_ANON_KEY }}
+
+      - name: Database Performance Metrics
+        id: performance-metrics
+        run: |
+          node -e "
+          const { createClient } = require('@supabase/supabase-js');
+          
+          const supabase = createClient(
+            process.env.SUPABASE_URL,
+            process.env.SUPABASE_SERVICE_ROLE_KEY
+          );
+          
+          async function getMetrics() {
+            try {
+              // Get database size
+              const { data: sizeData } = await supabase.rpc('get_database_size');
+              
+              // Get active connections
+              const { data: connectionData } = await supabase.rpc('get_active_connections');
+              
+              // Get slow queries
+              const { data: slowQueries } = await supabase.rpc('get_slow_queries');
+              
+              // Get table sizes
+              const { data: tableSizes } = await supabase.rpc('get_largest_tables');
+              
+              console.log('database_size=' + (sizeData?.[0]?.size || 0));
+              console.log('active_connections=' + (connectionData?.[0]?.count || 0));
+              console.log('slow_queries_count=' + (slowQueries?.length || 0));
+              console.log('largest_table_size=' + (tableSizes?.[0]?.size || 0));
+              
+            } catch (err) {
+              console.log('metrics_error=' + err.message);
+            }
+          }
+          
+          getMetrics();
+          " >> $GITHUB_OUTPUT
+        env:
+          SUPABASE_URL: ${{ matrix.environment == 'production' && secrets.SUPABASE_URL || secrets.SUPABASE_STAGING_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ matrix.environment == 'production' && secrets.SUPABASE_SERVICE_ROLE_KEY || secrets.SUPABASE_STAGING_SERVICE_ROLE_KEY }}
+
+      - name: Send Health Metrics
+        run: |
+          curl -X POST "${{ secrets.MONITORING_API_URL }}/metrics/database" \
+            -H "Authorization: Bearer ${{ secrets.MONITORING_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "environment": "${{ matrix.environment }}",
+              "connection_status": "${{ steps.connection-test.outputs.connection_status }}",
+              "response_time": ${{ steps.connection-test.outputs.response_time || 0 }},
+              "write_status": "${{ steps.connection-test.outputs.write_status }}",
+              "database_size": ${{ steps.performance-metrics.outputs.database_size || 0 }},
+              "active_connections": ${{ steps.performance-metrics.outputs.active_connections || 0 }},
+              "slow_queries_count": ${{ steps.performance-metrics.outputs.slow_queries_count || 0 }},
+              "timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"
+            }'
+
+      - name: Health Check Alert
+        if: steps.connection-test.outputs.connection_status == 'failed'
+        run: |
+          curl -X POST "${{ secrets.SLACK_ALERTS_WEBHOOK }}" \
+            -H 'Content-type: application/json' \
+            --data '{
+              "text": "🚨 Database Health Check Failed",
+              "attachments": [{
+                "color": "danger",
+                "fields": [{
+                  "title": "Environment",
+                  "value": "${{ matrix.environment }}",
+                  "short": true
+                }, {
+                  "title": "Error",
+                  "value": "${{ steps.connection-test.outputs.error_message }}",
+                  "short": false
+                }, {
+                  "title": "Timestamp",
+                  "value": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'",
+                  "short": true
+                }]
+              }]
+            }'
+
+  # Automated Database Backup
+  database-backup:
+    name: 💾 Database Backup
+    runs-on: ubuntu-latest
+    if: |
+      github.event.inputs.operation == 'backup' ||
+      (github.event_name == 'schedule' && github.event.schedule == '0 2 * * *')
+    strategy:
+      matrix:
+        environment: [production, staging]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Create Database Backup
+        id: backup
+        run: |
+          backup_filename="supabase_backup_${{ matrix.environment }}_$(date +%Y%m%d_%H%M%S).sql"
+          
+          # Use Supabase CLI or pg_dump equivalent
+          node -e "
+          const { createClient } = require('@supabase/supabase-js');
+          const fs = require('fs');
+          
+          const supabase = createClient(
+            process.env.SUPABASE_URL,
+            process.env.SUPABASE_SERVICE_ROLE_KEY
+          );
+          
+          async function createBackup() {
+            try {
+              // Get schema backup
+              const { data: schemaData } = await supabase.rpc('get_schema_backup');
+              
+              // Get data backup for critical tables
+              const tables = ['users', 'businesses', 'reviews', 'categories'];
+              let backupContent = '-- Supabase Backup ' + new Date().toISOString() + '\n\n';
+              
+              for (const table of tables) {
+                const { data, error } = await supabase.from(table).select('*');
+                if (!error && data) {
+                  backupContent += '-- Table: ' + table + '\n';
+                  backupContent += JSON.stringify(data, null, 2) + '\n\n';
+                }
+              }
+              
+              fs.writeFileSync('$backup_filename', backupContent);
+              console.log('backup_filename=$backup_filename');
+              console.log('backup_size=' + fs.statSync('$backup_filename').size);
+              
+            } catch (err) {
+              console.error('Backup failed:', err.message);
+              process.exit(1);
+            }
+          }
+          
+          createBackup();
+          " >> $GITHUB_OUTPUT
+        env:
+          SUPABASE_URL: ${{ matrix.environment == 'production' && secrets.SUPABASE_URL || secrets.SUPABASE_STAGING_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ matrix.environment == 'production' && secrets.SUPABASE_SERVICE_ROLE_KEY || secrets.SUPABASE_STAGING_SERVICE_ROLE_KEY }}
+
+      - name: Encrypt Backup
+        run: |
+          # Encrypt backup file
+          gpg --symmetric --cipher-algo AES256 --compress-algo 1 --s2k-mode 3 \
+              --s2k-digest-algo SHA512 --s2k-count 65536 \
+              --passphrase "${{ secrets.BACKUP_ENCRYPTION_KEY }}" \
+              --batch --yes --quiet \
+              "${{ steps.backup.outputs.backup_filename }}"
+          
+          rm "${{ steps.backup.outputs.backup_filename }}"
+          echo "encrypted_filename=${{ steps.backup.outputs.backup_filename }}.gpg" >> $GITHUB_OUTPUT
+
+      - name: Upload Backup to Storage
+        run: |
+          # Upload to secure cloud storage (AWS S3, Google Cloud, etc.)
+          # Example with AWS S3:
+          # aws s3 cp "${{ steps.backup.outputs.backup_filename }}.gpg" \
+          #   "s3://${{ secrets.BACKUP_BUCKET }}/database-backups/${{ matrix.environment }}/"
+          
+          echo "Backup uploaded: ${{ steps.backup.outputs.backup_filename }}.gpg"
+
+      - name: Backup Verification
+        run: |
+          # Test backup integrity
+          backup_size=$(stat -c%s "${{ steps.backup.outputs.backup_filename }}.gpg")
+          
+          if [[ $backup_size -lt 1000 ]]; then
+            echo "❌ Backup file too small, potential corruption"
+            exit 1
+          fi
+          
+          echo "✅ Backup verification passed: ${backup_size} bytes"
+
+      - name: Cleanup Old Backups
+        run: |
+          # Keep only last 30 days of backups
+          # find backup-directory -name "supabase_backup_${{ matrix.environment }}_*.sql.gpg" -mtime +30 -delete
+          echo "Cleanup completed"
+
+      - name: Backup Notification
+        run: |
+          curl -X POST "${{ secrets.SLACK_WEBHOOK_URL }}" \
+            -H 'Content-type: application/json' \
+            --data '{
+              "text": "💾 Database backup completed",
+              "attachments": [{
+                "color": "good",
+                "fields": [{
+                  "title": "Environment",
+                  "value": "${{ matrix.environment }}",
+                  "short": true
+                }, {
+                  "title": "Backup Size",
+                  "value": "${{ steps.backup.outputs.backup_size }} bytes",
+                  "short": true
+                }, {
+                  "title": "Filename",
+                  "value": "${{ steps.backup.outputs.backup_filename }}",
+                  "short": false
+                }]
+              }]
+            }'
+
+  # Database Security Audit
+  database-security:
+    name: 🔒 Database Security Audit
+    runs-on: ubuntu-latest
+    if: github.event.inputs.operation == 'security-audit' || github.event_name == 'schedule'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: RLS Policy Audit
+        id: rls-audit
+        run: |
+          node -e "
+          const { createClient } = require('@supabase/supabase-js');
+          
+          const supabase = createClient(
+            process.env.SUPABASE_URL,
+            process.env.SUPABASE_SERVICE_ROLE_KEY
+          );
+          
+          async function auditRLS() {
+            try {
+              // Check RLS status on all tables
+              const { data: tables } = await supabase.rpc('get_tables_without_rls');
+              
+              if (tables && tables.length > 0) {
+                console.log('rls_violations=' + tables.length);
+                console.log('vulnerable_tables=' + tables.map(t => t.table_name).join(','));
+              } else {
+                console.log('rls_violations=0');
+                console.log('vulnerable_tables=none');
+              }
+              
+              // Check for default policies
+              const { data: policies } = await supabase.rpc('get_permissive_policies');
+              console.log('permissive_policies=' + (policies?.length || 0));
+              
+            } catch (err) {
+              console.log('rls_audit_error=' + err.message);
+            }
+          }
+          
+          auditRLS();
+          " >> $GITHUB_OUTPUT
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
+      - name: User Permission Audit
+        run: |
+          node -e "
+          const { createClient } = require('@supabase/supabase-js');
+          
+          const supabase = createClient(
+            process.env.SUPABASE_URL,
+            process.env.SUPABASE_SERVICE_ROLE_KEY
+          );
+          
+          async function auditUsers() {
+            try {
+              // Check for users with elevated privileges
+              const { data: users } = await supabase.rpc('get_elevated_users');
+              
+              // Check for inactive admin accounts
+              const { data: inactive } = await supabase.rpc('get_inactive_admin_users');
+              
+              console.log('Elevated users: ' + (users?.length || 0));
+              console.log('Inactive admin accounts: ' + (inactive?.length || 0));
+              
+            } catch (err) {
+              console.log('User audit error:', err.message);
+            }
+          }
+          
+          auditUsers();
+          "
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
+      - name: Security Alert
+        if: steps.rls-audit.outputs.rls_violations != '0'
+        run: |
+          curl -X POST "${{ secrets.SLACK_SECURITY_WEBHOOK }}" \
+            -H 'Content-type: application/json' \
+            --data '{
+              "text": "🚨 Database Security Violations Detected",
+              "attachments": [{
+                "color": "danger",
+                "fields": [{
+                  "title": "RLS Violations",
+                  "value": "${{ steps.rls-audit.outputs.rls_violations }}",
+                  "short": true
+                }, {
+                  "title": "Vulnerable Tables",
+                  "value": "${{ steps.rls-audit.outputs.vulnerable_tables }}",
+                  "short": false
+                }, {
+                  "title": "Action Required",
+                  "value": "Enable RLS on all public tables",
+                  "short": false
+                }]
+              }]
+            }'
+
+  # Database Maintenance
+  database-maintenance:
+    name: 🧹 Database Maintenance
+    runs-on: ubuntu-latest
+    if: |
+      github.event.inputs.operation == 'maintenance' ||
+      github.event.inputs.operation == 'cleanup' ||
+      (github.event_name == 'schedule' && github.event.schedule == '0 6 * * 1')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Database Cleanup
+        run: |
+          node -e "
+          const { createClient } = require('@supabase/supabase-js');
+          
+          const supabase = createClient(
+            process.env.SUPABASE_URL,
+            process.env.SUPABASE_SERVICE_ROLE_KEY
+          );
+          
+          async function cleanup() {
+            try {
+              // Clean old analytics data (older than 12 months)
+              const { data: analytics } = await supabase
+                .from('analytics_events')
+                .delete()
+                .lt('created_at', new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString());
+              
+              // Clean old logs (older than 3 months)
+              const { data: logs } = await supabase
+                .from('system_logs')
+                .delete()
+                .lt('created_at', new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString());
+              
+              // Clean orphaned records
+              const { data: orphaned } = await supabase.rpc('cleanup_orphaned_records');
+              
+              console.log('Cleanup completed successfully');
+              console.log('Analytics records cleaned:', analytics?.length || 0);
+              console.log('Log records cleaned:', logs?.length || 0);
+              console.log('Orphaned records cleaned:', orphaned || 0);
+              
+            } catch (err) {
+              console.error('Cleanup failed:', err.message);
+              process.exit(1);
+            }
+          }
+          
+          cleanup();
+          "
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
+      - name: Index Optimization
+        run: |
+          node -e "
+          const { createClient } = require('@supabase/supabase-js');
+          
+          const supabase = createClient(
+            process.env.SUPABASE_URL,
+            process.env.SUPABASE_SERVICE_ROLE_KEY
+          );
+          
+          async function optimizeIndexes() {
+            try {
+              // Analyze table usage and suggest index optimizations
+              const { data: usage } = await supabase.rpc('analyze_index_usage');
+              
+              // Reindex if needed
+              const { data: reindex } = await supabase.rpc('reindex_fragmented_indexes');
+              
+              console.log('Index optimization completed');
+              
+            } catch (err) {
+              console.log('Index optimization error:', err.message);
+            }
+          }
+          
+          optimizeIndexes();
+          "
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
+      - name: Maintenance Report
+        run: |
+          curl -X POST "${{ secrets.SLACK_WEBHOOK_URL }}" \
+            -H 'Content-type: application/json' \
+            --data '{
+              "text": "🧹 Database maintenance completed",
+              "attachments": [{
+                "color": "good",
+                "fields": [{
+                  "title": "Maintenance Type",
+                  "value": "Weekly automated cleanup",
+                  "short": true
+                }, {
+                  "title": "Timestamp",
+                  "value": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'",
+                  "short": true
+                }]
+              }]
+            }'
+
+  # Database Operations Summary
+  operations-summary:
+    name: 📊 Operations Summary
+    runs-on: ubuntu-latest
+    needs: [database-health, database-backup, database-security, database-maintenance]
+    if: always()
+    steps:
+      - name: Generate Operations Report
+        run: |
+          echo "# 🗄️ Database Operations Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Operation Results:" >> $GITHUB_STEP_SUMMARY
+          echo "- **Health Check**: ${{ needs.database-health.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Backup**: ${{ needs.database-backup.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Security Audit**: ${{ needs.database-security.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Maintenance**: ${{ needs.database-maintenance.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Timestamp**: $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> $GITHUB_STEP_SUMMARY

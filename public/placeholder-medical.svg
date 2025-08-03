@@ -1,0 +1,16 @@
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="400" height="300" fill="#EFF6FF"/>
+  
+  <!-- Medical cross -->
+  <rect x="180" y="120" width="40" height="10" fill="#3B82F6"/>
+  <rect x="195" y="105" width="10" height="40" fill="#3B82F6"/>
+  
+  <!-- Stethoscope outline -->
+  <path d="M160 160C160 160 170 170 180 170C190 170 200 160 200 160" stroke="#60A5FA" stroke-width="3" fill="none"/>
+  <circle cx="150" cy="150" r="8" fill="none" stroke="#60A5FA" stroke-width="2"/>
+  <circle cx="210" cy="150" r="8" fill="none" stroke="#60A5FA" stroke-width="2"/>
+  
+  <!-- Plus symbol background -->
+  <circle cx="200" cy="130" r="30" fill="#DBEAFE"/>
+</svg>

@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import BusinessSearch from "@/components/auth/shared/business-search";
 import Link from "next/link";
-import useAuthStore from "@/store/useAuthStore";
+import { useAuthStore } from "@store/auth";
 
 function ReviewForm({ business, onBack }) {
 	const [rating, setRating] = useState(0);

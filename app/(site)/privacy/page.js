@@ -52,7 +52,7 @@ export default function PrivacyPage() {
 				name: "Thorbis",
 				logo: {
 					"@type": "ImageObject",
-					url: "https://local.byronwade.com/ThorbisLogo.webp",
+					url: "https://local.byronwade.com/logos/ThorbisLogo.webp",
 				},
 			},
 			about: ["Data Privacy", "Personal Information Protection", "User Rights", "Data Collection Practices", "Information Security"],

@@ -8,8 +8,8 @@ import { Button } from "@components/ui/button";
 import AutocompleteSuggestions from "@components/shared/searchBox/AutocompleteSuggestions";
 import { Loader2 } from "lucide-react";
 import { z } from "zod";
-import useSearchStore from "@store/useSearchStore";
-import useBusinessStore from "@store/useBusinessStore";
+import { useSearchStore } from "@store/search";
+import { useBusinessStore } from "@store/business";
 
 const searchSchema = z.object({
 	searchQuery: z.string().min(1, "Search query cannot be empty"),

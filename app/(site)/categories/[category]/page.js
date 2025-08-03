@@ -1,7 +1,10 @@
 import React from "react";
 import { notFound } from "next/navigation";
-import { generateBusinesses, generateBusinessesInBounds } from "@lib/businessDataGenerator";
+import { BusinessDataFetchers } from "@lib/supabase/server";
 import CategoryPage from "@components/site/categories/CategoryPage";
+
+// Force dynamic rendering to prevent build hanging
+export const dynamic = 'force-dynamic';
 
 // Define valid categories and locations
 const BUSINESS_CATEGORIES = {
@@ -57,30 +60,94 @@ const CATEGORY_IMAGE_MAPPINGS = {
 	Entertainment: ["https://images.unsplash.com/photo-1489599187715-31f2e8cec64c?w=400&h=300&fit=crop", "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=300&fit=crop", "https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=400&h=300&fit=crop", "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop"],
 };
 
-// Enhanced business data mapper
+// Enhanced business data mapper for real Supabase data
 const enhanceBusinessData = (business, category, index) => {
-	const categoryName = BUSINESS_CATEGORIES[category] || business.categories?.[0] || "Professional Services";
+	const categoryName = BUSINESS_CATEGORIES[category] || business.business_categories?.[0]?.category?.name || "Professional Services";
 	const imageOptions = CATEGORY_IMAGE_MAPPINGS[categoryName] || CATEGORY_IMAGE_MAPPINGS["Professional Services"];
 	const imageIndex = index % imageOptions.length;
 
 	return {
 		...business,
-		// Ensure consistent image
-		image: business.photos?.[0] || business.logo || imageOptions[imageIndex],
+		// Ensure consistent image (use business photos if available, otherwise fallback)
+		image: business.business_photos?.[0]?.url || business.photos?.[0] || imageOptions[imageIndex],
 		// Ensure proper category mapping
 		category: categoryName,
-		categories: business.categories || [categoryName],
+		categories: business.business_categories?.map((bc) => bc.category.name) || [categoryName],
 		// Ensure location is properly formatted
-		location: business.address?.split(",").slice(-2).join(",").trim() || "Local Area",
+		location: `${business.city}, ${business.state}`,
 		// Ensure price is formatted
-		price: business.priceLevel || business.price || "$$",
+		price: business.price_range || "$$",
 		// Ensure rating is formatted
-		rating: business.ratings?.overall?.toFixed(1) || "4.5",
-		reviewCount: business.reviewCount || Math.floor(Math.random() * 200) + 10,
-		// Ensure status
-		status: business.isOpenNow ? "Open" : "Closed",
+		rating: business.rating?.toFixed(1) || "4.5",
+		reviewCount: business.review_count || 0,
+		// Ensure status (TODO: calculate based on hours)
+		status: "Open", // Default for now
+		// Add fields expected by CategoryPage component
+		slug: business.slug,
+		name: business.name,
+		description: business.description,
+		address: business.address,
+		phone: business.phone,
+		website: business.website,
+		verified: business.verified,
 	};
 };
+
+// Server-side data fetching functions
+async function getCategoryBusinesses(category) {
+	// Map category slug to search parameters
+	let searchParams = {};
+
+	if (BUSINESS_CATEGORIES[category]) {
+		// It's a category search
+		const categoryName = BUSINESS_CATEGORIES[category];
+
+		// Handle specific category mappings
+		if (category === "plumbing") {
+			searchParams.query = "plumber";
+		} else if (category === "electrician") {
+			searchParams.query = "electrician";
+		} else if (category === "dentist") {
+			searchParams.query = "dentist";
+		} else if (category === "hair-salon") {
+			searchParams.query = "hair salon";
+		} else if (category === "auto-repair") {
+			searchParams.query = "auto repair";
+		} else {
+			// Use the category slug directly for search
+			searchParams.category = category;
+		}
+	}
+
+	const { data: searchResults, error } = await BusinessDataFetchers.searchBusinesses({
+		...searchParams,
+		limit: 100,
+	});
+
+	if (error) {
+		console.error(`Failed to fetch businesses for category ${category}:`, error);
+		return [];
+	}
+
+	return searchResults?.businesses || [];
+}
+
+async function getLocationBusinesses(locationSlug) {
+	const location = LOCATION_SLUGS[locationSlug];
+	if (!location) return [];
+
+	const { data: searchResults, error } = await BusinessDataFetchers.searchBusinesses({
+		location: location.name,
+		limit: 100,
+	});
+
+	if (error) {
+		console.error(`Failed to fetch businesses for location ${locationSlug}:`, error);
+		return [];
+	}
+
+	return searchResults?.businesses || [];
+}
 
 export async function generateStaticParams() {
 	// Generate params for categories
@@ -97,7 +164,7 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }) {
-	const { category } = params;
+	const { category } = await params;
 
 	// Check if it's a location
 	if (LOCATION_SLUGS[category]) {
@@ -106,6 +173,11 @@ export async function generateMetadata({ params }) {
 			title: `Local Businesses in ${location.name}, ${location.state} | Thorbis`,
 			description: `Discover top-rated local businesses in ${location.name}, ${location.state}. Find restaurants, services, and more with verified reviews.`,
 			keywords: [`businesses in ${location.name}`, `local services ${location.state}`, "business directory", "reviews"],
+			openGraph: {
+				title: `Local Businesses in ${location.name}, ${location.state}`,
+				description: `Discover top-rated local businesses in ${location.name}, ${location.state}. Find restaurants, services, and more with verified reviews.`,
+				url: `https://www.thorbis.com/categories/${category}`,
+			},
 		};
 	}
 
@@ -118,6 +190,11 @@ export async function generateMetadata({ params }) {
 			title: `${categoryName} Near You | Thorbis`,
 			description: `Find the best ${categoryName.toLowerCase()} ${isHomeService ? "in your area" : "near you"}. Read reviews, compare prices, and book services instantly.`,
 			keywords: [categoryName, `${categoryName} services`, "local businesses", "reviews"],
+			openGraph: {
+				title: `${categoryName} Near You`,
+				description: `Find the best ${categoryName.toLowerCase()} ${isHomeService ? "in your area" : "near you"}. Read reviews, compare prices, and book services instantly.`,
+				url: `https://www.thorbis.com/categories/${category}`,
+			},
 		};
 	}
 
@@ -127,20 +204,15 @@ export async function generateMetadata({ params }) {
 	};
 }
 
-export default function CategoryRoute({ params }) {
-	const { category } = params;
+export default async function CategoryRoute({ params }) {
+	const { category } = await params;
 	let jsonLd = {};
 
 	// Check if it's a location
 	if (LOCATION_SLUGS[category]) {
 		const location = LOCATION_SLUGS[category];
-		const allBusinesses = generateBusinesses(200);
-		const locationBusinesses = allBusinesses
-			.filter((business) => {
-				const businessCity = business.address?.split(",")[1]?.trim().toLowerCase();
-				return businessCity === location.name.toLowerCase();
-			})
-			.map((business, index) => enhanceBusinessData(business, null, index));
+		const businesses = await getLocationBusinesses(category);
+		const locationBusinesses = businesses.map((business, index) => enhanceBusinessData(business, null, index));
 
 		jsonLd = {
 			"@context": "https://schema.org",
@@ -150,15 +222,34 @@ export default function CategoryRoute({ params }) {
 			mainEntity: {
 				"@type": "ItemList",
 				name: `Businesses in ${location.name}`,
+				numberOfItems: locationBusinesses.length,
 				itemListElement: locationBusinesses.slice(0, 20).map((business, index) => ({
 					"@type": "ListItem",
 					position: index + 1,
 					item: {
 						"@type": "LocalBusiness",
+						"@id": `https://www.thorbis.com/biz/${business.slug || business.id}`,
 						name: business.name,
 						description: business.description,
 						image: business.image,
-						address: business.address,
+						address: {
+							"@type": "PostalAddress",
+							streetAddress: business.address,
+							addressLocality: business.city,
+							addressRegion: business.state,
+							addressCountry: "US",
+						},
+						telephone: business.phone,
+						url: business.website,
+						aggregateRating: business.rating
+							? {
+									"@type": "AggregateRating",
+									ratingValue: business.rating,
+									reviewCount: business.reviewCount,
+									bestRating: 5,
+									worstRating: 1,
+							  }
+							: undefined,
 					},
 				})),
 			},
@@ -177,27 +268,8 @@ export default function CategoryRoute({ params }) {
 		const categoryName = BUSINESS_CATEGORIES[category];
 		const isHomeService = HOME_SERVICE_CATEGORIES.includes(category);
 
-		const allBusinesses = generateBusinesses(200);
-		const categoryBusinesses = allBusinesses
-			.filter((business) => {
-				if (category === "plumbing") {
-					return business.categories.some((cat) => cat.toLowerCase().includes("plumber"));
-				}
-				if (category === "electrician") {
-					return business.categories.some((cat) => cat.toLowerCase().includes("electrician"));
-				}
-				if (category === "dentist") {
-					return business.categories.some((cat) => cat.toLowerCase().includes("dentist"));
-				}
-				if (category === "hair-salon") {
-					return business.categories.some((cat) => cat.toLowerCase().includes("salon") || cat.toLowerCase().includes("hair"));
-				}
-				if (category === "auto-repair") {
-					return business.categories.some((cat) => cat.toLowerCase().includes("auto") || cat.toLowerCase().includes("repair"));
-				}
-				return business.categories.includes(categoryName) || business.categories.some((cat) => cat.toLowerCase().includes(category));
-			})
-			.map((business, index) => enhanceBusinessData(business, category, index));
+		const businesses = await getCategoryBusinesses(category);
+		const categoryBusinesses = businesses.map((business, index) => enhanceBusinessData(business, category, index));
 
 		jsonLd = {
 			"@context": "https://schema.org",
@@ -207,15 +279,34 @@ export default function CategoryRoute({ params }) {
 			mainEntity: {
 				"@type": "ItemList",
 				name: `Top ${categoryName}`,
+				numberOfItems: categoryBusinesses.length,
 				itemListElement: categoryBusinesses.slice(0, 20).map((business, index) => ({
 					"@type": "ListItem",
 					position: index + 1,
 					item: {
 						"@type": "LocalBusiness",
+						"@id": `https://www.thorbis.com/biz/${business.slug || business.id}`,
 						name: business.name,
 						description: business.description,
 						image: business.image,
-						address: business.address,
+						address: {
+							"@type": "PostalAddress",
+							streetAddress: business.address,
+							addressLocality: business.city,
+							addressRegion: business.state,
+							addressCountry: "US",
+						},
+						telephone: business.phone,
+						url: business.website,
+						aggregateRating: business.rating
+							? {
+									"@type": "AggregateRating",
+									ratingValue: business.rating,
+									reviewCount: business.reviewCount,
+									bestRating: 5,
+									worstRating: 1,
+							  }
+							: undefined,
 					},
 				})),
 			},
@@ -230,6 +321,6 @@ export default function CategoryRoute({ params }) {
 	}
 
 	// Category/location not found
-	console.log("Category or location not found");
+	console.log("Category or location not found:", category);
 	notFound();
 }
