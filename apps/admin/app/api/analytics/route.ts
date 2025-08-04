@@ -6,8 +6,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { z } from "zod";
-import { logger } from '@shared/lib/utils/logger";
-import { withAuth, withValidation, withCache, withPerformanceMonitoring, createSuccessResponse, createErrorResponse, compose, ApiRequest } from '@shared/lib/api/middleware";
+import { logger } from "@shared/lib/utils/logger";
+import { withAuth, withValidation, withCache, withPerformanceMonitoring, createSuccessResponse, createErrorResponse, compose, ApiRequest } from "@shared/lib/api/middleware";
 
 // Analytics query validation schema
 const analyticsQuerySchema = z.object({

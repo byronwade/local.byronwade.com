@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { createSupabaseRouteHandlerClient } from '@shared/lib/supabase/ssr";
-import { EmailService } from '@shared/lib/email/resend-client";
-import { logger } from '@shared/lib/utils/logger";
+import { createSupabaseRouteHandlerClient } from "@lib/supabase/ssr";
+import { EmailService } from "@lib/email/resend-client";
+import { logger } from "@lib/utils/logger";
 
 export async function POST(request) {
 	const startTime = performance.now();
