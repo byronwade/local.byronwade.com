@@ -3,7 +3,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { logger } from '@shared/lib/utils/logger";
+import { logger } from "@shared/lib/utils/logger";
 import { z } from "zod";
 
 // Performance-optimized Supabase client

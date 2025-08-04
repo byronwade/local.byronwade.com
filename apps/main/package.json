@@ -14,9 +14,7 @@
     "next": "latest",
     "react": "latest",
     "react-dom": "latest",
-    "@shared/components": "workspace:*",
-    "@shared/lib": "workspace:*",
-    "@shared/types": "workspace:*"
+    "@thorbis/shared": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "latest",

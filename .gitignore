@@ -35,6 +35,12 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# monorepo artifacts
+apps/*/node_modules
+apps/*/.next
+apps/*/.turbo
+.turbo
+
 .vercel
 .env*.local
 

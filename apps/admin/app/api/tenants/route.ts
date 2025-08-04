@@ -5,9 +5,9 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { supabase } from '@shared/lib/supabase/client";
-import { createTenantSubdomain } from '@shared/lib/vercel/domain-management";
-import { logger } from '@shared/lib/utils/logger";
+import { supabase } from "@shared/lib/supabase/client";
+import { createTenantSubdomain } from "@shared/lib/vercel/domain-management";
+import { logger } from "@shared/lib/utils/logger";
 
 // Validation schemas
 const createSubdomainSchema = z.object({

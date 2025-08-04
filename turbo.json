@@ -1,49 +1,50 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "pipeline": {
+  "ui": "tui",
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**"],
-      "env": [
-        "NEXT_PUBLIC_MAIN_DOMAIN",
-        "NEXT_PUBLIC_TENANT_DOMAIN", 
-        "NEXT_PUBLIC_ADMIN_DOMAIN",
-        "NEXT_PUBLIC_API_DOMAIN",
-        "NEXT_PUBLIC_APP_URL",
-        "NEXT_PUBLIC_API_URL",
-        "VERCEL_TOKEN",
-        "VERCEL_PROJECT_ID",
-        "SUPABASE_URL",
-        "SUPABASE_ANON_KEY"
-      ]
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
     },
     "dev": {
       "cache": false,
-      "persistent": true,
-      "env": [
-        "NEXT_PUBLIC_MAIN_DOMAIN",
-        "NEXT_PUBLIC_TENANT_DOMAIN",
-        "NEXT_PUBLIC_ADMIN_DOMAIN", 
-        "NEXT_PUBLIC_API_DOMAIN",
-        "NEXT_PUBLIC_APP_URL",
-        "NEXT_PUBLIC_API_URL",
-        "VERCEL_TOKEN",
-        "VERCEL_PROJECT_ID",
-        "SUPABASE_URL",
-        "SUPABASE_ANON_KEY"
-      ]
+      "persistent": true
     },
     "lint": {
-      "outputs": []
+      "dependsOn": ["^lint"],
+      "inputs": ["$TURBO_DEFAULT$", ".eslintrc*"]
     },
     "type-check": {
       "dependsOn": ["^type-check"],
-      "outputs": []
+      "inputs": ["$TURBO_DEFAULT$", "tsconfig*.json"]
+    },
+    "test": {
+      "dependsOn": ["^test"],
+      "inputs": ["$TURBO_DEFAULT$", "vitest.config.*", "cypress.config.*"]
+    },
+    "test:coverage": {
+      "dependsOn": ["^test:coverage"],
+      "inputs": ["$TURBO_DEFAULT$", "vitest.config.*"],
+      "outputs": ["coverage/**"]
+    },
+    "clean": {
+      "cache": false
     }
   },
   "globalDependencies": [
     ".env",
-    ".env.local",
-    ".env.production"
+    ".env.local", 
+    ".env.production",
+    ".env.development"
+  ],
+  "globalEnv": [
+    "SUPABASE_URL",
+    "SUPABASE_ANON_KEY", 
+    "NEXT_PUBLIC_SUPABASE_URL",
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY",
+    "NODE_ENV",
+    "VERCEL",
+    "CI"
   ]
 }

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { BusinessDataFetchers } from '@shared/lib/supabase/server";
-import { logger } from '@shared/lib/utils/logger";
+import { BusinessDataFetchers } from "@lib/supabase/server";
+import { logger } from "@lib/utils/logger";
 
 export async function GET(req) {
 	const startTime = performance.now();

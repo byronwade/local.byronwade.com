@@ -6,8 +6,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { z } from "zod";
-import { logger } from '@shared/lib/utils/logger";
-import { withValidation, withPerformanceMonitoring, createSuccessResponse, createErrorResponse, compose } from '@shared/lib/api/middleware";
+import { logger } from "@shared/lib/utils/logger";
+import { withValidation, withPerformanceMonitoring, createSuccessResponse, createErrorResponse, compose } from "@shared/lib/api/middleware";
 
 // Login request validation schema
 const loginSchema = z.object({

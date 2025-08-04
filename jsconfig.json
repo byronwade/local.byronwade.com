@@ -3,17 +3,17 @@
 		"baseUrl": ".",
 		"paths": {
 			"@/*": ["./*"],
-			"@components/*": ["components/*"],
-			"@utils": ["lib/utils"],
-			"@utils/*": ["lib/utils/*"],
-			"@lib/*": ["lib/*"],
-			"@styles/*": ["styles/*"],
-			"@context/*": ["context/*"],
-			"@hooks/*": ["hooks/*"],
-			"@emails/*": ["emails/*"],
-			"@store/*": ["store/*"],
-			"@queries/*": ["queries/*"],
-			"@actions/*": ["actions/*"]
+			"@components/*": ["apps/shared/components/*"],
+			"@utils": ["apps/shared/lib/utils"],
+			"@utils/*": ["apps/shared/lib/utils/*"],
+			"@lib/*": ["apps/shared/lib/*"],
+			"@styles/*": ["apps/shared/styles/*"],
+			"@context/*": ["apps/shared/context/*"],
+			"@hooks/*": ["apps/shared/hooks/*"],
+			"@emails/*": ["apps/shared/emails/*"],
+			"@store/*": ["apps/shared/store/*"],
+			"@queries/*": ["apps/shared/queries/*"],
+			"@actions/*": ["apps/shared/actions/*"]
 		}
 	},
 	"exclude": ["node_modules", ".next"],

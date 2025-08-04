@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { createSupabaseRouteHandlerClient } from '@shared/lib/supabase/ssr";
-import { RoleManager, PERMISSIONS, ROLES } from '@shared/lib/auth/roles";
-import { logger } from '@shared/lib/utils/logger";
+import { createSupabaseRouteHandlerClient } from "@lib/supabase/ssr";
+import { RoleManager, PERMISSIONS, ROLES } from "@lib/auth/roles";
+import { logger } from "@lib/utils/logger";
 
 /**
  * Update user roles (Admin only)

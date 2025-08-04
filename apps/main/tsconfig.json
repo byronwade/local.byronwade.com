@@ -1,0 +1,41 @@
+{
+	"compilerOptions": {
+		"target": "ES2017",
+		"lib": ["dom", "dom.iterable", "esnext"],
+		"allowJs": true,
+		"skipLibCheck": true,
+		"strict": false,
+		"noEmit": true,
+		"incremental": true,
+		"module": "esnext",
+		"esModuleInterop": true,
+		"moduleResolution": "node",
+		"resolveJsonModule": true,
+		"isolatedModules": true,
+		"jsx": "preserve",
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["./*"],
+			"@components/*": ["../shared/components/*"],
+			"@utils": ["../shared/lib/utils"],
+			"@utils/*": ["../shared/lib/utils/*"],
+			"@lib/*": ["../shared/lib/*"],
+			"@styles/*": ["../shared/styles/*"],
+			"@context/*": ["../shared/context/*"],
+			"@hooks/*": ["../shared/hooks/*"],
+			"@emails/*": ["../shared/emails/*"],
+			"@store/*": ["../shared/store/*"],
+			"@queries/*": ["../shared/queries/*"],
+			"@actions/*": ["../shared/actions/*"],
+			"@config": ["../../config/index.js"],
+			"@config/*": ["../../config/*"]
+		},
+		"plugins": [
+			{
+				"name": "next"
+			}
+		]
+	},
+	"include": ["next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx"],
+	"exclude": ["node_modules"]
+}
