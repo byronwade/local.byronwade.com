@@ -1,0 +1,416 @@
+import { Suspense } from "react";
+import { notFound } from "next/navigation";
+import { createServerClient } from "@supabase/ssr";
+import { cookies } from "next/headers";
+import { BusinessDataFetchers } from "@lib/supabase/server";
+import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
+import { Button } from "@components/ui/button";
+import { Badge } from "@components/ui/badge";
+import { Separator } from "@components/ui/separator";
+import { MapPin, Phone, Globe, Clock, Star, Shield, CheckCircle, Calendar, MessageSquare, Share2, Heart, Camera, Users, Award, TrendingUp, Zap, Tools } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import ServiceBookingWidget from "@components/business/field-service/ServiceBookingWidget";
+import BizProfileClient from "./BizProfileClient";
+import { generateAdvancedServerSEO } from "@utils/advancedServerSEO";
+
+/**
+ * Unified Business Profile Page for Thorbis Platform
+ * Handles both ID and slug-based business lookups
+ * Showcases unified discovery and field service capabilities
+ */
+
+// Helper function to fetch business data by slug only
+async function fetchBusinessData(slug) {
+	const supabase = createServerComponentClient({ cookies });
+
+	console.log(`Fetching business by slug: ${slug}`);
+
+	const { data: business, error } = await supabase
+		.from("businesses")
+		.select(
+			`
+      *,
+      business_categories (
+        categories (
+          id,
+          name,
+          slug
+        )
+      ),
+      business_hours (*),
+      business_photos (*),
+      reviews (
+        id,
+        rating,
+        comment,
+        created_at,
+        user_profiles (
+          full_name,
+          avatar_url
+        )
+      )
+    `
+		)
+		.eq("slug", slug)
+		.single();
+
+	if (business && !error) {
+		console.log(`Found business by slug: ${slug}`);
+		return { data: business, error: null };
+	}
+
+	console.log(`No business found for slug: ${slug}`);
+	return { data: null, error: error || new Error("Business not found") };
+}
+
+// Generate metadata for SEO
+export async function generateMetadata({ params }) {
+	const resolvedParams = await params;
+	const startTime = performance.now();
+
+	try {
+		const { data: business, error } = await fetchBusinessData(resolvedParams.slug);
+
+		const duration = performance.now() - startTime;
+		console.log(`Metadata generation completed in ${duration.toFixed(2)}ms for slug: ${resolvedParams.slug}`);
+
+		// If database query fails, use mock data for metadata
+		if (error || !business) {
+			console.warn("Metadata generation using fallback data:", error?.message || "No business data");
+
+			// Return basic metadata for mock business
+			return {
+				title: `Demo Local Business - San Francisco, CA | Thorbis`,
+				description: "This is a sample business used for testing the application. The database is not fully configured yet.",
+				keywords: ["Demo Local Business", "Restaurant", "San Francisco, CA", "reviews", "local business", "San Francisco", "CA"],
+				openGraph: {
+					title: `Demo Local Business - San Francisco, CA`,
+					description: "This is a sample business used for testing the application. The database is not fully configured yet.",
+					url: `https://www.thorbis.com/biz/demo-local-business`,
+					siteName: "Thorbis",
+					images: [
+						{
+							url: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&h=600&fit=crop",
+							width: 800,
+							height: 600,
+							alt: "Demo Local Business - Business exterior",
+						},
+					],
+					locale: "en_US",
+					type: "website",
+				},
+				twitter: {
+					card: "summary_large_image",
+					title: `Demo Local Business - San Francisco, CA`,
+					description: "This is a sample business used for testing the application. The database is not fully configured yet.",
+					images: ["https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&h=600&fit=crop"],
+				},
+				alternates: {
+					canonical: `https://www.thorbis.com/biz/demo-local-business`,
+				},
+			};
+		}
+
+		// Advanced SEO generation
+		const seoData = await generateAdvancedServerSEO({
+			business,
+			type: "business_profile",
+			location: { city: business.city, state: business.state },
+			category: business.business_categories?.[0]?.categories?.name || "Business",
+			reviews: business.reviews || [],
+		});
+
+		return seoData;
+	} catch (error) {
+		console.error("Error generating metadata:", error);
+		return {
+			title: "Business Profile | Thorbis",
+			description: "Find and connect with local businesses in your area.",
+		};
+	}
+}
+
+export default async function BusinessProfilePage({ params }) {
+	const resolvedParams = await params;
+	const startTime = performance.now();
+
+	try {
+		const { data: business, error } = await fetchBusinessData(resolvedParams.slug);
+
+		const duration = performance.now() - startTime;
+		console.log(`Business data fetch completed in ${duration.toFixed(2)}ms for slug: ${resolvedParams.slug}`);
+
+		// If no business found, show 404
+		if (error || !business) {
+			console.error("Business not found:", error?.message || "No business data");
+			notFound();
+		}
+
+		// Check if this is a field service business and render appropriate component
+		const isFieldService = business.business_type === "field_service" || business.business_categories?.some((cat) => ["plumbing", "electrical", "hvac", "landscaping", "cleaning", "handyman"].includes(cat.categories?.slug));
+
+		if (isFieldService) {
+			return <FieldServiceBusinessProfile business={business} slug={resolvedParams.slug} />;
+		}
+
+		// Render the enhanced business profile for all businesses
+		return <EnhancedBusinessProfile business={business} slug={resolvedParams.slug} />;
+	} catch (error) {
+		console.error("Error rendering business profile:", error);
+		notFound();
+	}
+}
+
+// Enhanced Business Profile Component for slug-based lookups
+function EnhancedBusinessProfile({ business, slug }) {
+	const rating = business.rating || 4.5;
+	const reviewCount = business.reviews?.length || 0;
+	const category = business.business_categories?.[0]?.categories?.name || "Business";
+
+	return (
+		<div className="min-h-screen bg-gray-50">
+			{/* Hero Section */}
+			<div className="relative h-64 md:h-80 bg-gradient-to-r from-blue-600 to-purple-700">
+				<div className="absolute inset-0 bg-black bg-opacity-40" />
+				<div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+					<div className="max-w-7xl mx-auto">
+						<div className="flex items-center space-x-3 mb-2">
+							<Badge variant="secondary" className="bg-white/20 text-white border-white/30">
+								{category}
+							</Badge>
+							{business.verified && (
+								<Badge variant="secondary" className="bg-green-500/20 text-green-100 border-green-400/30">
+									<CheckCircle className="w-3 h-3 mr-1" />
+									Verified
+								</Badge>
+							)}
+						</div>
+						<h1 className="text-3xl md:text-4xl font-bold mb-2">{business.name}</h1>
+						<div className="flex items-center space-x-4 text-sm opacity-90">
+							<div className="flex items-center">
+								<Star className="w-4 h-4 mr-1 fill-yellow-400 text-yellow-400" />
+								<span className="font-medium">{rating.toFixed(1)}</span>
+								<span className="ml-1">({reviewCount} reviews)</span>
+							</div>
+							<div className="flex items-center">
+								<MapPin className="w-4 h-4 mr-1" />
+								<span>
+									{business.city}, {business.state}
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			{/* Main Content */}
+			<div className="max-w-7xl mx-auto px-4 py-8">
+				<div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+					{/* Left Column - Main Info */}
+					<div className="lg:col-span-2 space-y-6">
+						{/* Quick Actions */}
+						<Card>
+							<CardContent className="p-6">
+								<div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+									<Button variant="outline" className="flex flex-col items-center p-4 h-auto">
+										<Phone className="w-6 h-6 mb-2 text-blue-600" />
+										<span className="text-sm">Call Now</span>
+									</Button>
+									<Button variant="outline" className="flex flex-col items-center p-4 h-auto">
+										<MessageSquare className="w-6 h-6 mb-2 text-green-600" />
+										<span className="text-sm">Message</span>
+									</Button>
+									<Button variant="outline" className="flex flex-col items-center p-4 h-auto">
+										<Share2 className="w-6 h-6 mb-2 text-purple-600" />
+										<span className="text-sm">Share</span>
+									</Button>
+									<Button variant="outline" className="flex flex-col items-center p-4 h-auto">
+										<Heart className="w-6 h-6 mb-2 text-red-600" />
+										<span className="text-sm">Save</span>
+									</Button>
+								</div>
+							</CardContent>
+						</Card>
+
+						{/* About Section */}
+						<Card>
+							<CardHeader>
+								<CardTitle>About {business.name}</CardTitle>
+							</CardHeader>
+							<CardContent>
+								<p className="text-gray-600 leading-relaxed">{business.description || "A trusted local business serving the community with excellent service and expertise."}</p>
+							</CardContent>
+						</Card>
+
+						{/* Reviews Section */}
+						<Card>
+							<CardHeader>
+								<CardTitle className="flex items-center justify-between">
+									<span>Customer Reviews</span>
+									<Badge variant="outline">{reviewCount} reviews</Badge>
+								</CardTitle>
+							</CardHeader>
+							<CardContent>
+								{business.reviews && business.reviews.length > 0 ? (
+									<div className="space-y-4">
+										{business.reviews.slice(0, 3).map((review) => (
+											<div key={review.id} className="border-b pb-4 last:border-b-0">
+												<div className="flex items-center justify-between mb-2">
+													<div className="flex items-center space-x-2">
+														<div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+															<Users className="w-4 h-4 text-gray-500" />
+														</div>
+														<span className="font-medium">{review.user_profiles?.full_name || "Anonymous"}</span>
+													</div>
+													<div className="flex items-center">
+														{[...Array(5)].map((_, i) => (
+															<Star key={i} className={`w-4 h-4 ${i < review.rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`} />
+														))}
+													</div>
+												</div>
+												<p className="text-gray-600 text-sm">{review.comment}</p>
+											</div>
+										))}
+									</div>
+								) : (
+									<p className="text-gray-500 text-center py-8">No reviews yet. Be the first to leave a review!</p>
+								)}
+							</CardContent>
+						</Card>
+					</div>
+
+					{/* Right Column - Business Details */}
+					<div className="space-y-6">
+						{/* Contact Info */}
+						<Card>
+							<CardHeader>
+								<CardTitle>Contact Information</CardTitle>
+							</CardHeader>
+							<CardContent className="space-y-3">
+								<div className="flex items-center">
+									<MapPin className="w-5 h-5 mr-3 text-gray-400" />
+									<div>
+										<p className="font-medium">{business.address}</p>
+										<p className="text-sm text-gray-500">
+											{business.city}, {business.state} {business.zip_code}
+										</p>
+									</div>
+								</div>
+								{business.phone && (
+									<div className="flex items-center">
+										<Phone className="w-5 h-5 mr-3 text-gray-400" />
+										<span>{business.phone}</span>
+									</div>
+								)}
+								{business.website && (
+									<div className="flex items-center">
+										<Globe className="w-5 h-5 mr-3 text-gray-400" />
+										<Link href={business.website} className="text-blue-600 hover:underline" target="_blank">
+											Visit Website
+										</Link>
+									</div>
+								)}
+							</CardContent>
+						</Card>
+
+						{/* Business Hours */}
+						<Card>
+							<CardHeader>
+								<CardTitle className="flex items-center">
+									<Clock className="w-5 h-5 mr-2" />
+									Hours
+								</CardTitle>
+							</CardHeader>
+							<CardContent>
+								{business.business_hours && business.business_hours.length > 0 ? (
+									<div className="space-y-1">
+										{business.business_hours.map((hours, index) => (
+											<div key={index} className="flex justify-between text-sm">
+												<span className="capitalize">{hours.day_of_week}</span>
+												<span>{hours.is_closed ? "Closed" : `${hours.open_time} - ${hours.close_time}`}</span>
+											</div>
+										))}
+									</div>
+								) : (
+									<p className="text-gray-500 text-sm">Hours not available</p>
+								)}
+							</CardContent>
+						</Card>
+
+						{/* Business Stats */}
+						<Card>
+							<CardHeader>
+								<CardTitle>Business Highlights</CardTitle>
+							</CardHeader>
+							<CardContent className="space-y-3">
+								<div className="flex items-center justify-between">
+									<div className="flex items-center">
+										<TrendingUp className="w-5 h-5 mr-2 text-green-600" />
+										<span className="text-sm">Rating</span>
+									</div>
+									<span className="font-medium">{rating.toFixed(1)}/5.0</span>
+								</div>
+								<div className="flex items-center justify-between">
+									<div className="flex items-center">
+										<Users className="w-5 h-5 mr-2 text-blue-600" />
+										<span className="text-sm">Reviews</span>
+									</div>
+									<span className="font-medium">{reviewCount}</span>
+								</div>
+								{business.verified && (
+									<div className="flex items-center justify-between">
+										<div className="flex items-center">
+											<Shield className="w-5 h-5 mr-2 text-green-600" />
+											<span className="text-sm">Verified</span>
+										</div>
+										<CheckCircle className="w-5 h-5 text-green-600" />
+									</div>
+								)}
+							</CardContent>
+						</Card>
+					</div>
+				</div>
+			</div>
+		</div>
+	);
+}
+
+// Field Service Business Profile Component
+function FieldServiceBusinessProfile({ business, slug }) {
+	return (
+		<div className="min-h-screen bg-gray-50">
+			{/* Field Service Hero */}
+			<div className="relative h-64 md:h-80 bg-gradient-to-r from-green-600 to-blue-700">
+				<div className="absolute inset-0 bg-black bg-opacity-40" />
+				<div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+					<div className="max-w-7xl mx-auto">
+						<div className="flex items-center space-x-3 mb-2">
+							<Badge variant="secondary" className="bg-white/20 text-white border-white/30">
+								<Tools className="w-3 h-3 mr-1" />
+								Field Service
+							</Badge>
+							{business.verified && (
+								<Badge variant="secondary" className="bg-green-500/20 text-green-100 border-green-400/30">
+									<CheckCircle className="w-3 h-3 mr-1" />
+									Verified Professional
+								</Badge>
+							)}
+						</div>
+						<h1 className="text-3xl md:text-4xl font-bold mb-2">{business.name}</h1>
+						<p className="text-lg opacity-90">
+							Professional field services in {business.city}, {business.state}
+						</p>
+					</div>
+				</div>
+			</div>
+
+			{/* Service Booking Widget */}
+			<div className="max-w-7xl mx-auto px-4 py-8">
+				<Suspense fallback={<div className="animate-pulse bg-gray-200 h-96 rounded-lg" />}>
+					<ServiceBookingWidget businessId={business.id} />
+				</Suspense>
+			</div>
+		</div>
+	);
+}

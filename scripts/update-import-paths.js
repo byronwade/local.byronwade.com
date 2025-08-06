@@ -17,12 +17,12 @@ const APPS_DIR = path.join(PROJECT_ROOT, "apps");
 const importReplacements = [
 	{
 		from: /from ['"]@components\//g,
-		to: "from '@shared/components/",
+		to: "from '@components/",
 		description: "Updated component imports",
 	},
 	{
 		from: /from ['"]@lib\//g,
-		to: "from '@shared/lib/",
+		to: "from '@lib/",
 		description: "Updated lib imports",
 	},
 	{
@@ -32,22 +32,22 @@ const importReplacements = [
 	},
 	{
 		from: /from ['"]@\/components\//g,
-		to: "from '@shared/components/",
+		to: "from '@components/",
 		description: "Updated relative component imports",
 	},
 	{
 		from: /from ['"]@\/lib\//g,
-		to: "from '@shared/lib/",
+		to: "from '@lib/",
 		description: "Updated relative lib imports",
 	},
 	{
 		from: /from ['"]components\//g,
-		to: "from '@shared/components/",
+		to: "from '@components/",
 		description: "Updated relative component imports",
 	},
 	{
 		from: /from ['"]lib\//g,
-		to: "from '@shared/lib/",
+		to: "from '@lib/",
 		description: "Updated relative lib imports",
 	},
 ];

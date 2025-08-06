@@ -2,20 +2,20 @@
 	"compilerOptions": {
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["./*"],
-			"@components/*": ["apps/shared/components/*"],
-			"@utils": ["apps/shared/lib/utils"],
-			"@utils/*": ["apps/shared/lib/utils/*"],
-			"@lib/*": ["apps/shared/lib/*"],
-			"@styles/*": ["apps/shared/styles/*"],
-			"@context/*": ["apps/shared/context/*"],
-			"@hooks/*": ["apps/shared/hooks/*"],
-			"@emails/*": ["apps/shared/emails/*"],
-			"@store/*": ["apps/shared/store/*"],
-			"@queries/*": ["apps/shared/queries/*"],
-			"@actions/*": ["apps/shared/actions/*"]
+			"@/*": ["./src/*"],
+			"@components/*": ["./src/components/*"],
+			"@utils": ["./src/utils"],
+			"@utils/*": ["./src/utils/*"],
+			"@lib/*": ["./src/lib/*"],
+			"@types/*": ["./src/types/*"],
+			"@context/*": ["./src/context/*"],
+			"@hooks/*": ["./src/hooks/*"],
+			"@store/*": ["./src/store/*"],
+			"@data/*": ["./src/data/*"],
+			"@config": ["./src/config/index.js"],
+			"@config/*": ["./src/config/*"]
 		}
 	},
-	"exclude": ["node_modules", ".next"],
-	"include": ["**/*.js", "**/*.jsx"]
+	"exclude": ["node_modules", ".next", "apps"],
+	"include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"]
 }
