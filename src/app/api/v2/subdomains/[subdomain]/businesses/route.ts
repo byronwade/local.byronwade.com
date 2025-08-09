@@ -6,11 +6,15 @@ import { createClient } from "@supabase/supabase-js";
 import { logger } from "@utils/logger";
 import { z } from "zod";
 
-// Performance-optimized Supabase client
-const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, {
-	auth: { persistSession: false },
-	db: { schema: "public" },
-});
+// Ensure this route is always dynamic and not prerendered during build
+export const dynamic = "force-dynamic";
+
+function getSupabase() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !key) return null;
+  return createClient(url, key, { auth: { persistSession: false }, db: { schema: "public" } });
+}
 
 // Validation schemas
 const businessSearchSchema = z.object({
@@ -41,6 +45,10 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 	const startTime = performance.now();
 
 	try {
+		const supabase = getSupabase();
+		if (!supabase) {
+			return NextResponse.json({ success: false, error: "Supabase is not configured" }, { status: 500 });
+		}
 		const { subdomain } = await params;
 		const { searchParams } = new URL(request.url);
 		const searchQuery = businessSearchSchema.parse(Object.fromEntries(searchParams));
@@ -320,6 +328,10 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
  * Search businesses for a specific hub with location-based filtering
  */
 async function searchBusinessesForHub(localHub: any, searchQuery: any) {
+	const supabase = getSupabase();
+	if (!supabase) {
+		throw new Error("Supabase is not configured");
+	}
 	const radius = searchQuery.radius || localHub.radius_km;
 
 	// Build the base query
@@ -439,6 +451,16 @@ async function searchBusinessesForHub(localHub: any, searchQuery: any) {
  * Get available filter options for the hub
  */
 async function getAvailableFilters(hubId: string) {
+	const supabase = getSupabase();
+	if (!supabase) {
+		return { categories: [], priceRanges: [], sortOptions: [
+			{ value: "distance", label: "Distance" },
+			{ value: "rating", label: "Rating" },
+			{ value: "reviews", label: "Most Reviewed" },
+			{ value: "name", label: "Name" },
+			{ value: "featured", label: "Featured" },
+		] };
+	}
 	// Get available categories
 	const { data: categories } = await supabase
 		.from("categories")
@@ -467,6 +489,10 @@ async function getAvailableFilters(hubId: string) {
  * Verify user has permission to manage subdomain
  */
 async function verifySubdomainPermission(userId: string, subdomain: string) {
+	const supabase = getSupabase();
+	if (!supabase) {
+		return false;
+	}
 	try {
 		const { data: permission } = await supabase.from("local_hub_managers").select("role").eq("user_id", userId).eq("local_hubs.subdomain", subdomain.toLowerCase()).join("local_hubs", "local_hub_id", "id").single();
 

@@ -6,11 +6,14 @@ import { createClient } from "@supabase/supabase-js";
 import { logger } from "@utils/logger";
 import { z } from "zod";
 
-// Performance-optimized Supabase client
-const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, {
-	auth: { persistSession: false },
-	db: { schema: "public" },
-});
+export const dynamic = "force-dynamic";
+
+function getSupabase() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !key) return null;
+  return createClient(url, key, { auth: { persistSession: false }, db: { schema: "public" } });
+}
 
 // Validation schemas
 const updateSubdomainSchema = z.object({
@@ -65,6 +68,10 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 		logger.debug("Fetching subdomain details:", subdomain);
 
 		// Get comprehensive subdomain data
+		const supabase = getSupabase();
+		if (!supabase) {
+			return NextResponse.json({ success: false, error: "Supabase is not configured" }, { status: 500 });
+		}
 		const { data: localHub, error } = await supabase
 			.from("local_hubs")
 			.select(
@@ -416,7 +423,11 @@ async function authenticateRequest(request: NextRequest) {
 	}
 
 	const token = authHeader.replace("Bearer ", "");
-	const {
+		const supabase = getSupabase();
+		if (!supabase) {
+			return { success: false, error: { success: false, error: "Supabase is not configured" }, status: 500 };
+		}
+		const {
 		data: { user },
 		error: authError,
 	} = await supabase.auth.getUser(token);
@@ -437,6 +448,8 @@ async function authenticateRequest(request: NextRequest) {
  */
 async function verifySubdomainPermission(userId: string, subdomain: string, requiredRoles: string[] = ["owner", "admin", "manager"]) {
 	try {
+		const supabase = getSupabase();
+		if (!supabase) return false;
 		const { data: permission } = await supabase.from("local_hub_managers").select("role").eq("user_id", userId).eq("local_hubs.subdomain", subdomain.toLowerCase()).join("local_hubs", "local_hub_id", "id").single();
 
 		return permission && requiredRoles.includes(permission.role);
