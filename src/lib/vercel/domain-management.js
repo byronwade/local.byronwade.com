@@ -19,25 +19,33 @@ const MAIN_DOMAIN = process.env.NEXT_PUBLIC_MAIN_DOMAIN || "thorbis.com";
  * Vercel API client with error handling and retries
  */
 class VercelAPI {
-	constructor() {
-		if (!VERCEL_TOKEN) {
-			throw new Error("VERCEL_TOKEN environment variable is required");
-		}
+    constructor() {
+        this.disabled = false;
+        if (!VERCEL_TOKEN) {
+            // Do not throw at module load; defer until used so builds don't fail
+            this.disabled = true;
+            this.headers = {};
+            logger?.warn?.("VERCEL_TOKEN is not set; Vercel domain management is disabled");
+            return;
+        }
 
-		this.headers = {
-			Authorization: `Bearer ${VERCEL_TOKEN}`,
-			"Content-Type": "application/json",
-		};
+        this.headers = {
+            Authorization: `Bearer ${VERCEL_TOKEN}`,
+            "Content-Type": "application/json",
+        };
 
-		if (VERCEL_TEAM_ID) {
-			this.headers["X-Team-ID"] = VERCEL_TEAM_ID;
-		}
-	}
+        if (VERCEL_TEAM_ID) {
+            this.headers["X-Team-ID"] = VERCEL_TEAM_ID;
+        }
+    }
 
 	/**
 	 * Make authenticated request to Vercel API with retry logic
 	 */
-	async request(endpoint, options = {}) {
+    async request(endpoint, options = {}) {
+        if (this.disabled) {
+            throw new Error("Vercel API client disabled: missing VERCEL_TOKEN");
+        }
 		const url = `${VERCEL_API_URL}${endpoint}`;
 		const config = {
 			...options,

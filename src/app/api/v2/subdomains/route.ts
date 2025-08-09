@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { supabase } from "@lib/database/supabase";
 import { createTenantSubdomain } from "@lib/vercel/domain-management";
+export const dynamic = "force-dynamic";
 import { logger } from "@utils/logger";
 
 // Validation schemas
@@ -174,7 +175,7 @@ export async function POST(request: NextRequest) {
 			role: "owner",
 		});
 
-		try {
+        try {
 			// Create subdomain in Vercel with automatic SSL
 			const vercelResult = await createTenantSubdomain(localHub);
 
@@ -212,7 +213,7 @@ export async function POST(request: NextRequest) {
 					vercelProvisioned: true,
 				},
 			});
-		} catch (vercelError) {
+        } catch (vercelError) {
 			// Vercel creation failed - mark hub as failed but keep database record
 			await supabase.from("local_hubs").update({ status: "failed" }).eq("id", localHub.id);
 
@@ -223,11 +224,20 @@ export async function POST(request: NextRequest) {
 				error: vercelError.message,
 			});
 
-			return NextResponse.json(
+            // If missing VERCEL_TOKEN, respond with clear message but do not crash build
+            const missingToken =
+                vercelError instanceof Error && /VERCEL_TOKEN/.test(vercelError.message);
+
+            return NextResponse.json(
 				{
 					success: false,
-					error: "Failed to provision subdomain. Please contact support.",
-					details: process.env.NODE_ENV === "development" ? vercelError.message : undefined,
+                    error: missingToken
+                        ? "Vercel integration not configured (missing token). Contact support."
+                        : "Failed to provision subdomain. Please contact support.",
+                    details:
+                        process.env.NODE_ENV === "development"
+                            ? vercelError.message
+                            : undefined,
 				},
 				{ status: 500 }
 			);
