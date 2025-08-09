@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import LearnClient from "./LearnClient";
+import LearnClient from "./learn-client";
 
 export const metadata = {
 	title: "Business Learning Academy - Online Courses & Training | Thorbis",
@@ -8,11 +8,11 @@ export const metadata = {
 	openGraph: {
 		title: "Business Learning Academy - Online Courses & Training | Thorbis",
 		description: "Learn business skills with expert-led online courses. From marketing to operations, develop the knowledge you need to grow your business successfully.",
-		url: "https://local.byronwade.com/learn",
+		url: "https://thorbis.com/learn",
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://local.byronwade.com/og-learn.jpg",
+				url: "https://thorbis.com/og-learn.jpg",
 				width: 1200,
 				height: 630,
 				alt: "Business Learning Academy",
@@ -25,7 +25,7 @@ export const metadata = {
 		card: "summary_large_image",
 		title: "Business Learning Academy - Online Courses & Training | Thorbis",
 		description: "Learn business skills with expert-led online courses. From marketing to operations, develop the knowledge you need to grow your business successfully.",
-		images: ["https://local.byronwade.com/og-learn.jpg"],
+		images: ["https://thorbis.com/og-learn.jpg"],
 		creator: "@thorbis",
 	},
 	robots: {
@@ -40,7 +40,7 @@ export const metadata = {
 		},
 	},
 	alternates: {
-		canonical: "https://local.byronwade.com/learn",
+		canonical: "https://thorbis.com/learn",
 	},
 };
 
@@ -50,7 +50,7 @@ const jsonLd = {
 	"@type": "WebPage",
 	name: "Business Learning Academy",
 	description: "Online business courses and training platform",
-	url: "https://local.byronwade.com/learn",
+	url: "https://thorbis.com/learn",
 	mainEntity: {
 		"@type": "EducationalOrganization",
 		name: "Thorbis Business Academy",
@@ -68,13 +68,13 @@ const jsonLd = {
 				"@type": "ListItem",
 				position: 1,
 				name: "Home",
-				item: "https://local.byronwade.com",
+				item: "https://thorbis.com",
 			},
 			{
 				"@type": "ListItem",
 				position: 2,
 				name: "Learn",
-				item: "https://local.byronwade.com/learn",
+				item: "https://thorbis.com/learn",
 			},
 		],
 	},

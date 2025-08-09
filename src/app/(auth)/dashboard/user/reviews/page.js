@@ -2,15 +2,15 @@
 import React, { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 import { Badge } from "@components/ui/badge";
 import { Input } from "@components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@components/ui/select";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@components/ui/dialog";
 import { Textarea } from "@components/ui/textarea";
 import { Label } from "@components/ui/label";
-import { Search, Star, Calendar, MapPin, Edit, Trash2, Eye, ExternalLink, Shield, CheckCircle, AlertCircle, Upload, Camera, Link as LinkIcon, Copy, Download } from "react-feather";
+import { Search, Star, Calendar, MapPin, Edit, Trash2, ExternalLink, Shield, CheckCircle, Upload, Camera, Copy } from "react-feather";
 import Image from "next/image";
 
 export default function Reviews() {

@@ -5,12 +5,10 @@ import { Button } from "@components/ui/button";
 import { Badge } from "@components/ui/badge";
 import { Input } from "@components/ui/input";
 import { Label } from "@components/ui/label";
-import { Textarea } from "@components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@components/ui/dialog";
+import Link from "next/link";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@components/ui/dropdown-menu";
-import { Plus, Search, Filter, MoreVertical, Edit, Trash2, Send, CheckCircle, XCircle, Clock, DollarSign, MapPin, Phone, Globe, Star, Users, Mail, Link as LinkIcon, Copy, ExternalLink, AlertTriangle, Building2, TrendingUp, CreditCard, Download, Calendar, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { Plus, Search, MoreVertical, Edit, Trash2, Send, CheckCircle, DollarSign, MapPin, Phone, Globe, Star, Mail, Copy, ExternalLink, AlertTriangle, Building2, TrendingUp, Download, ArrowUpRight } from "lucide-react";
 import { toast } from "@components/ui/use-toast";
 
 const subscriptionTiers = [
@@ -140,7 +138,7 @@ export default function BusinessManagement() {
 	const [searchTerm, setSearchTerm] = useState("");
 	const [statusFilter, setStatusFilter] = useState("all");
 	const [tierFilter, setTierFilter] = useState("all");
-	const [isAddingBusiness, setIsAddingBusiness] = useState(false);
+	const [activeView, setActiveView] = useState("businesses");
 	const [newBusiness, setNewBusiness] = useState({
 		name: "",
 		category: "",
@@ -262,82 +260,12 @@ export default function BusinessManagement() {
 						<Download className="w-4 h-4 mr-2" />
 						Export Data
 					</Button>
-					<Dialog open={isAddingBusiness} onOpenChange={setIsAddingBusiness}>
-						<DialogTrigger asChild>
-							<Button>
-								<Plus className="w-4 h-4 mr-2" />
-								Add Business
-							</Button>
-						</DialogTrigger>
-						<DialogContent className="sm:max-w-[500px]">
-							<DialogHeader>
-								<DialogTitle>Add New Business</DialogTitle>
-								<DialogDescription>Add a new business to your LocalHub directory. They&apos;ll receive a setup invitation via email.</DialogDescription>
-							</DialogHeader>
-							<div className="grid gap-4 py-4">
-								<div className="grid grid-cols-2 gap-4">
-									<div>
-										<Label htmlFor="name">Business Name *</Label>
-										<Input id="name" value={newBusiness.name} onChange={(e) => setNewBusiness({ ...newBusiness, name: e.target.value })} placeholder="Enter business name" />
-									</div>
-									<div>
-										<Label htmlFor="category">Category *</Label>
-										<Select value={newBusiness.category} onValueChange={(value) => setNewBusiness({ ...newBusiness, category: value })}>
-											<SelectTrigger>
-												<SelectValue placeholder="Select category" />
-											</SelectTrigger>
-											<SelectContent>
-												{businessCategories.map((category) => (
-													<SelectItem key={category} value={category}>
-														{category}
-													</SelectItem>
-												))}
-											</SelectContent>
-										</Select>
-									</div>
-								</div>
-								<div>
-									<Label htmlFor="email">Email Address *</Label>
-									<Input id="email" type="email" value={newBusiness.email} onChange={(e) => setNewBusiness({ ...newBusiness, email: e.target.value })} placeholder="contact@business.com" />
-								</div>
-								<div className="grid grid-cols-2 gap-4">
-									<div>
-										<Label htmlFor="phone">Phone Number</Label>
-										<Input id="phone" value={newBusiness.phone} onChange={(e) => setNewBusiness({ ...newBusiness, phone: e.target.value })} placeholder="(555) 123-4567" />
-									</div>
-									<div>
-										<Label htmlFor="website">Website</Label>
-										<Input id="website" value={newBusiness.website} onChange={(e) => setNewBusiness({ ...newBusiness, website: e.target.value })} placeholder="www.business.com" />
-									</div>
-								</div>
-								<div>
-									<Label htmlFor="address">Address</Label>
-									<Input id="address" value={newBusiness.address} onChange={(e) => setNewBusiness({ ...newBusiness, address: e.target.value })} placeholder="123 Main St, City, State 12345" />
-								</div>
-								<div>
-									<Label htmlFor="subscription">Subscription Tier</Label>
-									<Select value={newBusiness.subscription} onValueChange={(value) => setNewBusiness({ ...newBusiness, subscription: value })}>
-										<SelectTrigger>
-											<SelectValue />
-										</SelectTrigger>
-										<SelectContent>
-											{subscriptionTiers.map((tier) => (
-												<SelectItem key={tier.value} value={tier.value}>
-													{tier.label}
-												</SelectItem>
-											))}
-										</SelectContent>
-									</Select>
-								</div>
-							</div>
-							<div className="flex justify-end space-x-2">
-								<Button variant="outline" onClick={() => setIsAddingBusiness(false)}>
-									Cancel
-								</Button>
-								<Button onClick={handleAddBusiness}>Add Business</Button>
-							</div>
-						</DialogContent>
-					</Dialog>
+					<Button asChild>
+						<Link href="/dashboard/localhub/businesses/create">
+							<Plus className="w-4 h-4 mr-2" />
+							Add Business
+						</Link>
+					</Button>
 				</div>
 			</div>
 
@@ -390,205 +318,214 @@ export default function BusinessManagement() {
 				</Card>
 			</div>
 
-			{/* Main Content Tabs */}
-			<Tabs defaultValue="businesses" className="w-full">
-				<TabsList className="grid w-full grid-cols-3">
-					<TabsTrigger value="businesses">Business Listings</TabsTrigger>
-					<TabsTrigger value="subscriptions">Subscriptions</TabsTrigger>
-					<TabsTrigger value="revenue">Revenue History</TabsTrigger>
-				</TabsList>
+			{/* Minimal segmented control instead of tabs */}
+			<div className="w-full">
+				<div className="flex items-center gap-2 mb-4">
+					<Button variant={activeView === "businesses" ? "secondary" : "ghost"} size="sm" onClick={() => setActiveView("businesses")}>
+						Business Listings
+					</Button>
+					<Button variant={activeView === "subscriptions" ? "secondary" : "ghost"} size="sm" onClick={() => setActiveView("subscriptions")}>
+						Subscriptions
+					</Button>
+					<Button variant={activeView === "revenue" ? "secondary" : "ghost"} size="sm" onClick={() => setActiveView("revenue")}>
+						Revenue History
+					</Button>
+				</div>
 
-				{/* Business Listings Tab */}
-				<TabsContent value="businesses" className="space-y-6">
-					<Card>
-						<CardHeader>
-							<div className="flex items-center justify-between">
-								<CardTitle>Business Directory</CardTitle>
-								<div className="flex items-center space-x-2">
-									<div className="relative">
-										<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-										<Input placeholder="Search businesses..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="pl-10 w-64" />
+				{activeView === "businesses" && (
+					<div className="space-y-6">
+						<Card>
+							<CardHeader>
+								<div className="flex items-center justify-between">
+									<CardTitle>Business Directory</CardTitle>
+									<div className="flex items-center space-x-2">
+										<div className="relative">
+											<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+											<Input placeholder="Search businesses..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="pl-10 w-64" />
+										</div>
+										<Select value={statusFilter} onValueChange={setStatusFilter}>
+											<SelectTrigger className="w-32">
+												<SelectValue placeholder="Status" />
+											</SelectTrigger>
+											<SelectContent>
+												<SelectItem value="all">All Status</SelectItem>
+												<SelectItem value="active">Active</SelectItem>
+												<SelectItem value="pending">Pending</SelectItem>
+												<SelectItem value="overdue">Overdue</SelectItem>
+												<SelectItem value="suspended">Suspended</SelectItem>
+											</SelectContent>
+										</Select>
+										<Select value={tierFilter} onValueChange={setTierFilter}>
+											<SelectTrigger className="w-32">
+												<SelectValue placeholder="Tier" />
+											</SelectTrigger>
+											<SelectContent>
+												<SelectItem value="all">All Tiers</SelectItem>
+												<SelectItem value="basic">Basic</SelectItem>
+												<SelectItem value="pro">Pro</SelectItem>
+												<SelectItem value="premium">Premium</SelectItem>
+											</SelectContent>
+										</Select>
 									</div>
-									<Select value={statusFilter} onValueChange={setStatusFilter}>
-										<SelectTrigger className="w-32">
-											<SelectValue placeholder="Status" />
-										</SelectTrigger>
-										<SelectContent>
-											<SelectItem value="all">All Status</SelectItem>
-											<SelectItem value="active">Active</SelectItem>
-											<SelectItem value="pending">Pending</SelectItem>
-											<SelectItem value="overdue">Overdue</SelectItem>
-											<SelectItem value="suspended">Suspended</SelectItem>
-										</SelectContent>
-									</Select>
-									<Select value={tierFilter} onValueChange={setTierFilter}>
-										<SelectTrigger className="w-32">
-											<SelectValue placeholder="Tier" />
-										</SelectTrigger>
-										<SelectContent>
-											<SelectItem value="all">All Tiers</SelectItem>
-											<SelectItem value="basic">Basic</SelectItem>
-											<SelectItem value="pro">Pro</SelectItem>
-											<SelectItem value="premium">Premium</SelectItem>
-										</SelectContent>
-									</Select>
 								</div>
-							</div>
-						</CardHeader>
-						<CardContent>
-							<div className="space-y-4">
-								{filteredBusinesses.map((business) => (
-									<div key={business.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors">
-										<div className="flex items-center space-x-4">
-											<div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-												<Building2 className="w-6 h-6 text-white" />
+							</CardHeader>
+							<CardContent>
+								<div className="space-y-4">
+									{filteredBusinesses.map((business) => (
+										<div key={business.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors">
+											<div className="flex items-center space-x-4">
+												<div className="w-12 h-12 rounded-lg flex items-center justify-center bg-muted">
+													<Building2 className="w-6 h-6 text-white" />
+												</div>
+												<div className="space-y-1">
+													<div className="flex items-center space-x-2">
+														<h3 className="font-semibold">{business.name}</h3>
+														{business.verified && <CheckCircle className="w-4 h-4 text-green-500" />}
+														{getStatusBadge(business.status)}
+														{getSubscriptionBadge(business.subscription)}
+													</div>
+													<div className="flex items-center space-x-4 text-sm text-muted-foreground">
+														<span className="flex items-center">
+															<MapPin className="w-3 h-3 mr-1" />
+															{business.category}
+														</span>
+														<span className="flex items-center">
+															<Phone className="w-3 h-3 mr-1" />
+															{business.phone}
+														</span>
+														<span className="flex items-center">
+															<Mail className="w-3 h-3 mr-1" />
+															{business.email}
+														</span>
+														{business.website && (
+															<span className="flex items-center">
+																<Globe className="w-3 h-3 mr-1" />
+																{business.website}
+															</span>
+														)}
+													</div>
+												</div>
 											</div>
+											<div className="flex items-center space-x-2">
+												<div className="text-right">
+													<div className="font-semibold">${business.monthlyFee}/month</div>
+													<div className="text-sm text-muted-foreground">
+														{business.rating > 0 ? (
+															<span className="flex items-center">
+																<Star className="w-3 h-3 mr-1 fill-yellow-400 text-yellow-400" />
+																{business.rating} ({business.reviews} reviews)
+															</span>
+														) : (
+															"No reviews yet"
+														)}
+													</div>
+												</div>
+												<DropdownMenu>
+													<DropdownMenuTrigger asChild>
+														<Button variant="ghost" size="sm">
+															<MoreVertical className="w-4 h-4" />
+														</Button>
+													</DropdownMenuTrigger>
+													<DropdownMenuContent align="end">
+														<DropdownMenuItem onClick={() => window.open(`https://${business.website}`, "_blank")}>
+															<ExternalLink className="w-4 h-4 mr-2" />
+															View Website
+														</DropdownMenuItem>
+														<DropdownMenuItem onClick={() => sendInvitation(business)}>
+															<Send className="w-4 h-4 mr-2" />
+															Send Invitation
+														</DropdownMenuItem>
+														<DropdownMenuItem onClick={() => copyInviteLink(business.id)}>
+															<Copy className="w-4 h-4 mr-2" />
+															Copy Setup Link
+														</DropdownMenuItem>
+														{business.status === "overdue" && (
+															<DropdownMenuItem onClick={() => sendPaymentReminder(business)}>
+																<AlertTriangle className="w-4 h-4 mr-2" />
+																Send Payment Reminder
+															</DropdownMenuItem>
+														)}
+														<DropdownMenuItem>
+															<Edit className="w-4 h-4 mr-2" />
+															Edit Business
+														</DropdownMenuItem>
+														<DropdownMenuItem className="text-red-600">
+															<Trash2 className="w-4 h-4 mr-2" />
+															Remove Business
+														</DropdownMenuItem>
+													</DropdownMenuContent>
+												</DropdownMenu>
+											</div>
+										</div>
+									))}
+								</div>
+							</CardContent>
+						</Card>
+					</div>
+				)}
+
+				{activeView === "subscriptions" && (
+					<div className="space-y-6">
+						<Card>
+							<CardHeader>
+								<CardTitle>Subscription Details</CardTitle>
+							</CardHeader>
+							<CardContent>
+								<div className="space-y-4">
+									{filteredBusinesses.map((business) => (
+										<div key={business.id} className="flex items-center justify-between p-4 border rounded-lg">
 											<div className="space-y-1">
 												<div className="flex items-center space-x-2">
 													<h3 className="font-semibold">{business.name}</h3>
-													{business.verified && <CheckCircle className="w-4 h-4 text-green-500" />}
-													{getStatusBadge(business.status)}
 													{getSubscriptionBadge(business.subscription)}
+													{getStatusBadge(business.status)}
 												</div>
 												<div className="flex items-center space-x-4 text-sm text-muted-foreground">
-													<span className="flex items-center">
-														<MapPin className="w-3 h-3 mr-1" />
-														{business.category}
-													</span>
-													<span className="flex items-center">
-														<Phone className="w-3 h-3 mr-1" />
-														{business.phone}
-													</span>
-													<span className="flex items-center">
-														<Mail className="w-3 h-3 mr-1" />
-														{business.email}
-													</span>
-													{business.website && (
-														<span className="flex items-center">
-															<Globe className="w-3 h-3 mr-1" />
-															{business.website}
-														</span>
-													)}
+													<span>Joined: {new Date(business.joinDate).toLocaleDateString()}</span>
+													{business.lastPayment && <span>Last Payment: {new Date(business.lastPayment).toLocaleDateString()}</span>}
+													<span>Next Payment: {new Date(business.nextPayment).toLocaleDateString()}</span>
 												</div>
 											</div>
-										</div>
-										<div className="flex items-center space-x-2">
-											<div className="text-right">
+											<div className="text-right space-y-1">
 												<div className="font-semibold">${business.monthlyFee}/month</div>
-												<div className="text-sm text-muted-foreground">
-													{business.rating > 0 ? (
-														<span className="flex items-center">
-															<Star className="w-3 h-3 mr-1 fill-yellow-400 text-yellow-400" />
-															{business.rating} ({business.reviews} reviews)
-														</span>
-													) : (
-														"No reviews yet"
-													)}
-												</div>
+												<div className="text-sm text-muted-foreground">Total Paid: ${business.totalPaid}</div>
+												<div className="text-xs text-green-600">Your Share: ${business.hubShare}</div>
 											</div>
-											<DropdownMenu>
-												<DropdownMenuTrigger asChild>
-													<Button variant="ghost" size="sm">
-														<MoreVertical className="w-4 h-4" />
-													</Button>
-												</DropdownMenuTrigger>
-												<DropdownMenuContent align="end">
-													<DropdownMenuItem onClick={() => window.open(`https://${business.website}`, "_blank")}>
-														<ExternalLink className="w-4 h-4 mr-2" />
-														View Website
-													</DropdownMenuItem>
-													<DropdownMenuItem onClick={() => sendInvitation(business)}>
-														<Send className="w-4 h-4 mr-2" />
-														Send Invitation
-													</DropdownMenuItem>
-													<DropdownMenuItem onClick={() => copyInviteLink(business.id)}>
-														<Copy className="w-4 h-4 mr-2" />
-														Copy Setup Link
-													</DropdownMenuItem>
-													{business.status === "overdue" && (
-														<DropdownMenuItem onClick={() => sendPaymentReminder(business)}>
-															<AlertTriangle className="w-4 h-4 mr-2" />
-															Send Payment Reminder
-														</DropdownMenuItem>
-													)}
-													<DropdownMenuItem>
-														<Edit className="w-4 h-4 mr-2" />
-														Edit Business
-													</DropdownMenuItem>
-													<DropdownMenuItem className="text-red-600">
-														<Trash2 className="w-4 h-4 mr-2" />
-														Remove Business
-													</DropdownMenuItem>
-												</DropdownMenuContent>
-											</DropdownMenu>
 										</div>
-									</div>
-								))}
-							</div>
-						</CardContent>
-					</Card>
-				</TabsContent>
+									))}
+								</div>
+							</CardContent>
+						</Card>
+					</div>
+				)}
 
-				{/* Subscriptions Tab */}
-				<TabsContent value="subscriptions" className="space-y-6">
-					<Card>
-						<CardHeader>
-							<CardTitle>Subscription Details</CardTitle>
-						</CardHeader>
-						<CardContent>
-							<div className="space-y-4">
-								{filteredBusinesses.map((business) => (
-									<div key={business.id} className="flex items-center justify-between p-4 border rounded-lg">
-										<div className="space-y-1">
-											<div className="flex items-center space-x-2">
-												<h3 className="font-semibold">{business.name}</h3>
-												{getSubscriptionBadge(business.subscription)}
-												{getStatusBadge(business.status)}
+				{activeView === "revenue" && (
+					<div className="space-y-6">
+						<Card>
+							<CardHeader>
+								<CardTitle>Revenue History</CardTitle>
+							</CardHeader>
+							<CardContent>
+								<div className="space-y-4">
+									{revenueHistory.map((month, index) => (
+										<div key={index} className="flex items-center justify-between p-4 border rounded-lg">
+											<div className="space-y-1">
+												<h3 className="font-semibold">{month.month}</h3>
+												<div className="text-sm text-muted-foreground">{month.activeSubscriptions} active subscriptions</div>
 											</div>
-											<div className="flex items-center space-x-4 text-sm text-muted-foreground">
-												<span>Joined: {new Date(business.joinDate).toLocaleDateString()}</span>
-												{business.lastPayment && <span>Last Payment: {new Date(business.lastPayment).toLocaleDateString()}</span>}
-												<span>Next Payment: {new Date(business.nextPayment).toLocaleDateString()}</span>
+											<div className="text-right space-y-1">
+												<div className="font-semibold">${month.totalRevenue} Total</div>
+												<div className="text-sm text-green-600">${month.hubShare} Your Share</div>
+												<div className="text-xs text-muted-foreground">${month.platformFee} Platform Fee</div>
 											</div>
 										</div>
-										<div className="text-right space-y-1">
-											<div className="font-semibold">${business.monthlyFee}/month</div>
-											<div className="text-sm text-muted-foreground">Total Paid: ${business.totalPaid}</div>
-											<div className="text-xs text-green-600">Your Share: ${business.hubShare}</div>
-										</div>
-									</div>
-								))}
-							</div>
-						</CardContent>
-					</Card>
-				</TabsContent>
-
-				{/* Revenue History Tab */}
-				<TabsContent value="revenue" className="space-y-6">
-					<Card>
-						<CardHeader>
-							<CardTitle>Revenue History</CardTitle>
-						</CardHeader>
-						<CardContent>
-							<div className="space-y-4">
-								{revenueHistory.map((month, index) => (
-									<div key={index} className="flex items-center justify-between p-4 border rounded-lg">
-										<div className="space-y-1">
-											<h3 className="font-semibold">{month.month}</h3>
-											<div className="text-sm text-muted-foreground">{month.activeSubscriptions} active subscriptions</div>
-										</div>
-										<div className="text-right space-y-1">
-											<div className="font-semibold">${month.totalRevenue} Total</div>
-											<div className="text-sm text-green-600">${month.hubShare} Your Share</div>
-											<div className="text-xs text-muted-foreground">${month.platformFee} Platform Fee</div>
-										</div>
-									</div>
-								))}
-							</div>
-						</CardContent>
-					</Card>
-				</TabsContent>
-			</Tabs>
+									))}
+								</div>
+							</CardContent>
+						</Card>
+					</div>
+				)}
+			</div>
 		</div>
 	);
 }

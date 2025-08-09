@@ -1,7 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
-import Link from "next/link";
 import { Button } from "@components/ui/button";
 import { Progress } from "@components/ui/progress";
 import { Badge } from "@components/ui/badge";
@@ -11,7 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useToast } from "@components/ui/use-toast";
 import { Alert, AlertDescription } from "@components/ui/alert";
-import { AlertTriangle, CheckCircle as CheckCircleIcon, ArrowLeft as ArrowLeftIcon } from "lucide-react";
+import { AlertTriangle, ArrowLeft as ArrowLeftIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@store/auth";
 

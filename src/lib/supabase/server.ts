@@ -183,7 +183,7 @@ export const BusinessDataFetchers = {
 							helpful_count,
 							response,
 							response_date,
-							user:users(id, name, avatar_url)
+							user_id
 						),
 						business_categories(
 							category:categories(id, name, slug, icon)
@@ -404,79 +404,106 @@ export const BusinessDataFetchers = {
 	},
 
 	/**
-	 * Search businesses with filters
+	 * Search businesses with filters (with build-time timeout protection)
 	 */
 	async searchBusinesses(params: { query?: string; location?: string; category?: string; rating?: number; priceRange?: string; limit?: number; offset?: number; featured?: boolean }) {
 		const supabase = await createSupabaseServerClient();
 
 		return fetchPageData(
 			async () => {
-				let query = supabase
-					.from("businesses")
-					.select(
-						`
-          id,
-          name,
-          slug,
-          description,
-          address,
-          city,
-          state,
-          rating,
-          review_count,
-          price_range,
-          photos,
-          latitude,
-          longitude,
-          business_categories(
-            category:categories(name, slug, icon)
-          )
-        `,
-						{ count: "exact" }
-					)
-					.eq("status", "published");
+				// Add timeout protection for build process
+				const searchFunction = async () => {
+					// When filtering by related table columns we need inner joins
+					const needsCategoryJoin = Boolean(params.query) || Boolean(params.category);
+					const categoryJoinModifier = needsCategoryJoin ? "!inner" : "";
 
-				// Apply filters - Enhanced search to include categories and descriptions
-				if (params.query) {
-					// Search in multiple fields: business name, description, and category names
-					const searchTerm = params.query.toLowerCase();
-					query = query.or(`name.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,business_categories.category.name.ilike.%${searchTerm}%`);
-				}
+					let query = supabase
+						.from("businesses")
+						.select(
+							`
+                  id,
+                  name,
+                  slug,
+                  description,
+                  address,
+                  city,
+                  state,
+                  rating,
+                  review_count,
+                  price_range,
+                  photos,
+                  latitude,
+                  longitude,
+                  business_categories${categoryJoinModifier}(
+                    category:categories${categoryJoinModifier}(name, slug, icon)
+                  )
+                `,
+							{ count: "exact" }
+						)
+						.eq("status", "published");
 
-				if (params.location) {
-					query = query.or(`city.ilike.%${params.location}%,state.ilike.%${params.location}%`);
-				}
+					// Apply filters - Enhanced search to include categories and descriptions
+					if (params.query) {
+						// Search in business fields
+						const searchTerm = params.query.toLowerCase();
+						query = query.or(`name.ilike.*${searchTerm}*,description.ilike.*${searchTerm}*`);
 
-				if (params.category) {
-					query = query.eq("business_categories.category.slug", params.category);
-				}
+						// Also search related category fields via foreignTable OR
+						query = query.or(`name.ilike.*${searchTerm}*`, { foreignTable: "business_categories.category" });
+						query = query.or(`slug.ilike.*${searchTerm}*`, { foreignTable: "business_categories.category" });
+					}
 
-				if (params.rating) {
-					query = query.gte("rating", params.rating);
-				}
+					if (params.location) {
+						query = query.or(`city.ilike.*${params.location}*,state.ilike.*${params.location}*`);
+					}
 
-				if (params.priceRange) {
-					query = query.eq("price_range", params.priceRange);
-				}
+					if (params.category) {
+						query = query.eq("business_categories.category.slug", params.category);
+					}
 
-				if (params.featured !== undefined) {
-					query = query.eq("featured", params.featured);
-				}
+					if (params.rating) {
+						query = query.gte("rating", params.rating);
+					}
 
-				// Pagination
-				const limit = params.limit || 20;
-				const offset = params.offset || 0;
-				query = query.range(offset, offset + limit - 1);
+					if (params.priceRange) {
+						query = query.eq("price_range", params.priceRange);
+					}
 
-				const { data: businesses, error, count } = await query;
+					if (params.featured !== undefined) {
+						query = query.eq("featured", params.featured);
+					}
 
-				if (error) throw error;
+					// Pagination
+					const limit = params.limit || 20;
+					const offset = params.offset || 0;
+					query = query.range(offset, offset + limit - 1);
 
-				return {
-					businesses,
-					total: count || 0,
-					hasMore: (count || 0) > offset + limit,
+					const { data: businesses, error, count } = await query;
+
+					if (error) throw error;
+
+					return {
+						businesses,
+						total: count || 0,
+						hasMore: (count || 0) > offset + limit,
+					};
 				};
+
+				// Apply timeout for build process (8 seconds for database queries)
+				if (process.env.NODE_ENV === "production" || process.env.NEXT_BUILD === "1") {
+					const timeoutPromise = new Promise((_, reject) => {
+						setTimeout(() => reject(new Error("Database query timeout during build")), 8000);
+					});
+
+					try {
+						return await Promise.race([searchFunction(), timeoutPromise]);
+					} catch (error) {
+						logger.warn("Database timeout during build, returning empty result:", error.message);
+						return { businesses: [], total: 0, hasMore: false };
+					}
+				}
+
+				return await searchFunction();
 			},
 			`search_${JSON.stringify(params)}`
 		);

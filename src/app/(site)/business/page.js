@@ -1,7 +1,5 @@
 import { Button } from "@components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 import { CheckCircle, BarChart, MessageSquare, Megaphone } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 
 const features = [
@@ -34,11 +32,11 @@ export const metadata = {
 	openGraph: {
 		title: "Grow Your Business with Thorbis - Free Business Listings & Marketing Tools",
 		description: "Claim your free business page on Thorbis and connect with millions of potential customers. Manage reviews, track analytics, and grow your local business.",
-		url: "https://local.byronwade.com/business",
+		url: "https://thorbis.com/business",
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://local.byronwade.com/og-business.jpg",
+				url: "https://thorbis.com/og-business.jpg",
 				width: 1200,
 				height: 630,
 				alt: "Thorbis Business Solutions",
@@ -51,10 +49,10 @@ export const metadata = {
 		card: "summary_large_image",
 		title: "Grow Your Business with Thorbis",
 		description: "Claim your free business page and connect with millions of potential customers.",
-		images: ["https://local.byronwade.com/og-business.jpg"],
+		images: ["https://thorbis.com/og-business.jpg"],
 	},
 	alternates: {
-		canonical: "https://local.byronwade.com/business",
+		canonical: "https://thorbis.com/business",
 	},
 };
 
@@ -67,8 +65,8 @@ export default function BusinessPage() {
 		provider: {
 			"@type": "Organization",
 			name: "Thorbis",
-			logo: "https://local.byronwade.com/logos/ThorbisLogo.webp",
-			url: "https://local.byronwade.com",
+			logo: "https://thorbis.com/logos/ThorbisLogo.webp",
+			url: "https://thorbis.com",
 		},
 		serviceType: "Business Listing Service",
 		areaServed: "United States",
@@ -121,6 +119,19 @@ export default function BusinessPage() {
 	return (
 		<>
 			<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+			<script
+				type="application/ld+json"
+				dangerouslySetInnerHTML={{
+					__html: JSON.stringify({
+						"@context": "https://schema.org",
+						"@type": "BreadcrumbList",
+						itemListElement: [
+							{ "@type": "ListItem", position: 1, name: "Home", item: "https://thorbis.com/" },
+							{ "@type": "ListItem", position: 2, name: "Business", item: "https://thorbis.com/business" },
+						],
+					}),
+				}}
+			/>
 			<div className="bg-background text-foreground">
 				{/* Hero Section */}
 				<div className="isolate overflow-hidden relative">

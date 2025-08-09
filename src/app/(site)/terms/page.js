@@ -5,11 +5,11 @@ export const metadata = {
 	openGraph: {
 		title: "Terms of Service - Legal Agreement for Using Thorbis",
 		description: "Read Thorbis's terms of service to understand the legal agreement governing your use of our platform, including user responsibilities and service policies.",
-		url: "https://local.byronwade.com/terms",
+		url: "https://thorbis.com/terms",
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://local.byronwade.com/og-terms.jpg",
+				url: "https://thorbis.com/og-terms.jpg",
 				width: 1200,
 				height: 630,
 				alt: "Thorbis Terms of Service",
@@ -22,10 +22,10 @@ export const metadata = {
 		card: "summary_large_image",
 		title: "Terms of Service - Thorbis",
 		description: "Legal agreement governing your use of the Thorbis platform.",
-		images: ["https://local.byronwade.com/og-terms.jpg"],
+		images: ["https://thorbis.com/og-terms.jpg"],
 	},
 	alternates: {
-		canonical: "https://local.byronwade.com/terms",
+		canonical: "https://thorbis.com/terms",
 	},
 };
 
@@ -35,7 +35,7 @@ export default function TermsPage() {
 		"@type": "WebPage",
 		name: "Terms of Service",
 		description: "Legal agreement governing your use of Thorbis services",
-		url: "https://local.byronwade.com/terms",
+		url: "https://thorbis.com/terms",
 		dateModified: "2023-10-26",
 		mainEntity: {
 			"@type": "Article",
@@ -52,7 +52,7 @@ export default function TermsPage() {
 				name: "Thorbis",
 				logo: {
 					"@type": "ImageObject",
-					url: "https://local.byronwade.com/logos/ThorbisLogo.webp",
+					url: "https://thorbis.com/logos/ThorbisLogo.webp",
 				},
 			},
 			about: ["Legal Agreement", "User Responsibilities", "Service Terms", "Platform Rules", "Account Terms"],
@@ -64,7 +64,7 @@ export default function TermsPage() {
 					"@type": "ListItem",
 					position: 1,
 					item: {
-						"@id": "https://local.byronwade.com",
+						"@id": "https://thorbis.com",
 						name: "Thorbis",
 					},
 				},
@@ -72,7 +72,7 @@ export default function TermsPage() {
 					"@type": "ListItem",
 					position: 2,
 					item: {
-						"@id": "https://local.byronwade.com/terms",
+						"@id": "https://thorbis.com/terms",
 						name: "Terms of Service",
 					},
 				},

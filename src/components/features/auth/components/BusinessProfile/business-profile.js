@@ -4,12 +4,11 @@ import { useFormContext } from "react-hook-form";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@components/ui/form";
 import { Slider } from "@components/ui/slider";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@components/ui/select";
 import { Button } from "@components/ui/button";
 import { Card, CardContent } from "@components/ui/card";
 import { Badge } from "@components/ui/badge";
 import { Alert, AlertDescription } from "@components/ui/alert";
-import { CheckCircle, AlertCircle, Upload, MapPin, Clock, Wrench, Camera, X } from "lucide-react";
+import { CheckCircle, AlertCircle, MapPin, Clock, Wrench, Camera, X } from "lucide-react";
 
 const servicesOptions = [
 	{ value: "plumbing", label: "Plumbing", icon: "🔧", description: "Pipe repair, installation, maintenance" },

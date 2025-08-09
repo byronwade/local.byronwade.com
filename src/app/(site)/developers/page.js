@@ -1,5 +1,5 @@
 import { Button } from "@components/ui/button";
-import { Terminal, Book, Key } from "lucide-react";
+import { Terminal, Book } from "lucide-react";
 import Link from "next/link";
 
 export const metadata = {
@@ -9,11 +9,11 @@ export const metadata = {
 	openGraph: {
 		title: "Developer Platform - APIs & Integrations | Thorbis",
 		description: "Build with Thorbis APIs. Access comprehensive local business data, geolocation services, and real-time information. Get your API key and start integrating today.",
-		url: "https://local.byronwade.com/developers",
+		url: "https://thorbis.com/developers",
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://local.byronwade.com/og-developers.jpg",
+				url: "https://thorbis.com/og-developers.jpg",
 				width: 1200,
 				height: 630,
 				alt: "Thorbis Developer Platform",
@@ -26,10 +26,10 @@ export const metadata = {
 		card: "summary_large_image",
 		title: "Developer Platform - Thorbis APIs",
 		description: "Build with Thorbis APIs. Access local business data and geolocation services.",
-		images: ["https://local.byronwade.com/og-developers.jpg"],
+		images: ["https://thorbis.com/og-developers.jpg"],
 	},
 	alternates: {
-		canonical: "https://local.byronwade.com/developers",
+		canonical: "https://thorbis.com/developers",
 	},
 };
 
@@ -39,14 +39,14 @@ export default function DevelopersPage() {
 		"@type": "SoftwareApplication",
 		name: "Thorbis Developer Platform",
 		description: "API platform for accessing local business data, geolocation services, and real-time information",
-		url: "https://local.byronwade.com/developers",
+		url: "https://thorbis.com/developers",
 		applicationCategory: "DeveloperApplication",
 		operatingSystem: "Any",
 		provider: {
 			"@type": "Organization",
 			name: "Thorbis",
-			logo: "https://local.byronwade.com/logos/ThorbisLogo.webp",
-			url: "https://local.byronwade.com",
+			logo: "https://thorbis.com/logos/ThorbisLogo.webp",
+			url: "https://thorbis.com",
 		},
 		hasOfferCatalog: {
 			"@type": "OfferCatalog",
@@ -87,6 +87,19 @@ export default function DevelopersPage() {
 	return (
 		<>
 			<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+			<script
+				type="application/ld+json"
+				dangerouslySetInnerHTML={{
+					__html: JSON.stringify({
+						"@context": "https://schema.org",
+						"@type": "BreadcrumbList",
+						itemListElement: [
+							{ "@type": "ListItem", position: 1, name: "Home", item: "https://thorbis.com/" },
+							{ "@type": "ListItem", position: 2, name: "Developers", item: "https://thorbis.com/developers" },
+						],
+					}),
+				}}
+			/>
 			<div className="bg-background text-foreground">
 				{/* Hero Section */}
 				<div className="bg-muted">

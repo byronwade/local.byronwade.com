@@ -2,7 +2,7 @@ import { Handshake, Target, Zap } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
+import { Card, CardContent, CardHeader } from "@components/ui/card";
 
 const partners = [
 	{ name: "Partner One", logo: "/placeholder.svg" },
@@ -38,7 +38,7 @@ export const metadata = {
 	openGraph: {
 		title: "Partners - Collaborate with Thorbis | Business Partnerships",
 		description: "Join Thorbis's partner network. Collaborate with leading companies, accelerate growth, and reach targeted audiences. Learn about partnership opportunities.",
-		url: "https://local.byronwade.com/partners",
+		url: "https://thorbis.com/partners",
 		siteName: "Thorbis",
 		images: [
 			{
@@ -58,7 +58,7 @@ export const metadata = {
 		images: ["https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop"],
 	},
 	alternates: {
-		canonical: "https://local.byronwade.com/partners",
+		canonical: "https://thorbis.com/partners",
 	},
 };
 
@@ -68,7 +68,7 @@ export default function PartnersPage() {
 		"@type": "WebPage",
 		name: "Partners",
 		description: "Thorbis partnership opportunities and valued business collaborations",
-		url: "https://local.byronwade.com/partners",
+		url: "https://thorbis.com/partners",
 		mainEntity: {
 			"@type": "Organization",
 			name: "Thorbis Partner Network",
@@ -94,7 +94,7 @@ export default function PartnersPage() {
 					"@type": "ListItem",
 					position: 1,
 					item: {
-						"@id": "https://local.byronwade.com",
+						"@id": "https://thorbis.com",
 						name: "Thorbis",
 					},
 				},
@@ -102,7 +102,7 @@ export default function PartnersPage() {
 					"@type": "ListItem",
 					position: 2,
 					item: {
-						"@id": "https://local.byronwade.com/partners",
+						"@id": "https://thorbis.com/partners",
 						name: "Partners",
 					},
 				},

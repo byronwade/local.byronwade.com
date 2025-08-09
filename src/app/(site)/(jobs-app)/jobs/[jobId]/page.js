@@ -1,4 +1,4 @@
-import { Briefcase, MapPin, Building, DollarSign, Calendar, Users, Globe } from "lucide-react";
+import { MapPin, Building, Calendar, Globe } from "lucide-react";
 import { Button } from "@components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@components/ui/card";
 import { Badge } from "@components/ui/badge";

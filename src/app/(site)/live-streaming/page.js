@@ -5,11 +5,11 @@ export const metadata = {
 	openGraph: {
 		title: "Live Streaming for Businesses - Connect with Customers in Real-Time | Thorbis",
 		description: "Stream live events, product launches, and behind-the-scenes content to engage your customers. Build stronger relationships through real-time interaction and live commerce.",
-		url: "https://local.byronwade.com/live-streaming",
+		url: "https://thorbis.com/live-streaming",
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://local.byronwade.com/og-live-streaming.jpg",
+				url: "https://thorbis.com/og-live-streaming.jpg",
 				width: 1200,
 				height: 630,
 				alt: "Live Streaming for Businesses on Thorbis",
@@ -22,10 +22,10 @@ export const metadata = {
 		card: "summary_large_image",
 		title: "Live Streaming for Businesses - Thorbis",
 		description: "Connect with customers in real-time through live streaming and interactive content.",
-		images: ["https://local.byronwade.com/og-live-streaming.jpg"],
+		images: ["https://thorbis.com/og-live-streaming.jpg"],
 	},
 	alternates: {
-		canonical: "https://local.byronwade.com/live-streaming",
+		canonical: "https://thorbis.com/live-streaming",
 	},
 };
 
@@ -35,7 +35,7 @@ export default function LiveStreamingPage() {
 		"@type": "WebPage",
 		name: "Live Streaming for Businesses",
 		description: "Live streaming platform for businesses to connect with customers in real-time",
-		url: "https://local.byronwade.com/live-streaming",
+		url: "https://thorbis.com/live-streaming",
 		mainEntity: {
 			"@type": "SoftwareApplication",
 			name: "Thorbis Live Streaming",
@@ -50,7 +50,7 @@ export default function LiveStreamingPage() {
 					"@type": "ListItem",
 					position: 1,
 					item: {
-						"@id": "https://local.byronwade.com",
+						"@id": "https://thorbis.com",
 						name: "Thorbis",
 					},
 				},
@@ -58,7 +58,7 @@ export default function LiveStreamingPage() {
 					"@type": "ListItem",
 					position: 2,
 					item: {
-						"@id": "https://local.byronwade.com/live-streaming",
+						"@id": "https://thorbis.com/live-streaming",
 						name: "Live Streaming",
 					},
 				},

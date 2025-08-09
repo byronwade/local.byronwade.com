@@ -4,8 +4,8 @@
  * Enterprise-grade performance with caching and analytics
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import { generatePersonalizedHomepage } from '@utils/homepagePersonalizationEngine';
+import { NextResponse } from 'next/server';
+import { generatePersonalizedHomepage } from '@utils/homepage-personalization-engine';
 import { supabase } from '@lib/database/supabase';
 import { logger } from '@utils/logger';
 

@@ -1,11 +1,8 @@
 "use client";
-import Image from "next/image";
-import { useEffect } from "react";
 import Header from "@components/admin/header";
 import { AppSidebar } from "@components/admin/app-sidebar";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@components/ui/sidebar";
-import { redirect } from "next/navigation";
-import { useAuth } from "@context/AuthContext";
+import { useAuth } from "@context/auth-context";
 
 export default function AdminLayout({ children }) {
 	const { user, userRoles, loading, isAuthenticated } = useAuth();

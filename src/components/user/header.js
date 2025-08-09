@@ -8,12 +8,12 @@ import { Badge } from "@components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuLabel, DropdownMenuGroup, DropdownMenuRadioGroup, DropdownMenuRadioItem } from "@components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@components/ui/sheet";
-import { ChevronDown, Menu, Bell, Settings, Briefcase, CreditCard, HelpCircle, User, Users, Activity, Star } from "react-feather";
-import { BarChart3, Zap, Building2, Plus } from "lucide-react";
+import { ChevronDown, Menu, Bell, Settings, Briefcase, CreditCard, HelpCircle, Users, Activity, Star } from "react-feather";
+import { BarChart3, Building2, Plus } from "lucide-react";
 import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
 import { RiComputerFill } from "react-icons/ri";
 import { useTheme } from "next-themes";
-import { useAuth } from "@context/AuthContext";
+import { useAuth } from "@context/auth-context";
 
 export default function Header() {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);

@@ -1,6 +1,8 @@
-# Environment Setup Guide
+# Environment Setup Guide (Canonical)
 
-This guide will help you resolve the console errors and optimize performance by properly configuring your environment variables.
+This document is now the canonical environment setup guide.
+
+For a focused variables reference, see `docs/environment-setup.md`. Both documents are maintained, but this is the primary source.
 
 ## 🚨 Critical Issues Fixed
 

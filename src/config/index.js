@@ -161,7 +161,7 @@ export const services = {
 		provider: process.env.EMAIL_PROVIDER || "resend",
 		resend: {
 			apiKey: process.env.RESEND_API_KEY,
-			fromEmail: process.env.EMAIL_FROM || "noreply@local.byronwade.com",
+			fromEmail: process.env.EMAIL_FROM || "noreply@thorbis.com",
 			fromName: process.env.EMAIL_FROM_NAME || "Thorbis",
 		},
 		templates: {
@@ -293,7 +293,7 @@ export const performance = {
 
 	// Image Optimization
 	images: {
-		domains: process.env.IMAGE_DOMAINS?.split(",") || ["local.byronwade.com"],
+		domains: process.env.IMAGE_DOMAINS?.split(",") || ["thorbis.com"],
 		formats: ["image/webp", "image/avif"],
 		quality: parseInt(process.env.IMAGE_QUALITY || "75", 10),
 		sizes: [16, 32, 48, 64, 96, 128, 256, 384, 640, 750, 828, 1080, 1200, 1920, 2048, 3840],

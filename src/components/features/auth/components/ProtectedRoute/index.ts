@@ -3,8 +3,6 @@
  * Enterprise-level route protection component
  */
 
-export { default as ProtectedRoute } from "./ProtectedRoute";
-export type { ProtectedRouteProps } from "./ProtectedRoute";
+export { ProtectedRoute, ProtectedComponent, ProtectedByRole, ProtectedByLevel, usePermissions } from "./protected-route";
 
-// Re-export any related types or utilities
-export * from "./types";
+export type { ProtectedRouteProps } from "./types";

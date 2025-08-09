@@ -1,4 +1,4 @@
-import { ThumbsUp, ThumbsDown, Megaphone, Scale } from "lucide-react";
+import { ThumbsUp, ThumbsDown, Scale } from "lucide-react";
 
 export const metadata = {
 	title: "Community Guidelines - Safe & Trusted Platform | Thorbis",
@@ -7,11 +7,11 @@ export const metadata = {
 	openGraph: {
 		title: "Community Guidelines - Safe & Trusted Platform | Thorbis",
 		description: "Learn about Thorbis's community guidelines. We maintain a safe and trusted platform with clear rules about reviews, content, and user behavior. Read our policies.",
-		url: "https://local.byronwade.com/community-guidelines",
+		url: "https://thorbis.com/community-guidelines",
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://local.byronwade.com/og-community-guidelines.jpg",
+				url: "https://thorbis.com/og-community-guidelines.jpg",
 				width: 1200,
 				height: 630,
 				alt: "Thorbis Community Guidelines",
@@ -24,10 +24,10 @@ export const metadata = {
 		card: "summary_large_image",
 		title: "Community Guidelines - Safe & Trusted Platform",
 		description: "Learn about our guidelines for maintaining a safe and trusted community platform.",
-		images: ["https://local.byronwade.com/og-community-guidelines.jpg"],
+		images: ["https://thorbis.com/og-community-guidelines.jpg"],
 	},
 	alternates: {
-		canonical: "https://local.byronwade.com/community-guidelines",
+		canonical: "https://thorbis.com/community-guidelines",
 	},
 };
 
@@ -37,7 +37,7 @@ export default function ContentGuidelinesPage() {
 		"@type": "WebPage",
 		name: "Community Guidelines",
 		description: "Guidelines to ensure Thorbis remains a helpful and trusted source for everyone",
-		url: "https://local.byronwade.com/community-guidelines",
+		url: "https://thorbis.com/community-guidelines",
 		mainEntity: {
 			"@type": "Article",
 			headline: "Community Guidelines",
@@ -51,7 +51,7 @@ export default function ContentGuidelinesPage() {
 				name: "Thorbis",
 				logo: {
 					"@type": "ImageObject",
-					url: "https://local.byronwade.com/logos/ThorbisLogo.webp",
+					url: "https://thorbis.com/logos/ThorbisLogo.webp",
 				},
 			},
 			about: ["Community Safety", "Content Moderation", "User Guidelines", "Platform Rules", "Review Policies"],
@@ -63,7 +63,7 @@ export default function ContentGuidelinesPage() {
 					"@type": "ListItem",
 					position: 1,
 					item: {
-						"@id": "https://local.byronwade.com",
+						"@id": "https://thorbis.com",
 						name: "Thorbis",
 					},
 				},
@@ -71,7 +71,7 @@ export default function ContentGuidelinesPage() {
 					"@type": "ListItem",
 					position: 2,
 					item: {
-						"@id": "https://local.byronwade.com/community-guidelines",
+						"@id": "https://thorbis.com/community-guidelines",
 						name: "Community Guidelines",
 					},
 				},

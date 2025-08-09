@@ -3,4 +3,4 @@
  * Custom hooks for partnership functionality
  */
 
-export { usePartnerships } from "./usePartnerships";
+export { usePartnerships } from "./usepartnerships";

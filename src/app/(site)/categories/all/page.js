@@ -1,5 +1,5 @@
 import React from "react";
-import AllCategoriesPage from "@components/site/categories/AllCategoriesPage";
+import AllCategoriesPage from "@components/site/categories/all-categories-page";
 
 export const metadata = {
 	title: "All Business Categories - Complete Directory | Thorbis",
@@ -8,11 +8,11 @@ export const metadata = {
 	openGraph: {
 		title: "All Business Categories - Complete Directory | Thorbis",
 		description: "Browse our complete directory of business categories. Search and filter through thousands of business types to find exactly what you need.",
-		url: "https://www.thorbis.com/categories/all",
+		url: "https://thorbis.com/categories/all",
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://www.thorbis.com/og-all-categories.jpg",
+				url: "https://thorbis.com/og-all-categories.jpg",
 				width: 800,
 				height: 600,
 				alt: "Thorbis All Categories",
@@ -20,6 +20,15 @@ export const metadata = {
 		],
 		locale: "en_US",
 		type: "website",
+	},
+	twitter: {
+		card: "summary_large_image",
+		title: "All Business Categories - Thorbis",
+		description: "Browse the complete category directory.",
+		images: ["https://thorbis.com/og-all-categories.jpg"],
+	},
+	alternates: {
+		canonical: "https://thorbis.com/categories/all",
 	},
 };
 

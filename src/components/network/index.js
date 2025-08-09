@@ -2,4 +2,4 @@
 // Network/social feature components
 
 // Network Layout
-export { default as AppHeader } from "./AppHeader";
+export { AppHeader } from "./app-header";

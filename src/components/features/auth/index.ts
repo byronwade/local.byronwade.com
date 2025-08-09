@@ -11,7 +11,7 @@
 // ============================================================================
 export { LoginForm } from "./components/LoginForm";
 export { SignupForm } from "./components/SignupForm";
-export { ProtectedRoute } from "./components/ProtectedRoute";
+export { ProtectedRoute } from "./components/protected-route";
 export { VerifyAccount } from "./components/VerifyAccount";
 export { ActiveUser } from "./components/ActiveUser";
 export { BusinessInfo } from "./components/BusinessInfo";
@@ -19,14 +19,14 @@ export { BusinessAddress } from "./components/BusinessAddress";
 export { BusinessProfile } from "./components/BusinessProfile";
 export { BusinessSuccess } from "./components/BusinessSuccess";
 export { BusinessVerification } from "./components/BusinessVerification";
-export { BusinessForm } from "./components/BusinessForm";
+export { BusinessForm } from "./components/business-form";
 export { AccountOTP } from "./components/AccountOTP";
 export { PasswordReset } from "./components/PasswordReset";
 export { ActiveBusiness } from "./components/ActiveBusiness";
 export { BusinessSearch } from "./components/BusinessSearch";
 
 // Export all IntelligentLoginButton components
-export * from "./components/IntelligentLoginButton";
+export * from "./components/intelligent-login-button";
 
 // Export login component directly for backward compatibility
 export { default as LoginPage } from "./components/LoginForm/login";
@@ -41,7 +41,7 @@ export { default as SignupPage } from "./components/SignupForm/signup";
 // HOOKS
 // ============================================================================
 // TODO: Export hooks as they're created
-// export { useAuth } from './hooks/useAuth';
+// export { useAuth } from './hooks/use-auth';
 // export { useLogin } from './hooks/useLogin';
 // export { useSignup } from './hooks/useSignup';
 

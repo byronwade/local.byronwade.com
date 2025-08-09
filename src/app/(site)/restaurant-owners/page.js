@@ -33,11 +33,11 @@ export const metadata = {
 	openGraph: {
 		title: "Restaurant Management Solutions - Tools for Restaurant Owners | Thorbis",
 		description: "Comprehensive management tools for restaurant owners. Handle reservations, online ordering, reviews, staff scheduling, and grow your restaurant business with Thorbis.",
-		url: "https://local.byronwade.com/restaurant-owners",
+		url: "https://thorbis.com/restaurant-owners",
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://local.byronwade.com/og-restaurant-owners.jpg",
+				url: "https://thorbis.com/og-restaurant-owners.jpg",
 				width: 1200,
 				height: 630,
 				alt: "Restaurant Management Solutions on Thorbis",
@@ -50,10 +50,10 @@ export const metadata = {
 		card: "summary_large_image",
 		title: "Restaurant Management Solutions - Thorbis",
 		description: "Comprehensive tools to help restaurant owners manage and grow their business.",
-		images: ["https://local.byronwade.com/og-restaurant-owners.jpg"],
+		images: ["https://thorbis.com/og-restaurant-owners.jpg"],
 	},
 	alternates: {
-		canonical: "https://local.byronwade.com/restaurant-owners",
+		canonical: "https://thorbis.com/restaurant-owners",
 	},
 };
 
@@ -63,7 +63,7 @@ export default function RestaurantOwnersPage() {
 		"@type": "WebPage",
 		name: "Restaurant Management Solutions",
 		description: "Comprehensive management solutions and tools for restaurant owners",
-		url: "https://local.byronwade.com/restaurant-owners",
+		url: "https://thorbis.com/restaurant-owners",
 		mainEntity: {
 			"@type": "Service",
 			name: "Restaurant Management Services",
@@ -82,7 +82,7 @@ export default function RestaurantOwnersPage() {
 					"@type": "ListItem",
 					position: 1,
 					item: {
-						"@id": "https://local.byronwade.com",
+						"@id": "https://thorbis.com",
 						name: "Thorbis",
 					},
 				},
@@ -90,7 +90,7 @@ export default function RestaurantOwnersPage() {
 					"@type": "ListItem",
 					position: 2,
 					item: {
-						"@id": "https://local.byronwade.com/restaurant-owners",
+						"@id": "https://thorbis.com/restaurant-owners",
 						name: "Restaurant Owners",
 					},
 				},

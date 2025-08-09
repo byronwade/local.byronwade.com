@@ -1,11 +1,11 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { ChevronUp, ChevronDown, Search, Filter, TrendingUp, Clock, Star, Plus, MapPin, ArrowLeft, Home, TrendingUp as TrendingIcon, Menu } from "lucide-react";
+import { ChevronUp, ChevronDown, Search, Filter, Plus, ArrowLeft, Home, TrendingUp as TrendingIcon, Menu } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@components/ui/dropdown-menu";
-import VideoComponent from "./VideoComponent";
+import VideoComponent from "./video-component";
 
 // Business-focused video data with 10 videos
 const businessVideos = [

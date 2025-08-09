@@ -4,7 +4,6 @@ import { Button } from "@components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
 import { Badge } from "@components/ui/badge";
 import { Input } from "@components/ui/input";
-import { Label } from "@components/ui/label";
 import { Progress } from "@components/ui/progress";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 import { Copy, Mail, Twitter, Facebook, Linkedin, Share2, Gift, Users, TrendingUp, Award, CheckCircle, ArrowRight, ExternalLink, Star, Zap, Target, BarChart3 } from "lucide-react";

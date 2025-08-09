@@ -5,7 +5,7 @@
 
 import { supabase } from "@lib/supabase/client";
 import { logger } from "@lib/utils/logger";
-import { withErrorHandling } from "@lib/utils/errorHandler";
+import { withErrorHandling } from "@lib/utils/error-handler";
 
 /**
  * Fetch LocalHub directory statistics

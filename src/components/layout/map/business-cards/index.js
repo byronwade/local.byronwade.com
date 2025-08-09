@@ -3,5 +3,5 @@
  * Centralized export for all business card components
  */
 
-export { BusinessCard } from "./BusinessCard";
-export { GoogleStyleBusinessCard } from "./GoogleStyleBusinessCard";
+export { BusinessCard } from "./business-card";
+export { GoogleStyleBusinessCard } from "./GoogleStylebusiness-card";

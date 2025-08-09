@@ -4,14 +4,17 @@
 
 // Core Auth Components
 export { default as Login } from "./components/LoginForm/login";
+export { default as LoginPage } from "./components/LoginForm/login";
 export { default as Signup } from "./components/SignupForm/signup";
-export { ProtectedRoute } from "./components/ProtectedRoute";
+export { default as SignupPage } from "./components/SignupForm/signup";
+export { ProtectedRoute, ProtectedComponent, ProtectedByRole, ProtectedByLevel, usePermissions, withProtection } from "./components/ProtectedRoute/protected-route";
 
 // Auth Forms
-export { default as BusinessForm } from "./forms/BusinessForm";
+export { BusinessForm } from "./forms/business-form";
 
 // Account Management
 export { default as OTP } from "./account/otp";
+export { default as AccountOTP } from "./account/otp";
 export { default as PasswordReset } from "./account/password-reset";
 
 // Business Certification
@@ -38,10 +41,11 @@ export { default as ActiveBusiness } from "./shared/active-business";
 export { default as ActiveUser } from "./shared/active-user";
 export { default as BusinessSearch } from "./shared/business-search";
 export { default as VerifyAccount } from "./shared/verify-account";
-export { default as PasswordStrengthIndicator } from "./shared/PasswordStrengthIndicator";
-export { default as RateLimitWarning } from "./shared/RateLimitWarning";
-export { default as IntelligentLoginMessage } from "./shared/IntelligentLoginMessage";
-export { default as PersonalizedSignupFlow } from "./shared/PersonalizedSignupFlow";
+export { default as PasswordStrengthIndicator } from "./shared/password-strength-indicator";
+export { default as RateLimitWarning } from "./shared/rate-limit-warning";
+export { default as IntelligentLoginMessage } from "./shared/intelligent-login-message";
+export { AddBusinessLoginButton, BookServiceLoginButton, ClaimBusinessLoginButton, DashboardLoginButton, IntelligentLoginButton, PremiumLoginButton, SaveBusinessLoginButton, WriteReviewLoginButton, createIntelligentLoginLink } from "./shared/intelligent-login-button";
+export { default as PersonalizedSignupFlow } from "./shared/personalized-signup-flow";
 
 // Support Components
 export { default as SupportInfo } from "./support/support-info";

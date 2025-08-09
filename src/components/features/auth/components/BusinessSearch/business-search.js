@@ -2,12 +2,12 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
+import { Card, CardContent, CardTitle } from "@components/ui/card";
 import { Badge } from "@components/ui/badge";
 import { Alert, AlertDescription } from "@components/ui/alert";
 import { ScrollArea } from "@components/ui/scroll-area";
 import { Separator } from "@components/ui/separator";
-import { Search, MapPin, Phone, Globe, Star, Building2, CheckCircle, AlertTriangle, Plus, Loader2, X, ExternalLink } from "lucide-react";
+import { Search, MapPin, Phone, Star, Building2, CheckCircle, AlertTriangle, Plus, Loader2, X, ExternalLink } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useBusinessStore } from "@store/business";
 import { useToast } from "@components/ui/use-toast";

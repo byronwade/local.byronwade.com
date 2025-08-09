@@ -7,11 +7,11 @@ export const metadata = {
 	openGraph: {
 		title: "Accessibility Statement - Thorbis Commitment to Digital Accessibility",
 		description: "Learn about Thorbis's commitment to digital accessibility and our efforts to ensure our platform is usable by everyone, including people with disabilities.",
-		url: "https://local.byronwade.com/accessibility-statement",
+		url: "https://thorbis.com/accessibility-statement",
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://local.byronwade.com/og-accessibility.jpg",
+				url: "https://thorbis.com/og-accessibility.jpg",
 				width: 1200,
 				height: 630,
 				alt: "Thorbis Accessibility Commitment",
@@ -24,10 +24,10 @@ export const metadata = {
 		card: "summary_large_image",
 		title: "Accessibility Statement - Thorbis Digital Accessibility",
 		description: "Learn about our commitment to digital accessibility and WCAG compliance.",
-		images: ["https://local.byronwade.com/og-accessibility.jpg"],
+		images: ["https://thorbis.com/og-accessibility.jpg"],
 	},
 	alternates: {
-		canonical: "https://local.byronwade.com/accessibility-statement",
+		canonical: "https://thorbis.com/accessibility-statement",
 	},
 };
 
@@ -37,7 +37,7 @@ export default function AccessibilityStatementPage() {
 		"@type": "WebPage",
 		name: "Accessibility Statement",
 		description: "Thorbis's commitment to digital accessibility and our efforts to ensure our platform is usable by everyone, including people with disabilities.",
-		url: "https://local.byronwade.com/accessibility-statement",
+		url: "https://thorbis.com/accessibility-statement",
 		mainEntity: {
 			"@type": "Article",
 			headline: "Accessibility Statement",
@@ -51,13 +51,20 @@ export default function AccessibilityStatementPage() {
 				name: "Thorbis",
 				logo: {
 					"@type": "ImageObject",
-					url: "https://local.byronwade.com/logos/ThorbisLogo.webp",
+					url: "https://thorbis.com/logos/ThorbisLogo.webp",
 				},
 			},
 			accessibilityAPI: "ARIA",
 			accessibilityFeature: ["alternativeText", "highContrast", "keyboardNavigation", "screenReaderSupport"],
 			accessibilityControl: ["fullKeyboardControl", "mouseControl"],
 			accessibilityHazard: "none",
+		},
+		breadcrumb: {
+			"@type": "BreadcrumbList",
+			itemListElement: [
+				{ "@type": "ListItem", position: 1, name: "Home", item: "https://thorbis.com/" },
+				{ "@type": "ListItem", position: 2, name: "Accessibility", item: "https://thorbis.com/accessibility-statement" },
+			],
 		},
 	};
 

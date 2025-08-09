@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useFormContext } from "react-hook-form";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@components/ui/form";
+import { FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@components/ui/form";
 import { Input } from "@components/ui/input";
 import { Button } from "@components/ui/button";
-import { Alert, AlertDescription } from "@components/ui/alert";
-import { Badge } from "@components/ui/badge";
 import { CheckCircle, AlertCircle, MapPin, Search, Loader2 } from "lucide-react";
 import { Card, CardContent } from "@components/ui/card";
 

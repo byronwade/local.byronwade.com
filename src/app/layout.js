@@ -1,14 +1,15 @@
 import "./globals.css";
 import { Inter as FontSans } from "next/font/google";
-import { ThemeProvider } from "@context/ThemeContext";
-import { LanguageProvider } from "@context/LanguageContext";
-import { StatsigProvider } from "@context/StatsigContext";
+import { ThemeProvider } from "@context/theme-context";
+import { LanguageProvider } from "@context/language-context";
+import { StatsigProvider } from "@context/statsig-context";
 import { Toaster } from "@components/ui/toaster";
-import ErrorBoundary from "@components/shared/ErrorBoundary";
-import AnalyticsInitializer from "@components/shared/AnalyticsInitializer";
+import ErrorBoundary from "@components/shared/error-boundary";
+import AnalyticsInitializer from "@components/shared/analytics-initializer";
 import { cn } from "@utils";
 
-import { AuthProvider } from "@context/AuthContext";
+import { AuthProvider } from "@context/auth-context";
+import SiteWideAlert from "@components/shared/site-alert";
 
 // Import global metadata configuration
 export { metadata, viewport } from "./metadata";
@@ -65,10 +66,10 @@ export default function RootLayout({ children }) {
 								"@context": "https://schema.org",
 								"@type": "Organization",
 								name: "ByteRover LLC",
-								url: "https://local.byronwade.com",
+								url: "https://thorbis.com",
 								logo: {
 									"@type": "ImageObject",
-									url: "https://local.byronwade.com/logos/ThorbisLogo.webp",
+									url: "https://thorbis.com/logos/ThorbisLogo.webp",
 									width: 512,
 									height: 512,
 								},
@@ -82,7 +83,7 @@ export default function RootLayout({ children }) {
 								contactPoint: {
 									"@type": "ContactPoint",
 									telephone: "+1-555-123-4567",
-									email: "support@local.byronwade.com",
+									email: "support@thorbis.com",
 									contactType: "Customer Service",
 									areaServed: "US",
 									availableLanguage: "English",
@@ -103,22 +104,22 @@ export default function RootLayout({ children }) {
 							{
 								"@context": "https://schema.org",
 								"@type": "WebSite",
-								name: "Local ByteRover Directory",
-								url: "https://local.byronwade.com",
+								name: "Thorbis",
+								url: "https://thorbis.com",
 								description: "Discover local businesses, events, and community resources in your area",
 								potentialAction: {
 									"@type": "SearchAction",
 									target: {
 										"@type": "EntryPoint",
-										urlTemplate: "https://local.byronwade.com/search?q={search_term_string}",
+										urlTemplate: "https://thorbis.com/search?q={search_term_string}",
 									},
 									"query-input": "required name=search_term_string",
 								},
 								publisher: {
 									"@type": "Organization",
 									name: "ByteRover LLC",
-									url: "https://local.byronwade.com",
-									logo: "https://local.byronwade.com/logos/ThorbisLogo.webp",
+									url: "https://thorbis.com",
+									logo: "https://thorbis.com/logos/ThorbisLogo.webp",
 								},
 							},
 							null,
@@ -134,6 +135,8 @@ export default function RootLayout({ children }) {
 							<AuthProvider>
 								<StatsigProvider>
 									<AnalyticsInitializer />
+									{/* Compact global site alert above all headers */}
+									<SiteWideAlert />
 									{children}
 									<Toaster />
 								</StatsigProvider>

@@ -2,13 +2,13 @@
 // All React context providers
 
 // Core Contexts
-export * from "./AuthContext";
+export * from "./auth-context";
 export * from "./BusinessContext";
-export * from "./LanguageContext";
-export * from "./NotificationContext";
-export * from "./ThemeContext";
+export * from "./language-context";
+export * from "./notification-context";
+export * from "./theme-context";
 
 // Post-related Contexts
-export * from "./posts/CommentsContext";
-export * from "./posts/PostContext";
-export * from "./posts/ReactionsContext";
+export * from "./posts/comments-context";
+export * from "./posts/post-context";
+export * from "./posts/reactions-context";

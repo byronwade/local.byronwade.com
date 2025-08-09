@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@components/ui/button";
-import { AlertCircle, AlertOctagon, BarChart, ChevronDown, Copy, Pause, Truck, User, Shield, Bell, CreditCard, HelpCircle, Settings as SettingsIcon, Building2, Star, Users, MessageCircle, BookOpen } from "lucide-react";
+import { Copy, User, Shield, Bell, CreditCard, HelpCircle, Building2, Star, Users, MessageCircle, BookOpen } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
 import { Input } from "@components/ui/input";
 import { Label } from "@components/ui/label";

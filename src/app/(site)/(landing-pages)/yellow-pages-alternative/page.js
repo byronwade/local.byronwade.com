@@ -3,17 +3,48 @@ import Link from "next/link";
 import { Button } from "@components/ui/button";
 import { Badge } from "@components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
-import { CheckCircle, XCircle, Star, Users, DollarSign, Shield, Zap, Globe, MessageSquare, Calendar, Award, Search, BarChart3, Settings, Phone, MapPin, Clock, Building, TrendingUp, CreditCard, Headphones } from "lucide-react";
+import { CheckCircle, XCircle, Users, Shield, Zap, Globe, Search, Building, TrendingUp, CreditCard, Headphones } from "lucide-react";
 
 export const metadata = {
-	title: "Thorbis vs Yellow Pages - Modern Business Directory Alternative",
+	title: "Yellow Pages Alternative – Thorbis vs Yellow Pages | Thorbis",
 	description: "Discover why Thorbis is the superior alternative to Yellow Pages for business discovery and local search. Free listings, modern digital tools, and comprehensive business solutions.",
-	keywords: "Thorbis vs Yellow Pages, business directory alternative, free business listing, local search, digital business platform",
+	keywords: ["Yellow Pages alternative", "Thorbis vs Yellow Pages", "business directory alternative", "free business listing", "local search platform"],
+	alternates: { canonical: "https://thorbis.com/yellow-pages-alternative" },
+	openGraph: {
+		title: "Yellow Pages Alternative – Thorbis vs Yellow Pages",
+		description: "Business directory alternative with modern digital tools and free listings.",
+		type: "website",
+		url: "https://thorbis.com/yellow-pages-alternative",
+		siteName: "Thorbis",
+		images: [{ url: "https://thorbis.com/og-yellow-pages-alt.jpg", width: 1200, height: 630, alt: "Thorbis vs Yellow Pages" }],
+		locale: "en_US",
+	},
+	twitter: {
+		card: "summary_large_image",
+		title: "Yellow Pages Alternative – Thorbis vs Yellow Pages",
+		description: "Business directory alternative with modern digital tools and free listings.",
+		images: ["https://thorbis.com/og-yellow-pages-alt.jpg"],
+		creator: "@thorbis",
+		site: "@thorbis",
+	},
 };
 
 export default function YellowPagesAlternative() {
 	return (
 		<div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
+			<script
+				type="application/ld+json"
+				dangerouslySetInnerHTML={{
+					__html: JSON.stringify({
+						"@context": "https://schema.org",
+						"@type": "BreadcrumbList",
+						itemListElement: [
+							{ "@type": "ListItem", position: 1, name: "Home", item: "https://thorbis.com/" },
+							{ "@type": "ListItem", position: 2, name: "Yellow Pages Alternative", item: "https://thorbis.com/yellow-pages-alternative" },
+						],
+					}),
+				}}
+			/>
 			{/* Hero Section */}
 			<section className="relative overflow-hidden">
 				<div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 dark:from-blue-400/5 dark:to-purple-400/5"></div>

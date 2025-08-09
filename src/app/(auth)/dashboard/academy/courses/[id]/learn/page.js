@@ -1,297 +1,297 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
-import Link from "next/link";
-import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
+
+import React, { useState, useEffect, useCallback } from "react";
+import { useParams } from "next/navigation";
+import { ProtectedRoute } from "@components/features/auth";
+import { Card, CardContent } from "@components/ui/card";
 import { Button } from "@components/ui/button";
-import { Badge } from "@components/ui/badge";
 import { Progress } from "@components/ui/progress";
-import { Separator } from "@components/ui/separator";
-import { ArrowLeft, ArrowRight, CheckCircle, Clock, BookOpen, Trophy, RotateCcw, Play, Pause } from "lucide-react";
+import { Alert, AlertTitle, AlertDescription } from "@components/ui/alert";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@components/ui/dialog";
+import { Check, X, ArrowLeft, ArrowRight, CheckCircle } from "lucide-react";
+import Link from "next/link";
 
-// Import courses data and question renderers from shared location
+// Import courses data
 import { courses } from "@data/academy/courses";
-import { enhancedCourses } from "@data/academy/enhanced-courses";
-import QuestionRenderer from "@components/academy/questions/QuestionRenderer";
 
-export default function CourseLearnPage() {
+// Import question renderers (we'll create a simple one for now)
+import QuestionRenderer from "@components/academy/questions/question-renderer";
+
+/**
+ * Full-screen immersive learning interface
+ * No main header - custom learning toolbar only
+ */
+export default function LearnPage() {
+	return (
+		<ProtectedRoute requireEmailVerification={true}>
+			<LearnInterface />
+		</ProtectedRoute>
+	);
+}
+
+/**
+ * UserAnswer object structure:
+ * {
+ *   questionId: string,
+ *   answer: string | number,
+ *   isCorrect: boolean
+ * }
+ */
+
+function LearnInterface() {
 	const params = useParams();
-	const router = useRouter();
-	const [course, setCourse] = useState(null);
+	const courseId = params.id;
 	const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-	const [userAnswers, setUserAnswers] = useState(new Map());
-	const [showResults, setShowResults] = useState(false);
-	const [loading, setLoading] = useState(true);
+	const [userAnswers, setUserAnswers] = useState([]);
+	const [showExplanation, setShowExplanation] = useState(false);
+	const [isAnswered, setIsAnswered] = useState(false);
+	const [isCompleteOpen, setIsCompleteOpen] = useState(false);
 
+	const course = courses.find((c) => c.id === courseId);
+
+	// Mock questions data (flatten from chapters)
+	const allQuestions = [
+		{
+			id: "q1",
+			title: "What is the main function of a P-trap?",
+			type: "multiple-choice",
+			options: ["To increase water pressure", "To prevent sewer gases from entering the building", "To filter water", "To regulate water temperature"],
+			correctAnswer: 1,
+			explanation: "A P-trap holds water that creates a seal preventing sewer gases from entering the building through the drain.",
+		},
+		{
+			id: "q2",
+			title: "Which pipe material is most commonly used for water supply lines?",
+			type: "multiple-choice",
+			options: ["Cast iron", "PVC", "Copper", "Lead"],
+			correctAnswer: 2,
+			explanation: "Copper is the most common material for water supply lines due to its durability and resistance to corrosion.",
+		},
+		{
+			id: "q3",
+			title: "Is it safe to use chemical drain cleaners on all types of pipes?",
+			type: "true-false",
+			correctAnswer: "false",
+			explanation: "Chemical drain cleaners can damage certain pipe materials, especially older pipes or those made of certain plastics.",
+		},
+	];
+
+	const currentQuestion = allQuestions[currentQuestionIndex];
+	const totalQuestions = allQuestions.length;
+	const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
+
+	// Check if current question is already answered
 	useEffect(() => {
-		if (params.id) {
-			// Try to find enhanced course first, fall back to basic course
-			const foundCourse = enhancedCourses.find((c) => c.id === params.id) || courses.find((c) => c.id === params.id);
-
-			if (foundCourse) {
-				setCourse(foundCourse);
-			} else {
-				router.push("/dashboard/academy/courses");
-			}
-			setLoading(false);
+		if (currentQuestion) {
+			const existingAnswer = userAnswers.find((a) => a.questionId === currentQuestion.id);
+			setIsAnswered(!!existingAnswer);
+			setShowExplanation(!!existingAnswer);
 		}
-	}, [params.id, router]);
+	}, [currentQuestionIndex, userAnswers, currentQuestion]);
 
-	if (loading) {
-		return (
-			<div className="flex items-center justify-center min-h-[400px]">
-				<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-			</div>
-		);
-	}
+	const handlePrevious = useCallback(() => {
+		if (currentQuestionIndex > 0) {
+			setCurrentQuestionIndex((prev) => prev - 1);
+			setShowExplanation(false);
+			setIsAnswered(false);
+		}
+	}, [currentQuestionIndex]);
 
-	if (!course || !course.questions || course.questions.length === 0) {
-		return (
-			<div className="text-center py-12">
-				<h2 className="text-2xl font-semibold mb-4">Learning content not available</h2>
-				<p className="text-muted-foreground mb-6">This course doesn't have interactive content yet.</p>
-				<Button asChild>
-					<Link href={`/dashboard/academy/courses/${params.id}`}>Back to Course</Link>
-				</Button>
-			</div>
-		);
-	}
-
-	const currentQuestion = course.questions[currentQuestionIndex];
-	const totalQuestions = course.questions.length;
-	const progressPercentage = ((currentQuestionIndex + 1) / totalQuestions) * 100;
+	const handleNext = useCallback(() => {
+		if (currentQuestionIndex < totalQuestions - 1) {
+			setCurrentQuestionIndex((prev) => prev + 1);
+			setShowExplanation(false);
+			setIsAnswered(false);
+		} else {
+			// Course completed
+			setIsCompleteOpen(true);
+		}
+	}, [currentQuestionIndex, totalQuestions]);
 
 	const handleAnswer = (answer) => {
-		const newAnswers = new Map(userAnswers);
-		newAnswers.set(currentQuestion.id, {
-			answer,
-			isCorrect: checkAnswer(currentQuestion, answer),
-			questionIndex: currentQuestionIndex,
-		});
-		setUserAnswers(newAnswers);
-	};
+		if (!currentQuestion || isAnswered) return;
 
-	const checkAnswer = (question, answer) => {
-		switch (question.type) {
-			case "multiple-choice":
-				return answer === question.correctAnswer;
-			case "true-false":
-				return answer === question.correctAnswer;
-			case "text-input":
-				return question.correctAnswers?.some((correct) => answer.toLowerCase().trim() === correct.toLowerCase().trim()) || false;
-			case "slider-range":
-				const target = question.correctRange;
-				return answer >= target.min && answer <= target.max;
-			default:
-				return false;
+		let isCorrect = false;
+		if (currentQuestion.correctAnswer !== undefined) {
+			isCorrect = currentQuestion.correctAnswer === answer;
 		}
+
+		const newAnswer = {
+			questionId: currentQuestion.id,
+			answer,
+			isCorrect,
+		};
+
+		setUserAnswers((prev) => [...prev.filter((a) => a.questionId !== currentQuestion.id), newAnswer]);
+		setIsAnswered(true);
+		setShowExplanation(true);
 	};
 
 	const getCurrentAnswer = () => {
-		return userAnswers.get(currentQuestion.id);
+		return userAnswers.find((a) => a.questionId === currentQuestion?.id);
+	};
+
+	const getCorrectAnswers = () => {
+		return userAnswers.filter((a) => a.isCorrect).length;
 	};
 
 	const getScorePercentage = () => {
-		const correctAnswers = Array.from(userAnswers.values()).filter((a) => a.isCorrect).length;
-		return Math.round((correctAnswers / totalQuestions) * 100);
+		if (userAnswers.length === 0) return 0;
+		return Math.round((getCorrectAnswers() / userAnswers.length) * 100);
 	};
 
-	const handleNext = () => {
-		if (currentQuestionIndex < totalQuestions - 1) {
-			setCurrentQuestionIndex(currentQuestionIndex + 1);
-		} else {
-			setShowResults(true);
-		}
-	};
-
-	const handlePrevious = () => {
-		if (currentQuestionIndex > 0) {
-			setCurrentQuestionIndex(currentQuestionIndex - 1);
-		}
-	};
-
-	const handleRestart = () => {
-		setCurrentQuestionIndex(0);
-		setUserAnswers(new Map());
-		setShowResults(false);
-	};
-
-	const isAnswered = userAnswers.has(currentQuestion.id);
-	const canProceed = isAnswered || currentQuestionIndex === totalQuestions - 1;
-
-	if (showResults) {
-		const score = getScorePercentage();
-		const correctCount = Array.from(userAnswers.values()).filter((a) => a.isCorrect).length;
-
+	if (!course) {
 		return (
-			<div className="space-y-8">
-				{/* Header */}
-				<div className="flex items-center gap-4">
-					<Button variant="ghost" size="sm" asChild>
-						<Link href={`/dashboard/academy/courses/${params.id}`}>
-							<ArrowLeft className="w-4 h-4 mr-2" />
-							Back to Course
-						</Link>
+			<div className="h-screen flex items-center justify-center">
+				<div className="text-center space-y-4">
+					<p className="text-xl">Course not found</p>
+					<Button asChild>
+						<Link href="/dashboard/academy/courses">Back to Courses</Link>
 					</Button>
 				</div>
+			</div>
+		);
+	}
 
-				{/* Results */}
-				<Card>
-					<CardContent className="p-8 text-center">
-						<div className="mb-6">
-							<Trophy className="w-16 h-16 text-yellow-500 mx-auto mb-4" />
-							<h1 className="text-3xl font-bold mb-2">Course Completed!</h1>
-							<p className="text-muted-foreground">Great job finishing {course.title}</p>
-						</div>
-
-						<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-							<div className="text-center">
-								<div className="text-3xl font-bold text-green-600 mb-1">{score}%</div>
-								<div className="text-sm text-muted-foreground">Final Score</div>
-							</div>
-							<div className="text-center">
-								<div className="text-3xl font-bold text-blue-600 mb-1">
-									{correctCount}/{totalQuestions}
-								</div>
-								<div className="text-sm text-muted-foreground">Correct Answers</div>
-							</div>
-							<div className="text-center">
-								<div className="text-3xl font-bold text-purple-600 mb-1">{totalQuestions}</div>
-								<div className="text-sm text-muted-foreground">Questions Completed</div>
-							</div>
-						</div>
-
-						<div className="flex flex-col sm:flex-row gap-4 justify-center">
-							<Button onClick={handleRestart} variant="outline">
-								<RotateCcw className="w-4 h-4 mr-2" />
-								Retake Course
-							</Button>
-							<Button asChild>
-								<Link href={`/dashboard/academy/courses/${params.id}`}>View Course Details</Link>
-							</Button>
-						</div>
-					</CardContent>
-				</Card>
+	if (!currentQuestion) {
+		return (
+			<div className="h-screen flex items-center justify-center">
+				<div className="text-center space-y-4">
+					<p className="text-xl">No questions available for this course.</p>
+					<Button asChild>
+						<Link href={`/dashboard/academy/courses/${courseId}`}>Back to Course</Link>
+					</Button>
+				</div>
 			</div>
 		);
 	}
 
 	return (
-		<div className="space-y-8">
-			{/* Header */}
-			<div className="flex items-center justify-between">
-				<div className="flex items-center gap-4">
-					<Button variant="ghost" size="sm" asChild>
-						<Link href={`/dashboard/academy/courses/${params.id}`}>
-							<ArrowLeft className="w-4 h-4 mr-2" />
-							Back to Course
-						</Link>
-					</Button>
-					<div>
-						<h1 className="text-2xl font-bold">{course.title}</h1>
-						<p className="text-muted-foreground">Interactive Learning</p>
+		<div className="min-h-screen bg-background flex flex-col">
+			{/* Custom Toolbar - Full Screen Learning Interface */}
+			<header className="sticky top-0 z-30 bg-background/95 backdrop-blur-sm border-b border-border px-4 md:px-6 py-3 md:py-4 shadow-sm">
+				<div className="flex justify-between items-center">
+					<div className="flex items-center space-x-4">
+						<Button asChild variant="ghost" size="sm" className="hover:bg-accent">
+							<Link href={`/dashboard/academy/courses/${courseId}`}>
+								<ArrowLeft className="mr-2 h-4 w-4" />
+								Exit
+							</Link>
+						</Button>
+						<div className="h-6 w-px bg-border" />
+						<span className="font-semibold text-foreground">{course.title}</span>
+					</div>
+
+					<div className="flex-1 flex items-center justify-center max-w-2xl space-x-4">
+						<span className="text-sm font-medium text-muted-foreground whitespace-nowrap">
+							Question {currentQuestionIndex + 1} of {totalQuestions}
+						</span>
+						<div className="flex-1 flex flex-col space-y-1">
+							<Progress value={progress} className="h-3" />
+						</div>
+						<span className="text-sm font-medium text-primary whitespace-nowrap">{Math.round(progress)}%</span>
+					</div>
+
+					<div className="flex items-center space-x-4">
+						<div className="text-right">
+							<div className="text-sm font-medium text-foreground">
+								Score: {getCorrectAnswers()}/{userAnswers.length}
+							</div>
+							{userAnswers.length > 0 && <div className="text-xs text-muted-foreground">{getScorePercentage()}% correct</div>}
+						</div>
 					</div>
 				</div>
-				<div className="text-sm text-muted-foreground">
-					Question {currentQuestionIndex + 1} of {totalQuestions}
-				</div>
-			</div>
+			</header>
 
-			{/* Progress */}
-			<Card>
-				<CardContent className="p-6">
-					<div className="flex justify-between items-center mb-2">
-						<span className="font-medium">Progress</span>
-						<span className="text-sm text-muted-foreground">{Math.round(progressPercentage)}% complete</span>
-					</div>
-					<Progress value={progressPercentage} className="h-3" />
-				</CardContent>
-			</Card>
-
-			{/* Question Content */}
-			<div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-				{/* Main Question */}
-				<div className="lg:col-span-3">
-					<Card>
-						<CardHeader>
-							<div className="flex items-center justify-between">
-								<CardTitle className="text-lg">Question {currentQuestionIndex + 1}</CardTitle>
-								<Badge variant="outline">{currentQuestion.type}</Badge>
-							</div>
-						</CardHeader>
-						<CardContent className="p-6">
-							<QuestionRenderer question={currentQuestion} onAnswer={handleAnswer} isAnswered={isAnswered} userAnswer={getCurrentAnswer()?.answer} />
-						</CardContent>
-					</Card>
-				</div>
-
-				{/* Sidebar */}
-				<div className="space-y-6">
-					{/* Navigation */}
-					<Card>
-						<CardHeader>
-							<CardTitle className="text-base">Navigation</CardTitle>
-						</CardHeader>
-						<CardContent>
-							<div className="flex flex-col gap-3">
-								<Button onClick={handlePrevious} disabled={currentQuestionIndex === 0} variant="outline" size="sm">
-									<ArrowLeft className="w-4 h-4 mr-2" />
-									Previous
-								</Button>
-								<Button onClick={handleNext} disabled={!canProceed} size="sm">
-									{currentQuestionIndex === totalQuestions - 1 ? (
-										<>
-											<CheckCircle className="w-4 h-4 mr-2" />
-											Finish
-										</>
-									) : (
-										<>
-											Next
-											<ArrowRight className="w-4 h-4 ml-2" />
-										</>
-									)}
-								</Button>
-							</div>
-						</CardContent>
-					</Card>
-
-					{/* Question Overview */}
-					<Card>
-						<CardHeader>
-							<CardTitle className="text-base">Questions</CardTitle>
-						</CardHeader>
-						<CardContent>
-							<div className="grid grid-cols-5 gap-2">
-								{course.questions.map((_, index) => {
-									const isAnswered = Array.from(userAnswers.keys()).some((key) => course.questions.findIndex((q) => q.id === key) === index);
-									const isCurrent = index === currentQuestionIndex;
-
-									return (
-										<button key={index} onClick={() => setCurrentQuestionIndex(index)} className={`w-8 h-8 rounded text-xs font-medium transition-colors ${isCurrent ? "bg-primary text-primary-foreground" : isAnswered ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}>
-											{index + 1}
-										</button>
-									);
-								})}
-							</div>
-						</CardContent>
-					</Card>
-
-					{/* Score */}
-					{userAnswers.size > 0 && (
-						<Card>
-							<CardHeader>
-								<CardTitle className="text-base">Current Score</CardTitle>
-							</CardHeader>
-							<CardContent>
+			{/* Main content */}
+			<div className="flex-1 flex flex-col">
+				<div className="flex-1 overflow-y-auto flex items-center justify-center p-4 md:p-8">
+					<Card className="w-full max-w-4xl md:min-h-[400px]">
+						<CardContent className="p-8">
+							<div className="space-y-8 h-full flex flex-col">
 								<div className="text-center">
-									<div className="text-2xl font-bold text-green-600 mb-1">{getScorePercentage()}%</div>
-									<div className="text-sm text-muted-foreground">{Array.from(userAnswers.values()).filter((a) => a.isCorrect).length} correct</div>
+									<div className="mb-6 space-y-2 text-center">
+										<h1 className="text-2xl font-bold leading-relaxed">{currentQuestion.title || currentQuestion.question || "Untitled Question"}</h1>
+										{currentQuestion.description && <p className="text-muted-foreground max-w-2xl mx-auto">{currentQuestion.description}</p>}
+									</div>
 								</div>
-							</CardContent>
-						</Card>
-					)}
+
+								<QuestionRenderer question={currentQuestion} onAnswer={handleAnswer} isAnswered={isAnswered} userAnswer={getCurrentAnswer()?.answer} showFeedback={showExplanation} />
+
+								{showExplanation && (
+									<Alert variant={getCurrentAnswer()?.isCorrect ? "default" : "destructive"}>
+										{getCurrentAnswer()?.isCorrect ? <Check className="h-4 w-4" /> : <X className="h-4 w-4" />}
+										<AlertTitle>{getCurrentAnswer()?.isCorrect ? "Correct!" : "Incorrect"}</AlertTitle>
+										<AlertDescription>{currentQuestion.explanation}</AlertDescription>
+									</Alert>
+								)}
+							</div>
+						</CardContent>
+					</Card>
+				</div>
+
+				{/* Navigation Bar */}
+				<div className="sticky bottom-0 z-30 bg-background/95 backdrop-blur-sm border-t border-border p-4 md:p-6 shadow-lg">
+					<div className="flex justify-between items-center">
+						<Button onClick={handlePrevious} disabled={currentQuestionIndex === 0} variant="outline" className="min-w-[100px] disabled:opacity-50">
+							<ArrowLeft className="mr-2 h-4 w-4" />
+							Previous
+						</Button>
+
+						<div className="flex items-center space-x-2">
+							{Array.from({ length: totalQuestions }, (_, i) => {
+								const answered = userAnswers.find((a) => a.questionId === allQuestions[i]?.id);
+								return (
+									<div
+										key={i}
+										className={`w-3 h-3 rounded-full cursor-pointer transition-all duration-200 hover:scale-110 ${i === currentQuestionIndex ? "bg-primary ring-2 ring-primary/50 ring-offset-1" : answered ? (answered.isCorrect ? "bg-green-500" : "bg-red-500") : "bg-muted hover:bg-muted-foreground/20"}`}
+										onClick={() => {
+											setCurrentQuestionIndex(i);
+											setShowExplanation(false);
+											setIsAnswered(false);
+										}}
+										title={`Question ${i + 1}${answered ? ` - ${answered.isCorrect ? "Correct" : "Incorrect"}` : ""}`}
+									/>
+								);
+							})}
+						</div>
+
+						<Button onClick={handleNext} disabled={!isAnswered} className="min-w-[100px] disabled:opacity-50">
+							{currentQuestionIndex === totalQuestions - 1 ? "Finish" : "Next"}
+							<ArrowRight className="ml-2 h-4 w-4" />
+						</Button>
+					</div>
 				</div>
 			</div>
+
+			{/* Completion Dialog */}
+			<Dialog open={isCompleteOpen} onOpenChange={setIsCompleteOpen}>
+				<DialogContent className="sm:max-w-lg">
+					<DialogHeader className="text-center space-y-4">
+						<div className="mx-auto">
+							<CheckCircle className="h-16 w-16 text-green-500" />
+						</div>
+						<DialogTitle className="text-2xl">Course Complete!</DialogTitle>
+						<DialogDescription className="text-lg">Congratulations! You&apos;ve completed {course.title}</DialogDescription>
+					</DialogHeader>
+					<div className="space-y-6 text-center">
+						<div className="space-y-2">
+							<p className="text-2xl font-bold">Final Score: {getScorePercentage()}%</p>
+							<p className="text-muted-foreground">
+								{getCorrectAnswers()} correct out of {userAnswers.length} questions
+							</p>
+						</div>
+						<div className="flex space-x-4 w-full">
+							<Button asChild variant="outline" className="flex-1">
+								<Link href={`/dashboard/academy/courses/${courseId}`}>Back to Course</Link>
+							</Button>
+							<Button asChild className="flex-1">
+								<Link href="/dashboard/academy">Dashboard</Link>
+							</Button>
+						</div>
+					</div>
+				</DialogContent>
+			</Dialog>
 		</div>
 	);
 }

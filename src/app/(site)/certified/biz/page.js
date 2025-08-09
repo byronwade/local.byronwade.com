@@ -1,9 +1,44 @@
 import React from "react";
-import Image from "next/image";
+
+export const metadata = {
+	title: "Certified Business Profile – Duncan Plumbing Ent., Inc. | Thorbis",
+	description: "Diamond-certified business profile. View credentials, ratings dashboard, researched articles, services, and contact information.",
+	openGraph: {
+		title: "Certified Business Profile – Duncan Plumbing Ent., Inc.",
+		description: "Diamond-certified profile with credentials, ratings, services, and contact info.",
+		url: "https://thorbis.com/certified/biz",
+		type: "profile",
+	},
+	alternates: { canonical: "https://thorbis.com/certified/biz" },
+};
 
 export default function Categories() {
 	return (
 		<>
+			<script
+				type="application/ld+json"
+				dangerouslySetInnerHTML={{
+					__html: JSON.stringify({
+						"@context": "https://schema.org",
+						"@type": "LocalBusiness",
+						name: "Duncan Plumbing Ent., Inc.",
+						url: "https://thorbis.com/certified/biz",
+						aggregateRating: {
+							"@type": "AggregateRating",
+							ratingValue: "4.9",
+							reviewCount: "335",
+						},
+						breadcrumb: {
+							"@type": "BreadcrumbList",
+							itemListElement: [
+								{ "@type": "ListItem", position: 1, name: "Home", item: "https://thorbis.com/" },
+								{ "@type": "ListItem", position: 2, name: "Certified", item: "https://thorbis.com/certified" },
+								{ "@type": "ListItem", position: 3, name: "Duncan Plumbing Ent., Inc.", item: "https://thorbis.com/certified/biz" },
+							],
+						},
+					}),
+				}}
+			/>
 			<div className="flex items-center justify-between w-full gap-6 p-4 mx-auto sm:px-12 lg:px-24">
 				<div className="font-sans text-gray-900 bg-white">
 					{/* Header */}

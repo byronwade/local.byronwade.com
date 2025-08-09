@@ -2,12 +2,30 @@ import { Badge } from "@components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 import { Button } from "@components/ui/button";
 import Link from "next/link";
-import { Eye, Star, Users, ListChecks, Lock, ShieldCheck, GitBranch, FileText, ExternalLink } from "lucide-react";
+import { Eye, Star, ListChecks, ShieldCheck, GitBranch, FileText, ExternalLink } from "lucide-react";
 
 export const metadata = {
 	title: "Transparency & Review Algorithm | Thorbis",
 	description: "A founder&apos;s essay and full technical transparency on Thorbis&apos;s review algorithm, changelogs, audits, and open-source code. Radical trust, open data, and community accountability.",
-	keywords: "review algorithm, transparency, open source, trust, moderation, star rating, Thorbis, changelog, audit",
+	keywords: ["review algorithm", "transparency", "open source", "trust", "moderation", "star rating", "Thorbis", "changelog", "audit"],
+	alternates: { canonical: "https://thorbis.com/transparency" },
+	openGraph: {
+		title: "Transparency & Review Algorithm | Thorbis",
+		description: "Radical transparency: algorithm, moderation, audits, and open-source code.",
+		type: "website",
+		url: "https://thorbis.com/transparency",
+		siteName: "Thorbis",
+		images: [{ url: "https://thorbis.com/og-transparency.jpg", width: 1200, height: 630, alt: "Thorbis Transparency" }],
+		locale: "en_US",
+	},
+	twitter: {
+		card: "summary_large_image",
+		title: "Transparency & Review Algorithm | Thorbis",
+		description: "Radical transparency: algorithm, moderation, audits, and open-source code.",
+		images: ["https://thorbis.com/og-transparency.jpg"],
+		creator: "@thorbis",
+		site: "@thorbis",
+	},
 };
 
 const GITHUB_REPO = "https://github.com/your-org/thorbis";
@@ -16,6 +34,19 @@ const CHANGELOG_URL = "https://github.com/your-org/thorbis/commits/main";
 export default function TransparencyPage() {
 	return (
 		<div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
+			<script
+				type="application/ld+json"
+				dangerouslySetInnerHTML={{
+					__html: JSON.stringify({
+						"@context": "https://schema.org",
+						"@type": "BreadcrumbList",
+						itemListElement: [
+							{ "@type": "ListItem", position: 1, name: "Home", item: "https://thorbis.com/" },
+							{ "@type": "ListItem", position: 2, name: "Transparency", item: "https://thorbis.com/transparency" },
+						],
+					}),
+				}}
+			/>
 			{/* Hero Section */}
 			<section className="relative overflow-hidden">
 				<div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 dark:from-blue-400/5 dark:to-purple-400/5"></div>

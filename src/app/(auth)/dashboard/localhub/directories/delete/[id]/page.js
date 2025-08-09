@@ -2,14 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Button } from "@components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
 import { Badge } from "@components/ui/badge";
-import { Progress } from "@components/ui/progress";
 import { Separator } from "@components/ui/separator";
 import { Alert, AlertDescription } from "@components/ui/alert";
-import { MapPin, ArrowLeft, AlertTriangle, Trash2, Clock, CheckCircle, XCircle, FileText, Users, Target, Briefcase, CreditCard, Star, Calendar, Shield, Lock, Eye, EyeOff, Copy, ExternalLink, Phone, Mail, Globe, Info, MessageCircle, X, Building2, Navigation, Database } from "lucide-react";
+import { MapPin, ArrowLeft, AlertTriangle, Trash2, Clock, CheckCircle, XCircle, FileText, Shield, Lock, Phone, Mail, Globe, Building2 } from "lucide-react";
 
 // Mock data for directories
 const mockDirectories = [
@@ -243,7 +242,7 @@ export default function DeleteDirectory({ params }) {
 						</CardHeader>
 						<CardContent className="space-y-6">
 							<div className="flex items-center space-x-4 p-4 border rounded-lg">
-								<div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center">
+								<div className="w-16 h-16 rounded-lg bg-muted flex items-center justify-center">
 									<MapPin className="w-8 h-8 text-white" />
 								</div>
 								<div className="flex-1">
@@ -251,9 +250,7 @@ export default function DeleteDirectory({ params }) {
 									<p className="text-muted-foreground">{directory.location}</p>
 									<p className="text-sm text-muted-foreground">{directory.subdomain}.localhub.com</p>
 								</div>
-								<Badge variant="secondary" className="bg-gradient-to-r from-green-500 to-blue-600 text-white">
-									{directory.status}
-								</Badge>
+								<Badge variant="secondary">{directory.status}</Badge>
 							</div>
 
 							<div className="grid grid-cols-2 gap-4 text-sm">

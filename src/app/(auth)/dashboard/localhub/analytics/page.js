@@ -2,11 +2,10 @@
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 import { Button } from "@components/ui/button";
-import { Badge } from "@components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@components/ui/select";
 import { Calendar } from "@components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@components/ui/popover";
-import { BarChart3, TrendingUp, TrendingDown, Users, Eye, DollarSign, Clock, MapPin, Search, Download, Calendar as CalendarIcon, ArrowUpRight, ArrowDownRight, Star, Building2, Globe, Phone, Mail, MousePointer, RefreshCw } from "lucide-react";
+import { BarChart3, Users, Eye, DollarSign, Clock, MapPin, Download, Calendar as CalendarIcon, ArrowUpRight, ArrowDownRight, Star, Building2, Globe, Phone, Mail, MousePointer, RefreshCw } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@utils";
 

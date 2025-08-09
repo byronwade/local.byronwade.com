@@ -8,7 +8,7 @@
 "use client";
 
 // EXPLICIT IMPORT: Use .js version to avoid conflicts with .tsx version
-import JobCreatePage from "@components/dashboard/user/jobs/create/JobCreatePage.js";
+import JobCreatePage from "@components/dashboard/user/jobs/create/job-create-page.js";
 
 export default function Page() {
 	return <JobCreatePage />;

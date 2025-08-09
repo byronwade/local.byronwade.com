@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
+import { Card, CardContent } from "@components/ui/card";
 import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
 import { Textarea } from "@components/ui/textarea";
@@ -13,9 +13,6 @@ import { Progress } from "@components/ui/progress";
 import { 
   Building2, 
   MapPin, 
-  Phone, 
-  Mail, 
-  Globe, 
   Clock, 
   Users, 
   Wrench, 
@@ -28,7 +25,7 @@ import {
   Calendar,
   DollarSign
 } from "lucide-react";
-import { useAuthStore } from '@store/useAuthStore';
+import { useAuthStore } from '@store/use-auth-store';
 
 /**
  * Business Setup Onboarding for Thorbis Platform

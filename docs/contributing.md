@@ -53,13 +53,13 @@ Before contributing, ensure you have:
 1. **Fork the repository**
    ```bash
    # Fork on GitHub, then clone your fork
-   git clone https://github.com/your-username/local.byronwade.com.git
-   cd local.byronwade.com
+   git clone https://github.com/your-username/thorbis.com.git
+   cd thorbis.com
    ```
 
 2. **Add upstream remote**
    ```bash
-   git remote add upstream https://github.com/original-owner/local.byronwade.com.git
+   git remote add upstream https://github.com/original-owner/thorbis.com.git
    ```
 
 3. **Install dependencies**
@@ -448,7 +448,7 @@ Contributors will be recognized in:
 
 - **GitHub Issues**: For bugs and feature requests
 - **GitHub Discussions**: For questions and community discussion
-- **Email**: dev-team@local.byronwade.com for sensitive issues
+- **Email**: dev-team@thorbis.com for sensitive issues
 - **Discord**: [Developer Community](https://discord.gg/thorbis)
 
 ## License

@@ -7,8 +7,7 @@ import { Label } from "@components/ui/label";
 import { Textarea } from "@components/ui/textarea";
 import { Switch } from "@components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@components/ui/select";
-import { Badge } from "@components/ui/badge";
-import { Palette, Upload, Eye, Save, RotateCcw, Settings as SettingsIcon, Type, Image as ImageIcon, Layout, Smartphone, Monitor, Tablet, Globe, Crown, Zap, Check, Home, IdCard, Layers, SlidersHorizontal } from "lucide-react";
+import { Palette, Upload, Type, Image as ImageIcon, Layout, Crown, Check, Home, IdCard, Layers, SlidersHorizontal } from "lucide-react";
 import { toast } from "@components/ui/use-toast";
 import Image from "next/image";
 

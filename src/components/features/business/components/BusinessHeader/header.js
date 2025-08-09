@@ -8,7 +8,7 @@ import { Badge } from "@components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuLabel, DropdownMenuGroup } from "@components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@components/ui/sheet";
-import { ChevronDown, Menu, Bell, Settings, Briefcase, CreditCard, HelpCircle, User, Crown, Zap, Building2, Plus, Star } from "lucide-react";
+import { ChevronDown, Menu, Bell, Settings, Briefcase, CreditCard, HelpCircle, User, Zap, Building2, Plus, Star } from "lucide-react";
 import { BarChart3, Target } from "lucide-react";
 import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
 import { RiComputerFill } from "react-icons/ri";

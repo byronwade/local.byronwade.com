@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { Button } from "@components/ui/button";
 import { Home, ArrowLeft } from "lucide-react";
-import { Dna, Rocket, Compass } from "lucide-react";
+import { Rocket, Compass } from "lucide-react";
 
 export default function NotFound() {
 	const handleGoBack = () => {

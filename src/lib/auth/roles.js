@@ -2,7 +2,7 @@
 // Implements comprehensive permission management with performance optimization
 
 import { logger } from "@utils/logger";
-import { SecureStorage } from "@utils/secureStorage";
+import { SecureStorage } from "@utils/secure-storage";
 
 /**
  * Role definitions with hierarchical permissions
@@ -30,6 +30,7 @@ export const ROLES = {
 			"business.update_own",
 			"business.claim",
 			"business.manage_own",
+			"business.manage", // Added missing permission for business dashboard access
 			"business.analytics_own",
 			"business.respond_reviews",
 			// Enhanced profile

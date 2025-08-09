@@ -12,4 +12,4 @@ export { default as SidebarItem } from "./sidebar-item";
 export { default as SidebarSection } from "./sidebar-section";
 
 // Permission & Access Management
-export { default as PermissionManager } from "./PermissionManager";
+export { default as PermissionManager } from "./permission-manager";

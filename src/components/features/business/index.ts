@@ -9,16 +9,16 @@
 // ============================================================================
 // COMPONENTS
 // ============================================================================
-export { BusinessClaimForm } from "./components/BusinessClaimForm";
-export { BusinessSubmissionForm } from "./components/BusinessSubmissionForm";
-export { BusinessHeader } from "./components/BusinessHeader";
+export { BusinessClaimForm } from "./components/business-claim-form";
+export { BusinessSubmissionForm } from "./components/business-submission-form";
+export { BusinessHeader } from "./components/Businessheader";
 
 // TODO: Add these components as they're created
-// export { BusinessCard } from './components/BusinessCard';
+// export { BusinessCard } from './components/business-card';
 // export { BusinessList } from './components/BusinessList';
 // export { BusinessSearch } from './components/BusinessSearch';
 // export { BusinessProfile } from './components/BusinessProfile';
-// export { BusinessDashboard } from './components/BusinessDashboard';
+// export { BusinessDashboard } from './components/business-dashboard';
 
 // ============================================================================
 // HOOKS
@@ -27,7 +27,7 @@ export { BusinessHeader } from "./components/BusinessHeader";
 // export { useBusiness } from './hooks/useBusiness';
 // export { useBusinessSearch } from './hooks/useBusinessSearch';
 // export { useBusinessClaim } from './hooks/useBusinessClaim';
-// export { useBusinessSubmission } from './hooks/useBusinessSubmission';
+// export { useBusinessSubmission } from './hooks/use-business-submission';
 
 // ============================================================================
 // SERVICES

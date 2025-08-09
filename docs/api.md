@@ -7,7 +7,7 @@ The Thorbis API provides RESTful endpoints for managing businesses, users, revie
 ## Base URL
 
 ```
-Production: https://local.byronwade.com/api
+Production: https://thorbis.com/api
 Development: http://localhost:3000/api
 ```
 
@@ -433,7 +433,7 @@ npm install @thorbis/api-client
 import { ThorbisAPI } from '@thorbis/api-client';
 
 const api = new ThorbisAPI({
-  baseURL: 'https://local.byronwade.com/api',
+  baseURL: 'https://thorbis.com/api',
   token: 'your-auth-token'
 });
 
@@ -443,6 +443,6 @@ const business = await api.business.get('business-id');
 ## Support
 
 For API support and questions:
-- **Documentation**: [API Docs](https://docs.local.byronwade.com)
-- **Email**: api-support@local.byronwade.com
+- **Documentation**: [API Docs](https://docs.thorbis.com)
+- **Email**: api-support@thorbis.com
 - **Discord**: [Developer Community](https://discord.gg/thorbis)

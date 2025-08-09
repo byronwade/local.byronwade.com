@@ -7,7 +7,7 @@ import { Input } from "@components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
 import { Alert, AlertDescription } from "@components/ui/alert";
 import { toast } from "sonner";
-import { useAuth } from "@context/AuthContext";
+import { useAuth } from "@context/auth-context";
 import { supabase } from "@lib/database/supabase";
 import { CheckCircle, AlertCircle, Mail, Smartphone, Loader2, RefreshCw } from "lucide-react";
 import { logger } from "@utils/logger";

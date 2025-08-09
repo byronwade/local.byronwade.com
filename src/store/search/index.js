@@ -3,4 +3,4 @@
  * Centralized export for all search-related stores
  */
 
-export { default as useSearchStore } from "./useSearchStore";
+export { default as useSearchStore } from "./use-search-store";

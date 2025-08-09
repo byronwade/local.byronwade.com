@@ -3,11 +3,12 @@
  * Provides comprehensive business owner dashboard data
  */
 
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { z } from "zod";
 import { logger } from "@utils/logger";
 import { withAuth, withValidation, withCache, withPerformanceMonitoring, createSuccessResponse, createErrorResponse, compose, type ApiRequest } from "@lib/api/middleware";
+import { dashboardDemoBusinessFlag } from "@lib/flags/definitions";
 
 // Business dashboard query validation schema
 const businessDashboardQuerySchema = z.object({
@@ -29,7 +30,7 @@ async function getBusinessDashboard(req: ApiRequest, queryParams: BusinessDashbo
 	const startTime = performance.now();
 
 	try {
-		if (!req.user) {
+		if (!req.user && !req.demoMode) {
 			return createErrorResponse("UNAUTHORIZED", "Authentication required");
 		}
 
@@ -40,6 +41,22 @@ async function getBusinessDashboard(req: ApiRequest, queryParams: BusinessDashbo
 				},
 			},
 		});
+
+		// Demo short-circuit
+		if (req.demoMode) {
+			const demoData = createBusinessDemoData(queryParams);
+			return createSuccessResponse({
+				dashboard: demoData,
+				metadata: {
+					businessId: "demo-business",
+					userId: "demo-user",
+					period: queryParams.period,
+					sections: queryParams.sections,
+					generatedAt: new Date().toISOString(),
+					demo: true,
+				},
+			});
+		}
 
 		// Find user's business or use provided ID
 		let businessId = queryParams.businessId;
@@ -336,3 +353,72 @@ export const GET = compose(
 	}),
 	withValidation(getBusinessDashboard, businessDashboardQuerySchema)
 );
+
+// Lightweight, deterministic demo data generator (no external calls)
+function createBusinessDemoData(query: BusinessDashboardQuery) {
+	const periodLabel = query.period;
+	const seed = 42;
+	const rand = (n: number) => Math.abs(Math.sin(n + seed));
+
+	const views = Math.floor(500 + rand(1) * 1500);
+	const calls = Math.floor(20 + rand(2) * 80);
+	const directions = Math.floor(15 + rand(3) * 60);
+	const websiteClicks = Math.floor(50 + rand(4) * 200);
+	const reviewsCount = Math.floor(5 + rand(5) * 30);
+	const averageRating = (3.8 + rand(6) * 1.2).toFixed(1);
+
+	const days = { "7d": 7, "30d": 30, "90d": 30 }[periodLabel];
+	const analytics = Array.from({ length: days }, (_, i) => ({
+		date: new Date(Date.now() - (days - i) * 86400000).toISOString().split("T")[0],
+		views: Math.floor(200 + rand(i) * 400),
+		calls: Math.floor(5 + rand(i + 10) * 20),
+		directions: Math.floor(3 + rand(i + 20) * 15),
+		website_clicks: Math.floor(10 + rand(i + 30) * 40),
+	}));
+
+	const reviews = Array.from({ length: Math.min(reviewsCount, query.limit) }, (_, i) => ({
+		id: `rev_${i}`,
+		rating: Math.round(3 + rand(i + 40) * 2),
+		text: "Great service and quick response!",
+		created_at: new Date(Date.now() - i * 86400000).toISOString(),
+		helpful_count: Math.floor(rand(i + 50) * 10),
+		status: "approved",
+		users: { name: `User ${i + 1}`, avatar_url: null },
+	}));
+
+	const photos = Array.from({ length: 6 }, (_, i) => ({
+		id: `photo_${i}`,
+		url: `/placeholder-business.svg`,
+		alt_text: `Demo photo ${i + 1}`,
+		is_primary: i === 0,
+		created_at: new Date(Date.now() - i * 3600000).toISOString(),
+	}));
+
+	const performance = {
+		score: Math.floor(60 + rand(70) * 30),
+		metrics: Array.from({ length: 7 }, (_, i) => ({ date: new Date(Date.now() - i * 86400000).toISOString(), score: Math.floor(60 + rand(i + 80) * 30) })),
+		trends: { direction: "improving", percentage: 8.5 },
+	};
+
+	const revenue = {
+		totalRevenue: Math.floor(views * 0.3),
+		activeSubscriptions: Math.floor(5 + rand(90) * 10),
+		subscriptions: [],
+		recentPayments: [],
+	};
+
+	return {
+		stats: {
+			views: { value: views.toLocaleString(), change: "+5.2%", trend: "up", description: `Profile views in last ${periodLabel}` },
+			calls: { value: calls.toString(), change: "+3", trend: "up", description: `Phone calls in last ${periodLabel}` },
+			directions: { value: directions.toString(), change: "+2", trend: "up", description: `Direction requests in last ${periodLabel}` },
+			websiteClicks: { value: websiteClicks.toString(), change: "+11", trend: "up", description: `Website clicks in last ${periodLabel}` },
+			reviews: { value: reviewsCount.toString(), change: "+1", trend: "up", description: `New reviews in last ${periodLabel}`, averageRating },
+		},
+		analytics,
+		reviews,
+		photos,
+		performance,
+		revenue,
+	};
+}

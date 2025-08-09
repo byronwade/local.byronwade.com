@@ -1,5 +1,5 @@
 import { Input } from "@components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
+import { Card, CardTitle } from "@components/ui/card";
 import { Search, User, Briefcase, Settings, Shield } from "lucide-react";
 import Link from "next/link";
 
@@ -37,11 +37,11 @@ export const metadata = {
 	openGraph: {
 		title: "Help Center - Support & Resources | Thorbis",
 		description: "Get help with Thorbis. Find guides for account management, business tools, platform usage, and trust & safety. Search our knowledge base for quick answers.",
-		url: "https://local.byronwade.com/help-center",
+		url: "https://thorbis.com/help-center",
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://local.byronwade.com/og-help-center.jpg",
+				url: "https://thorbis.com/og-help-center.jpg",
 				width: 1200,
 				height: 630,
 				alt: "Thorbis Help Center",
@@ -54,10 +54,10 @@ export const metadata = {
 		card: "summary_large_image",
 		title: "Help Center - Thorbis Support",
 		description: "Get help with Thorbis platform. Find guides and resources.",
-		images: ["https://local.byronwade.com/og-help-center.jpg"],
+		images: ["https://thorbis.com/og-help-center.jpg"],
 	},
 	alternates: {
-		canonical: "https://local.byronwade.com/help-center",
+		canonical: "https://thorbis.com/help-center",
 	},
 };
 
@@ -67,7 +67,7 @@ export default function HelpCenterPage() {
 		"@type": "WebPage",
 		name: "Help Center",
 		description: "Support resources and guides for using Thorbis platform",
-		url: "https://local.byronwade.com/help-center",
+		url: "https://thorbis.com/help-center",
 		mainEntity: {
 			"@type": "ItemList",
 			name: "Help Categories",
@@ -78,7 +78,7 @@ export default function HelpCenterPage() {
 					"@type": "Article",
 					name: category.title,
 					description: category.description,
-					url: `https://local.byronwade.com${category.link}`,
+					url: `https://thorbis.com${category.link}`,
 				},
 			})),
 		},
@@ -89,7 +89,7 @@ export default function HelpCenterPage() {
 					"@type": "ListItem",
 					position: 1,
 					item: {
-						"@id": "https://local.byronwade.com",
+						"@id": "https://thorbis.com",
 						name: "Thorbis",
 					},
 				},
@@ -97,7 +97,7 @@ export default function HelpCenterPage() {
 					"@type": "ListItem",
 					position: 2,
 					item: {
-						"@id": "https://local.byronwade.com/help-center",
+						"@id": "https://thorbis.com/help-center",
 						name: "Help Center",
 					},
 				},

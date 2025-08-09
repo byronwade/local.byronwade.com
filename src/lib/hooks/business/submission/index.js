@@ -3,4 +3,4 @@
  * Custom hooks for business submission functionality
  */
 
-export { useBusinessSubmission } from "./useBusinessSubmission";
+export { useBusinessSubmission } from "./use-business-submission";

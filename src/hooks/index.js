@@ -2,19 +2,19 @@
 // All custom React hooks
 
 // Authentication Hooks
-export { default as useAuth } from "./useAuth";
-export { default as useSupabaseAuth } from "./useSupabaseAuth";
+export { default as useAuth } from "./use-auth";
+export { default as useSupabaseAuth } from "./use-supabase-auth";
 
 // User Profile Hook
-export { default as useUserProfile } from "./useUserProfile";
+export { default as useUserProfile } from "./use-user-profile";
 
 // Chat Hook
-export { default as useChat } from "./useChat";
+export { default as useChat } from "./usechat";
 
 // UI/Interaction Hooks
-export { default as useDragDrop } from "./useDragDrop";
+export { default as useDragDrop } from "./use-drag-drop";
 export { useMobile } from "./use-mobile";
-export { default as useMediaQuery } from "./useMediaQuery";
+export { default as useMediaQuery } from "./use-media-query";
 
 // Business Hooks
 export * from "../lib/hooks/business";

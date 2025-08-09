@@ -5,21 +5,21 @@
  */
 
 // Core location services
-export { useLocationServices } from "./LocationServices";
-export { default as LocationServices } from "./LocationServices";
+export { useLocationServices } from "./Locationservices";
+export { default as LocationServices } from "./Locationservices";
 
 // Search functionality
-export { useSearchSuggestions, SearchSuggestionsUI } from "./SearchSuggestions";
-export { default as SearchSuggestions } from "./SearchSuggestions";
+export { useSearchSuggestions, SearchSuggestionsUI } from "./search-suggestions";
+export { default as SearchSuggestions } from "./search-suggestions";
 
 // Map bounds and business management
-export { useMapBoundsManager } from "./MapBoundsManager";
-export { default as MapBoundsManager } from "./MapBoundsManager";
+export { useMapBoundsManager } from "./map-bounds-manager";
+export { default as MapBoundsManager } from "./map-bounds-manager";
 
 // UI controls
-export { LocationControls } from "./LocationControls";
-export { default as LocationControlsComponent } from "./LocationControls";
+export { LocationControls } from "./location-controls";
+export { default as LocationControlsComponent } from "./location-controls";
 
 // Main refactored integration component
-export { useLocationServices as useLocationServicesHook, useSearchSuggestions as useSearchSuggestionsHook, useMapBoundsManager as useMapBoundsManagerHook } from "./MapIntegrationRefactored";
-export { default as MapIntegrationRefactored } from "./MapIntegrationRefactored";
+export { useLocationServices as useLocationServicesHook, useSearchSuggestions as useSearchSuggestionsHook, useMapBoundsManager as useMapBoundsManagerHook } from "./map-integration-refactored";
+export { default as MapIntegrationRefactored } from "./map-integration-refactored";

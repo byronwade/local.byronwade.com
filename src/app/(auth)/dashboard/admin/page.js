@@ -1,7 +1,7 @@
 import React from "react";
 import { ProtectedRoute } from "@components/features/auth";
-import DashboardLayout, { DashboardStats } from "@components/dashboard/DashboardLayout";
-import PermissionManager from "@components/admin/PermissionManager";
+import DashboardLayout, { DashboardStats } from "@components/dashboard/dashboard-layout";
+import PermissionManager from "@components/admin/permission-manager";
 import { PERMISSIONS } from "@lib/auth/roles";
 
 /**

@@ -1,18 +1,14 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
-import { BusinessDataFetchers } from "@lib/supabase/server";
+import { BusinessDataFetchers } from "@lib/database/supabase/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 import { Button } from "@components/ui/button";
 import { Badge } from "@components/ui/badge";
-import { Separator } from "@components/ui/separator";
-import { MapPin, Phone, Globe, Clock, Star, Shield, CheckCircle, Calendar, MessageSquare, Share2, Heart, Camera, Users, Award, TrendingUp, Zap, Tools } from "lucide-react";
-import Image from "next/image";
+import { MapPin, Phone, Globe, Clock, Star, Shield, CheckCircle, MessageSquare, Share2, Heart, Users, TrendingUp, Wrench as Tools } from "lucide-react";
 import Link from "next/link";
-import ServiceBookingWidget from "@components/business/field-service/ServiceBookingWidget";
-import BizProfileClient from "./BizProfileClient";
-import { generateAdvancedServerSEO } from "@utils/advancedServerSEO";
+import ServiceBookingWidget from "@components/business/field-service/service-booking-widget";
+import BizProfileClient from "./biz-profile-client";
+import { generateAdvancedServerSEO } from "@utils/advanced-server-seo";
 
 /**
  * Unified Business Profile Page for Thorbis Platform
@@ -22,38 +18,9 @@ import { generateAdvancedServerSEO } from "@utils/advancedServerSEO";
 
 // Helper function to fetch business data by slug only
 async function fetchBusinessData(slug) {
-	const supabase = createServerComponentClient({ cookies });
-
 	console.log(`Fetching business by slug: ${slug}`);
 
-	const { data: business, error } = await supabase
-		.from("businesses")
-		.select(
-			`
-      *,
-      business_categories (
-        categories (
-          id,
-          name,
-          slug
-        )
-      ),
-      business_hours (*),
-      business_photos (*),
-      reviews (
-        id,
-        rating,
-        comment,
-        created_at,
-        user_profiles (
-          full_name,
-          avatar_url
-        )
-      )
-    `
-		)
-		.eq("slug", slug)
-		.single();
+	const { data: business, error } = await BusinessDataFetchers.getBusinessProfile(slug);
 
 	if (business && !error) {
 		console.log(`Found business by slug: ${slug}`);
@@ -87,7 +54,7 @@ export async function generateMetadata({ params }) {
 				openGraph: {
 					title: `Demo Local Business - San Francisco, CA`,
 					description: "This is a sample business used for testing the application. The database is not fully configured yet.",
-					url: `https://www.thorbis.com/biz/demo-local-business`,
+					url: `https://thorbis.com/biz/demo-local-business`,
 					siteName: "Thorbis",
 					images: [
 						{
@@ -107,26 +74,113 @@ export async function generateMetadata({ params }) {
 					images: ["https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&h=600&fit=crop"],
 				},
 				alternates: {
-					canonical: `https://www.thorbis.com/biz/demo-local-business`,
+					canonical: `https://thorbis.com/biz/demo-local-business`,
 				},
 			};
 		}
 
-		// Advanced SEO generation
-		const seoData = await generateAdvancedServerSEO({
-			business,
-			type: "business_profile",
-			location: { city: business.city, state: business.state },
-			category: business.business_categories?.[0]?.categories?.name || "Business",
-			reviews: business.reviews || [],
-		});
+		// Validate business data before SEO generation
+		if (!business.name || !business.slug) {
+			console.warn("Business data is incomplete for SEO generation:", { name: business.name, slug: business.slug });
+			return {
+				title: `Local Business | Thorbis`,
+				description: "Find and connect with local businesses in your area.",
+				keywords: ["local business", "directory", "reviews"],
+			};
+		}
 
-		return seoData;
+		// Check if we're in build/prerender context and use simpler SEO
+		const isBuildTime = process.env.NODE_ENV === "production" && !process.env.VERCEL_ENV;
+
+		if (isBuildTime) {
+			// Use simple, reliable SEO during build to prevent prerender errors
+			return {
+				title: `${business.name} - ${business.city}, ${business.state} | Local Business Directory`,
+				description: business.description ? `${business.description.substring(0, 155)}...` : `Find ${business.name} in ${business.city}, ${business.state}. Local business with customer reviews and contact information.`,
+				keywords: [business.name, business.city, business.state, business.business_categories?.[0]?.categories?.name || "local business", "reviews", "contact"],
+				openGraph: {
+					title: `${business.name} - ${business.city}, ${business.state}`,
+					description: business.description?.substring(0, 200) || `Local business in ${business.city}, ${business.state}`,
+					type: "business.business",
+					url: `/biz/${business.slug}`,
+					siteName: "Local Business Directory",
+				},
+				robots: "index,follow",
+				canonical: `/biz/${business.slug}`,
+			};
+		}
+
+		// Advanced SEO generation with comprehensive error handling (runtime only)
+		try {
+			const seoData = await generateAdvancedServerSEO({
+				type: "business_profile",
+				data: business,
+				path: `/biz/${business.slug}`,
+				businessCategory: business.business_categories?.[0]?.categories?.name || "Business",
+				targetAudience: "customers",
+				localArea: business.city && business.state ? `${business.city}, ${business.state}` : null,
+			});
+
+			// Validate the returned SEO data
+			if (!seoData || typeof seoData !== "object") {
+				throw new Error("Invalid SEO data returned from generateAdvancedServerSEO");
+			}
+
+			// Ensure required fields are present
+			if (!seoData.title || !seoData.description) {
+				throw new Error("SEO data missing required title or description");
+			}
+
+			return seoData;
+		} catch (seoError) {
+			// Handle SEO generation errors with safe fallback
+			console.warn("SEO generation failed, using safe fallback:", seoError?.message || "Unknown SEO error");
+
+			// Safely extract business data for fallback
+			const businessName = business?.name || "Local Business";
+			const businessCity = business?.city || "Local Area";
+			const businessState = business?.state || "";
+			const businessDescription = business?.description || "";
+			const businessSlug = business?.slug || "business";
+			const businessCategory = business?.business_categories?.[0]?.categories?.name || "local business";
+
+			// Return comprehensive fallback SEO data that's guaranteed to work
+			return {
+				title: `${businessName} - ${businessCity}${businessState ? `, ${businessState}` : ""} | Local Business Directory`,
+				description: businessDescription ? `${businessDescription.substring(0, 155)}...` : `Find ${businessName} in ${businessCity}${businessState ? `, ${businessState}` : ""}. Local business with customer reviews and contact information.`,
+				keywords: [businessName, businessCity, businessState, businessCategory, "reviews", "contact"].filter(Boolean),
+				openGraph: {
+					title: `${businessName} - ${businessCity}${businessState ? `, ${businessState}` : ""}`,
+					description: businessDescription?.substring(0, 200) || `Local business in ${businessCity}${businessState ? `, ${businessState}` : ""}`,
+					type: "business.business",
+					url: `/biz/${businessSlug}`,
+					siteName: "Local Business Directory",
+				},
+				twitter: {
+					card: "summary",
+					title: `${businessName} - ${businessCity}${businessState ? `, ${businessState}` : ""}`,
+					description: businessDescription?.substring(0, 200) || `Local business in ${businessCity}${businessState ? `, ${businessState}` : ""}`,
+				},
+				robots: "index,follow",
+				canonical: `/biz/${businessSlug}`,
+			};
+		}
 	} catch (error) {
 		console.error("Error generating metadata:", error);
+
+		// Try to use basic business data if available in the error context
+		const slugFromParams = resolvedParams?.slug;
+		const fallbackTitle = slugFromParams ? `${slugFromParams.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())} | Local Business` : "Business Profile | Thorbis";
+
 		return {
-			title: "Business Profile | Thorbis",
+			title: fallbackTitle,
 			description: "Find and connect with local businesses in your area.",
+			keywords: ["local business", "directory", "reviews"],
+			openGraph: {
+				title: fallbackTitle,
+				description: "Find and connect with local businesses in your area.",
+				type: "website",
+			},
 		};
 	}
 }
@@ -154,8 +208,8 @@ export default async function BusinessProfilePage({ params }) {
 			return <FieldServiceBusinessProfile business={business} slug={resolvedParams.slug} />;
 		}
 
-		// Render the enhanced business profile for all businesses
-		return <EnhancedBusinessProfile business={business} slug={resolvedParams.slug} />;
+		// Render the sophisticated business profile client (no tabs as per user preference)
+		return <BizProfileClient businessId={business.id} initialBusiness={business} />;
 	} catch (error) {
 		console.error("Error rendering business profile:", error);
 		notFound();

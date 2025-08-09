@@ -13,7 +13,7 @@
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
-   cd local.byronwade.com
+   cd thorbis.com
    ```
 
 2. **Install dependencies**

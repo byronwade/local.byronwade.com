@@ -1,4 +1,4 @@
-import ShortsLayoutClient from "./ShortsLayoutClient";
+import ShortsLayoutClient from "./shorts-layout-client";
 
 /**
  * Custom layout for the shorts page that completely hides the default header and footer.

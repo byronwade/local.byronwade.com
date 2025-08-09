@@ -2,7 +2,7 @@ import { Handshake, Target, Zap } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
+import { Card, CardContent, CardHeader } from "@components/ui/card";
 
 const affiliateBenefits = [
 	{
@@ -29,7 +29,7 @@ export const metadata = {
 	openGraph: {
 		title: "Affiliate Program - Partner with Thorbis & Earn Rewards",
 		description: "Join Thorbis's affiliate program and earn competitive commissions by referring customers. Get marketing support, real-time tracking, and generous rewards.",
-		url: "https://local.byronwade.com/affiliates",
+		url: "https://thorbis.com/affiliates",
 		siteName: "Thorbis",
 		images: [
 			{
@@ -49,11 +49,22 @@ export const metadata = {
 		images: ["https://images.unsplash.com/photo-1556740738-b6a63e27c4df?q=80&w=2070&auto=format&fit=crop"],
 	},
 	alternates: {
-		canonical: "https://local.byronwade.com/affiliates",
+		canonical: "https://thorbis.com/affiliates",
 	},
 };
 
-export default function AffiliatesPage() {
+import { isEnabled } from "@lib/flags/server";
+
+export default async function AffiliatesPage() {
+	const on = await isEnabled("affiliates");
+	if (!on) {
+		return (
+			<div className="container mx-auto px-4 py-16">
+				<h1 className="text-2xl font-semibold">Affiliates page is not available</h1>
+				<p className="text-muted-foreground mt-2">Please check back soon.</p>
+			</div>
+		);
+	}
 	const jsonLd = {
 		"@context": "https://schema.org",
 		"@type": "Service",
@@ -62,8 +73,8 @@ export default function AffiliatesPage() {
 		provider: {
 			"@type": "Organization",
 			name: "Thorbis",
-			logo: "https://local.byronwade.com/logos/ThorbisLogo.webp",
-			url: "https://local.byronwade.com",
+			logo: "https://thorbis.com/logos/ThorbisLogo.webp",
+			url: "https://thorbis.com",
 		},
 		serviceType: "Affiliate Marketing Program",
 		areaServed: "United States",

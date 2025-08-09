@@ -6,21 +6,21 @@
  */
 
 // Campaign setup sections
-export { CampaignDetailsSection } from "./CampaignDetailsSection";
-export { default as CampaignDetails } from "./CampaignDetailsSection";
+export { CampaignDetailsSection } from "./campaign-details-section";
+export { default as CampaignDetails } from "./campaign-details-section";
 
 // Ad creative sections
-export { AdContentSection } from "./AdContentSection";
-export { default as AdContent } from "./AdContentSection";
+export { AdContentSection } from "./ad-content-section";
+export { default as AdContent } from "./ad-content-section";
 
 // Targeting sections
-export { TargetingSection } from "./TargetingSection";
-export { default as Targeting } from "./TargetingSection";
+export { TargetingSection } from "./targeting-section";
+export { default as Targeting } from "./targeting-section";
 
 // Budget and scheduling sections
-export { BudgetScheduleSection } from "./BudgetScheduleSection";
-export { default as BudgetSchedule } from "./BudgetScheduleSection";
+export { BudgetScheduleSection } from "./budget-schedule-section";
+export { default as BudgetSchedule } from "./budget-schedule-section";
 
 // Review and submission sections
-export { ReviewSubmitSection } from "./ReviewSubmitSection";
-export { default as ReviewSubmit } from "./ReviewSubmitSection";
+export { ReviewSubmitSection } from "./review-submit-section";
+export { default as ReviewSubmit } from "./review-submit-section";

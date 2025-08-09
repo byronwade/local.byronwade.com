@@ -1,5 +1,4 @@
 import { SignupPage } from "@components/features/auth";
-import { Metadata } from "next";
 
 export const metadata = {
 	title: "Sign Up - Thorbis",
@@ -8,11 +7,11 @@ export const metadata = {
 	openGraph: {
 		title: "Sign Up - Thorbis",
 		description: "Create your Thorbis account to connect with local businesses and service providers.",
-		url: "https://thorbis/signup",
+		url: "https://thorbis.com/signup",
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://thorbis/og-signup.jpg",
+				url: "https://thorbis.com/og-signup.jpg",
 				width: 800,
 				height: 600,
 				alt: "Sign up for Thorbis",
@@ -25,13 +24,13 @@ export const metadata = {
 		card: "summary_large_image",
 		title: "Sign Up - Thorbis",
 		description: "Create your Thorbis account to connect with local businesses and service providers.",
-		images: ["https://thorbis/twitter-signup.jpg"],
+		images: ["https://thorbis.com/twitter-signup.jpg"],
 	},
 	alternates: {
-		canonical: "https://thorbis/signup",
+		canonical: "https://thorbis.com/signup",
 		languages: {
-			"en-US": "https://thorbis/en-US/signup",
-			"es-ES": "https://thorbis/es-ES/signup",
+			"en-US": "https://thorbis.com/en-US/signup",
+			"es-ES": "https://thorbis.com/es-ES/signup",
 		},
 	},
 };
@@ -39,7 +38,7 @@ export const metadata = {
 const jsonLdData = {
 	"@context": "http://schema.org",
 	"@type": "WebSite",
-	url: "https://thorbis/signup",
+	url: "https://thorbis.com/signup",
 	name: "Thorbis",
 	description: "Create your Thorbis account to connect with local businesses and service providers.",
 	publisher: {
@@ -47,12 +46,12 @@ const jsonLdData = {
 		name: "Thorbis",
 		logo: {
 			"@type": "ImageObject",
-			url: "https://thorbis/logo.png",
+			url: "https://thorbis.com/logo.png",
 		},
 	},
 	potentialAction: {
 		"@type": "RegisterAction",
-		target: "https://thorbis/signup",
+		target: "https://thorbis.com/signup",
 		name: "Sign up for Thorbis",
 	},
 };

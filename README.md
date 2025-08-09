@@ -37,7 +37,7 @@ bun run start
 ## 📁 Project Structure
 
 ```
-local.byronwade.com/
+thorbis.com/
 ├── app/                          # Next.js App Router
 │   ├── (auth)/                   # Authentication routes
 │   ├── (site)/                   # Public-facing pages

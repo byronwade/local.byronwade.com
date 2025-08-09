@@ -5,11 +5,11 @@ export const metadata = {
 	openGraph: {
 		title: "Business Success Stories - Inspiring Journeys & Case Studies | Thorbis",
 		description: "Read inspiring business success stories and case studies from Thorbis partners. Learn how businesses grew their customer base, improved operations, and achieved success.",
-		url: "https://local.byronwade.com/business-success-stories",
+		url: "https://thorbis.com/business-success-stories",
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://local.byronwade.com/og-success-stories.jpg",
+				url: "https://thorbis.com/og-success-stories.jpg",
 				width: 1200,
 				height: 630,
 				alt: "Business Success Stories on Thorbis",
@@ -22,16 +22,16 @@ export const metadata = {
 		card: "summary_large_image",
 		title: "Business Success Stories - Thorbis",
 		description: "Read inspiring business success stories and learn from proven growth strategies.",
-		images: ["https://local.byronwade.com/og-success-stories.jpg"],
+		images: ["https://thorbis.com/og-success-stories.jpg"],
 	},
 	alternates: {
-		canonical: "https://local.byronwade.com/business-success-stories",
+		canonical: "https://thorbis.com/business-success-stories",
 	},
 };
 
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 import { Badge } from "@components/ui/badge";
-import { ArrowUpRight, Star, TrendingUp, Users } from "lucide-react";
+import { ArrowUpRight, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -58,7 +58,7 @@ export default function BusinessSuccessStoriesPage() {
 		"@type": "WebPage",
 		name: "Business Success Stories",
 		description: "Inspiring business success stories and case studies from Thorbis partners",
-		url: "https://local.byronwade.com/business-success-stories",
+		url: "https://thorbis.com/business-success-stories",
 		mainEntity: {
 			"@type": "ItemList",
 			name: "Business Success Stories",
@@ -88,7 +88,7 @@ export default function BusinessSuccessStoriesPage() {
 					"@type": "ListItem",
 					position: 1,
 					item: {
-						"@id": "https://local.byronwade.com",
+						"@id": "https://thorbis.com",
 						name: "Thorbis",
 					},
 				},
@@ -96,7 +96,7 @@ export default function BusinessSuccessStoriesPage() {
 					"@type": "ListItem",
 					position: 2,
 					item: {
-						"@id": "https://local.byronwade.com/business-success-stories",
+						"@id": "https://thorbis.com/business-success-stories",
 						name: "Success Stories",
 					},
 				},

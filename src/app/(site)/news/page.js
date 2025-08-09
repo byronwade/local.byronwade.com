@@ -5,11 +5,11 @@ export const metadata = {
 	openGraph: {
 		title: "Local Business News & Updates - Stay Informed | Thorbis",
 		description: "Stay updated with the latest local business news, industry insights, and Thorbis platform updates. Get valuable information to help grow your business.",
-		url: "https://local.byronwade.com/news",
+		url: "https://thorbis.com/news",
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://local.byronwade.com/og-news.jpg",
+				url: "https://thorbis.com/og-news.jpg",
 				width: 1200,
 				height: 630,
 				alt: "Business News on Thorbis",
@@ -22,10 +22,10 @@ export const metadata = {
 		card: "summary_large_image",
 		title: "Local Business News - Thorbis",
 		description: "Stay updated with the latest business news and insights.",
-		images: ["https://local.byronwade.com/og-news.jpg"],
+		images: ["https://thorbis.com/og-news.jpg"],
 	},
 	alternates: {
-		canonical: "https://local.byronwade.com/news",
+		canonical: "https://thorbis.com/news",
 	},
 };
 
@@ -35,7 +35,7 @@ export default function NewsPage() {
 		"@type": "WebPage",
 		name: "Local Business News",
 		description: "Latest news and updates about local businesses and industry trends",
-		url: "https://local.byronwade.com/news",
+		url: "https://thorbis.com/news",
 		mainEntity: {
 			"@type": "Blog",
 			name: "Thorbis Business News",
@@ -48,7 +48,7 @@ export default function NewsPage() {
 					"@type": "ListItem",
 					position: 1,
 					item: {
-						"@id": "https://local.byronwade.com",
+						"@id": "https://thorbis.com",
 						name: "Thorbis",
 					},
 				},
@@ -56,7 +56,7 @@ export default function NewsPage() {
 					"@type": "ListItem",
 					position: 2,
 					item: {
-						"@id": "https://local.byronwade.com/news",
+						"@id": "https://thorbis.com/news",
 						name: "News",
 					},
 				},

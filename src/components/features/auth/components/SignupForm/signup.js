@@ -2,22 +2,21 @@
 
 import { useForm, FormProvider } from "react-hook-form";
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@components/ui/form";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useAuth } from "@context/AuthContext";
+import { useAuth } from "@context/auth-context";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { getEnabledProviders } from "@lib/supabase/auth/providers";
-import { validateEmail, validatePasswordStrength } from "@lib/supabase/auth/utils";
-import { Eye, EyeOff, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
+import { validatePasswordStrength } from "@lib/supabase/auth/utils";
+import { Eye, EyeOff, Loader2, AlertCircle } from "lucide-react";
 import { cn } from "@utils";
 import { IntelligentLoginMessage, PersonalizedSignupFlow } from "@components/features/auth";
-import { LoginContextDetector } from "@lib/auth/loginContext";
-import ZodErrorBoundary from "@components/shared/ZodErrorBoundary";
+import { LoginContextDetector } from "@lib/auth/login-context";
+import ZodErrorBoundary from "@components/shared/zod-error-boundary";
 
 // Lenient validation schema for real-time typing (allows empty values)
 const typingSchema = z.object({

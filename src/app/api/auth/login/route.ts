@@ -38,27 +38,20 @@ async function loginHandler(req: NextRequest, validatedData: LoginRequest): Prom
 				get(name: string) {
 					return req.cookies.get(name)?.value;
 				},
-				set(name: string, value: string, options: any) {
-					// Secure cookie configuration
-					const secureOptions = {
-						...options,
-						httpOnly: true,
-						secure: process.env.NODE_ENV === "production",
-						sameSite: "lax" as const,
-						maxAge: validatedData.rememberMe ? 60 * 60 * 24 * 30 : 60 * 60 * 24, // 30 days or 1 day
-					};
-
-					// Cookies will be set by the response
+				set(_name: string, _value: string, _options: any) {
+					// Cookies will be set by the response automatically
+					// Secure options handled by Supabase SSR
 				},
 			},
 		});
 
 		// Check for rate limiting based on email/IP
 		const clientIP = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || "unknown";
-		const rateLimitKey = `login_attempts:${validatedData.email}:${clientIP}`;
+		// const rateLimitKey = `login_attempts:${validatedData.email}:${clientIP}`;
 
 		// TODO: Implement proper rate limiting here
 		// For now, we'll use a simple check
+		console.debug(`Login attempt from IP: ${clientIP} for email: ${validatedData.email}`);
 
 		// Attempt login
 		const { data: authData, error: authError } = await supabase.auth.signInWithPassword({

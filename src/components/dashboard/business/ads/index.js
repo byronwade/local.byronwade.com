@@ -5,11 +5,11 @@
  */
 
 // Main page components
-export { default as AdsCreatePage } from "./AdsCreatePage";
-export { default as AdsEditPage } from "./AdsEditPage";
+export { default as AdsCreatePage } from "./ads-create-page";
+export { default as AdsEditPage } from "./ads-edit-page";
 
 // Section components
 export { CampaignDetailsSection, AdContentSection, TargetingSection, BudgetScheduleSection, ReviewSubmitSection } from "./sections";
 
 // Re-export hook for external usage
-export { useAdsForm } from "@lib/hooks/business/ads/useAdsForm";
+export { useAdsForm } from "@lib/hooks/business/ads/use-ads-form";

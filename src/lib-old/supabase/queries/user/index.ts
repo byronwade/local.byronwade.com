@@ -1,6 +1,6 @@
 // REQUIRED: Optimized user queries with performance monitoring
 import { supabase, getPooledClient, Tables } from "../../client";
-import { CacheManager } from "@/lib/utils/cacheManager";
+import { CacheManager } from "@/lib/utils/cache-manager";
 import { logger } from "@/lib/utils/logger";
 
 type User = Tables<"users">;

@@ -5,11 +5,11 @@ export const metadata = {
 	openGraph: {
 		title: "Privacy Policy - How We Protect Your Data | Thorbis",
 		description: "Read Thorbis's privacy policy to understand how we collect, use, and protect your personal information. Learn about your privacy rights and data choices.",
-		url: "https://local.byronwade.com/privacy",
+		url: "https://thorbis.com/privacy",
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://local.byronwade.com/og-privacy.jpg",
+				url: "https://thorbis.com/og-privacy.jpg",
 				width: 1200,
 				height: 630,
 				alt: "Thorbis Privacy Policy",
@@ -22,10 +22,10 @@ export const metadata = {
 		card: "summary_large_image",
 		title: "Privacy Policy - Thorbis",
 		description: "Learn how we protect your data and respect your privacy on Thorbis.",
-		images: ["https://local.byronwade.com/og-privacy.jpg"],
+		images: ["https://thorbis.com/og-privacy.jpg"],
 	},
 	alternates: {
-		canonical: "https://local.byronwade.com/privacy",
+		canonical: "https://thorbis.com/privacy",
 	},
 };
 
@@ -35,7 +35,7 @@ export default function PrivacyPage() {
 		"@type": "WebPage",
 		name: "Privacy Policy",
 		description: "Thorbis privacy policy explaining how we collect, use, and protect your personal information",
-		url: "https://local.byronwade.com/privacy",
+		url: "https://thorbis.com/privacy",
 		dateModified: "2023-10-26",
 		mainEntity: {
 			"@type": "Article",
@@ -52,7 +52,7 @@ export default function PrivacyPage() {
 				name: "Thorbis",
 				logo: {
 					"@type": "ImageObject",
-					url: "https://local.byronwade.com/logos/ThorbisLogo.webp",
+					url: "https://thorbis.com/logos/ThorbisLogo.webp",
 				},
 			},
 			about: ["Data Privacy", "Personal Information Protection", "User Rights", "Data Collection Practices", "Information Security"],
@@ -64,7 +64,7 @@ export default function PrivacyPage() {
 					"@type": "ListItem",
 					position: 1,
 					item: {
-						"@id": "https://local.byronwade.com",
+						"@id": "https://thorbis.com",
 						name: "Thorbis",
 					},
 				},
@@ -72,7 +72,7 @@ export default function PrivacyPage() {
 					"@type": "ListItem",
 					position: 2,
 					item: {
-						"@id": "https://local.byronwade.com/privacy",
+						"@id": "https://thorbis.com/privacy",
 						name: "Privacy Policy",
 					},
 				},

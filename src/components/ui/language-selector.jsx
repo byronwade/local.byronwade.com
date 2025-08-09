@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Button } from "@components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@components/ui/dropdown-menu";
-import { useLanguage } from "@context/LanguageContext";
+import { useLanguage } from "@context/language-context";
 import { ChevronDown, Globe } from "lucide-react";
 
 export default function LanguageSelector() {

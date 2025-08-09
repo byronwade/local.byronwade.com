@@ -1,7 +1,7 @@
 // app/api/send/route.js
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
-import { renderEmail } from "@utils/renderEmail";
+import { renderEmail } from "@utils/render-email";
 
 const resendApiKey = process.env.RESEND_API_KEY;
 const resend = resendApiKey ? new Resend(resendApiKey) : null;

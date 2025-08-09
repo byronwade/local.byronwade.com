@@ -1,11 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@components/ui/card";
 import { Input } from "@components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@components/ui/table";
-import { Briefcase, MapPin, Search } from "lucide-react";
+import { Briefcase, MapPin } from "lucide-react";
 
 const mockSalaries = [
 	{ title: "Frontend Developer", location: "Springfield, IL", average: "$95,000", range: "$70,000 - $120,000" },

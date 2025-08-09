@@ -63,7 +63,7 @@ export * from "./tooltip";
 export * from "./use-toast";
 
 // Custom UI Components
-export { default as DarkModeToggle } from "./DarkModeToggle";
+export { default as DarkModeToggle } from "./dark-mode-toggle";
 export { default as LanguageSelector } from "./language-selector";
 
 // === PERFORMANCE OPTIMIZATION ===

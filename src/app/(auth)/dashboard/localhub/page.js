@@ -5,10 +5,33 @@
  * Following Next.js best practices for component organization
  */
 
-"use client";
+import LocalHubDashboardPage from "@components/dashboard/localhub/local-hub-dashboard-page";
+import Script from "next/script";
 
-import LocalHubDashboardPage from "@components/dashboard/localhub/LocalHubDashboardPage";
+export const metadata = {
+	title: "LocalHub Dashboard • Thorbis",
+	description: "Manage your LocalHub directory, businesses, revenue, analytics, and settings in one place.",
+	robots: { index: false, follow: false },
+	alternates: { canonical: "/dashboard/localhub" },
+};
 
 export default function Page() {
-	return <LocalHubDashboardPage />;
+    const jsonLd = {
+		"@context": "https://schema.org",
+		"@type": "WebApplication",
+		name: "LocalHub Dashboard",
+		applicationCategory: "BusinessApplication",
+		operatingSystem: "Web",
+		url: "/dashboard/localhub",
+		offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+	};
+
+	return (
+		<>
+			<Script id="ld-json-localhub" type="application/ld+json">
+				{JSON.stringify(jsonLd)}
+			</Script>
+			<LocalHubDashboardPage />
+		</>
+	);
 }

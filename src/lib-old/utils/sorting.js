@@ -1,5 +1,5 @@
 import { logger } from "./logger";
-import { validateBusinessData } from "./businessDataSafetyWrapper";
+import { validateBusinessData } from "./business-data-safety-wrapper";
 
 // Sort options configuration
 export const SORT_OPTIONS = {

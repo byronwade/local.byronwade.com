@@ -4,7 +4,7 @@ export const metadata = {
 };
 
 import React from "react";
-import SupportPage from "@components/shared/support/SupportPage";
+import SupportPage from "@components/shared/support/support-page";
 
 export default function Support() {
 	return <SupportPage userType="user" />;

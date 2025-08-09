@@ -2,22 +2,73 @@ import React from "react";
 import Link from "next/link";
 import { Button } from "@components/ui/button";
 import { Badge } from "@components/ui/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
-import { CheckCircle, XCircle, Star, Users, DollarSign, Shield, Zap, Globe, MessageSquare, Calendar, Award, Search, BarChart3, Settings, MapPin, Clock, Utensils, ArrowRight } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
+import { CheckCircle, XCircle, Users, MessageSquare, Calendar, BarChart3, MapPin, Clock, ArrowRight, Star } from "lucide-react";
+
+export const metadata = {
+	title: "Expedia Alternative – Thorbis vs Expedia | Thorbis",
+	description: "See why Thorbis is a modern alternative to Expedia: fixed pricing, direct customer relationships, full data access, and multi‑platform sync.",
+	keywords: ["Expedia alternative", "Expedia vs Thorbis", "travel booking alternative", "commission free booking", "direct bookings platform"],
+	alternates: { canonical: "https://thorbis.com/expedia-alternative" },
+	openGraph: {
+		title: "Expedia Alternative – Thorbis vs Expedia",
+		description: "Modern alternative to Expedia with fixed pricing, direct relationships, full data access, and multi‑platform sync.",
+		type: "website",
+		url: "https://thorbis.com/expedia-alternative",
+		siteName: "Thorbis",
+		images: [{ url: "https://thorbis.com/og-expedia-alt.jpg", width: 1200, height: 630, alt: "Thorbis vs Expedia" }],
+		locale: "en_US",
+	},
+	twitter: {
+		card: "summary_large_image",
+		title: "Expedia Alternative – Thorbis vs Expedia",
+		description: "Modern alternative to Expedia with fixed pricing, direct relationships, full data access, and multi‑platform sync.",
+		images: ["https://thorbis.com/og-expedia-alt.jpg"],
+		creator: "@thorbis",
+		site: "@thorbis",
+	},
+};
+
+function BreadcrumbsJsonLd() {
+	const data = {
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		itemListElement: [
+			{ "@type": "ListItem", position: 1, name: "Home", item: "https://thorbis.com/" },
+			{ "@type": "ListItem", position: 2, name: "Expedia Alternative", item: "https://thorbis.com/expedia-alternative" },
+		],
+	};
+	return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />;
+}
+
+function SocialProof() {
+	return (
+		<section className="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
+			<div className="flex flex-col items-center gap-3 text-center">
+				<div className="flex items-center gap-1 text-amber-500" aria-label="rating 4.9 out of 5">
+					{Array.from({ length: 5 }).map((_, i) => (
+						<Star key={i} className="w-5 h-5 fill-amber-500 text-amber-500" />
+					))}
+				</div>
+				<p className="text-sm text-muted-foreground">Trusted by 1,200+ businesses • 4.9/5 average satisfaction</p>
+			</div>
+		</section>
+	);
+}
 
 export default function ExpediaAlternative() {
 	return (
 		<main className="relative min-h-screen bg-background">
+			<BreadcrumbsJsonLd />
 			{/* Hero Section */}
-			<section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-blue-950/20 dark:via-indigo-950/20 dark:to-purple-950/20">
-				<div className="absolute inset-0 bg-grid-white/10 dark:bg-grid-white/5" />
-				<div className="relative px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8 lg:py-24">
+			<section className="relative overflow-hidden border-b">
+				<div className="relative px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8 lg:py-20">
 					<div className="text-center">
 						<Badge variant="secondary" className="mb-6 px-4 py-2 text-sm font-medium bg-primary/10 text-primary border-primary/20">
 							Platform Comparison
 						</Badge>
 						<h1 className="mb-6 text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-							Expedia vs <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/80">Thorbis</span>
+							Expedia vs <span className="text-primary">Thorbis</span>
 						</h1>
 						<p className="mx-auto mb-8 max-w-3xl text-lg text-muted-foreground sm:text-xl">Discover why Thorbis is the superior alternative to Expedia for travel and accommodation businesses. We&apos;re building the Amazon for businesses - comprehensive, transparent, and growth-focused.</p>
 						<div className="flex flex-col gap-4 justify-center sm:flex-row">
@@ -32,6 +83,8 @@ export default function ExpediaAlternative() {
 					</div>
 				</div>
 			</section>
+
+			<SocialProof />
 
 			{/* Quick Comparison Table */}
 			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8">
@@ -359,8 +412,7 @@ export default function ExpediaAlternative() {
 
 			{/* CTA Section */}
 			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8">
-				<div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary to-primary/80 p-8 text-center text-primary-foreground">
-					<div className="absolute inset-0 bg-grid-white/10" />
+				<div className="relative overflow-hidden rounded-2xl bg-primary p-8 text-center text-primary-foreground">
 					<div className="relative">
 						<h2 className="mb-4 text-3xl font-bold sm:text-4xl">Ready to Upgrade from Expedia?</h2>
 						<p className="mb-8 text-xl opacity-90">Join thousands of travel businesses that have switched to Thorbis. Keep more of your revenue, build direct relationships, and grow faster. Start your free trial today.</p>
@@ -375,6 +427,46 @@ export default function ExpediaAlternative() {
 						</div>
 					</div>
 				</div>
+			</section>
+
+			{/* FAQ */}
+			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8">
+				<div className="mb-8 text-center">
+					<h2 className="text-2xl font-bold text-foreground sm:text-3xl">Frequently asked questions</h2>
+				</div>
+				<div className="grid gap-6 md:grid-cols-2">
+					<div className="p-6 rounded-xl border bg-card">
+						<div className="font-semibold">How is Thorbis different from Expedia?</div>
+						<p className="mt-2 text-sm text-muted-foreground">Flat $29/month pricing, direct relationships, and full customer data access.</p>
+					</div>
+					<div className="p-6 rounded-xl border bg-card">
+						<div className="font-semibold">Do you integrate with major travel sites?</div>
+						<p className="mt-2 text-sm text-muted-foreground">Yes. Sync listings, availability, and reviews across platforms.</p>
+					</div>
+					<div className="p-6 rounded-xl border bg-card">
+						<div className="font-semibold">Can I automate availability updates?</div>
+						<p className="mt-2 text-sm text-muted-foreground">Yes. Automated availability and pricing management included.</p>
+					</div>
+					<div className="p-6 rounded-xl border bg-card">
+						<div className="font-semibold">Is data export supported?</div>
+						<p className="mt-2 text-sm text-muted-foreground">Yes. Export all your data at any time.</p>
+					</div>
+				</div>
+				<script
+					type="application/ld+json"
+					dangerouslySetInnerHTML={{
+						__html: JSON.stringify({
+							"@context": "https://schema.org",
+							"@type": "FAQPage",
+							mainEntity: [
+								{ "@type": "Question", name: "How is Thorbis different from Expedia?", acceptedAnswer: { "@type": "Answer", text: "Flat $29/month pricing, direct relationships, and full customer data access." } },
+								{ "@type": "Question", name: "Do you integrate with major travel sites?", acceptedAnswer: { "@type": "Answer", text: "Yes. Sync listings, availability, and reviews across platforms." } },
+								{ "@type": "Question", name: "Can I automate availability updates?", acceptedAnswer: { "@type": "Answer", text: "Yes. Automated availability and pricing management included." } },
+								{ "@type": "Question", name: "Is data export supported?", acceptedAnswer: { "@type": "Answer", text: "Yes. Export all your data at any time." } },
+							],
+						}),
+					}}
+				/>
 			</section>
 
 			{/* Related Comparisons */}

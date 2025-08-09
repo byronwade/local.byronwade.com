@@ -3,11 +3,12 @@
  * Provides comprehensive admin dashboard data with system-wide analytics
  */
 
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { z } from "zod";
 import { logger } from "@utils/logger";
 import { withAuth, withValidation, withCache, withPerformanceMonitoring, createSuccessResponse, createErrorResponse, compose, type ApiRequest } from "@lib/api/middleware";
+import { dashboardDemoAdminFlag } from "@lib/flags/definitions";
 
 // Admin dashboard query validation schema
 const adminDashboardQuerySchema = z.object({
@@ -28,7 +29,7 @@ async function getAdminDashboard(req: ApiRequest, queryParams: AdminDashboardQue
 	const startTime = performance.now();
 
 	try {
-		if (!req.user || req.user.role !== "admin") {
+		if (!req.demoMode && (!req.user || req.user.role !== "admin")) {
 			return createErrorResponse("FORBIDDEN", "Admin access required");
 		}
 
@@ -39,6 +40,21 @@ async function getAdminDashboard(req: ApiRequest, queryParams: AdminDashboardQue
 				},
 			},
 		});
+
+		// Demo short-circuit
+		if (req.demoMode) {
+			const demoData = createAdminDemoData(queryParams);
+			return createSuccessResponse({
+				dashboard: demoData,
+				metadata: {
+					userId: "demo-admin",
+					period: queryParams.period,
+					sections: queryParams.sections,
+					generatedAt: new Date().toISOString(),
+					demo: true,
+				},
+			});
+		}
 
 		// Calculate date range for metrics
 		const now = new Date();
@@ -319,3 +335,69 @@ export const GET = compose(
 	}),
 	withValidation(getAdminDashboard, adminDashboardQuerySchema)
 );
+
+// Lightweight, deterministic demo data generator (no external calls)
+function createAdminDemoData(query: AdminDashboardQuery) {
+	const periodLabel = query.period;
+	const seed = 126;
+	const rand = (n: number) => Math.abs(Math.sin(n + seed));
+
+	const totalUsers = 120000 + Math.floor(rand(1) * 5000);
+	const totalBusinesses = 45000 + Math.floor(rand(2) * 3000);
+	const totalReviews = 320000 + Math.floor(rand(3) * 12000);
+	const totalLocalHubs = 220 + Math.floor(rand(4) * 30);
+	const activeSubscriptions = 18000 + Math.floor(rand(5) * 2000);
+	const totalRevenue = 2_400_000 + Math.floor(rand(6) * 200_000);
+
+	const overview = {
+		totalUsers,
+		totalBusinesses,
+		totalReviews,
+		totalLocalHubs,
+		activeSubscriptions,
+		newUsersThisPeriod: Math.floor(totalUsers * 0.01),
+		newBusinessesThisPeriod: Math.floor(totalBusinesses * 0.01),
+		newReviewsThisPeriod: Math.floor(totalReviews * 0.02),
+		totalRevenue,
+		period: periodLabel,
+	};
+
+	const users = {
+		growth: Array.from({ length: 12 }, (_, i) => ({ created_at: new Date(Date.now() - (11 - i) * 2629800000).toISOString(), role: "user", status: "active" })),
+		engagement: Array.from({ length: 30 }, (_, i) => ({ date: new Date(Date.now() - (29 - i) * 86400000).toISOString().split("T")[0], views: Math.floor(10000 + rand(i) * 5000) })),
+		recent: Array.from({ length: Math.min(10, query.limit) }, (_, i) => ({ id: `u_${i}`, name: `User ${i + 1}`, email: `user${i + 1}@demo.com`, role: i % 5 === 0 ? "admin" : "user", status: "active", created_at: new Date(Date.now() - i * 86400000).toISOString(), last_login: new Date(Date.now() - i * 3600000).toISOString() })),
+		usersByRole: { admin: 120, user: totalUsers - 120 },
+		usersByStatus: { active: Math.floor(totalUsers * 0.9), inactive: Math.floor(totalUsers * 0.1) },
+	};
+
+	const businesses = {
+		growth: Array.from({ length: 12 }, (_, i) => ({ created_at: new Date(Date.now() - (11 - i) * 2629800000).toISOString(), status: "published", verified: i % 2 === 0, rating: 4 - rand(i) * 0.5, review_count: Math.floor(rand(i) * 500) })),
+		metrics: Array.from({ length: 30 }, (_, i) => ({ business_id: `b_${i}`, date: new Date(Date.now() - (29 - i) * 86400000).toISOString().split("T")[0], views: Math.floor(500 + rand(i) * 1000), calls: Math.floor(20 + rand(i + 10) * 40), directions: Math.floor(15 + rand(i + 20) * 30), website_clicks: Math.floor(30 + rand(i + 30) * 60) })),
+		top: Array.from({ length: 10 }, (_, i) => ({ id: `tb_${i}`, name: `Top Biz ${i + 1}`, rating: (4.2 + rand(i) * 0.6).toFixed(1), review_count: 300 + Math.floor(rand(i + 40) * 500), verified: true, status: "published" })),
+		businessesByStatus: { published: Math.floor(totalBusinesses * 0.8), draft: Math.floor(totalBusinesses * 0.2) },
+		avgRating: 4.3,
+	};
+
+	const revenue = {
+		timeline: Array.from({ length: 30 }, (_, i) => ({ amount: Math.floor(60000 + rand(i) * 25000), created_at: new Date(Date.now() - (29 - i) * 86400000).toISOString(), status: "completed" })),
+		byPlan: { Starter: 120000, Growth: 340000, Scale: 890000 },
+		mrr: 650000,
+		totalRevenue,
+	};
+
+	const performance = {
+		system: Array.from({ length: 30 }, (_, i) => ({ timestamp: new Date(Date.now() - (29 - i) * 86400000).toISOString(), uptime: 99.95, cpu: Math.floor(20 + rand(i) * 30) })),
+		api: Array.from({ length: 30 }, (_, i) => ({ timestamp: new Date(Date.now() - (29 - i) * 86400000).toISOString(), avg_response_time: Math.floor(120 + rand(i) * 60) })),
+		uptime: 99.95,
+		avgResponseTime: 160,
+	};
+
+	const moderation = {
+		pendingReviews: Array.from({ length: Math.min(query.limit, 10) }, (_, i) => ({ id: `rev_${i}`, text: "Pending review", rating: 3 + (i % 3), created_at: new Date().toISOString(), businesses: { name: `Biz ${i}` }, users: { name: `User ${i}` } })),
+		flaggedContent: Array.from({ length: Math.min(query.limit, 10) }, (_, i) => ({ id: `flag_${i}`, reason: "Spam", status: "pending", created_at: new Date().toISOString() })),
+		pendingCount: Math.min(query.limit, 10),
+		flaggedCount: Math.min(query.limit, 10),
+	};
+
+	return { overview, users, businesses, revenue, performance, moderation };
+}

@@ -1,6 +1,5 @@
 import { Button } from "@components/ui/button";
 import { Card, CardContent } from "@components/ui/card";
-import Image from "next/image";
 import Link from "next/link";
 
 const pressReleases = [
@@ -31,11 +30,11 @@ export const metadata = {
 	openGraph: {
 		title: "Press & News - Media Coverage & Press Releases | Thorbis",
 		description: "Latest news, press releases, and media coverage about Thorbis. See our company announcements, funding news, and media highlights from major publications.",
-		url: "https://local.byronwade.com/press",
+		url: "https://thorbis.com/press",
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://local.byronwade.com/og-press.jpg",
+				url: "https://thorbis.com/og-press.jpg",
 				width: 1200,
 				height: 630,
 				alt: "Thorbis Press & News",
@@ -48,10 +47,10 @@ export const metadata = {
 		card: "summary_large_image",
 		title: "Press & News - Thorbis",
 		description: "Latest news and press releases about Thorbis platform and company updates.",
-		images: ["https://local.byronwade.com/og-press.jpg"],
+		images: ["https://thorbis.com/og-press.jpg"],
 	},
 	alternates: {
-		canonical: "https://local.byronwade.com/press",
+		canonical: "https://thorbis.com/press",
 	},
 };
 
@@ -61,7 +60,7 @@ export default function PressPage() {
 		"@type": "WebPage",
 		name: "Press & News",
 		description: "Latest news, press releases, and media coverage about Thorbis",
-		url: "https://local.byronwade.com/press",
+		url: "https://thorbis.com/press",
 		mainEntity: {
 			"@type": "ItemList",
 			name: "Press Releases",
@@ -90,7 +89,7 @@ export default function PressPage() {
 					"@type": "ListItem",
 					position: 1,
 					item: {
-						"@id": "https://local.byronwade.com",
+						"@id": "https://thorbis.com",
 						name: "Thorbis",
 					},
 				},
@@ -98,7 +97,7 @@ export default function PressPage() {
 					"@type": "ListItem",
 					position: 2,
 					item: {
-						"@id": "https://local.byronwade.com/press",
+						"@id": "https://thorbis.com/press",
 						name: "Press",
 					},
 				},

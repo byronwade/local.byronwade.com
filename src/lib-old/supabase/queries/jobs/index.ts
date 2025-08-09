@@ -5,7 +5,7 @@
  */
 
 import { supabase, getPooledClient, Tables, Database } from "../../client";
-import { CacheManager } from "@/lib/utils/cacheManager";
+import { CacheManager } from "@/lib/utils/cache-manager";
 import { logger } from "@/lib/utils/logger";
 
 type Job = Tables<"jobs">;

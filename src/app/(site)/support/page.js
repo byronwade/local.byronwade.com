@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import SupportClient from "./SupportClient";
+import SupportClient from "./support-client";
 
 export const metadata = {
 	title: "Support Center - Get Help & Customer Service | Thorbis",
@@ -8,11 +8,11 @@ export const metadata = {
 	openGraph: {
 		title: "Support Center - Get Help & Customer Service | Thorbis",
 		description: "Get comprehensive support for your Thorbis account. Find help articles, contact customer service, and access resources to help you succeed on our platform.",
-		url: "https://local.byronwade.com/support",
+		url: "https://thorbis.com/support",
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://local.byronwade.com/og-support.jpg",
+				url: "https://thorbis.com/og-support.jpg",
 				width: 1200,
 				height: 630,
 				alt: "Thorbis Support Center",
@@ -25,7 +25,7 @@ export const metadata = {
 		card: "summary_large_image",
 		title: "Support Center - Get Help & Customer Service | Thorbis",
 		description: "Get comprehensive support for your Thorbis account. Find help articles, contact customer service, and access resources to help you succeed on our platform.",
-		images: ["https://local.byronwade.com/og-support.jpg"],
+		images: ["https://thorbis.com/og-support.jpg"],
 		creator: "@thorbis",
 	},
 	robots: {
@@ -40,7 +40,7 @@ export const metadata = {
 		},
 	},
 	alternates: {
-		canonical: "https://local.byronwade.com/support",
+		canonical: "https://thorbis.com/support",
 	},
 };
 
@@ -50,7 +50,7 @@ const jsonLd = {
 	"@type": "CustomerService",
 	name: "Thorbis Support Center",
 	description: "Comprehensive customer support and help resources",
-	url: "https://local.byronwade.com/support",
+	url: "https://thorbis.com/support",
 	serviceType: "Customer Support",
 	areaServed: "Worldwide",
 	availableLanguage: "English",
@@ -67,13 +67,13 @@ const jsonLd = {
 				"@type": "ListItem",
 				position: 1,
 				name: "Home",
-				item: "https://local.byronwade.com",
+				item: "https://thorbis.com",
 			},
 			{
 				"@type": "ListItem",
 				position: 2,
 				name: "Support",
-				item: "https://local.byronwade.com/support",
+				item: "https://thorbis.com/support",
 			},
 		],
 	},

@@ -1,302 +1,278 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
-import Link from "next/link";
-import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
+
+import React from "react";
+import { useParams } from "next/navigation";
+import { ProtectedRoute } from "@components/features/auth";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
 import { Button } from "@components/ui/button";
 import { Badge } from "@components/ui/badge";
 import { Progress } from "@components/ui/progress";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
-import { Separator } from "@components/ui/separator";
-import { BookOpen, Clock, Users, Star, Play, CheckCircle, ArrowLeft, Award, Target, FileText, Video, Download } from "lucide-react";
+import { BookOpen, Clock, Users, Play, CheckCircle, Lock, Trophy, Target, ChevronLeft, ChevronRight, Award, Zap, Brain, Lightbulb } from "lucide-react";
+import Link from "next/link";
 
 // Import courses data from shared location
 import { courses } from "@data/academy/courses";
 
-const userProgress = {
-	"plumbing-beginner": 30,
-	"hvac-ce": 10,
-	"electrical-master": 0,
-};
-
+/**
+ * Individual course overview page
+ * Shows course details, progress, and chapter navigation
+ */
 export default function CourseDetailPage() {
+	return (
+		<ProtectedRoute requireEmailVerification={true}>
+			<CourseDetailContent />
+		</ProtectedRoute>
+	);
+}
+
+function CourseDetailContent() {
 	const params = useParams();
-	const router = useRouter();
-	const [course, setCourse] = useState(null);
-	const [loading, setLoading] = useState(true);
+	const courseId = params.id;
 
-	useEffect(() => {
-		if (params.id) {
-			const foundCourse = courses.find((c) => c.id === params.id);
-			if (foundCourse) {
-				setCourse(foundCourse);
-			} else {
-				router.push("/dashboard/academy/courses");
-			}
-			setLoading(false);
-		}
-	}, [params.id, router]);
+	// Find the course
+	const course = courses.find((c) => c.id === courseId);
 
-	if (loading) {
-		return (
-			<div className="flex items-center justify-center min-h-[400px]">
-				<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-			</div>
-		);
-	}
+	// Mock user progress
+	const userProgress = {
+		"plumbing-beginner": 30,
+		"hvac-ce": 10,
+		"electrical-master": 0,
+	};
 
-	if (!course) {
-		return (
-			<div className="text-center py-12">
-				<h2 className="text-2xl font-semibold mb-4">Course not found</h2>
-				<Button asChild>
-					<Link href="/dashboard/academy/courses">Back to Courses</Link>
-				</Button>
-			</div>
-		);
-	}
-
-	const progress = userProgress[course.id] ?? 0;
+	const progress = userProgress[courseId] ?? 0;
 	const isStarted = progress > 0;
 	const isCompleted = progress === 100;
 
-	const completedChapters = Math.floor((progress / 100) * course.chapters.length);
+	// Mock chapters with progress
+	const chapters = course?.chapters || [
+		{ id: "chapter-1", title: "Introduction to Plumbing", duration: "15 min", completed: true, locked: false },
+		{ id: "chapter-2", title: "Basic Tools and Equipment", duration: "20 min", completed: true, locked: false },
+		{ id: "chapter-3", title: "Pipe Types and Materials", duration: "25 min", completed: false, locked: false, current: true },
+		{ id: "chapter-4", title: "Basic Installation Techniques", duration: "30 min", completed: false, locked: false },
+		{ id: "chapter-5", title: "Troubleshooting Common Issues", duration: "35 min", completed: false, locked: true },
+		{ id: "chapter-6", title: "Advanced Repair Methods", duration: "40 min", completed: false, locked: true },
+	];
+
+	if (!course) {
+		return (
+			<div className="min-h-screen bg-background">
+				<div className="container mx-auto px-4 lg:px-24 py-8">
+					<Card>
+						<CardContent className="flex flex-col items-center justify-center py-12">
+							<BookOpen className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+							<h3 className="text-lg font-semibold mb-2">Course not found</h3>
+							<p className="text-muted-foreground mb-4">The course you're looking for doesn't exist.</p>
+							<Button asChild>
+								<Link href="/dashboard/academy/courses">
+									<ChevronLeft className="w-4 h-4 mr-2" />
+									Back to Courses
+								</Link>
+							</Button>
+						</CardContent>
+					</Card>
+				</div>
+			</div>
+		);
+	}
+
+	const completedChapters = chapters.filter((c) => c.completed).length;
+	const courseProgress = (completedChapters / chapters.length) * 100;
 
 	return (
-		<div className="space-y-8">
-			{/* Header */}
-			<div className="flex items-center gap-4">
-				<Button variant="ghost" size="sm" asChild>
-					<Link href="/dashboard/academy/courses">
-						<ArrowLeft className="w-4 h-4 mr-2" />
-						Back to Courses
+		<div className="min-h-screen bg-background">
+			<div className="container mx-auto px-4 lg:px-24 py-8 space-y-8">
+				{/* Breadcrumb */}
+				<div className="flex items-center space-x-2 text-sm text-muted-foreground">
+					<Link href="/dashboard/academy" className="hover:text-foreground">
+						Academy
 					</Link>
-				</Button>
-			</div>
+					<ChevronRight className="w-4 h-4" />
+					<Link href="/dashboard/academy/courses" className="hover:text-foreground">
+						Courses
+					</Link>
+					<ChevronRight className="w-4 h-4" />
+					<span className="text-foreground">{course.title}</span>
+				</div>
 
-			{/* Course Header */}
-			<div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-				<div className="lg:col-span-2">
-					<Card>
-						<CardContent className="p-8">
-							<div className="flex items-start justify-between mb-6">
-								<div className="flex-1">
-									<h1 className="text-3xl font-bold mb-3">{course.title}</h1>
-									<p className="text-muted-foreground text-lg mb-4">{course.description}</p>
-									<div className="flex items-center gap-4 mb-4">
-										<Badge variant={isCompleted ? "default" : isStarted ? "secondary" : "outline"}>{isCompleted ? "Completed" : isStarted ? "In Progress" : "Not Started"}</Badge>
-										<div className="flex items-center gap-1 text-sm text-muted-foreground">
-											<Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-											<span>4.8 (234 reviews)</span>
-										</div>
+				{/* Course Header */}
+				<div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+					<div className="lg:col-span-2">
+						<Card className="overflow-hidden">
+							<div className="h-48 bg-gradient-to-r from-blue-600 to-purple-600 relative">
+								<div className="absolute inset-0 bg-black/20" />
+								<div className="absolute bottom-6 left-6 text-white">
+									<div className="flex items-center space-x-2 mb-2">
+										<Badge variant="secondary" className="bg-white/20 text-white border-0">
+											{course.level}
+										</Badge>
+										<Badge variant="secondary" className="bg-white/20 text-white border-0">
+											{course.category}
+										</Badge>
+										{isCompleted && (
+											<Badge variant="secondary" className="bg-green-500/80 text-white border-0">
+												<Trophy className="w-3 h-3 mr-1" />
+												Completed
+											</Badge>
+										)}
+									</div>
+									<h1 className="text-3xl font-bold mb-2">{course.title}</h1>
+									<p className="text-blue-100 text-lg">{course.description}</p>
+								</div>
+							</div>
+							<CardContent className="p-6">
+								<div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+									<div className="text-center">
+										<BookOpen className="w-8 h-8 mx-auto mb-2 text-blue-600" />
+										<div className="text-sm font-medium">{chapters.length} Chapters</div>
+										<div className="text-xs text-muted-foreground">Learn at your pace</div>
+									</div>
+									<div className="text-center">
+										<Clock className="w-8 h-8 mx-auto mb-2 text-green-600" />
+										<div className="text-sm font-medium">{course.duration || "Self-paced"}</div>
+										<div className="text-xs text-muted-foreground">Estimated time</div>
+									</div>
+									<div className="text-center">
+										<Users className="w-8 h-8 mx-auto mb-2 text-purple-600" />
+										<div className="text-sm font-medium">2,450+</div>
+										<div className="text-xs text-muted-foreground">Students enrolled</div>
+									</div>
+									<div className="text-center">
+										<Award className="w-8 h-8 mx-auto mb-2 text-yellow-600" />
+										<div className="text-sm font-medium">Certificate</div>
+										<div className="text-xs text-muted-foreground">Upon completion</div>
 									</div>
 								</div>
-								<div className="text-right">
-									<div className="text-3xl font-bold text-green-600 mb-2">${course.price}</div>
-									<Button size="lg" className="w-full">
+
+								{/* Progress Section */}
+								<div className="space-y-4">
+									<div className="flex items-center justify-between">
+										<h3 className="text-lg font-semibold">Your Progress</h3>
+										<span className="text-sm text-muted-foreground">
+											{completedChapters} of {chapters.length} chapters
+										</span>
+									</div>
+									<Progress value={courseProgress} className="h-3" />
+									<div className="flex items-center justify-between text-sm">
+										<span className="text-muted-foreground">{Math.round(courseProgress)}% Complete</span>
+										{courseProgress > 0 && <span className="text-green-600 font-medium">Keep it up! 🎉</span>}
+									</div>
+								</div>
+							</CardContent>
+						</Card>
+					</div>
+
+					{/* Quick Actions Sidebar */}
+					<div className="space-y-6">
+						{/* Start/Continue Learning */}
+						<Card>
+							<CardHeader>
+								<CardTitle className="flex items-center gap-2">
+									<Play className="w-5 h-5 text-blue-600" />
+									{isStarted ? "Continue Learning" : "Start Learning"}
+								</CardTitle>
+							</CardHeader>
+							<CardContent className="space-y-4">
+								<Button asChild size="lg" className="w-full">
+									<Link href={`/dashboard/academy/courses/${courseId}/learn`}>
 										<Play className="w-4 h-4 mr-2" />
-										{isStarted ? "Continue Learning" : "Start Course"}
+										{isStarted ? "Continue Course" : "Start Course"}
+									</Link>
+								</Button>
+								{isStarted && (
+									<Button asChild variant="outline" className="w-full">
+										<Link href={`/dashboard/academy/courses/${courseId}/practice`}>
+											<Target className="w-4 h-4 mr-2" />
+											Practice Quiz
+										</Link>
 									</Button>
-								</div>
-							</div>
-
-							{/* Progress */}
-							<div className="mb-6">
-								<div className="flex justify-between items-center mb-2">
-									<span className="font-medium">Course Progress</span>
-									<span className="text-sm text-muted-foreground">{progress}% complete</span>
-								</div>
-								<Progress value={progress} className="h-3" />
-								<p className="text-sm text-muted-foreground mt-2">
-									{completedChapters} of {course.chapters.length} chapters completed
-								</p>
-							</div>
-
-							{/* Course Stats */}
-							<div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-								<div className="text-center p-4 bg-muted rounded-lg">
-									<BookOpen className="w-6 h-6 mx-auto mb-2 text-blue-600" />
-									<div className="font-semibold">{course.chapters.length}</div>
-									<div className="text-sm text-muted-foreground">Chapters</div>
-								</div>
-								<div className="text-center p-4 bg-muted rounded-lg">
-									<Clock className="w-6 h-6 mx-auto mb-2 text-green-600" />
-									<div className="font-semibold">{course.duration || "Self-paced"}</div>
-									<div className="text-sm text-muted-foreground">Duration</div>
-								</div>
-								<div className="text-center p-4 bg-muted rounded-lg">
-									<Users className="w-6 h-6 mx-auto mb-2 text-purple-600" />
-									<div className="font-semibold">{course.level}</div>
-									<div className="text-sm text-muted-foreground">Level</div>
-								</div>
-								<div className="text-center p-4 bg-muted rounded-lg">
-									<Award className="w-6 h-6 mx-auto mb-2 text-orange-600" />
-									<div className="font-semibold">Certificate</div>
-									<div className="text-sm text-muted-foreground">Included</div>
-								</div>
-							</div>
-						</CardContent>
-					</Card>
-				</div>
-
-				{/* Sidebar */}
-				<div className="space-y-6">
-					<Card>
-						<CardHeader>
-							<CardTitle className="flex items-center gap-2">
-								<Target className="w-5 h-5" />
-								Learning Objectives
-							</CardTitle>
-						</CardHeader>
-						<CardContent>
-							<ul className="space-y-2">
-								{course.learningObjectives?.map((objective, index) => (
-									<li key={index} className="flex items-start gap-2 text-sm">
-										<CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
-										<span>{objective}</span>
-									</li>
-								)) || (
-									<>
-										<li className="flex items-start gap-2 text-sm">
-											<CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
-											<span>Master fundamental concepts and techniques</span>
-										</li>
-										<li className="flex items-start gap-2 text-sm">
-											<CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
-											<span>Apply knowledge in real-world scenarios</span>
-										</li>
-										<li className="flex items-start gap-2 text-sm">
-											<CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
-											<span>Prepare for certification exams</span>
-										</li>
-									</>
 								)}
-							</ul>
-						</CardContent>
-					</Card>
+							</CardContent>
+						</Card>
 
-					<Card>
-						<CardHeader>
-							<CardTitle className="flex items-center gap-2">
-								<Download className="w-5 h-5" />
-								Course Materials
-							</CardTitle>
-						</CardHeader>
-						<CardContent>
-							<div className="space-y-3">
-								<div className="flex items-center gap-3 p-3 border rounded-lg">
-									<FileText className="w-5 h-5 text-blue-600" />
-									<div className="flex-1">
-										<div className="font-medium text-sm">Course Handbook</div>
-										<div className="text-xs text-muted-foreground">PDF - 2.5 MB</div>
+						{/* Learning Path */}
+						<Card>
+							<CardHeader>
+								<CardTitle className="flex items-center gap-2">
+									<Lightbulb className="w-5 h-5 text-yellow-600" />
+									Learning Features
+								</CardTitle>
+							</CardHeader>
+							<CardContent className="space-y-3">
+								<div className="flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
+									<Brain className="w-5 h-5 text-blue-600" />
+									<div>
+										<div className="font-medium text-sm">AI Tutor</div>
+										<div className="text-xs text-muted-foreground">Get instant help</div>
 									</div>
-									<Button size="sm" variant="outline">
-										Download
-									</Button>
 								</div>
-								<div className="flex items-center gap-3 p-3 border rounded-lg">
-									<Video className="w-5 h-5 text-red-600" />
-									<div className="flex-1">
-										<div className="font-medium text-sm">Video Lectures</div>
-										<div className="text-xs text-muted-foreground">12 hours of content</div>
+								<div className="flex items-center gap-3 p-3 bg-green-50 dark:bg-green-950/20 rounded-lg">
+									<Target className="w-5 h-5 text-green-600" />
+									<div>
+										<div className="font-medium text-sm">Practice Tests</div>
+										<div className="text-xs text-muted-foreground">Test your knowledge</div>
 									</div>
-									<Button size="sm" variant="outline">
-										Access
-									</Button>
 								</div>
-							</div>
-						</CardContent>
-					</Card>
+								<div className="flex items-center gap-3 p-3 bg-purple-50 dark:bg-purple-950/20 rounded-lg">
+									<Trophy className="w-5 h-5 text-purple-600" />
+									<div>
+										<div className="font-medium text-sm">Achievements</div>
+										<div className="text-xs text-muted-foreground">Earn badges & XP</div>
+									</div>
+								</div>
+							</CardContent>
+						</Card>
+					</div>
 				</div>
-			</div>
 
-			{/* Course Content Tabs */}
-			<Tabs defaultValue="curriculum" className="w-full">
-				<TabsList className="grid w-full grid-cols-3">
-					<TabsTrigger value="curriculum">Curriculum</TabsTrigger>
-					<TabsTrigger value="instructor">Instructor</TabsTrigger>
-					<TabsTrigger value="reviews">Reviews</TabsTrigger>
-				</TabsList>
+				{/* Course Chapters */}
+				<Card>
+					<CardHeader>
+						<CardTitle>Course Chapters</CardTitle>
+						<CardDescription>Complete chapters in order to unlock the next lesson</CardDescription>
+					</CardHeader>
+					<CardContent>
+						<div className="space-y-3">
+							{chapters.map((chapter, index) => (
+								<div key={chapter.id} className={`flex items-center p-4 border rounded-lg transition-all ${chapter.current ? "border-blue-500 bg-blue-50 dark:bg-blue-950/20" : chapter.completed ? "border-green-200 bg-green-50 dark:bg-green-950/20" : chapter.locked ? "border-border bg-muted/50 opacity-60" : "border-border hover:bg-accent"}`}>
+									<div className="flex items-center space-x-4 flex-1">
+										<div className={`w-10 h-10 rounded-full flex items-center justify-center ${chapter.completed ? "bg-green-500 text-white" : chapter.current ? "bg-blue-500 text-white" : chapter.locked ? "bg-muted text-muted-foreground" : "bg-muted/80 text-muted-foreground"}`}>{chapter.completed ? <CheckCircle className="w-5 h-5" /> : chapter.locked ? <Lock className="w-5 h-5" /> : <span className="font-medium">{index + 1}</span>}</div>
 
-				<TabsContent value="curriculum" className="space-y-4">
-					<Card>
-						<CardHeader>
-							<CardTitle>Course Curriculum</CardTitle>
-						</CardHeader>
-						<CardContent>
-							<div className="space-y-4">
-								{course.chapters.map((chapter, index) => {
-									const isChapterCompleted = index < completedChapters;
-									const isCurrentChapter = index === completedChapters && !isCompleted;
-
-									return (
-										<div key={index} className={`p-4 border rounded-lg ${isCurrentChapter ? "border-primary bg-primary/5" : ""}`}>
-											<div className="flex items-center justify-between">
-												<div className="flex items-center gap-3">
-													{isChapterCompleted ? <CheckCircle className="w-5 h-5 text-green-600" /> : isCurrentChapter ? <Play className="w-5 h-5 text-primary" /> : <div className="w-5 h-5 rounded-full border-2 border-muted-foreground/30" />}
-													<div>
-														<h4 className="font-medium">
-															Chapter {index + 1}: {chapter.title}
-														</h4>
-														<p className="text-sm text-muted-foreground">{chapter.description}</p>
-													</div>
-												</div>
-												<div className="text-sm text-muted-foreground">{chapter.duration || "30 min"}</div>
+										<div className="flex-1">
+											<h4 className={`font-medium ${chapter.locked ? "text-muted-foreground" : ""}`}>{chapter.title}</h4>
+											<div className="flex items-center space-x-4 text-sm text-muted-foreground">
+												<span className="flex items-center">
+													<Clock className="w-3 h-3 mr-1" />
+													{chapter.duration}
+												</span>
+												{chapter.completed && (
+													<span className="flex items-center text-green-600">
+														<CheckCircle className="w-3 h-3 mr-1" />
+														Completed
+													</span>
+												)}
+												{chapter.current && (
+													<span className="flex items-center text-blue-600">
+														<Zap className="w-3 h-3 mr-1" />
+														Current
+													</span>
+												)}
 											</div>
 										</div>
-									);
-								})}
-							</div>
-						</CardContent>
-					</Card>
-				</TabsContent>
-
-				<TabsContent value="instructor" className="space-y-4">
-					<Card>
-						<CardHeader>
-							<CardTitle>Meet Your Instructor</CardTitle>
-						</CardHeader>
-						<CardContent>
-							<div className="flex items-start gap-4">
-								<div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center">
-									<Users className="w-8 h-8 text-muted-foreground" />
-								</div>
-								<div className="flex-1">
-									<h4 className="font-semibold text-lg">John Smith</h4>
-									<p className="text-muted-foreground mb-3">Master Plumber & Industry Expert</p>
-									<p className="text-sm leading-relaxed">With over 20 years of experience in the plumbing industry, John has worked on everything from residential repairs to large commercial installations. He holds multiple certifications and has trained hundreds of apprentices throughout his career.</p>
-								</div>
-							</div>
-						</CardContent>
-					</Card>
-				</TabsContent>
-
-				<TabsContent value="reviews" className="space-y-4">
-					<Card>
-						<CardHeader>
-							<CardTitle>Student Reviews</CardTitle>
-						</CardHeader>
-						<CardContent>
-							<div className="space-y-6">
-								{[1, 2, 3].map((review) => (
-									<div key={review} className="border-b last:border-b-0 pb-4 last:pb-0">
-										<div className="flex items-center gap-2 mb-2">
-											<div className="flex items-center gap-1">
-												{[1, 2, 3, 4, 5].map((star) => (
-													<Star key={star} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-												))}
-											</div>
-											<span className="font-medium">Sarah Johnson</span>
-											<span className="text-sm text-muted-foreground">2 weeks ago</span>
-										</div>
-										<p className="text-sm">"Excellent course! The instructor explains everything clearly and the hands-on examples really helped me understand the concepts."</p>
 									</div>
-								))}
-							</div>
-						</CardContent>
-					</Card>
-				</TabsContent>
-			</Tabs>
+
+									<div className="flex items-center space-x-2">
+										{!chapter.locked && (
+											<Button variant={chapter.current ? "default" : "outline"} size="sm" asChild>
+												<Link href={`/dashboard/academy/courses/${courseId}/learn/${chapter.id}`}>{chapter.completed ? "Review" : "Learn"}</Link>
+											</Button>
+										)}
+									</div>
+								</div>
+							))}
+						</div>
+					</CardContent>
+				</Card>
+			</div>
 		</div>
 	);
 }

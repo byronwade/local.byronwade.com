@@ -2,4 +2,4 @@
 // All API client configurations and utilities
 
 // Supabase API Client
-export { default as supabaseClient } from "./supabaseClient";
+export { default as supabaseClient } from "./supabase-client";

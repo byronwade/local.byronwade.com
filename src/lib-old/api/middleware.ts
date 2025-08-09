@@ -6,7 +6,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { logger } from "@lib/utils/logger";
-import { CacheManager } from "@lib/utils/cacheManager";
+import { CacheManager } from "@lib/utils/cache-manager";
 
 export interface ApiRequest extends NextRequest {
 	user?: {

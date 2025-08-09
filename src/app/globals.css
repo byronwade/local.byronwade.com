@@ -377,6 +377,27 @@ img {
   }
 }
 
+/* Full width + full height for business dashboard (scoped) */
+#business-root.dashboard-fullwidth,
+#business-root.dashboard-fullwidth body,
+#business-root.dashboard-fullwidth body>div:first-child,
+#business-root.dashboard-fullwidth div#__next,
+#business-root.dashboard-fullwidth div#__next>div {
+  height: 100%;
+}
+
+/* Break any max container widths under the business dashboard scope */
+/* We now provide consistent gutters via layout, keep widths default */
+
+/* Ensure page content spans edge-to-edge while keeping internal padding */
+#business-root.dashboard-fullwidth main>div {
+  width: 100% !important;
+}
+
+/* Avoid horizontal scrollbars caused by negative margins in components */
+#business-root.dashboard-fullwidth * {
+  box-sizing: border-box;
+}
 .theme-default {
   --primary: 220 90% 46%;
   --primary-foreground: 210 20% 98%;

@@ -20,6 +20,6 @@ export * from "./supabase";
 export * from "./utils";
 
 // Legacy Exports (to be migrated)
-export { default as algoliaClient } from "./algoliaClient";
-export { default as OpenAIClient } from "./OpenAIClient";
-export { default as businessDataGenerator } from "./businessDataGenerator";
+export { default as algoliaClient } from "./algolia-client";
+export { default as OpenAIClient } from "./open-ai-client";
+export { default as businessDataGenerator } from "./business-data-generator";

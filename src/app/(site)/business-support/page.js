@@ -5,11 +5,11 @@ export const metadata = {
 	openGraph: {
 		title: "Business Support - Help & Resources for Business Owners | Thorbis",
 		description: "Get dedicated support for your business on Thorbis. Access help documentation, contact our support team, and find resources to grow your business successfully.",
-		url: "https://local.byronwade.com/business-support",
+		url: "https://thorbis.com/business-support",
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://local.byronwade.com/og-business-support.jpg",
+				url: "https://thorbis.com/og-business-support.jpg",
 				width: 1200,
 				height: 630,
 				alt: "Business Support on Thorbis",
@@ -22,16 +22,15 @@ export const metadata = {
 		card: "summary_large_image",
 		title: "Business Support - Thorbis",
 		description: "Get dedicated support and resources to grow your business successfully.",
-		images: ["https://local.byronwade.com/og-business-support.jpg"],
+		images: ["https://thorbis.com/og-business-support.jpg"],
 	},
 	alternates: {
-		canonical: "https://local.byronwade.com/business-support",
+		canonical: "https://thorbis.com/business-support",
 	},
 };
 
-import { Input } from "@components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@components/ui/card";
-import { Search, LifeBuoy, BookOpen, MessageCircle, Book, Phone, Mail, Clock, Users, Headphones, FileText } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
+import { MessageCircle, Book, Phone, Mail, Clock, Users, Headphones, FileText } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@components/ui/button";
 
@@ -48,7 +47,7 @@ export default function BusinessSupportPage() {
 		"@type": "WebPage",
 		name: "Business Support",
 		description: "Comprehensive support and resources for business owners using Thorbis platform",
-		url: "https://local.byronwade.com/business-support",
+		url: "https://thorbis.com/business-support",
 		mainEntity: {
 			"@type": "CustomerService",
 			name: "Thorbis Business Support",
@@ -75,7 +74,7 @@ export default function BusinessSupportPage() {
 					"@type": "ListItem",
 					position: 1,
 					item: {
-						"@id": "https://local.byronwade.com",
+						"@id": "https://thorbis.com",
 						name: "Thorbis",
 					},
 				},
@@ -83,7 +82,7 @@ export default function BusinessSupportPage() {
 					"@type": "ListItem",
 					position: 2,
 					item: {
-						"@id": "https://local.byronwade.com/business-support",
+						"@id": "https://thorbis.com/business-support",
 						name: "Business Support",
 					},
 				},

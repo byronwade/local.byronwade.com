@@ -5,10 +5,14 @@ import { Card, CardContent } from "@components/ui/card";
 import { Badge } from "@components/ui/badge";
 import { Input } from "@components/ui/input";
 import { BusinessDataFetchers } from "@lib/supabase/server";
-import BusinessCard from "@components/site/home/BusinessCard";
-import ScrollSection from "@components/site/home/ScrollSection";
+import BusinessCard from "@components/site/home/business-card";
+import ScrollSection from "@components/site/home/scroll-section";
 import { Search, MapPin, Star, ChevronRight, Filter, TrendingUp, Users, Building, Grid3X3 } from "lucide-react";
-import { getReliableImageUrl } from "@utils/reliableImageService";
+import { getReliableImageUrl } from "@utils/reliable-image-service";
+
+// Force dynamic rendering due to Supabase auth requirements
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 // Get categories and businesses data from Supabase
 async function getCategoriesData() {
@@ -180,11 +184,11 @@ export const metadata = {
 	openGraph: {
 		title: "Business Categories - Find Services Near You | Thorbis",
 		description: "Browse local businesses by category. Find restaurants, home services, healthcare, automotive, shopping, and more with verified reviews.",
-		url: "https://www.thorbis.com/categories",
+		url: "https://thorbis.com/categories",
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://www.thorbis.com/og-categories.jpg",
+				url: "https://thorbis.com/og-categories.jpg",
 				width: 800,
 				height: 600,
 				alt: "Thorbis Business Categories",
@@ -192,6 +196,15 @@ export const metadata = {
 		],
 		locale: "en_US",
 		type: "website",
+	},
+	twitter: {
+		card: "summary_large_image",
+		title: "Business Categories - Thorbis",
+		description: "Browse local businesses by category with verified reviews.",
+		images: ["https://thorbis.com/og-categories.jpg"],
+	},
+	alternates: {
+		canonical: "https://thorbis.com/categories",
 	},
 };
 

@@ -8,10 +8,30 @@ export default async function sitemap() {
 		console.log(domain);
 	}
 
-	return [
-		{
-			url: `https://${domain}`,
-			lastModified: new Date(),
-		},
-	];
+  const paths = [
+		"/",
+		"/industries",
+		"/academy-learning-platform",
+		"/admin-operations-console",
+		"/agriculture-management-software",
+		"/automotive-shop-software",
+		"/beauty-salon-software",
+		"/business-management-platform",
+		"/construction-management-software",
+		"/ecommerce-operations-platform",
+		"/energy-services-software",
+		"/field-management-software",
+		"/fitness-studio-software",
+		"/healthcare-operations-platform",
+		"/hospitality-operations-platform",
+		"/localhub-marketplace-platform",
+		"/logistics-operations-platform",
+		"/nonprofit-operations-platform",
+		"/professional-services-platform",
+		"/property-management-platform",
+		"/real-estate-operations-platform",
+		"/retail-operations-platform",
+  ];
+
+  return paths.map((p) => ({ url: `https://${domain}${p}`, lastModified: new Date() }));
 }

@@ -4,8 +4,7 @@ import Image from "next/image";
 import { VerifyAccount, ActiveUser, LoginPage } from "@components/features/auth";
 import { Button } from "@components/ui/button";
 import { ArrowRight, ArrowLeft } from "react-feather";
-import { useFormStore } from "@store/ui";
-import useAuth from "@hooks/useAuth";
+import useAuth from "@hooks/use-auth";
 import SupportInfo from "@components/features/auth/support/support-info";
 
 const steps = [

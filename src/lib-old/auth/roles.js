@@ -2,7 +2,7 @@
 // Implements comprehensive permission management with performance optimization
 
 import { logger } from "@lib/utils/logger";
-import { SecureStorage } from "@lib/utils/secureStorage";
+import { SecureStorage } from "@lib/utils/secure-storage";
 
 /**
  * Role definitions with hierarchical permissions

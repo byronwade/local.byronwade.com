@@ -1,6 +1,6 @@
-# Environment Variables Setup Guide
+# Environment Variables Setup Guide (Reference)
 
-This guide provides comprehensive instructions for setting up environment variables for the complete authentication, email, and business management system.
+This is a concise variables reference. The canonical setup and troubleshooting guide is `docs/ENVIRONMENT_SETUP.md`.
 
 ## Required Environment Variables
 

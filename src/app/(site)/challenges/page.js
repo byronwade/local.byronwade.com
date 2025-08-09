@@ -5,11 +5,11 @@ export const metadata = {
 	openGraph: {
 		title: "Business Challenges - Competitive Events & Contests | Thorbis",
 		description: "Join exciting business challenges and contests on Thorbis. Compete with other businesses, showcase your skills, and win recognition in your industry.",
-		url: "https://local.byronwade.com/challenges",
+		url: "https://thorbis.com/challenges",
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://local.byronwade.com/og-challenges.jpg",
+				url: "https://thorbis.com/og-challenges.jpg",
 				width: 1200,
 				height: 630,
 				alt: "Business Challenges on Thorbis",
@@ -22,10 +22,10 @@ export const metadata = {
 		card: "summary_large_image",
 		title: "Business Challenges - Thorbis",
 		description: "Join exciting business challenges and showcase your skills.",
-		images: ["https://local.byronwade.com/og-challenges.jpg"],
+		images: ["https://thorbis.com/og-challenges.jpg"],
 	},
 	alternates: {
-		canonical: "https://local.byronwade.com/challenges",
+		canonical: "https://thorbis.com/challenges",
 	},
 };
 
@@ -35,7 +35,7 @@ export default function ChallengesPage() {
 		"@type": "WebPage",
 		name: "Business Challenges",
 		description: "Competitive events and contests for businesses to showcase their skills and win recognition",
-		url: "https://local.byronwade.com/challenges",
+		url: "https://thorbis.com/challenges",
 		mainEntity: {
 			"@type": "Event",
 			name: "Business Challenge Events",
@@ -52,7 +52,7 @@ export default function ChallengesPage() {
 					"@type": "ListItem",
 					position: 1,
 					item: {
-						"@id": "https://local.byronwade.com",
+						"@id": "https://thorbis.com",
 						name: "Thorbis",
 					},
 				},
@@ -60,7 +60,7 @@ export default function ChallengesPage() {
 					"@type": "ListItem",
 					position: 2,
 					item: {
-						"@id": "https://local.byronwade.com/challenges",
+						"@id": "https://thorbis.com/challenges",
 						name: "Challenges",
 					},
 				},

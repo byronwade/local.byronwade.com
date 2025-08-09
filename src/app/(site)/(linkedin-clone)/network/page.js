@@ -1,14 +1,10 @@
 "use client";
 import { useState } from "react";
-import { Users, Calendar, MessageCircle, MapPin, Building, Star, Plus, Search, Filter, UserPlus, Handshake, GraduationCap, Briefcase, Globe, Award, Rss, ThumbsUp, Share2, Check } from "lucide-react";
+import { MessageCircle, Plus, UserPlus, Rss, ThumbsUp, Share2, Check } from "lucide-react";
 import Link from "next/link";
-import Image from "next/image";
 import { Button } from "@components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@components/ui/card";
-import { Badge } from "@components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
-import { Input } from "@components/ui/input";
 import { Textarea } from "@components/ui/textarea";
 
 // Mock Data (ideally this would come from an API)
@@ -197,7 +193,7 @@ const SuggestedBusinessesCard = ({ businesses }) => (
 		</CardHeader>
 		<CardContent className="space-y-4">
 			{businesses.map((business) => (
-				<BusinessCard key={business.slug} business={business} />
+				<BusinessCard key={business.id} business={business} />
 			))}
 		</CardContent>
 	</Card>

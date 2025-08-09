@@ -5,11 +5,11 @@ export const metadata = {
 	openGraph: {
 		title: "Business Story Videos - Share Your Journey | Thorbis",
 		description: "Share your business story through compelling videos on Thorbis. Connect with customers by showcasing your journey, values, and behind-the-scenes moments.",
-		url: "https://local.byronwade.com/business-story-videos",
+		url: "https://thorbis.com/business-story-videos",
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://local.byronwade.com/og-business-videos.jpg",
+				url: "https://thorbis.com/og-business-videos.jpg",
 				width: 1200,
 				height: 630,
 				alt: "Business Story Videos on Thorbis",
@@ -22,10 +22,10 @@ export const metadata = {
 		card: "summary_large_image",
 		title: "Business Story Videos - Thorbis",
 		description: "Share your business story through compelling videos and connect with customers.",
-		images: ["https://local.byronwade.com/og-business-videos.jpg"],
+		images: ["https://thorbis.com/og-business-videos.jpg"],
 	},
 	alternates: {
-		canonical: "https://local.byronwade.com/business-story-videos",
+		canonical: "https://thorbis.com/business-story-videos",
 	},
 };
 
@@ -35,7 +35,7 @@ export default function BusinessStoryVideosPage() {
 		"@type": "WebPage",
 		name: "Business Story Videos",
 		description: "Platform for businesses to share their stories through video content",
-		url: "https://local.byronwade.com/business-story-videos",
+		url: "https://thorbis.com/business-story-videos",
 		mainEntity: {
 			"@type": "VideoGallery",
 			name: "Business Story Video Gallery",
@@ -48,7 +48,7 @@ export default function BusinessStoryVideosPage() {
 					"@type": "ListItem",
 					position: 1,
 					item: {
-						"@id": "https://local.byronwade.com",
+						"@id": "https://thorbis.com",
 						name: "Thorbis",
 					},
 				},
@@ -56,7 +56,7 @@ export default function BusinessStoryVideosPage() {
 					"@type": "ListItem",
 					position: 2,
 					item: {
-						"@id": "https://local.byronwade.com/business-story-videos",
+						"@id": "https://thorbis.com/business-story-videos",
 						name: "Business Story Videos",
 					},
 				},

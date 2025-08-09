@@ -5,11 +5,11 @@ export const metadata = {
 	openGraph: {
 		title: "Restaurant Table Management System - Streamline Reservations | Thorbis",
 		description: "Optimize your restaurant operations with Thorbis table management system. Handle reservations, waitlists, and table turnover efficiently to maximize revenue and customer satisfaction.",
-		url: "https://local.byronwade.com/table-management",
+		url: "https://thorbis.com/table-management",
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://local.byronwade.com/og-table-management.jpg",
+				url: "https://thorbis.com/og-table-management.jpg",
 				width: 1200,
 				height: 630,
 				alt: "Table Management System on Thorbis",
@@ -22,10 +22,10 @@ export const metadata = {
 		card: "summary_large_image",
 		title: "Restaurant Table Management - Thorbis",
 		description: "Streamline reservations and optimize table turnover with our management system.",
-		images: ["https://local.byronwade.com/og-table-management.jpg"],
+		images: ["https://thorbis.com/og-table-management.jpg"],
 	},
 	alternates: {
-		canonical: "https://local.byronwade.com/table-management",
+		canonical: "https://thorbis.com/table-management",
 	},
 };
 
@@ -35,7 +35,7 @@ export default function TableManagementPage() {
 		"@type": "WebPage",
 		name: "Restaurant Table Management System",
 		description: "Comprehensive table management and reservation system for restaurants",
-		url: "https://local.byronwade.com/table-management",
+		url: "https://thorbis.com/table-management",
 		mainEntity: {
 			"@type": "SoftwareApplication",
 			name: "Thorbis Table Management",
@@ -53,7 +53,7 @@ export default function TableManagementPage() {
 					"@type": "ListItem",
 					position: 1,
 					item: {
-						"@id": "https://local.byronwade.com",
+						"@id": "https://thorbis.com",
 						name: "Thorbis",
 					},
 				},
@@ -61,7 +61,7 @@ export default function TableManagementPage() {
 					"@type": "ListItem",
 					position: 2,
 					item: {
-						"@id": "https://local.byronwade.com/table-management",
+						"@id": "https://thorbis.com/table-management",
 						name: "Table Management",
 					},
 				},

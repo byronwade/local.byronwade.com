@@ -3,13 +3,12 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { cn } from "@utils";
 import { Button } from "@components/ui/button";
 import { Badge } from "@components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuGroup, DropdownMenuRadioGroup, DropdownMenuRadioItem } from "@components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@components/ui/sheet";
-import { Bell, ChevronDown, Settings, LogOut, Eye, Building2, DollarSign, Menu, CreditCard, HelpCircle, MapPin, Users, Plus, Globe } from "lucide-react";
+import { Bell, ChevronDown, Settings, Building2, Menu, CreditCard, HelpCircle, MapPin, Plus } from "lucide-react";
 import { SunIcon, MoonIcon } from "@heroicons/react/24/outline";
 import { RiComputerFill } from "react-icons/ri";
 import { useTheme } from "next-themes";
@@ -89,7 +88,6 @@ export default function Header() {
 					<Link href="/" className="flex items-center space-x-3 text-xl font-bold group">
 						<div className="relative">
 							<Image src="/logos/ThorbisLogo.webp" alt="Thorbis LocalHub" width={50} height={50} className="w-12 h-12 transition-transform duration-200 group-hover:scale-105" />
-							<div className="absolute inset-0 bg-gradient-to-r rounded-full opacity-0 transition-opacity duration-200 from-purple-500/20 to-pink-500/20 group-hover:opacity-100" />
 						</div>
 						<div className="hidden sm:block">
 							<h1 className="text-lg font-bold leading-none text-foreground">LocalHub</h1>
@@ -117,13 +115,13 @@ export default function Header() {
 								<DropdownMenuSeparator />
 								{mockDirectories.map((directory) => (
 									<DropdownMenuItem key={directory.id} onClick={() => setCurrentDirectoryId(directory.id)} className={`flex items-center space-x-3 p-3 ${directory.id === currentDirectoryId ? "bg-accent" : ""}`}>
-										<div className="flex flex-shrink-0 justify-center items-center w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg">
+										<div className="flex flex-shrink-0 justify-center items-center w-8 h-8 rounded-lg bg-muted">
 											<MapPin className="w-4 h-4 text-white" />
 										</div>
 										<div className="flex-1 min-w-0">
 											<div className="flex items-center space-x-2">
 												<span className="font-medium text-foreground">{directory.name}</span>
-												<Badge variant="secondary" className="text-xs text-white bg-gradient-to-r from-green-500 to-blue-600">
+												<Badge variant="secondary" className="text-xs">
 													{directory.status}
 												</Badge>
 											</div>
@@ -138,7 +136,7 @@ export default function Header() {
 								<DropdownMenuSeparator />
 								<DropdownMenuItem asChild>
 									<Link href="/dashboard/localhub/create-directory" className="flex items-center p-3 space-x-3">
-										<div className="flex flex-shrink-0 justify-center items-center w-8 h-8 bg-gradient-to-br from-green-500 to-blue-600 rounded-lg">
+										<div className="flex flex-shrink-0 justify-center items-center w-8 h-8 rounded-lg bg-muted">
 											<Plus className="w-4 h-4 text-white" />
 										</div>
 										<div className="flex-1">
@@ -163,14 +161,14 @@ export default function Header() {
 						const isActive = pathname === item.href || (item.href !== "/dashboard/localhub" && pathname.startsWith(item.href));
 						return (
 							<Link key={item.href} href={item.href} passHref>
-								<Button variant={isActive ? "default" : "ghost"} size="sm" className={`text-sm font-medium transition-colors ${isActive ? "bg-primary/5 text-primary border border-primary/20 hover:text-white" : "hover:text-white hover:bg-muted"}`}>
+								<Button variant={isActive ? "secondary" : "ghost"} size="sm" className="text-sm font-medium">
 									{item.name}
 								</Button>
 							</Link>
 						);
 					})}
 				</div>
-				;{/* User Controls */}
+				{/* User Controls */}
 				<div className="flex items-center space-x-2">
 					{/* Notifications */}
 					<DropdownMenu>
@@ -310,7 +308,7 @@ export default function Header() {
 							{/* Mobile Directory Switcher */}
 							<div className="p-4 mt-6 border-b border-neutral-800/50 dark:border-neutral-700/50">
 								<div className="flex items-center p-3 space-x-3 rounded-lg bg-accent/50">
-									<div className="flex flex-shrink-0 justify-center items-center w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg">
+									<div className="flex flex-shrink-0 justify-center items-center w-10 h-10 rounded-lg bg-muted">
 										<MapPin className="w-5 h-5 text-white" />
 									</div>
 									<div className="flex-1 min-w-0">
@@ -332,13 +330,13 @@ export default function Header() {
 											}}
 											className={`w-full flex items-center space-x-3 p-3 rounded-lg text-left transition-colors ${directory.id === currentDirectoryId ? "bg-primary text-primary-foreground" : "hover:bg-accent"}`}
 										>
-											<div className="flex flex-shrink-0 justify-center items-center w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg">
+											<div className="flex flex-shrink-0 justify-center items-center w-8 h-8 rounded-lg bg-muted">
 												<MapPin className="w-4 h-4 text-white" />
 											</div>
 											<div className="flex-1 min-w-0">
 												<div className="flex items-center space-x-2">
 													<span className="font-medium">{directory.name}</span>
-													<Badge variant="secondary" className="text-xs text-white bg-gradient-to-r from-green-500 to-blue-600">
+													<Badge variant="secondary" className="text-xs">
 														{directory.status}
 													</Badge>
 												</div>
@@ -350,7 +348,7 @@ export default function Header() {
 									))}
 
 									<Link href="/dashboard/localhub/create-directory" onClick={() => setMobileMenuOpen(false)} className="flex items-center p-3 space-x-3 w-full text-left rounded-lg transition-colors hover:bg-accent">
-										<div className="flex flex-shrink-0 justify-center items-center w-8 h-8 bg-gradient-to-br from-green-500 to-blue-600 rounded-lg">
+										<div className="flex flex-shrink-0 justify-center items-center w-8 h-8 rounded-lg bg-muted">
 											<Plus className="w-4 h-4 text-white" />
 										</div>
 										<div className="flex-1">
@@ -380,7 +378,6 @@ export default function Header() {
 						</SheetContent>
 					</Sheet>
 				</div>
-				;
 			</div>
 		</div>
 	);

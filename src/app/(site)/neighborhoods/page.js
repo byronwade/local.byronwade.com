@@ -1,14 +1,4 @@
-"use client";
-import React, { useState, useMemo } from "react";
-import { MapPin, Users, Newspaper, Building, Heart, Share2, Plus, Search, Filter, TrendingUp, Star, Camera, MessageCircle, Globe, Home, Store } from "lucide-react";
-import Link from "next/link";
-import Image from "next/image";
-import { Button } from "@components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
-import { Badge } from "@components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
-import { Input } from "@components/ui/input";
-import { ArrowRight, MessageSquare, Calendar, Clock, Award, Shield, Eye, Phone, Mail, Facebook, Twitter, Instagram, Linkedin, Video, Music, Coffee, ShoppingBag, Utensils, Car, Briefcase, GraduationCap, Heart as HeartIcon, Baby, Gamepad2, Dumbbell, Palette, Wrench, Scissors, Stethoscope, Gavel, Plane, TreePine, Mountain, Waves, Sun, Moon, Zap, Target, CheckCircle, Gift, Crown, Sparkles, Flame, ThumbsUp } from "lucide-react";
+import React from "react";
 
 // Neighborhood data
 const neighborhoodsData = {
@@ -133,7 +123,17 @@ const neighborhoodsData = {
 
 const categories = ["All", "Business", "Community", "Technology", "Lost & Found", "Recommendation"];
 
-// Metadata removed - this is a client component
+export const metadata = {
+	title: "Neighborhoods – Local Communities Directory | Thorbis",
+	description: "Explore local neighborhoods with highlights, businesses, events, and community posts.",
+	openGraph: {
+		title: "Neighborhoods – Local Communities Directory",
+		description: "Discover local neighborhoods and community highlights.",
+		url: "https://thorbis.com/neighborhoods",
+		type: "website",
+	},
+	alternates: { canonical: "https://thorbis.com/neighborhoods" },
+};
 
 export default function NeighborhoodsPage() {
 	const jsonLd = {
@@ -141,7 +141,7 @@ export default function NeighborhoodsPage() {
 		"@type": "WebPage",
 		name: "Local Neighborhoods Directory",
 		description: "Comprehensive directory of local neighborhoods and communities",
-		url: "https://local.byronwade.com/neighborhoods",
+		url: "https://thorbis.com/neighborhoods",
 		mainEntity: {
 			"@type": "ItemList",
 			name: "Neighborhood Directory",
@@ -154,7 +154,7 @@ export default function NeighborhoodsPage() {
 					"@type": "ListItem",
 					position: 1,
 					item: {
-						"@id": "https://local.byronwade.com",
+						"@id": "https://thorbis.com",
 						name: "Thorbis",
 					},
 				},
@@ -162,7 +162,7 @@ export default function NeighborhoodsPage() {
 					"@type": "ListItem",
 					position: 2,
 					item: {
-						"@id": "https://local.byronwade.com/neighborhoods",
+						"@id": "https://thorbis.com/neighborhoods",
 						name: "Neighborhoods",
 					},
 				},

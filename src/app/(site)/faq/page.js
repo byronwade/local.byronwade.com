@@ -30,11 +30,11 @@ export const metadata = {
 	openGraph: {
 		title: "Frequently Asked Questions (FAQ) - Get Help with Thorbis",
 		description: "Find answers to common questions about Thorbis. Learn how to write reviews, claim your business, use our platform, and more. Get help quickly.",
-		url: "https://local.byronwade.com/faq",
+		url: "https://thorbis.com/faq",
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://local.byronwade.com/og-faq.jpg",
+				url: "https://thorbis.com/og-faq.jpg",
 				width: 1200,
 				height: 630,
 				alt: "Thorbis FAQ",
@@ -47,10 +47,10 @@ export const metadata = {
 		card: "summary_large_image",
 		title: "FAQ - Thorbis Help",
 		description: "Find answers to common questions about using Thorbis platform.",
-		images: ["https://local.byronwade.com/og-faq.jpg"],
+		images: ["https://thorbis.com/og-faq.jpg"],
 	},
 	alternates: {
-		canonical: "https://local.byronwade.com/faq",
+		canonical: "https://thorbis.com/faq",
 	},
 };
 
@@ -60,7 +60,7 @@ export default function FaqPage() {
 		"@type": "FAQPage",
 		name: "Frequently Asked Questions",
 		description: "Common questions and answers about using Thorbis platform",
-		url: "https://local.byronwade.com/faq",
+		url: "https://thorbis.com/faq",
 		mainEntity: faqs.map((faq) => ({
 			"@type": "Question",
 			name: faq.question,
@@ -76,7 +76,7 @@ export default function FaqPage() {
 					"@type": "ListItem",
 					position: 1,
 					item: {
-						"@id": "https://local.byronwade.com",
+						"@id": "https://thorbis.com",
 						name: "Thorbis",
 					},
 				},
@@ -84,7 +84,7 @@ export default function FaqPage() {
 					"@type": "ListItem",
 					position: 2,
 					item: {
-						"@id": "https://local.byronwade.com/faq",
+						"@id": "https://thorbis.com/faq",
 						name: "FAQ",
 					},
 				},

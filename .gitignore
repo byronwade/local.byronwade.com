@@ -46,3 +46,7 @@ apps/*/.turbo
 
 # Sentry Config File
 .env.sentry-build-plugin
+
+# runtime artifacts
+logs/
+cache/

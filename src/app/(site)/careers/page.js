@@ -1,6 +1,6 @@
 import { MapPin, Briefcase, BrainCircuit, HeartHandshake, Zap } from "lucide-react";
 import { Button } from "@components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@components/ui/card";
+import { Card, CardContent } from "@components/ui/card";
 import { Badge } from "@components/ui/badge";
 import Image from "next/image";
 
@@ -50,7 +50,7 @@ export const metadata = {
 	openGraph: {
 		title: "Careers at Thorbis - Join Our Mission-Driven Team",
 		description: "Join Thorbis and shape the future of local business discovery. We're looking for passionate people to help connect communities with great businesses. Competitive benefits and remote work available.",
-		url: "https://local.byronwade.com/careers",
+		url: "https://thorbis.com/careers",
 		siteName: "Thorbis",
 		images: [
 			{
@@ -70,7 +70,7 @@ export const metadata = {
 		images: ["https://images.unsplash.com/photo-1549923746-c502d488b3ea?q=80&w=2071&auto=format&fit=crop"],
 	},
 	alternates: {
-		canonical: "https://local.byronwade.com/careers",
+		canonical: "https://thorbis.com/careers",
 	},
 };
 
@@ -80,7 +80,7 @@ export default function CareersPage() {
 		"@type": "WebPage",
 		name: "Careers at Thorbis",
 		description: "Join our mission-driven team and shape the future of local business discovery",
-		url: "https://local.byronwade.com/careers",
+		url: "https://thorbis.com/careers",
 		mainEntity: [
 			{
 				"@type": "JobPosting",
@@ -89,7 +89,7 @@ export default function CareersPage() {
 				hiringOrganization: {
 					"@type": "Organization",
 					name: "Thorbis",
-					sameAs: "https://local.byronwade.com",
+					sameAs: "https://thorbis.com",
 				},
 				jobLocation: {
 					"@type": "Place",
@@ -105,7 +105,7 @@ export default function CareersPage() {
 				hiringOrganization: {
 					"@type": "Organization",
 					name: "Thorbis",
-					sameAs: "https://local.byronwade.com",
+					sameAs: "https://thorbis.com",
 				},
 				jobLocation: {
 					"@type": "Place",
@@ -125,7 +125,7 @@ export default function CareersPage() {
 				hiringOrganization: {
 					"@type": "Organization",
 					name: "Thorbis",
-					sameAs: "https://local.byronwade.com",
+					sameAs: "https://thorbis.com",
 				},
 				jobLocation: {
 					"@type": "Place",
@@ -142,7 +142,7 @@ export default function CareersPage() {
 					"@type": "ListItem",
 					position: 1,
 					item: {
-						"@id": "https://local.byronwade.com",
+						"@id": "https://thorbis.com",
 						name: "Thorbis",
 					},
 				},
@@ -150,7 +150,7 @@ export default function CareersPage() {
 					"@type": "ListItem",
 					position: 2,
 					item: {
-						"@id": "https://local.byronwade.com/careers",
+						"@id": "https://thorbis.com/careers",
 						name: "Careers",
 					},
 				},

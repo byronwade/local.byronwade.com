@@ -5,9 +5,9 @@
  */
 
 // Core map management
-export { useMapManagement } from "./useMapManagement";
-export { default as useMapManagementHook } from "./useMapManagement";
+export { useMapManagement } from "./use-map-management";
+export { default as useMapManagementHook } from "./use-map-management";
 
 // Map UI management
-export { useMapUI } from "./useMapUI";
-export { default as useMapUIHook } from "./useMapUI";
+export { useMapUI } from "./use-map-ui";
+export { default as useMapUIHook } from "./use-map-ui";

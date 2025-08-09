@@ -3,7 +3,7 @@
  * Custom hooks for business-related functionality
  */
 
-export { useIntegrations } from "./useIntegrations";
+export { useIntegrations } from "./use-integrations";
 
 // Profile management hooks
 export * from "./profile";

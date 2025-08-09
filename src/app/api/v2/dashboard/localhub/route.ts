@@ -3,11 +3,12 @@
  * Provides comprehensive LocalHub directory management data
  */
 
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { z } from "zod";
 import { logger } from "@utils/logger";
 import { withAuth, withValidation, withCache, withPerformanceMonitoring, createSuccessResponse, createErrorResponse, compose, type ApiRequest } from "@lib/api/middleware";
+import { dashboardDemoLocalhubFlag } from "@lib/flags/definitions";
 
 // LocalHub dashboard query validation schema
 const localHubDashboardQuerySchema = z.object({
@@ -29,7 +30,7 @@ async function getLocalHubDashboard(req: ApiRequest, queryParams: LocalHubDashbo
 	const startTime = performance.now();
 
 	try {
-		if (!req.user) {
+		if (!req.user && !req.demoMode) {
 			return createErrorResponse("UNAUTHORIZED", "Authentication required");
 		}
 
@@ -40,6 +41,22 @@ async function getLocalHubDashboard(req: ApiRequest, queryParams: LocalHubDashbo
 				},
 			},
 		});
+
+		// Demo short-circuit
+		if (req.demoMode) {
+			const demoData = createLocalHubDemoData(queryParams);
+			return createSuccessResponse({
+				dashboard: demoData,
+				metadata: {
+					localHubId: "demo-localhub",
+					userId: "demo-user",
+					period: queryParams.period,
+					sections: queryParams.sections,
+					generatedAt: new Date().toISOString(),
+					demo: true,
+				},
+			});
+		}
 
 		// Find user's LocalHub or use provided ID
 		let localHubId = queryParams.localHubId;
@@ -354,3 +371,57 @@ export const GET = compose(
 	}),
 	withValidation(getLocalHubDashboard, localHubDashboardQuerySchema)
 );
+
+// Lightweight, deterministic demo data generator (no external calls)
+function createLocalHubDemoData(query: LocalHubDashboardQuery) {
+	const periodLabel = query.period;
+	const seed = 84;
+	const rand = (n: number) => Math.abs(Math.sin(n + seed));
+
+	const activeBusinesses = Math.floor(50 + rand(1) * 200);
+	const currentViews = Math.floor(2000 + rand(2) * 5000);
+
+	const days = { "7d": 7, "30d": 30, "90d": 30 }[periodLabel];
+	const activity = Array.from({ length: Math.min(query.limit, 10) }, (_, i) => ({
+		id: `act_${i}`,
+		type: i % 2 === 0 ? "subscription" : "business_update",
+		title: i % 2 === 0 ? "New subscription" : "Business profile updated",
+		description: "Demo activity",
+		created_at: new Date(Date.now() - i * 7200000).toISOString(),
+		metadata: {},
+		businesses: { name: `Business ${i + 1}` },
+	}));
+
+	const revenue = {
+		monthlyRevenue: { value: Math.floor(currentViews * 0.12), change: 0, changeType: "positive" },
+		yourShare: { value: Math.floor(currentViews * 0.1), change: 0, changeType: "positive" },
+		breakdown: [
+			{ plan: "Starter", count: Math.floor(10 + rand(3) * 30), revenue: 49, monthlyRate: 49 },
+			{ plan: "Growth", count: Math.floor(5 + rand(4) * 20), revenue: 99, monthlyRate: 99 },
+			{ plan: "Scale", count: Math.floor(2 + rand(5) * 10), revenue: 199, monthlyRate: 199 },
+		],
+		totalRevenue: Math.floor(currentViews * 0.12),
+		platformFee: Math.floor(currentViews * 0.02),
+		totalBusinesses: activeBusinesses,
+	};
+
+	const businesses = Array.from({ length: 8 }, (_, i) => ({
+		id: `lhb_${i}`,
+		is_featured: i < 3,
+		status: "active",
+		businesses: { id: `biz_${i}`, name: `Demo Biz ${i + 1}`, slug: `demo-biz-${i + 1}`, rating: (3.5 + rand(i) * 1.5).toFixed(1), review_count: Math.floor(rand(i + 6) * 200), verified: i % 2 === 0, status: "published" },
+	}));
+
+	const stats = {
+		activeBusinesses: { value: activeBusinesses, change: 3, changeType: "positive" },
+		directoryViews: { value: currentViews, change: 5.1, changeType: "positive" },
+	};
+
+	const health = {
+		score: Math.floor(65 + rand(10) * 25),
+		metrics: Array.from({ length: 7 }, (_, i) => ({ date: new Date(Date.now() - i * 86400000).toISOString(), views: Math.floor(200 + rand(i + 20) * 500) })),
+		trends: { direction: "improving", percentage: 6.3 },
+	};
+
+	return { stats, revenue, activity, businesses, health };
+}

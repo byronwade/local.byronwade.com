@@ -3,4 +3,4 @@
  * Custom hooks for user job management
  */
 
-export { useJobForm } from "./useJobForm";
+export { useJobForm } from "./use-job-form";

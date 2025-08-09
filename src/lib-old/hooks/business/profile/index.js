@@ -3,7 +3,7 @@
  * Custom hooks for business profile management
  */
 
-export { useBusinessProfile } from "./useBusinessProfile";
-export { useBusinessServices } from "./useBusinessServices";
-export { useBusinessTeam } from "./useBusinessTeam";
-export { useBusinessHours } from "./useBusinessHours";
+export { useBusinessProfile } from "./use-business-profile";
+export { useBusinessServices } from "./use-business-services";
+export { useBusinessTeam } from "./use-business-team";
+export { useBusinessHours } from "./use-business-hours";

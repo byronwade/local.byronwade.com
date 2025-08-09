@@ -9,7 +9,7 @@ export const metadata = {
 	openGraph: {
 		title: "Thorbis Mobile App - Download for iOS & Android",
 		description: "Get the Thorbis mobile app for iOS and Android. Find great businesses, read reviews, and connect with your community on the go. Download from App Store or Google Play.",
-		url: "https://local.byronwade.com/mobile",
+		url: "https://thorbis.com/mobile",
 		siteName: "Thorbis",
 		images: [
 			{
@@ -29,7 +29,7 @@ export const metadata = {
 		images: ["https://images.unsplash.com/photo-1607252650355-f7fd0460ccdb?q=80&w=1950&auto=format&fit=crop"],
 	},
 	alternates: {
-		canonical: "https://local.byronwade.com/mobile",
+		canonical: "https://thorbis.com/mobile",
 	},
 };
 
@@ -39,7 +39,7 @@ export default function MobilePage() {
 		"@type": "MobileApplication",
 		name: "Thorbis Mobile App",
 		description: "Find great businesses, read reviews, and connect with your community on mobile",
-		url: "https://local.byronwade.com/mobile",
+		url: "https://thorbis.com/mobile",
 		applicationCategory: "BusinessApplication",
 		operatingSystem: ["iOS", "Android"],
 		offers: [
@@ -61,7 +61,7 @@ export default function MobilePage() {
 		author: {
 			"@type": "Organization",
 			name: "Thorbis",
-			logo: "https://local.byronwade.com/logos/ThorbisLogo.webp",
+			logo: "https://thorbis.com/logos/ThorbisLogo.webp",
 		},
 		aggregateRating: {
 			"@type": "AggregateRating",

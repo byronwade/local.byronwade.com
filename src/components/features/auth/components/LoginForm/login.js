@@ -2,23 +2,23 @@
 
 import { useForm, FormProvider } from "react-hook-form";
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@components/ui/form";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useAuth } from "@context/AuthContext";
+import { useAuth } from "@context/auth-context";
 import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { toast } from "sonner";
 import { getEnabledProviders } from "@lib/supabase/auth/providers";
-import { Eye, EyeOff, Loader2, AlertCircle, Shield, Fingerprint, CheckCircle2, Mail, Lock, ArrowRight } from "lucide-react";
+import { Eye, EyeOff, Loader2, AlertCircle, Shield, CheckCircle2, Mail, Lock, ArrowRight } from "lucide-react";
 import { cn } from "@utils";
 import { logger } from "@utils/logger";
-import { DeviceFingerprint } from "@lib/security/deviceFingerprint";
-import { PasswordStrengthIndicator, RateLimitWarning, IntelligentLoginMessage } from "@components/features/auth";
-import { LoginContextDetector, ContextMessageGenerator } from "@lib/auth/loginContext";
-import ZodErrorBoundary from "@components/shared/ZodErrorBoundary";
+import { DeviceFingerprint } from "@lib/security/device-fingerprint";
+import RateLimitWarning from "@components/features/auth/shared/rate-limit-warning";
+import IntelligentLoginMessage from "@components/features/auth/shared/intelligent-login-message";
+import { LoginContextDetector, ContextMessageGenerator } from "@lib/auth/login-context";
+import ZodErrorBoundary from "@components/shared/zod-error-boundary";
 
 // Lenient validation schema for real-time typing (allows empty values)
 const typingSchema = z.object({

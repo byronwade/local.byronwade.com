@@ -1,4 +1,4 @@
-import { ShieldCheck, MessageCircleWarning, BookUser, LifeBuoy } from "lucide-react";
+import { ShieldCheck, MessageCircleWarning, BookUser } from "lucide-react";
 import { Button } from "@components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 import Link from "next/link";
@@ -28,11 +28,11 @@ export const metadata = {
 	openGraph: {
 		title: "Trust & Safety - Platform Security & Community Protection | Thorbis",
 		description: "Learn about Thorbis's trust and safety measures. We protect user data, maintain content guidelines, and provide reporting tools to keep our community safe.",
-		url: "https://local.byronwade.com/trust-safety",
+		url: "https://thorbis.com/trust-safety",
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://local.byronwade.com/og-trust-safety.jpg",
+				url: "https://thorbis.com/og-trust-safety.jpg",
 				width: 1200,
 				height: 630,
 				alt: "Thorbis Trust & Safety",
@@ -45,10 +45,10 @@ export const metadata = {
 		card: "summary_large_image",
 		title: "Trust & Safety - Thorbis",
 		description: "Learn about our trust and safety measures to protect our community.",
-		images: ["https://local.byronwade.com/og-trust-safety.jpg"],
+		images: ["https://thorbis.com/og-trust-safety.jpg"],
 	},
 	alternates: {
-		canonical: "https://local.byronwade.com/trust-safety",
+		canonical: "https://thorbis.com/trust-safety",
 	},
 };
 
@@ -58,7 +58,7 @@ export default function TrustSafetyPage() {
 		"@type": "WebPage",
 		name: "Trust & Safety",
 		description: "Trust and safety measures to protect the Thorbis community",
-		url: "https://local.byronwade.com/trust-safety",
+		url: "https://thorbis.com/trust-safety",
 		mainEntity: {
 			"@type": "Article",
 			headline: "Trust & Safety",
@@ -72,7 +72,7 @@ export default function TrustSafetyPage() {
 				name: "Thorbis",
 				logo: {
 					"@type": "ImageObject",
-					url: "https://local.byronwade.com/logos/ThorbisLogo.webp",
+					url: "https://thorbis.com/logos/ThorbisLogo.webp",
 				},
 			},
 			about: safetyPillars.map((pillar) => pillar.title),
@@ -84,7 +84,7 @@ export default function TrustSafetyPage() {
 					"@type": "ListItem",
 					position: 1,
 					item: {
-						"@id": "https://local.byronwade.com",
+						"@id": "https://thorbis.com",
 						name: "Thorbis",
 					},
 				},
@@ -92,7 +92,7 @@ export default function TrustSafetyPage() {
 					"@type": "ListItem",
 					position: 2,
 					item: {
-						"@id": "https://local.byronwade.com/trust-safety",
+						"@id": "https://thorbis.com/trust-safety",
 						name: "Trust & Safety",
 					},
 				},

@@ -1,6 +1,4 @@
-import { Button } from "@components/ui/button";
 import { Megaphone, SlidersHorizontal, ShieldCheck } from "lucide-react";
-import Link from "next/link";
 
 export const metadata = {
 	title: "Ad Choices - Control Your Advertising Experience | Thorbis",
@@ -9,11 +7,11 @@ export const metadata = {
 	openGraph: {
 		title: "Ad Choices - Control Your Advertising Experience | Thorbis",
 		description: "Learn about Thorbis's advertising policies, interest-based ads, and how to control your advertising experience. Manage your ad preferences and privacy settings.",
-		url: "https://local.byronwade.com/ad-choices",
+		url: "https://thorbis.com/ad-choices",
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://local.byronwade.com/og-ad-choices.jpg",
+				url: "https://thorbis.com/og-ad-choices.jpg",
 				width: 1200,
 				height: 630,
 				alt: "Thorbis Ad Choices",
@@ -26,10 +24,10 @@ export const metadata = {
 		card: "summary_large_image",
 		title: "Ad Choices - Control Your Advertising Experience",
 		description: "Learn about advertising policies and how to control your ad experience on Thorbis.",
-		images: ["https://local.byronwade.com/og-ad-choices.jpg"],
+		images: ["https://thorbis.com/og-ad-choices.jpg"],
 	},
 	alternates: {
-		canonical: "https://local.byronwade.com/ad-choices",
+		canonical: "https://thorbis.com/ad-choices",
 	},
 };
 
@@ -39,7 +37,7 @@ export default function AdChoicesPage() {
 		"@type": "WebPage",
 		name: "Ad Choices",
 		description: "Information about Thorbis's advertising policies, interest-based ads, and how users can control their advertising experience.",
-		url: "https://local.byronwade.com/ad-choices",
+		url: "https://thorbis.com/ad-choices",
 		mainEntity: {
 			"@type": "Article",
 			headline: "Ad Choices",
@@ -53,7 +51,7 @@ export default function AdChoicesPage() {
 				name: "Thorbis",
 				logo: {
 					"@type": "ImageObject",
-					url: "https://local.byronwade.com/logos/ThorbisLogo.webp",
+					url: "https://thorbis.com/logos/ThorbisLogo.webp",
 				},
 			},
 			about: ["Interest-Based Advertising", "Ad Privacy", "User Control", "Advertising Preferences"],

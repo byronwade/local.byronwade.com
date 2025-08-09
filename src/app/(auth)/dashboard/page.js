@@ -1,106 +1,108 @@
-import React from "react";
+"use client";
+
+import React, { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { ProtectedRoute } from "@components/features/auth";
-import DashboardLayout, { DashboardStats, DashboardQuickActions } from "@components/dashboard/DashboardLayout";
-import { PERMISSIONS } from "@lib/auth/roles";
+import useAuth from "@hooks/use-auth";
+import { Skeleton } from "@components/ui/skeleton";
+import { Loader2 } from "lucide-react";
 
 /**
- * Main dashboard page with overview stats and quick actions
- * Uses real authentication data and role-based content
+ * Smart Dashboard Router
+ * Redirects users to their appropriate dashboard based on role and user type
+ * Eliminates the generic dashboard that shouldn't exist
  */
 export default function DashboardPage() {
 	return (
-		<ProtectedRoute requiredPermissions={[PERMISSIONS.PROFILE_READ]} requireEmailVerification={true}>
-			<DashboardLayout>
-				<DashboardContent />
-			</DashboardLayout>
+		<ProtectedRoute requireEmailVerification={true}>
+			<DashboardRouter />
 		</ProtectedRoute>
 	);
 }
 
-function DashboardContent() {
-	// These would come from API calls in a real implementation
-	const stats = [
-		{
-			title: "Profile Views",
-			value: "2,543",
-			change: "+12% from last month",
-			icon: "Eye",
-		},
-		{
-			title: "Reviews Received",
-			value: "47",
-			change: "+3 this week",
-			icon: "MessageSquare",
-		},
-		{
-			title: "Business Listings",
-			value: "3",
-			change: "All verified",
-			icon: "Building",
-		},
-		{
-			title: "Average Rating",
-			value: "4.8",
-			change: "Based on 47 reviews",
-			icon: "Star",
-		},
-	];
+function DashboardRouter() {
+	const router = useRouter();
+	const { user, loading } = useAuth();
 
-	const quickActions = [
-		{
-			title: "Update Profile",
-			description: "Keep your information current",
-			href: "/dashboard/user/profile",
-			icon: "Users",
-			permission: PERMISSIONS.PROFILE_UPDATE,
-		},
-		{
-			title: "Add Business",
-			description: "List a new business",
-			href: "/dashboard/business/add",
-			icon: "Plus",
-			permission: PERMISSIONS.BUSINESS_CREATE,
-		},
-		{
-			title: "Manage Listings",
-			description: "Edit existing businesses",
-			href: "/dashboard/business",
-			icon: "Edit",
-			permission: PERMISSIONS.BUSINESS_MANAGE,
-		},
-		{
-			title: "View Analytics",
-			description: "See performance metrics",
-			href: "/dashboard/business/analytics",
-			icon: "BarChart3",
-			permission: PERMISSIONS.BUSINESS_MANAGE,
-		},
-		{
-			title: "LocalHub Directory",
-			description: "Manage local directory",
-			href: "/dashboard/localhub",
-			icon: "MapPin",
-			permission: PERMISSIONS.BUSINESS_MODERATE,
-		},
-		{
-			title: "Platform Analytics",
-			description: "View system-wide metrics",
-			href: "/dashboard/admin/analytics",
-			icon: "TrendingUp",
-			permission: PERMISSIONS.ANALYTICS_VIEW,
-		},
-	];
+	useEffect(() => {
+		if (loading) return; // Wait for auth to load
 
+		if (!user) {
+			// No user, redirect to login
+			router.replace("/login");
+			return;
+		}
+
+		// Determine the appropriate dashboard based on user type/role
+		const redirectPath = getDashboardPath(user);
+
+		// Replace the current route to prevent back button issues
+		router.replace(redirectPath);
+	}, [user, loading, router]);
+
+	// Show loading while redirecting
 	return (
-		<div className="space-y-8">
-			<div>
-				<h2 className="text-3xl font-bold tracking-tight">Welcome back!</h2>
-				<p className="text-muted-foreground">Here&apos;s what&apos;s happening with your account and businesses.</p>
+		<div className="container mx-auto p-6">
+			<div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
+				<Loader2 className="h-8 w-8 animate-spin text-primary" />
+				<div className="text-center space-y-2">
+					<h2 className="text-xl font-semibold">Setting up your dashboard...</h2>
+					<p className="text-muted-foreground">Redirecting you to the right place</p>
+				</div>
 			</div>
 
-			<DashboardStats stats={stats} />
-
-			<DashboardQuickActions actions={quickActions} />
+			{/* Loading skeleton */}
+			<div className="mt-8 space-y-6">
+				<div className="space-y-2">
+					<Skeleton className="h-8 w-64" />
+					<Skeleton className="h-4 w-96" />
+				</div>
+				<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+					{Array.from({ length: 4 }).map((_, i) => (
+						<div key={i} className="p-6 border rounded-lg space-y-3">
+							<Skeleton className="h-4 w-20" />
+							<Skeleton className="h-8 w-16" />
+							<Skeleton className="h-3 w-24" />
+						</div>
+					))}
+				</div>
+			</div>
 		</div>
 	);
+}
+
+/**
+ * Determine the correct dashboard path based on user data
+ */
+function getDashboardPath(user) {
+	// Check user metadata/role/type to determine dashboard
+	const userRole = user?.user_metadata?.role || user?.role || "user";
+	const accountType = user?.user_metadata?.account_type || user?.account_type;
+
+	// Admin users go to admin dashboard
+	if (userRole === "admin" || userRole === "super_admin") {
+		return "/dashboard/admin";
+	}
+
+	// LocalHub operators go to LocalHub dashboard
+	if (userRole === "localhub_operator" || accountType === "localhub") {
+		return "/dashboard/localhub";
+	}
+
+	// Business owners → split between Field Management and Business Admin
+	if (userRole === "business_owner" || accountType === "business" || userRole === "business_manager") {
+		try {
+			const pref = typeof window !== "undefined" ? window.sessionStorage.getItem("prefersFieldManagement") : null;
+			if (pref === "true") return "/dashboard/field-management";
+		} catch {}
+		return "/dashboard/business-admin";
+	}
+
+	// Field service providers
+	if (accountType === "field_service" || userRole === "field_service") {
+		return "/dashboard/field-management";
+	}
+
+	// Default to academy dashboard for regular users (learning platform)
+	return "/dashboard/academy";
 }

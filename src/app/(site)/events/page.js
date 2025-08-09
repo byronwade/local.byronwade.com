@@ -1,6 +1,10 @@
 import { Suspense } from "react";
-import EventsClient from "./EventsClient";
+import EventsClient from "./events-client";
 import { ContentDataFetchers } from "@lib/supabase/server";
+
+// Force dynamic rendering due to Supabase auth requirements
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 // Get events data from Supabase
 async function getEventsData() {
@@ -30,11 +34,11 @@ export const metadata = {
 	openGraph: {
 		title: "Local Events & Activities - Discover What's Happening | Thorbis",
 		description: "Discover local events, activities, and community gatherings in your area. From networking mixers to food festivals, find and join exciting events happening near you.",
-		url: "https://local.byronwade.com/events",
+		url: "https://thorbis.com/events",
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://local.byronwade.com/og-events.jpg",
+				url: "https://thorbis.com/og-events.jpg",
 				width: 1200,
 				height: 630,
 				alt: "Local Events and Activities",
@@ -47,7 +51,7 @@ export const metadata = {
 		card: "summary_large_image",
 		title: "Local Events & Activities - Discover What's Happening | Thorbis",
 		description: "Discover local events, activities, and community gatherings in your area. From networking mixers to food festivals, find and join exciting events happening near you.",
-		images: ["https://local.byronwade.com/og-events.jpg"],
+		images: ["https://thorbis.com/og-events.jpg"],
 		creator: "@thorbis",
 	},
 	robots: {
@@ -62,7 +66,7 @@ export const metadata = {
 		},
 	},
 	alternates: {
-		canonical: "https://local.byronwade.com/events",
+		canonical: "https://thorbis.com/events",
 	},
 };
 
@@ -73,7 +77,7 @@ function generateEventsJsonLd(events) {
 		"@type": "WebPage",
 		name: "Local Events",
 		description: "Discover and join local events and activities in your community",
-		url: "https://local.byronwade.com/events",
+		url: "https://thorbis.com/events",
 		mainEntity: {
 			"@type": "ItemList",
 			name: "Local Events Listing",
@@ -101,11 +105,11 @@ function generateEventsJsonLd(events) {
 								"@type": "Offer",
 								price: event.price,
 								priceCurrency: event.currency || "USD",
-						  }
+							}
 						: undefined,
 				eventStatus: "https://schema.org/EventScheduled",
 				eventAttendanceMode: event.is_virtual ? "https://schema.org/OnlineEventAttendanceMode" : "https://schema.org/OfflineEventAttendanceMode",
-				url: `https://local.byronwade.com/events/${event.slug || event.id}`,
+				url: `https://thorbis.com/events/${event.slug || event.id}`,
 			})),
 		},
 		breadcrumb: {
@@ -115,13 +119,13 @@ function generateEventsJsonLd(events) {
 					"@type": "ListItem",
 					position: 1,
 					name: "Home",
-					item: "https://local.byronwade.com",
+					item: "https://thorbis.com",
 				},
 				{
 					"@type": "ListItem",
 					position: 2,
 					name: "Events",
-					item: "https://local.byronwade.com/events",
+					item: "https://thorbis.com/events",
 				},
 			],
 		},

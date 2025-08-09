@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { Button } from "@components/ui/button";
 import { Home, ArrowLeft, RefreshCw } from "lucide-react";
-import { AlertTriangle, Settings, HelpCircle } from "lucide-react";
+import { Settings, HelpCircle } from "lucide-react";
 
 export default function HttpVersionNotSupported() {
 	const handleGoBack = () => {

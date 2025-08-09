@@ -1,9 +1,18 @@
-"use client";
-import { Rss, Copy } from "lucide-react";
-import { Button } from "@components/ui/button";
+import { Rss } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
-import { useEffect } from "react";
+import RssCopyButton from "@components/site/rss/RssCopyButton";
 
+export const metadata = {
+	title: "RSS Feeds – Thorbis Updates & Content Subscriptions",
+	description: "Subscribe to Thorbis RSS feeds for the latest business content, local news, and platform updates.",
+	openGraph: {
+		title: "RSS Feeds – Thorbis",
+		description: "Subscribe to Thorbis RSS feeds for updates and content.",
+		url: "https://thorbis.com/rss",
+		type: "website",
+	},
+	alternates: { canonical: "https://thorbis.com/rss" },
+};
 const feeds = [
 	{
 		title: "Latest Blog Posts",
@@ -18,49 +27,18 @@ const feeds = [
 ];
 
 export default function RssPage() {
-	useEffect(() => {
-		document.title = "RSS Feeds - Stay Updated with Thorbis Content";
-
-		// Add meta description
-		const metaDescription = document.querySelector('meta[name="description"]');
-		if (metaDescription) {
-			metaDescription.setAttribute("content", "Subscribe to Thorbis RSS feeds for the latest business content, local news, and platform updates delivered directly to your feed reader.");
-		} else {
-			const meta = document.createElement("meta");
-			meta.name = "description";
-			meta.content = "Subscribe to Thorbis RSS feeds for the latest business content, local news, and platform updates delivered directly to your feed reader.";
-			document.head.appendChild(meta);
-		}
-
-		// Add JSON-LD structured data
-		const jsonLd = {
-			"@context": "https://schema.org",
-			"@type": "WebPage",
-			name: "RSS Feeds",
-			description: "RSS feed subscriptions for Thorbis content and updates",
-			url: "https://local.byronwade.com/rss",
-			mainEntity: {
-				"@type": "DataFeed",
-				name: "Thorbis RSS Feeds",
-				description: "RSS feeds for business content and local updates",
-			},
-		};
-
-		const script = document.createElement("script");
-		script.type = "application/ld+json";
-		script.textContent = JSON.stringify(jsonLd);
-		document.head.appendChild(script);
-
-		return () => {
-			// Cleanup
-			const scripts = document.querySelectorAll('script[type="application/ld+json"]');
-			scripts.forEach((script) => {
-				if (script.textContent.includes("RSS Feeds")) {
-					script.remove();
-				}
-			});
-		};
-	}, []);
+	const jsonLd = {
+		"@context": "https://schema.org",
+		"@type": "WebPage",
+		name: "RSS Feeds",
+		description: "RSS feed subscriptions for Thorbis content and updates",
+		url: "https://thorbis.com/rss",
+		mainEntity: {
+			"@type": "DataFeed",
+			name: "Thorbis RSS Feeds",
+			description: "RSS feeds for business content and local updates",
+		},
+	};
 
 	return (
 		<div className="bg-background text-foreground">
@@ -82,9 +60,7 @@ export default function RssPage() {
 									<p className="text-muted-foreground mb-4">{feed.description}</p>
 									<div className="flex items-center gap-4 bg-muted p-3 rounded-md">
 										<span className="flex-grow text-sm font-mono">{feed.url}</span>
-										<Button variant="ghost" size="icon" onClick={() => navigator.clipboard.writeText(feed.url)}>
-											<Copy className="w-4 h-4" />
-										</Button>
+										<RssCopyButton url={feed.url} />
 									</div>
 								</CardContent>
 							</Card>

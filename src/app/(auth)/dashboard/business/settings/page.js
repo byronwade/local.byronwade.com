@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Link from "next/link";
-import { CircleUser, Menu, Package2, Search, Building2, Shield, Bell, CreditCard, HelpCircle, Settings as SettingsIcon, Users, Globe, Database } from "lucide-react";
+import { Building2, Shield, Bell, CreditCard, HelpCircle, Users, Globe, Database } from "lucide-react";
 
 import { Button } from "@components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@components/ui/card";
@@ -35,6 +34,37 @@ export default function Settings() {
 			case "general":
 				return (
 					<div className="space-y-6">
+						<Card>
+							<CardHeader>
+								<CardTitle>Dashboard Preference</CardTitle>
+								<CardDescription>Select your default dashboard experience.</CardDescription>
+							</CardHeader>
+							<CardContent className="space-y-4">
+								<div className="flex items-center justify-between">
+									<div className="space-y-0.5">
+										<Label>Prefer Field Management</Label>
+										<p className="text-sm text-muted-foreground">Toggle on to use Field Management; off switches to Business Admin.</p>
+									</div>
+									<Switch
+										defaultChecked={typeof window !== "undefined" && sessionStorage.getItem("prefersFieldManagement") === "true"}
+										onCheckedChange={async (checked) => {
+											try {
+												if (typeof window !== "undefined") {
+													sessionStorage.setItem("prefersFieldManagement", checked ? "true" : "false");
+												}
+												await fetch("/api/user/preferences", {
+													method: "POST",
+													headers: { "Content-Type": "application/json" },
+													body: JSON.stringify({ prefersFieldManagement: checked }),
+												});
+											} catch (err) {
+												// swallow error; UI stays responsive
+											}
+										}}
+									/>
+								</div>
+							</CardContent>
+						</Card>
 						<Card>
 							<CardHeader>
 								<CardTitle>Business Information</CardTitle>
@@ -482,8 +512,8 @@ export default function Settings() {
 		}
 	};
 
-	return (
-		<div className="w-full px-4 lg:px-24 py-16 space-y-8">
+  return (
+		<div className="space-y-8">
 			<div className="grid w-full gap-2">
 				<h1 className="text-4xl">Settings</h1>
 				<p className="text-muted-foreground">Manage your business settings and preferences.</p>
@@ -505,5 +535,5 @@ export default function Settings() {
 				<div className="grid gap-6">{renderSection()}</div>
 			</div>
 		</div>
-	);
+  );
 }

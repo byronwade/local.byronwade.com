@@ -1,3 +1,23 @@
 {
-  "extends": "next/core-web-vitals"
+	"extends": "next/core-web-vitals",
+  "plugins": ["unused-imports", "check-file"],
+	"rules": {
+    "unused-imports/no-unused-imports": "error",
+    "check-file/filename-naming-convention": [
+      "error",
+      {
+        "**/*.{js,jsx,ts,tsx}": "KEBAB_CASE"
+      },
+      { "ignoreMiddleExtensions": true }
+    ]
+	},
+	"ignorePatterns": ["archive/**", "logs/**", "cache/**"],
+	"overrides": [
+		{
+			"files": ["**/*.ts", "**/*.tsx"],
+			"rules": {
+				"unused-imports/no-unused-imports": "off"
+			}
+		}
+	]
 }

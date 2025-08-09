@@ -4,10 +4,10 @@
  * Following Next.js best practices for component organization
  */
 
-export { default as IntegrationsPage } from "./IntegrationsPage";
-export { MarketplaceCard } from "./MarketplaceCard";
-export { IntegrationsFilters } from "./IntegrationsFilters";
-export { BillingSection } from "./BillingSection";
-export { RequestIntegrationDialog } from "./RequestIntegrationDialog";
-export { LearnMoreDialog } from "./LearnMoreDialog";
-export { ReportErrorDialog } from "./ReportErrorDialog";
+export { default as IntegrationsPage } from "./integrations-page";
+export { MarketplaceCard } from "./marketplace-card";
+export { IntegrationsFilters } from "./integrations-filters";
+export { BillingSection } from "./billing-section";
+export { RequestIntegrationDialog } from "./request-integration-dialog";
+export { LearnMoreDialog } from "./learn-more-dialog";
+export { ReportErrorDialog } from "./report-error-dialog";

@@ -3,10 +3,8 @@ import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@components/ui/form";
-import { Input } from "@components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@components/ui/select";
 import { Textarea } from "@components/ui/textarea"; // Adjust import path as necessary
-import { Button } from "@components/ui/button";
 
 const supportTicketSchema = z.object({
 	category: z.string().nonempty({ message: "Please select a category" }),

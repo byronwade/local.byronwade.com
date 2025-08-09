@@ -3,4 +3,4 @@
  * Centralized exports for marker-related hooks
  */
 
-export { useMapMarkers } from "./useMapMarkers";
+export { useMapMarkers } from "./use-map-markers";

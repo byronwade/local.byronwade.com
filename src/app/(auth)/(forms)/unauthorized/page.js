@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import useAuth from "@hooks/useAuth";
+import useAuth from "@hooks/use-auth";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@components/ui/button";

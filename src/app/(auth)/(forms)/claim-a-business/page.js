@@ -12,7 +12,7 @@ import { Star, MapPin, Phone, Building2, CheckCircle, Shield } from "lucide-reac
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import useAuth from "@hooks/useAuth";
+import useAuth from "@hooks/use-auth";
 import { LoginPage } from "@components/features/auth";
 
 // Define schema for business verification step

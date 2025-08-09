@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useRef } from "react";
 import { useFormContext } from "react-hook-form";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@components/ui/form";
 import { Input } from "@components/ui/input";
@@ -6,8 +6,8 @@ import { Button } from "@components/ui/button";
 import { Card, CardContent } from "@components/ui/card";
 import { Alert, AlertDescription } from "@components/ui/alert";
 import { Badge } from "@components/ui/badge";
-import { CheckCircle, AlertCircle, Upload, FileText, Shield, Building2, User, X, File, Download } from "lucide-react";
-import { useDragDrop } from "@hooks/useDragDrop";
+import { CheckCircle, Upload, FileText, Shield, Building2, User, X, File } from "lucide-react";
+import { useDragDrop } from "@hooks/use-drag-drop";
 
 export default function BusinessVerification() {
 	const { control, watch, setValue } = useFormContext();

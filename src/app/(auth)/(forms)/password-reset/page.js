@@ -1,5 +1,4 @@
 import { PasswordReset } from "@components/features/auth";
-import { Metadata } from "next";
 
 export const metadata = {
 	title: "Reset Password - Thorbis",
@@ -8,11 +7,11 @@ export const metadata = {
 	openGraph: {
 		title: "Reset Password - Thorbis",
 		description: "Reset your Thorbis account password securely. Enter your email to receive password reset instructions.",
-		url: "https://thorbis/password-reset",
+		url: "https://thorbis.com/password-reset",
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://thorbis/og-password-reset.jpg",
+				url: "https://thorbis.com/og-password-reset.jpg",
 				width: 800,
 				height: 600,
 				alt: "Reset Password",
@@ -25,17 +24,17 @@ export const metadata = {
 		card: "summary_large_image",
 		title: "Reset Password - Thorbis",
 		description: "Reset your Thorbis account password securely. Enter your email to receive password reset instructions.",
-		images: ["https://thorbis/twitter-password-reset.jpg"],
+		images: ["https://thorbis.com/twitter-password-reset.jpg"],
 	},
 	alternates: {
-		canonical: "https://thorbis/password-reset",
+		canonical: "https://thorbis.com/password-reset",
 	},
 };
 
 const jsonLdData = {
 	"@context": "http://schema.org",
 	"@type": "WebPage",
-	url: "https://thorbis/password-reset",
+	url: "https://thorbis.com/password-reset",
 	name: "Reset Password",
 	description: "Reset your Thorbis account password securely. Enter your email to receive password reset instructions.",
 	mainEntity: {

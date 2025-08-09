@@ -1,6 +1,17 @@
-import { AppHeader } from "@components/network/AppHeader";
+import { AppHeader } from "@components/network";
+import { isEnabled } from "@lib/flags/server";
 
-export default function LinkedInCloneLayout({ children }) {
+export default async function LinkedInCloneLayout({ children }) {
+	const on = await isEnabled("linkedinClone");
+	if (!on) {
+		// Keep SEO-safe page; simple unavailable notice
+		return (
+			<div className="container mx-auto px-4 py-16">
+				<h1 className="text-2xl font-semibold">Coming soon</h1>
+				<p className="text-muted-foreground mt-2">This area is under active development.</p>
+			</div>
+		);
+	}
 	return (
 		<div className="flex flex-col w-full min-h-screen">
 			<AppHeader />

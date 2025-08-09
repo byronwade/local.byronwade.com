@@ -3,7 +3,7 @@
  * Comprehensive analytics and business intelligence
  */
 
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { z } from "zod";
 import { logger } from "@utils/logger";
@@ -170,7 +170,8 @@ async function getAnalytics(req: ApiRequest, queryParams: AnalyticsQuery): Promi
  * Get overview analytics with key metrics
  */
 async function getOverviewAnalytics(supabase: any, startDate: Date, endDate: Date, businessFilter: string[], compareStartDate?: Date | null, compareEndDate?: Date | null) {
-	const baseFilter = businessFilter.length > 0 ? `business_id.in.(${businessFilter.join(",")})` : "";
+	// const baseFilter = businessFilter.length > 0 ? `business_id.in.(${businessFilter.join(",")})` : "";
+	// TODO: Use baseFilter when implementing business filtering
 
 	// Current period metrics
 	const currentMetrics = await Promise.all([

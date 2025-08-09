@@ -1,8 +1,65 @@
 import React from "react";
 
+export const metadata = {
+	title: "Case Study: Duncan Plumbing Ent., Inc. | Thorbis",
+	description: "How Duncan Plumbing Ent., Inc. achieved reliable performance and operational efficiency with a modern data platform.",
+	openGraph: {
+		title: "Case Study: Duncan Plumbing Ent., Inc. | Thorbis",
+		description: "Operational reliability and efficiency improvements highlighted in this case study.",
+		url: "https://thorbis.com/case-studies/wades-plumbing-and-septic",
+		type: "article",
+	},
+	twitter: {
+		card: "summary_large_image",
+		title: "Case Study: Duncan Plumbing Ent., Inc.",
+		description: "How Duncan Plumbing improved reliability and efficiency with a modern data platform.",
+	},
+	alternates: { canonical: "https://thorbis.com/case-studies/wades-plumbing-and-septic" },
+};
+
 export default function YelpAlternitive() {
-	return (
+  const jsonLd = {
+		"@context": "https://schema.org",
+		"@type": "Article",
+		headline: "Case Study: Duncan Plumbing Ent., Inc.",
+		description: "How Duncan Plumbing Ent., Inc. achieved operational reliability and efficiency with a modern data platform.",
+		mainEntityOfPage: {
+			"@type": "WebPage",
+			"@id": "https://thorbis.com/case-studies/wades-plumbing-and-septic",
+		},
+		author: { "@type": "Organization", name: "Thorbis" },
+		publisher: {
+			"@type": "Organization",
+			name: "Thorbis",
+			logo: {
+				"@type": "ImageObject",
+				url: "https://thorbis.com/logos/ThorbisLogo.webp",
+			},
+		},
+		about: {
+			"@type": "LocalBusiness",
+			name: "Duncan Plumbing Ent., Inc.",
+		},
+		breadcrumb: {
+			"@type": "BreadcrumbList",
+			itemListElement: [
+				{ "@type": "ListItem", position: 1, name: "Home", item: "https://thorbis.com/" },
+				{ "@type": "ListItem", position: 2, name: "Case Studies", item: "https://thorbis.com/business-success-stories" },
+				{
+					"@type": "ListItem",
+					position: 3,
+					name: "Duncan Plumbing Ent., Inc.",
+					item: "https://thorbis.com/case-studies/wades-plumbing-and-septic",
+				},
+			],
+		},
+  };
+  // Add basic metadata via static export (page is static only content)
+  // Note: Layout/design preserved; only SEO added via JSON-LD would be ideal, but this page lacks head.
+  // If needed later, move to metadata export pattern.
+  return (
 		<main className="relative">
+			<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 			<div className="bg-secondary">
 				<div className="container grid items-center justify-center grid-cols-8 col-span-8 gap-2 py-8 sm:col-span-16 sm:grid-cols-16 sm:gap-3 lg:gap-8 lg:py-14">
 					<div className="relative order-last text-center border rounded shadow-xl col-span-full shadow-black/25 lg:col-span-7">
@@ -138,5 +195,5 @@ export default function YelpAlternitive() {
 				</div>
 			</div>
 		</main>
-	);
+  );
 }

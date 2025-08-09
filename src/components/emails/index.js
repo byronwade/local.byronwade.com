@@ -5,7 +5,7 @@
 export { default as AccountActivation } from "./account-activation";
 export { default as AccountDeactivationWarning } from "./account-deactivation-warning";
 export { default as PasswordReset } from "./password-reset";
-export { default as Welcome } from "./Welcome";
+export { default as Welcome } from "./welcome";
 
 // Job-related Emails
 export { default as JobCompletion } from "./job-completion";

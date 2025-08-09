@@ -2,5 +2,5 @@
  * BusinessForm Component Barrel Export
  */
 
-export { BusinessForm } from "./BusinessForm";
-export { default } from "./BusinessForm";
+export { BusinessForm } from "./business-form";
+export { default } from "./business-form";

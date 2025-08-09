@@ -1,4 +1,4 @@
-import JobsClient from "./JobsClient";
+import JobsClient from "./jobs-client";
 import { JobDataFetchers } from "@lib/supabase/server";
 import { Suspense } from "react";
 

@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@components/ui/button";
 import { ArrowLeft } from "react-feather";
-import DarkModeToggle from "@components/ui/DarkModeToggle";
+import DarkModeToggle from "@components/ui/dark-mode-toggle";
 
 export default function AuthFormsLayout({ children }) {
 	return (

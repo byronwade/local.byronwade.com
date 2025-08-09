@@ -1,8 +1,26 @@
 import React from "react";
 import Link from "next/link";
-import BusinessCard from "@components/site/home/BusinessCard";
-import ScrollSection from "@components/site/home/ScrollSection";
+import BusinessCard from "@components/site/home/business-card";
+import ScrollSection from "@components/site/home/scroll-section";
 import { Card } from "@components/ui/card";
+
+export const metadata = {
+	title: "Thorbis Certified Businesses – Elite Directory | Thorbis",
+	description: "Discover Thorbis Certified businesses recognized for verified excellence. Explore the elite directory of trusted providers across industries.",
+	keywords: ["thorbis certified", "certified businesses", "elite directory", "verified excellence", "trusted providers"],
+	openGraph: {
+		title: "Thorbis Certified Businesses – Elite Directory",
+		description: "Explore the elite directory of Thorbis Certified businesses with verified excellence.",
+		url: "https://thorbis.com/certified",
+		type: "website",
+	},
+	twitter: {
+		card: "summary_large_image",
+		title: "Thorbis Certified Businesses – Elite Directory",
+		description: "Explore trusted providers recognized for verified excellence.",
+	},
+	alternates: { canonical: "https://thorbis.com/certified" },
+};
 
 const businesses = [
 	{
@@ -166,6 +184,25 @@ const businesses = [
 export default function Categories() {
 	return (
 		<>
+			<script
+				type="application/ld+json"
+				dangerouslySetInnerHTML={{
+					__html: JSON.stringify({
+						"@context": "https://schema.org",
+						"@type": "CollectionPage",
+						name: "Thorbis Certified Businesses",
+						description: "Elite directory of Thorbis Certified businesses recognized for verified excellence.",
+						url: "https://thorbis.com/certified",
+						breadcrumb: {
+							"@type": "BreadcrumbList",
+							itemListElement: [
+								{ "@type": "ListItem", position: 1, name: "Home", item: "https://thorbis.com/" },
+								{ "@type": "ListItem", position: 2, name: "Certified", item: "https://thorbis.com/certified" },
+							],
+						},
+					}),
+				}}
+			/>
 			<div className="my-12">
 				<ScrollSection>
 					<Link href="/">

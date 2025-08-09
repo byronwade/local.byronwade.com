@@ -1,3 +1,7 @@
+// Force dynamic rendering due to Supabase auth requirements
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export const metadata = {
 	title: "Business Blog - Tips, Insights & Industry News | Thorbis",
 	description: "Stay informed with the latest business trends, tips, and insights. Our blog covers local business strategies, marketing, technology, and industry updates.",
@@ -5,11 +9,11 @@ export const metadata = {
 	openGraph: {
 		title: "Business Blog - Tips, Insights & Industry News | Thorbis",
 		description: "Stay informed with the latest business trends, tips, and insights. Our blog covers local business strategies, marketing, technology, and industry updates.",
-		url: "https://local.byronwade.com/blog",
+		url: "https://thorbis.com/blog",
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://local.byronwade.com/og-blog.jpg",
+				url: "https://thorbis.com/og-blog.jpg",
 				width: 1200,
 				height: 630,
 				alt: "Thorbis Business Blog",
@@ -22,10 +26,10 @@ export const metadata = {
 		card: "summary_large_image",
 		title: "Business Blog - Thorbis",
 		description: "Stay informed with the latest business trends and insights.",
-		images: ["https://local.byronwade.com/og-blog.jpg"],
+		images: ["https://thorbis.com/og-blog.jpg"],
 	},
 	alternates: {
-		canonical: "https://local.byronwade.com/blog",
+		canonical: "https://thorbis.com/blog",
 	},
 };
 
@@ -61,7 +65,14 @@ function BlogContent({ posts, categories }) {
 		"@type": "Blog",
 		name: "Thorbis Business Blog",
 		description: "Business insights, tips, and industry news",
-		url: "https://local.byronwade.com/blog",
+		url: "https://thorbis.com/blog",
+		breadcrumb: {
+			"@type": "BreadcrumbList",
+			itemListElement: [
+				{ "@type": "ListItem", position: 1, name: "Home", item: "https://thorbis.com/" },
+				{ "@type": "ListItem", position: 2, name: "Blog", item: "https://thorbis.com/blog" },
+			],
+		},
 		publisher: {
 			"@type": "Organization",
 			name: "Thorbis",
@@ -69,7 +80,7 @@ function BlogContent({ posts, categories }) {
 		blogPost: posts.map((post) => ({
 			"@type": "BlogPosting",
 			headline: post.title,
-			url: `https://local.byronwade.com/blog/${post.slug}`,
+			url: `https://thorbis.com/blog/${post.slug}`,
 			datePublished: post.published_at,
 			author: {
 				"@type": "Person",

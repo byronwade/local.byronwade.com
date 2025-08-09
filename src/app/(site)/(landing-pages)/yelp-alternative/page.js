@@ -2,22 +2,58 @@ import React from "react";
 import Link from "next/link";
 import { Button } from "@components/ui/button";
 import { Badge } from "@components/ui/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
-import { CheckCircle, XCircle, Star, Users, DollarSign, Shield, Zap, Globe, MessageSquare, Calendar, Award, BarChart3, Settings, TrendingUp, ArrowRight } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
+import { CheckCircle, XCircle, Users, Zap, Globe, MessageSquare, Calendar, Award, ArrowRight, Star } from "lucide-react";
+
+export const metadata = {
+	title: "Yelp Alternative – Thorbis vs Yelp | Thorbis",
+	description: "See why Thorbis is a modern alternative to Yelp: fair review system, AI insights, lead generation, and multi‑platform integration.",
+	keywords: ["Yelp alternative", "Yelp vs Thorbis", "business reviews alternative", "lead generation platform", "AI analytics"],
+	alternates: { canonical: "https://thorbis.com/yelp-alternative" },
+	openGraph: {
+		title: "Yelp Alternative – Thorbis vs Yelp",
+		description: "Modern alternative to Yelp with fair review system, AI insights, lead generation, and multi‑platform integration.",
+		type: "website",
+		url: "https://thorbis.com/yelp-alternative",
+		siteName: "Thorbis",
+		images: [{ url: "https://thorbis.com/og-yelp-alt.jpg", width: 1200, height: 630, alt: "Thorbis vs Yelp" }],
+		locale: "en_US",
+	},
+	twitter: {
+		card: "summary_large_image",
+		title: "Yelp Alternative – Thorbis vs Yelp",
+		description: "Modern alternative to Yelp with fair review system, AI insights, lead generation, and multi‑platform integration.",
+		images: ["https://thorbis.com/og-yelp-alt.jpg"],
+		creator: "@thorbis",
+		site: "@thorbis",
+	},
+};
+
+function BreadcrumbsJsonLd() {
+	const data = {
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		itemListElement: [
+			{ "@type": "ListItem", position: 1, name: "Home", item: "https://thorbis.com/" },
+			{ "@type": "ListItem", position: 2, name: "Yelp Alternative", item: "https://thorbis.com/yelp-alternative" },
+		],
+	};
+	return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />;
+}
 
 export default function YelpAlternative() {
 	return (
 		<main className="relative min-h-screen bg-background">
+			<BreadcrumbsJsonLd />
 			{/* Hero Section */}
-			<section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-blue-950/20 dark:via-indigo-950/20 dark:to-purple-950/20">
-				<div className="absolute inset-0 bg-grid-white/10 dark:bg-grid-white/5" />
-				<div className="relative px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8 lg:py-24">
+			<section className="relative overflow-hidden border-b">
+				<div className="relative px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8 lg:py-20">
 					<div className="text-center">
 						<Badge variant="secondary" className="mb-6 px-4 py-2 text-sm font-medium bg-primary/10 text-primary border-primary/20">
 							Platform Comparison
 						</Badge>
 						<h1 className="mb-6 text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-							Yelp vs <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/80">Thorbis</span>
+							Yelp vs <span className="text-primary">Thorbis</span>
 						</h1>
 						<p className="mx-auto mb-8 max-w-3xl text-lg text-muted-foreground sm:text-xl">Discover why Thorbis is the superior alternative to Yelp for businesses and consumers alike. We&apos;re building the Amazon for businesses - comprehensive, transparent, and growth-focused.</p>
 						<div className="flex flex-col gap-4 justify-center sm:flex-row">
@@ -30,6 +66,17 @@ export default function YelpAlternative() {
 							</Button>
 						</div>
 					</div>
+				</div>
+			</section>
+
+			<section className="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
+				<div className="flex flex-col items-center gap-3 text-center">
+					<div className="flex items-center gap-1 text-amber-500" aria-label="rating 4.9 out of 5">
+						{Array.from({ length: 5 }).map((_, i) => (
+							<Star key={i} className="w-5 h-5 fill-amber-500 text-amber-500" />
+						))}
+					</div>
+					<p className="text-sm text-muted-foreground">Trusted by 1,200+ businesses • 4.9/5 average satisfaction</p>
 				</div>
 			</section>
 
@@ -341,8 +388,7 @@ export default function YelpAlternative() {
 
 			{/* CTA Section */}
 			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8">
-				<div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary to-primary/80 p-8 text-center text-primary-foreground">
-					<div className="absolute inset-0 bg-grid-white/10" />
+				<div className="relative overflow-hidden rounded-2xl bg-primary p-8 text-center text-primary-foreground">
 					<div className="relative">
 						<h2 className="mb-4 text-3xl font-bold sm:text-4xl">Ready to Switch from Yelp?</h2>
 						<p className="mb-8 text-xl opacity-90">Join thousands of businesses that have already made the switch to Thorbis. Start your free trial today and see the difference.</p>

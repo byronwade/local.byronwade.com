@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import Link from "next/link";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@components/ui/card";
 import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
@@ -9,7 +8,7 @@ import { Textarea } from "@components/ui/textarea";
 import { Switch } from "@components/ui/switch";
 import { Badge } from "@components/ui/badge";
 import { Alert, AlertDescription } from "@components/ui/alert";
-import { Settings as SettingsIcon, Globe, Shield, Search, Zap, Save, Copy, ExternalLink, Info, AlertTriangle, Check, Mail, Phone, MapPin, Eye, Lock, Key, Users, CreditCard, Bell } from "lucide-react";
+import { Settings as SettingsIcon, Globe, Shield, Search, Zap, Copy, ExternalLink, Info, AlertTriangle, Check, Lock, Key, Users } from "lucide-react";
 import { toast } from "@components/ui/use-toast";
 
 export default function LocalHubSettings() {

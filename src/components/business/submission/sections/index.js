@@ -3,8 +3,8 @@
  * Centralized exports for all business submission form sections
  */
 
-export { default as BasicInformationSection } from "./BasicInformationSection";
-export { default as ContactInformationSection } from "./ContactInformationSection";
-export { default as BusinessDetailsSection } from "./BusinessDetailsSection";
-export { default as BusinessImagesSection } from "./BusinessImagesSection";
-export { default as OwnerInformationSection } from "./OwnerInformationSection";
+export { default as BasicInformationSection } from "./basic-information-section";
+export { default as ContactInformationSection } from "./contact-information-section";
+export { default as BusinessDetailsSection } from "./business-details-section";
+export { default as BusinessImagesSection } from "./business-images-section";
+export { default as OwnerInformationSection } from "./owner-information-section";

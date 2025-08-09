@@ -2,16 +2,16 @@ import React from "react";
 
 export const metadata = {
 	title: "How It Works - Thorbis",
-	description: "Learn how Thorbis connects you with businessfessional contractors for your home imbusinessvement needs. Simple steps to post jobs and find the right business.",
-	keywords: ["Thorbis", "how it works", "find business", "contractors", "home imbusinessvement"],
+	description: "Learn how Thorbis connects you with professional contractors and local businesses. Simple steps to discover, compare, and hire the right provider.",
+	keywords: ["Thorbis", "how it works", "find business", "contractors", "home improvement", "hire local"],
 	openGraph: {
 		title: "How It Works - Thorbis",
 		description: "Learn how Thorbis connects you with businessfessional contractors for your home imbusinessvement needs. Simple steps to post jobs and find the right business.",
-		url: "https://thorbis/how-it-works",
+		url: "https://thorbis.com/how-it-works",
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://thorbis/og-how-it-works.jpg",
+				url: "https://thorbis.com/og-how-it-works.jpg",
 				width: 800,
 				height: 600,
 				alt: "How It Works at Thorbis",
@@ -23,21 +23,40 @@ export const metadata = {
 	twitter: {
 		card: "summary_large_image",
 		title: "How It Works - Thorbis",
-		description: "Learn how Thorbis connects you with businessfessional contractors for your home imbusinessvement needs. Simple steps to post jobs and find the right business.",
-		images: ["https://thorbis/twitter-how-it-works.jpg"],
+		description: "Learn how Thorbis connects you with professional contractors and local businesses.",
+		images: ["https://thorbis.com/og-how-it-works.jpg"],
 	},
 	alternates: {
-		canonical: "https://thorbis/how-it-works",
+		canonical: "https://thorbis.com/how-it-works",
 		languages: {
-			"en-US": "https://thorbis/en-US/how-it-works",
-			"es-ES": "https://thorbis/es-ES/how-it-works",
+			"en-US": "https://thorbis.com/en-US/how-it-works",
+			"es-ES": "https://thorbis.com/es-ES/how-it-works",
 		},
 	},
 };
 
 const HowItWorks = () => {
+  const jsonLd = {
+		"@context": "https://schema.org",
+		"@type": "HowTo",
+		name: "How Thorbis Works",
+		description: "Steps to discover, compare, and hire the right local business on Thorbis",
+		step: [
+			{ "@type": "HowToStep", name: "Create a free account" },
+			{ "@type": "HowToStep", name: "Search and compare businesses" },
+			{ "@type": "HowToStep", name: "Contact and hire" },
+		],
+		breadcrumb: {
+			"@type": "BreadcrumbList",
+			itemListElement: [
+				{ "@type": "ListItem", position: 1, name: "Home", item: "https://thorbis.com/" },
+				{ "@type": "ListItem", position: 2, name: "How It Works", item: "https://thorbis.com/how-it-works" },
+			],
+		},
+  };
 	return (
 		<section className="py-10 bg-white sm:py-16 lg:py-24">
+			<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 			<div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
 				<div className="max-w-2xl mx-auto text-center">
 					<h2 className="text-3xl font-bold leading-tight text-black sm:text-4xl lg:text-5xl">How does it work?</h2>

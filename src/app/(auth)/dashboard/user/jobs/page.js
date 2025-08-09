@@ -2,11 +2,11 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
+import { Card, CardContent } from "@components/ui/card";
 import { Badge } from "@components/ui/badge";
 import { Input } from "@components/ui/input";
 import { Checkbox } from "@components/ui/checkbox";
-import { Plus, MapPin, Clock, DollarSign, Users, Eye, MessageSquare, TrendingUp, AlertCircle, CheckCircle, Calendar, Star, Search, MoreHorizontal, ExternalLink, Edit, Copy, Archive, Zap, ChevronDown, Filter, Download, Trash2, ArrowUpDown } from "lucide-react";
+import { Plus, MapPin, Users, Eye, MessageSquare, TrendingUp, AlertCircle, Search, MoreHorizontal, Edit, Copy, Zap, ChevronDown, Filter, Download, Trash2, ArrowUpDown } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@components/ui/dropdown-menu";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@components/ui/table";
 

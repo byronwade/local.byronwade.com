@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useForm, FormProvider } from "react-hook-form";
@@ -10,7 +10,7 @@ import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@components/ui/form";
 import { ArrowRight } from "react-feather";
-import useAuth from "@hooks/useAuth";
+import useAuth from "@hooks/use-auth";
 import { supabase } from "@lib/database/supabase";
 
 const resendSchema = z.object({

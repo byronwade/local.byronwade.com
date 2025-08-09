@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import LocalHubClient from "./LocalHubClient";
+import LocalHubClient from "./local-hub-client";
 
 export const metadata = {
 	title: "LocalHub - Build Your Own Local Business Directory | Thorbis",
@@ -8,11 +8,11 @@ export const metadata = {
 	openGraph: {
 		title: "LocalHub - Build Your Own Local Business Directory | Thorbis",
 		description: "Create and monetize your own local business directory with LocalHub. Set your own pricing, earn recurring revenue from local businesses in your community.",
-		url: "https://local.byronwade.com/localhub",
+		url: "https://thorbis.com/localhub",
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://local.byronwade.com/og-localhub.jpg",
+				url: "https://thorbis.com/og-localhub.jpg",
 				width: 1200,
 				height: 630,
 				alt: "LocalHub Business Directory Platform",
@@ -25,7 +25,7 @@ export const metadata = {
 		card: "summary_large_image",
 		title: "LocalHub - Build Your Own Local Business Directory | Thorbis",
 		description: "Create and monetize your own local business directory with LocalHub. Set your own pricing, earn recurring revenue from local businesses in your community.",
-		images: ["https://local.byronwade.com/og-localhub.jpg"],
+		images: ["https://thorbis.com/og-localhub.jpg"],
 		creator: "@thorbis",
 	},
 	robots: {
@@ -40,7 +40,7 @@ export const metadata = {
 		},
 	},
 	alternates: {
-		canonical: "https://local.byronwade.com/localhub",
+		canonical: "https://thorbis.com/localhub",
 	},
 };
 
@@ -50,7 +50,7 @@ const jsonLd = {
 	"@type": "SoftwareApplication",
 	name: "LocalHub",
 	description: "Create and monetize your own local business directory platform",
-	url: "https://local.byronwade.com/localhub",
+	url: "https://thorbis.com/localhub",
 	applicationCategory: "BusinessApplication",
 	operatingSystem: "Web",
 	offers: {
@@ -65,13 +65,13 @@ const jsonLd = {
 				"@type": "ListItem",
 				position: 1,
 				name: "Home",
-				item: "https://local.byronwade.com",
+				item: "https://thorbis.com",
 			},
 			{
 				"@type": "ListItem",
 				position: 2,
 				name: "LocalHub",
-				item: "https://local.byronwade.com/localhub",
+				item: "https://thorbis.com/localhub",
 			},
 		],
 	},

@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 import { Badge } from "@components/ui/badge";
 import { Button } from "@components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
 import { Input } from "@components/ui/input";
 import { ContentDataFetchers } from "@lib/supabase/server";
 
@@ -61,7 +60,7 @@ export async function generateMetadata({ params }) {
 			modifiedTime: post.updated_at,
 			authors: [post.author?.name || "Anonymous"],
 			images: post.featured_image ? [post.featured_image] : undefined,
-			url: `https://local.byronwade.com/blog/${post.slug}`,
+			url: `https://thorbis.com/blog/${post.slug}`,
 		},
 		twitter: {
 			card: "summary_large_image",
@@ -70,7 +69,7 @@ export async function generateMetadata({ params }) {
 			images: post.featured_image ? [post.featured_image] : undefined,
 		},
 		alternates: {
-			canonical: `https://local.byronwade.com/blog/${post.slug}`,
+			canonical: `https://thorbis.com/blog/${post.slug}`,
 		},
 	};
 }
@@ -86,21 +85,21 @@ function PostContent({ post, relatedPosts }) {
 		author: {
 			"@type": "Person",
 			name: post.author?.name || "Anonymous",
-			url: post.author?.bio ? `https://local.byronwade.com/author/${post.author.id}` : undefined,
+			url: post.author?.bio ? `https://thorbis.com/author/${post.author.id}` : undefined,
 		},
 		publisher: {
 			"@type": "Organization",
 			name: "Thorbis",
 			logo: {
 				"@type": "ImageObject",
-				url: "https://local.byronwade.com/logo.png",
+				url: "https://thorbis.com/logo.png",
 			},
 		},
 		datePublished: post.published_at,
 		dateModified: post.updated_at,
 		mainEntityOfPage: {
 			"@type": "WebPage",
-			"@id": `https://local.byronwade.com/blog/${post.slug}`,
+			"@id": `https://thorbis.com/blog/${post.slug}`,
 		},
 	};
 

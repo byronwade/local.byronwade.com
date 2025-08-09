@@ -3,8 +3,8 @@
  * Modular sections extracted from monolithic LocalHub dashboard page
  */
 
-export { default as LocalHubStatsSection } from "./LocalHubStatsSection";
-export { default as LocalHubActivitySection } from "./LocalHubActivitySection";
-export { default as LocalHubQuickActionsSection } from "./LocalHubQuickActionsSection";
-export { default as LocalHubRevenueBreakdownSection } from "./LocalHubRevenueBreakdownSection";
-export { default as LocalHubDirectoryHealthSection } from "./LocalHubDirectoryHealthSection";
+export { default as LocalHubStatsSection } from "./local-hub-stats-section";
+export { default as LocalHubActivitySection } from "./local-hub-activity-section";
+export { default as LocalHubQuickActionsSection } from "./local-hub-quick-actions-section";
+export { default as LocalHubRevenueBreakdownSection } from "./local-hub-revenue-breakdown-section";
+export { default as LocalHubDirectoryHealthSection } from "./local-hub-directory-health-section";

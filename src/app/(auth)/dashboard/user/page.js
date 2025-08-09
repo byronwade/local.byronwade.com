@@ -7,7 +7,7 @@
 
 "use client";
 
-import UserDashboardPage from "@components/dashboard/user/UserDashboardPage";
+import UserDashboardPage from "@components/dashboard/user/user-dashboard-page";
 
 export default function Page() {
 	return <UserDashboardPage />;

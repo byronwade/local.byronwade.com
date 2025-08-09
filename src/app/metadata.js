@@ -6,19 +6,19 @@
 export const metadata = {
 	// Basic metadata
 	title: {
-		default: "Local ByteRover Directory - Discover Local Businesses & Community",
-		template: "%s | Local ByteRover Directory",
+		default: "Thorbis - Discover Local Businesses & Community",
+		template: "%s | Thorbis",
 	},
 	description: "Discover the best local businesses, events, and community resources in your area. Connect with your neighborhood and find trusted local services with verified reviews and ratings.",
 	keywords: ["local business directory", "community events", "neighborhood guide", "local services", "business reviews", "community resources", "local marketplace", "small business", "local economy", "community networking"],
 
 	// Authors and creator
-	authors: [{ name: "ByteRover LLC", url: "https://local.byronwade.com" }],
+	authors: [{ name: "ByteRover LLC", url: "https://thorbis.com" }],
 	creator: "ByteRover LLC",
 	publisher: "ByteRover LLC",
 
 	// Application metadata
-	applicationName: "Local ByteRover Directory",
+	applicationName: "Thorbis",
 	generator: "Next.js",
 	category: "Business Directory",
 
@@ -42,23 +42,23 @@ export const metadata = {
 	openGraph: {
 		type: "website",
 		locale: "en_US",
-		url: "https://local.byronwade.com",
-		siteName: "Local ByteRover Directory",
-		title: "Local ByteRover Directory - Your Community Business Hub",
+		url: "https://thorbis.com",
+		siteName: "Thorbis",
+		title: "Thorbis - Your Community Business Hub",
 		description: "Discover amazing local businesses, events, and connect with your community. Your comprehensive guide to everything local.",
 		images: [
 			{
-				url: "https://local.byronwade.com/images/og-default.jpg",
+				url: "https://thorbis.com/images/og-default.jpg",
 				width: 1200,
 				height: 630,
-				alt: "Local ByteRover Directory - Community Business Hub",
+				alt: "Thorbis - Community Business Hub",
 				type: "image/jpeg",
 			},
 			{
-				url: "https://local.byronwade.com/images/og-logo.jpg",
+				url: "https://thorbis.com/images/og-logo.jpg",
 				width: 800,
 				height: 600,
-				alt: "Local ByteRover Directory Logo",
+				alt: "Thorbis Logo",
 				type: "image/jpeg",
 			},
 		],
@@ -69,12 +69,12 @@ export const metadata = {
 		card: "summary_large_image",
 		site: "@byronwade",
 		creator: "@byronwade",
-		title: "Local ByteRover Directory - Your Community Business Hub",
+		title: "Thorbis - Your Community Business Hub",
 		description: "Discover amazing local businesses, events, and connect with your community.",
 		images: [
 			{
-				url: "https://local.byronwade.com/images/twitter-card.jpg",
-				alt: "Local ByteRover Directory - Community Business Hub",
+				url: "https://thorbis.com/images/twitter-card.jpg",
+				alt: "Thorbis - Community Business Hub",
 			},
 		],
 	},
@@ -95,9 +95,9 @@ export const metadata = {
 
 	// Alternates
 	alternates: {
-		canonical: "https://local.byronwade.com",
+		canonical: "https://thorbis.com",
 		types: {
-			"application/rss+xml": [{ url: "https://local.byronwade.com/rss.xml", title: "Local ByteRover Directory RSS Feed" }],
+			"application/rss+xml": [{ url: "https://thorbis.com/rss.xml", title: "Thorbis RSS Feed" }],
 		},
 	},
 
@@ -121,7 +121,7 @@ export const metadata = {
 
 		// Social media optimization
 		"fb:app_id": process.env.FACEBOOK_APP_ID,
-		"twitter:domain": "local.byronwade.com",
+		"twitter:domain": "thorbis.com",
 
 		// SEO optimization
 		rating: "general",

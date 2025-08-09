@@ -7,9 +7,9 @@ import { usePathname } from "next/navigation";
 import { Button } from "@components/ui/button";
 import { Badge } from "@components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuLabel, DropdownMenuGroup } from "@components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuGroup } from "@components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@components/ui/sheet";
-import { ChevronDown, Menu, Bell, Settings, Users, CreditCard, HelpCircle } from "react-feather";
+import { Menu, Bell, Settings, Users, CreditCard, HelpCircle } from "react-feather";
 import { BarChart3, Shield } from "lucide-react";
 import { useAuthStore } from "@store/auth";
 

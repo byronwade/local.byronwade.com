@@ -1,5 +1,4 @@
 import { AccountOTP } from "@components/features/auth";
-import { Metadata } from "next";
 
 export const metadata = {
 	title: "Two-Factor Authentication - Thorbis",
@@ -8,11 +7,11 @@ export const metadata = {
 	openGraph: {
 		title: "Two-Factor Authentication - Thorbis",
 		description: "Enter your verification code to complete the two-factor authentication process and secure your account.",
-		url: "https://thorbis/otp",
+		url: "https://thorbis.com/otp",
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://thorbis/og-otp.jpg",
+				url: "https://thorbis.com/og-otp.jpg",
 				width: 800,
 				height: 600,
 				alt: "Two-Factor Authentication",
@@ -25,17 +24,17 @@ export const metadata = {
 		card: "summary_large_image",
 		title: "Two-Factor Authentication - Thorbis",
 		description: "Enter your verification code to complete the two-factor authentication process and secure your account.",
-		images: ["https://thorbis/twitter-otp.jpg"],
+		images: ["https://thorbis.com/twitter-otp.jpg"],
 	},
 	alternates: {
-		canonical: "https://thorbis/otp",
+		canonical: "https://thorbis.com/otp",
 	},
 };
 
 const jsonLdData = {
 	"@context": "http://schema.org",
 	"@type": "WebPage",
-	url: "https://thorbis/otp",
+	url: "https://thorbis.com/otp",
 	name: "Two-Factor Authentication",
 	description: "Enter your verification code to complete the two-factor authentication process and secure your account.",
 	mainEntity: {

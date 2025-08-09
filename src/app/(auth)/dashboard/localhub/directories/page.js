@@ -7,10 +7,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@comp
 import { Badge } from "@components/ui/badge";
 import { Input } from "@components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@components/ui/dialog";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuLabel } from "@components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@components/ui/dropdown-menu";
 import { Separator } from "@components/ui/separator";
-import { MapPin, Plus, Edit, Trash2, MoreHorizontal, Eye, Settings, CreditCard, Users, Calendar, Star, TrendingUp, AlertCircle, CheckCircle, XCircle, Clock, DollarSign, Zap, Target, Briefcase, Globe, Phone, Mail, ExternalLink, Copy, Search, Filter, SortAsc, SortDesc, Building2, Navigation, Sparkles } from "lucide-react";
+import { MapPin, Plus, Edit, Trash2, MoreHorizontal, Eye, Settings, Star, TrendingUp, DollarSign, Zap, Globe, Phone, Mail, ExternalLink, Search, SortAsc, SortDesc, Building2, Navigation } from "lucide-react";
 
 // Mock data for directories
 const mockDirectories = [
@@ -249,14 +248,14 @@ export default function ManageDirectories() {
 								<div className="flex items-center space-x-3">
 									<Avatar className="w-12 h-12">
 										<AvatarImage src={directory.logo} />
-										<AvatarFallback className="bg-gradient-to-br from-purple-500 to-pink-600 text-white">
+										<AvatarFallback className="bg-muted text-foreground">
 											<MapPin className="w-6 h-6" />
 										</AvatarFallback>
 									</Avatar>
 									<div className="flex-1 min-w-0">
 										<div className="flex items-center space-x-2">
 											<h3 className="font-semibold text-foreground truncate">{directory.name}</h3>
-											<Badge variant="secondary" className="text-xs bg-gradient-to-r from-green-500 to-blue-600 text-white">
+											<Badge variant="secondary" className="text-xs">
 												{directory.status}
 											</Badge>
 										</div>

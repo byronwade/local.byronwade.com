@@ -1,12 +1,9 @@
 import { Button } from "@components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
-import { Badge } from "@components/ui/badge";
-import { ChevronRight, Search, MapPin, Star, Clock, Shield, TrendingUp, Award, DollarSign, Briefcase, Home as HomeIcon, Coffee, ShoppingBag, Heart, Truck, Scissors, Calendar, CheckCircle, Users, BookOpen, BarChart, Zap, Phone, MessageSquare, Globe, Navigation, Percent, Filter, AlertCircle, ArrowRight, Wrench } from "lucide-react";
-import ScrollSection from "@components/site/home/ScrollSection";
-import HeroSection from "@components/site/home/HeroSection";
-import BusinessCard from "@components/site/home/BusinessCard";
+import { ChevronRight, TrendingUp, Home as HomeIcon, Coffee, ShoppingBag, Heart, Truck } from "lucide-react";
+import ScrollSection from "@components/site/home/scroll-section";
+import HeroSection from "@components/site/home/hero-section";
+import BusinessCard from "@components/site/home/business-card";
 
-import Image from "next/image";
 import Link from "next/link";
 import { Separator } from "@components/ui/separator";
 import { Suspense } from "react";
@@ -101,11 +98,11 @@ export const metadata = {
 	openGraph: {
 		title: "Thorbis - Complete Local Service Platform",
 		description: "Unified platform combining local business discovery with field service management tools. For customers: find and book trusted services. For businesses: complete operational suite.",
-		url: "https://www.thorbis.com",
+		url: "https://thorbis.com",
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://www.thorbis.com/og-image.jpg",
+				url: "https://thorbis.com/og-image.jpg",
 				width: 800,
 				height: 600,
 				alt: "Thorbis Platform",
@@ -118,14 +115,14 @@ export const metadata = {
 		card: "summary_large_image",
 		title: "Thorbis - Complete Local Service Platform",
 		description: "Unified platform combining local business discovery with field service management tools. For customers: find and book trusted services. For businesses: complete operational suite.",
-		images: ["https://www.thorbis.com/twitter-image.jpg"],
+		images: ["https://thorbis.com/twitter-image.jpg"],
 		creator: "@thorbis",
 	},
 	alternates: {
-		canonical: "https://www.thorbis.com",
+		canonical: "https://thorbis.com",
 		languages: {
-			"en-US": "https://www.thorbis.com/en-US",
-			"es-ES": "https://www.thorbis.com/es-ES",
+			"en-US": "https://thorbis.com/en-US",
+			"es-ES": "https://thorbis.com/es-ES",
 		},
 	},
 	robots: "index, follow",
@@ -135,10 +132,10 @@ export const metadata = {
 		telephone: false,
 	},
 	category: "directory",
-	bookmarks: ["https://www.thorbis.com/"],
+	bookmarks: ["https://thorbis.com/"],
 	generator: "Next.js",
 	applicationName: "Thorbis",
-	authors: [{ name: "Byron Wade", url: "https://www.thorbis.com/" }],
+	authors: [{ name: "Byron Wade", url: "https://thorbis.com/" }],
 	creator: "Byron Wade",
 	publisher: "Byron Wade",
 	ogLocale: "en_US",

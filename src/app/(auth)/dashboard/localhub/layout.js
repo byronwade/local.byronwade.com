@@ -3,7 +3,7 @@ import Image from "next/image";
 import Header from "@components/localhub/header";
 import { useEffect } from "react";
 import { redirect } from "next/navigation";
-import { useAuth } from "@context/AuthContext";
+import { useAuth } from "@context/auth-context";
 
 export default function LocalHubLayout({ children }) {
 	const { user, userRoles, loading, isAuthenticated } = useAuth();

@@ -1,5 +1,4 @@
 import ContactUsForm from "@components/site/contact/contact-us-form";
-import { Metadata } from "next";
 
 export const metadata = {
 	title: "Contact Us - Thorbis",
@@ -8,11 +7,11 @@ export const metadata = {
 	openGraph: {
 		title: "Contact Us - Thorbis",
 		description: "Get in touch with the Thorbis team. We're here to help with any questions about our business directory and services.",
-		url: "https://thorbis/contact",
+		url: "https://thorbis.com/contact",
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://thorbis/og-contact.jpg",
+				url: "https://thorbis.com/og-contact.jpg",
 				width: 800,
 				height: 600,
 				alt: "Contact Thorbis",
@@ -25,17 +24,17 @@ export const metadata = {
 		card: "summary_large_image",
 		title: "Contact Us - Thorbis",
 		description: "Get in touch with the Thorbis team. We're here to help with any questions about our business directory and services.",
-		images: ["https://thorbis/twitter-contact.jpg"],
+		images: ["https://thorbis.com/twitter-contact.jpg"],
 	},
 	alternates: {
-		canonical: "https://thorbis/contact",
+		canonical: "https://thorbis.com/contact",
 	},
 };
 
 const jsonLdData = {
 	"@context": "http://schema.org",
 	"@type": "ContactPage",
-	url: "https://thorbis/contact",
+	url: "https://thorbis.com/contact",
 	name: "Contact Thorbis",
 	description: "Get in touch with the Thorbis team for support and inquiries.",
 	mainEntity: {

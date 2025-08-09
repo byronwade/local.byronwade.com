@@ -6,7 +6,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { logger } from "@utils/logger";
-import { CacheManager } from "@utils/cacheManager";
+import { CacheManager } from "@utils/cache-manager";
+import { dashboardDemoAdminFlag, dashboardDemoBusinessFlag, dashboardDemoLocalhubFlag } from "@lib/flags/definitions";
 
 export interface ApiRequest extends NextRequest {
 	user?: {
@@ -19,6 +20,7 @@ export interface ApiRequest extends NextRequest {
 		remaining: number;
 		reset: number;
 	};
+	demoMode?: boolean;
 }
 
 export interface ApiResponse {
@@ -65,6 +67,17 @@ export function withAuth(
 		const startTime = performance.now();
 
 		try {
+			// Demo-mode bypass: allow unauthenticated access if a dashboard demo flag is enabled for the target endpoint
+			const pathname = req.nextUrl.pathname;
+			const [demoBiz, demoLocalhub, demoAdmin] = await Promise.all([dashboardDemoBusinessFlag.decide(), dashboardDemoLocalhubFlag.decide(), dashboardDemoAdminFlag.decide()]);
+
+			const isDashboardDemo = (demoBiz && pathname.startsWith("/api/v2/dashboard/business")) || (demoLocalhub && pathname.startsWith("/api/v2/dashboard/localhub")) || (demoAdmin && pathname.startsWith("/api/v2/dashboard/admin"));
+
+			if (isDashboardDemo) {
+				// Tag request as demo; skip auth and rate limiting, still proceed to handler
+				(req as ApiRequest).demoMode = true;
+				return handler(req as ApiRequest);
+			}
 			// Create Supabase client
 			const supabase = createServerClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {
 				cookies: {
@@ -256,7 +269,16 @@ export function withCache(
 		}
 
 		// Generate cache key
-		const cacheKey = options.keyGenerator?.(req) || `api:${req.nextUrl.pathname}:${req.nextUrl.search}:${req.user?.id || "anonymous"}`;
+		let cacheKey = options.keyGenerator?.(req) || `api:${req.nextUrl.pathname}:${req.nextUrl.search}:${req.user?.id || "anonymous"}`;
+
+		// Ensure demo mode responses don't collide with real ones
+		try {
+			const path = req.nextUrl.pathname;
+			const [demoBiz, demoLocalhub, demoAdmin] = await Promise.all([dashboardDemoBusinessFlag.decide(), dashboardDemoLocalhubFlag.decide(), dashboardDemoAdminFlag.decide()]);
+			if ((demoBiz && path.startsWith("/api/v2/dashboard/business")) || (demoLocalhub && path.startsWith("/api/v2/dashboard/localhub")) || (demoAdmin && path.startsWith("/api/v2/dashboard/admin"))) {
+				cacheKey = `${cacheKey}:demo`;
+			}
+		} catch (_) {}
 
 		// Check cache first
 		const cached = CacheManager.memory.get(cacheKey);

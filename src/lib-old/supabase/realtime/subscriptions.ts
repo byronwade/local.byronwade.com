@@ -1,6 +1,6 @@
 // REQUIRED: Performance-optimized real-time subscriptions
 import { supabase, getPooledClient } from "../client";
-import { CacheManager } from "@/lib/utils/cacheManager";
+import { CacheManager } from "@/lib/utils/cache-manager";
 import { logger } from "@/lib/utils/logger";
 
 /**

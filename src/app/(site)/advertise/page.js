@@ -1,5 +1,4 @@
 import { Button } from "@components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 import { Target, Users, TrendingUp } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -29,7 +28,7 @@ export const metadata = {
 	openGraph: {
 		title: "Advertise on Thorbis - Reach Millions of Local Customers",
 		description: "Grow your business with Thorbis advertising. Get your business in front of millions of people ready to buy, visit, and hire. Target by location and track results.",
-		url: "https://local.byronwade.com/advertise",
+		url: "https://thorbis.com/advertise",
 		siteName: "Thorbis",
 		images: [
 			{
@@ -49,7 +48,7 @@ export const metadata = {
 		images: ["https://images.unsplash.com/photo-1556740738-b6a63e27c4df?q=80&w=2070&auto=format&fit=crop"],
 	},
 	alternates: {
-		canonical: "https://local.byronwade.com/advertise",
+		canonical: "https://thorbis.com/advertise",
 	},
 };
 
@@ -62,8 +61,8 @@ export default function AdvertisePage() {
 		provider: {
 			"@type": "Organization",
 			name: "Thorbis",
-			logo: "https://local.byronwade.com/logos/ThorbisLogo.webp",
-			url: "https://local.byronwade.com",
+			logo: "https://thorbis.com/logos/ThorbisLogo.webp",
+			url: "https://thorbis.com",
 		},
 		serviceType: "Digital Advertising",
 		areaServed: "United States",

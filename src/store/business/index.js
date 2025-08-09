@@ -3,4 +3,4 @@
  * Centralized export for all business-related stores
  */
 
-export { default as useBusinessStore } from "./useBusinessStore";
+export { default as useBusinessStore } from "./use-business-store";

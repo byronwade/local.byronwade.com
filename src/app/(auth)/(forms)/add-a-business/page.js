@@ -1,19 +1,17 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { VerifyAccount, ActiveUser, BusinessInfo, BusinessAddress, BusinessProfile, BusinessSuccess, LoginPage } from "@components/features/auth";
 import { Button } from "@components/ui/button";
 import { Progress } from "@components/ui/progress";
 import { Badge } from "@components/ui/badge";
-import { ArrowRight, ArrowLeft, CheckCircle } from "react-feather";
+import { ArrowRight, ArrowLeft } from "react-feather";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import useAuth from "@hooks/useAuth";
+import useAuth from "@hooks/use-auth";
 import { useToast } from "@components/ui/use-toast";
-import { Alert, AlertDescription } from "@components/ui/alert";
-import { AlertTriangle, CheckCircle as CheckCircleIcon } from "lucide-react";
+import { CheckCircle as CheckCircleIcon } from "lucide-react";
 
 // Define schema for all business steps combined
 const combinedBusinessSchema = z.object({

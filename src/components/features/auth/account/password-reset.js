@@ -7,7 +7,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@components/ui/input";
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useAuth } from "@context/AuthContext";
+import { useAuth } from "@context/auth-context";
 import { toast } from "sonner";
 import Link from "next/link";
 import { Eye, EyeOff, Loader2, AlertCircle, Mail } from "lucide-react";

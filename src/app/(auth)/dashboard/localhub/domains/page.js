@@ -1,15 +1,14 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
-import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
 import { Label } from "@components/ui/label";
 import { Badge } from "@components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
+import { Button } from "@components/ui/button";
 import { Alert, AlertDescription } from "@components/ui/alert";
-import { Globe, Plus, Check, X, Clock, AlertTriangle, Copy, ExternalLink, Shield, Zap, Settings, Info, MapPin, Loader2, Eye } from "lucide-react";
+import { Globe, Plus, Check, X, Clock, AlertTriangle, Copy, ExternalLink, Shield, Zap, Settings, Info, MapPin, Eye } from "lucide-react";
 import { toast } from "@components/ui/use-toast";
-import CreateSubdomainForm from "@components/dashboard/subdomains/CreateSubdomainForm";
+import CreateSubdomainForm from "@components/dashboard/subdomains/create-subdomain-form";
 
 const mockDomains = [
 	{
@@ -38,6 +37,8 @@ export default function DomainsManagement() {
 	const [isAddingDomain, setIsAddingDomain] = useState(false);
 	const [subdomains, setSubdomains] = useState([]);
 	const [isCreatingSubdomain, setIsCreatingSubdomain] = useState(false);
+	const [view, setView] = useState("subdomains");
+	const [section, setSection] = useState("setup");
 
 	useEffect(() => {
 		document.title = "Domains & URLs - LocalHub - Thorbis";
@@ -81,7 +82,7 @@ export default function DomainsManagement() {
 
 		return (
 			<Badge className={`${config.color} text-xs font-medium`}>
-				<IconComponent className="w-3 h-3 mr-1" />
+				<IconComponent className="mr-1 w-3 h-3" />
 				{config.label}
 			</Badge>
 		);
@@ -140,33 +141,36 @@ export default function DomainsManagement() {
 	};
 
 	return (
-		<div className="w-full px-4 py-16 space-y-8 lg:px-24">
+		<div className="px-4 py-16 space-y-8 w-full lg:px-24">
 			{/* Header */}
-			<div className="flex items-center justify-between">
+			<div className="flex justify-between items-center">
 				<div>
 					<h1 className="text-4xl font-bold">Domains & URLs</h1>
 					<p className="mt-2 text-muted-foreground">Manage your directory domains and URL settings.</p>
 				</div>
 			</div>
 
-			{/* Domains and Subdomains */}
-			<Tabs defaultValue="subdomains" className="w-full">
-				<TabsList className="grid w-full grid-cols-2">
-					<TabsTrigger value="subdomains">Free Subdomains</TabsTrigger>
-					<TabsTrigger value="custom">Custom Domains</TabsTrigger>
-				</TabsList>
+			{/* Domains and Subdomains - segmented controls */}
+			<div className="w-full">
+				<div className="flex gap-2 items-center mb-4">
+					<Button variant={view === "subdomains" ? "secondary" : "ghost"} size="sm" onClick={() => setView("subdomains")}>
+						Free Subdomains
+					</Button>
+					<Button variant={view === "custom" ? "secondary" : "ghost"} size="sm" onClick={() => setView("custom")}>
+						Custom Domains
+					</Button>
+				</div>
 
-				{/* Subdomains Tab */}
-				<TabsContent value="subdomains">
+				{view === "subdomains" && (
 					<Card>
 						<CardHeader>
-							<div className="flex items-center justify-between">
+							<div className="flex justify-between items-center">
 								<CardTitle className="flex items-center">
-									<Globe className="w-5 h-5 mr-2" />
+									<Globe className="mr-2 w-5 h-5" />
 									Your Subdomains
 								</CardTitle>
 								<Button onClick={() => setIsCreatingSubdomain(true)}>
-									<Plus className="w-4 h-4 mr-2" />
+									<Plus className="mr-2 w-4 h-4" />
 									Create Subdomain
 								</Button>
 							</div>
@@ -180,7 +184,7 @@ export default function DomainsManagement() {
 								<div className="space-y-4">
 									{subdomains.length > 0 ? (
 										subdomains.map((subdomain) => (
-											<div key={subdomain.id} className="flex items-center justify-between p-4 border border-border rounded-lg">
+											<div key={subdomain.id} className="flex justify-between items-center p-4 rounded-lg border border-border">
 												<div className="flex-1 space-y-1">
 													<div className="flex items-center space-x-3">
 														<h3 className="font-semibold">{subdomain.subdomain}.localhub.com</h3>
@@ -189,7 +193,7 @@ export default function DomainsManagement() {
 															Free Subdomain
 														</Badge>
 													</div>
-													<div className="flex items-center gap-2 text-sm text-muted-foreground">
+													<div className="flex gap-2 items-center text-sm text-muted-foreground">
 														<MapPin className="w-4 h-4" />
 														<span>
 															{subdomain.city}, {subdomain.state}
@@ -214,12 +218,12 @@ export default function DomainsManagement() {
 											</div>
 										))
 									) : (
-										<div className="text-center py-8">
-											<Globe className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-											<h3 className="text-lg font-semibold mb-2">No subdomains yet</h3>
-											<p className="text-muted-foreground mb-4">Create your first free subdomain to get started with your local business directory.</p>
+										<div className="py-8 text-center">
+											<Globe className="mx-auto mb-4 w-12 h-12 text-muted-foreground" />
+											<h3 className="mb-2 text-lg font-semibold">No subdomains yet</h3>
+											<p className="mb-4 text-muted-foreground">Create your first free subdomain to get started with your local business directory.</p>
 											<Button onClick={() => setIsCreatingSubdomain(true)}>
-												<Plus className="w-4 h-4 mr-2" />
+												<Plus className="mr-2 w-4 h-4" />
 												Create Your First Subdomain
 											</Button>
 										</div>
@@ -228,19 +232,18 @@ export default function DomainsManagement() {
 							)}
 						</CardContent>
 					</Card>
-				</TabsContent>
+				)}
 
-				{/* Custom Domains Tab */}
-				<TabsContent value="custom">
+				{view === "custom" && (
 					<Card>
 						<CardHeader>
-							<div className="flex items-center justify-between">
+							<div className="flex justify-between items-center">
 								<CardTitle className="flex items-center">
-									<Globe className="w-5 h-5 mr-2" />
+									<Globe className="mr-2 w-5 h-5" />
 									Custom Domains
 								</CardTitle>
 								<Button onClick={() => setIsAddingDomain(true)}>
-									<Plus className="w-4 h-4 mr-2" />
+									<Plus className="mr-2 w-4 h-4" />
 									Add Custom Domain
 								</Button>
 							</div>
@@ -251,15 +254,15 @@ export default function DomainsManagement() {
 									domains
 										.filter((d) => d.type === "custom")
 										.map((domain) => (
-											<div key={domain.id} className="flex items-center justify-between p-4 border border-border rounded-lg">
+											<div key={domain.id} className="flex justify-between items-center p-4 rounded-lg border border-border">
 												<div className="flex-1 space-y-1">
 													<div className="flex items-center space-x-3">
 														<h3 className="font-semibold">{domain.domain}</h3>
 														{getStatusBadge(domain.status)}
-														{domain.isPrimary && <Badge className="bg-blue-100 text-blue-800 border-blue-200 text-xs">Primary</Badge>}
+														{domain.isPrimary && <Badge className="text-xs text-blue-800 bg-blue-100 border-blue-200">Primary</Badge>}
 														{domain.sslEnabled && (
-															<Badge className="bg-green-100 text-green-800 border-green-200 text-xs">
-																<Shield className="w-3 h-3 mr-1" />
+															<Badge className="text-xs text-green-800 bg-green-100 border-green-200">
+																<Shield className="mr-1 w-3 h-3" />
 																SSL
 															</Badge>
 														)}
@@ -267,8 +270,8 @@ export default function DomainsManagement() {
 													<div className="flex items-center space-x-4 text-sm text-muted-foreground">
 														<span>Setup: {new Date(domain.setupDate).toLocaleDateString()}</span>
 														{domain.status === "active" && (
-															<Button variant="ghost" size="sm" className="h-auto p-0 text-xs" onClick={() => window.open(`https://${domain.domain}`, "_blank")}>
-																<ExternalLink className="w-3 h-3 mr-1" />
+															<Button variant="ghost" size="sm" className="p-0 h-auto text-xs" onClick={() => window.open(`https://${domain.domain}`, "_blank")}>
+																<ExternalLink className="mr-1 w-3 h-3" />
 																Visit
 															</Button>
 														)}
@@ -289,12 +292,12 @@ export default function DomainsManagement() {
 											</div>
 										))
 								) : (
-									<div className="text-center py-8">
-										<Shield className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-										<h3 className="text-lg font-semibold mb-2">No custom domains</h3>
-										<p className="text-muted-foreground mb-4">Add your own domain to use with your LocalHub directory.</p>
+									<div className="py-8 text-center">
+										<Shield className="mx-auto mb-4 w-12 h-12 text-muted-foreground" />
+										<h3 className="mb-2 text-lg font-semibold">No custom domains</h3>
+										<p className="mb-4 text-muted-foreground">Add your own domain to use with your LocalHub directory.</p>
 										<Button onClick={() => setIsAddingDomain(true)}>
-											<Plus className="w-4 h-4 mr-2" />
+											<Plus className="mr-2 w-4 h-4" />
 											Add Custom Domain
 										</Button>
 									</div>
@@ -302,8 +305,8 @@ export default function DomainsManagement() {
 							</div>
 						</CardContent>
 					</Card>
-				</TabsContent>
-			</Tabs>
+				)}
+			</div>
 
 			{/* Add Domain Form */}
 			{isAddingDomain && (
@@ -315,7 +318,7 @@ export default function DomainsManagement() {
 						<div>
 							<Label htmlFor="domain">Domain Name</Label>
 							<Input id="domain" value={newDomain} onChange={(e) => setNewDomain(e.target.value)} placeholder="yourdomain.com" />
-							<p className="text-xs text-muted-foreground mt-1">Enter your domain without www or https://</p>
+							<p className="mt-1 text-xs text-muted-foreground">Enter your domain without www or https://</p>
 						</div>
 						<div className="flex space-x-2">
 							<Button onClick={handleAddDomain}>Add Domain</Button>
@@ -328,30 +331,36 @@ export default function DomainsManagement() {
 			)}
 
 			{/* DNS Configuration */}
-			<Tabs defaultValue="setup" className="space-y-6">
-				<TabsList>
-					<TabsTrigger value="setup">DNS Setup</TabsTrigger>
-					<TabsTrigger value="ssl">SSL Certificate</TabsTrigger>
-					<TabsTrigger value="redirects">Redirects</TabsTrigger>
-				</TabsList>
+			<div className="space-y-4">
+				<div className="flex gap-2 items-center">
+					<Button variant={section === "setup" ? "secondary" : "ghost"} size="sm" onClick={() => setSection("setup")}>
+						DNS Setup
+					</Button>
+					<Button variant={section === "ssl" ? "secondary" : "ghost"} size="sm" onClick={() => setSection("ssl")}>
+						SSL Certificate
+					</Button>
+					<Button variant={section === "redirects" ? "secondary" : "ghost"} size="sm" onClick={() => setSection("redirects")}>
+						Redirects
+					</Button>
+				</div>
 
-				<TabsContent value="setup" className="space-y-6">
+				{section === "setup" && (
 					<Card>
 						<CardHeader>
 							<CardTitle>DNS Configuration</CardTitle>
 						</CardHeader>
 						<CardContent className="space-y-4">
 							<Alert>
-								<Info className="h-4 w-4" />
+								<Info className="w-4 h-4" />
 								<AlertDescription>To connect your custom domain, add these DNS records at your domain registrar.</AlertDescription>
 							</Alert>
 
 							<div className="space-y-4">
-								<div className="p-4 bg-muted/50 rounded-lg">
-									<div className="flex items-center justify-between mb-2">
+								<div className="p-4 rounded-lg bg-muted/50">
+									<div className="flex justify-between items-center mb-2">
 										<h4 className="font-medium">A Record</h4>
 										<Button variant="ghost" size="sm" onClick={() => copyToClipboard("76.76.19.123")}>
-											<Copy className="w-4 h-4 mr-1" />
+											<Copy className="mr-1 w-4 h-4" />
 											Copy
 										</Button>
 									</div>
@@ -371,11 +380,11 @@ export default function DomainsManagement() {
 									</div>
 								</div>
 
-								<div className="p-4 bg-muted/50 rounded-lg">
-									<div className="flex items-center justify-between mb-2">
+								<div className="p-4 rounded-lg bg-muted/50">
+									<div className="flex justify-between items-center mb-2">
 										<h4 className="font-medium">CNAME Record (www)</h4>
 										<Button variant="ghost" size="sm" onClick={() => copyToClipboard("cname.localhub.com")}>
-											<Copy className="w-4 h-4 mr-1" />
+											<Copy className="mr-1 w-4 h-4" />
 											Copy
 										</Button>
 									</div>
@@ -397,40 +406,40 @@ export default function DomainsManagement() {
 							</div>
 
 							<Alert>
-								<AlertTriangle className="h-4 w-4" />
+								<AlertTriangle className="w-4 h-4" />
 								<AlertDescription>DNS changes can take up to 48 hours to propagate worldwide. We&apos;ll automatically verify your domain once DNS is configured.</AlertDescription>
 							</Alert>
 						</CardContent>
 					</Card>
-				</TabsContent>
+				)}
 
-				<TabsContent value="ssl" className="space-y-6">
+				{section === "ssl" && (
 					<Card>
 						<CardHeader>
 							<CardTitle>SSL Certificate</CardTitle>
 						</CardHeader>
 						<CardContent className="space-y-4">
 							<Alert>
-								<Shield className="h-4 w-4" />
+								<Shield className="w-4 h-4" />
 								<AlertDescription>We automatically provision and renew SSL certificates for all custom domains at no additional cost.</AlertDescription>
 							</Alert>
 
 							<div className="space-y-4">
 								{domains.map((domain) => (
-									<div key={domain.id} className="flex items-center justify-between p-4 border rounded-lg">
+									<div key={domain.id} className="flex justify-between items-center p-4 rounded-lg border">
 										<div>
 											<h4 className="font-medium">{domain.domain}</h4>
 											<p className="text-sm text-muted-foreground">{domain.sslEnabled ? "SSL certificate active" : "SSL certificate pending"}</p>
 										</div>
 										<div className="flex items-center space-x-2">
 											{domain.sslEnabled ? (
-												<Badge className="bg-green-100 text-green-800 border-green-200">
-													<Shield className="w-3 h-3 mr-1" />
+												<Badge className="text-green-800 bg-green-100 border-green-200">
+													<Shield className="mr-1 w-3 h-3" />
 													Active
 												</Badge>
 											) : (
-												<Badge className="bg-yellow-100 text-yellow-800 border-yellow-200">
-													<Clock className="w-3 h-3 mr-1" />
+												<Badge className="text-yellow-800 bg-yellow-100 border-yellow-200">
+													<Clock className="mr-1 w-3 h-3" />
 													Pending
 												</Badge>
 											)}
@@ -440,50 +449,50 @@ export default function DomainsManagement() {
 							</div>
 						</CardContent>
 					</Card>
-				</TabsContent>
+				)}
 
-				<TabsContent value="redirects" className="space-y-6">
+				{section === "redirects" && (
 					<Card>
 						<CardHeader>
 							<CardTitle>URL Redirects</CardTitle>
 						</CardHeader>
 						<CardContent className="space-y-4">
-							<div className="flex items-center justify-between p-4 border rounded-lg">
+							<div className="flex justify-between items-center p-4 rounded-lg border">
 								<div>
 									<h4 className="font-medium">HTTPS Redirect</h4>
 									<p className="text-sm text-muted-foreground">Automatically redirect HTTP traffic to HTTPS</p>
 								</div>
-								<Badge className="bg-green-100 text-green-800 border-green-200">
-									<Check className="w-3 h-3 mr-1" />
+								<Badge className="text-green-800 bg-green-100 border-green-200">
+									<Check className="mr-1 w-3 h-3" />
 									Enabled
 								</Badge>
 							</div>
 
-							<div className="flex items-center justify-between p-4 border rounded-lg">
+							<div className="flex justify-between items-center p-4 rounded-lg border">
 								<div>
 									<h4 className="font-medium">WWW Redirect</h4>
 									<p className="text-sm text-muted-foreground">Redirect www version to non-www (or vice versa)</p>
 								</div>
 								<Button variant="outline" size="sm">
-									<Settings className="w-4 h-4 mr-2" />
+									<Settings className="mr-2 w-4 h-4" />
 									Configure
 								</Button>
 							</div>
 						</CardContent>
 					</Card>
-				</TabsContent>
-			</Tabs>
+				)}
+			</div>
 
 			{/* Subdomain Info */}
-			<Card className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20">
+			<Card className="bg-card">
 				<CardHeader>
 					<CardTitle className="flex items-center">
-						<Zap className="w-5 h-5 mr-2 text-blue-600" />
+						<Zap className="mr-2 w-5 h-5 text-blue-600" />
 						Free Subdomain Included
 					</CardTitle>
 				</CardHeader>
 				<CardContent>
-					<p className="text-sm text-muted-foreground mb-4">Every LocalHub directory comes with a free subdomain. You can upgrade to a custom domain anytime to enhance your brand.</p>
+					<p className="mb-4 text-sm text-muted-foreground">Every LocalHub directory comes with a free subdomain. You can upgrade to a custom domain anytime to enhance your brand.</p>
 					<div className="flex items-center space-x-4">
 						<div className="text-center">
 							<div className="text-lg font-bold text-blue-600">Free</div>
