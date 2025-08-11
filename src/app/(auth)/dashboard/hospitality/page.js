@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import IndustryDashboardLayout from "../_shared/components/IndustryDashboardLayout";
+import IndustryDashboardLayout from "../_shared/components/industry-dashboard-layout";
 import { INDUSTRY_TYPES } from "../_shared/services/industryConfig";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
 import { Button } from "@components/ui/button";

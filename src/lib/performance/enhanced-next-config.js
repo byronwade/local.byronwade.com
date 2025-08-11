@@ -21,12 +21,10 @@ const __dirname = path.dirname(__filename);
 export function createEnhancedNextConfig(baseConfig = {}) {
         const isProduction = process.env.NODE_ENV === "production";
         const isVercel = process.env.VERCEL === "1" || process.env.VERCEL === "true";
-        // Parallel server build traces require build workers which aren't
+        // Parallel server optimizations require build workers which aren't
         // available in all environments (e.g. local `vercel build`). Only
         // enable the feature when explicitly requested via environment flag.
-        const hasBuildWorkers =
-                process.env.NEXT_BUILD_WORKERS === "1" ||
-                process.env.NEXT_BUILD_WORKERS === "true";
+        const hasBuildWorkers = Boolean(process.env.NEXT_BUILD_WORKERS);
 
 	return {
 		...baseConfig,
@@ -46,8 +44,8 @@ export function createEnhancedNextConfig(baseConfig = {}) {
 			ppr: true,
 
                         // Parallel route optimizations - only enable when build workers are available
-                        ...(isVercel && hasBuildWorkers
-                                ? { parallelServerBuildTraces: true }
+                        ...(hasBuildWorkers
+                                ? { parallelServerBuildTraces: true, parallelServerCompiles: true }
                                 : {}),
 
 			// Advanced bundling
