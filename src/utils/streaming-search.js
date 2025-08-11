@@ -5,8 +5,8 @@
  */
 
 import { logger } from "@utils/logger";
-import { CacheManager } from "@lib/utils/cache-manager";
-import { compressedSearch } from "@lib/utils/compressed-search-index";
+import { CacheManager } from "@utils/cache-manager";
+import { compressedSearch } from "@utils/compressed-search-index";
 
 // Search configuration optimized for instant responses
 const SEARCH_CONFIG = {

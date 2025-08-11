@@ -5,7 +5,7 @@
 
 import { supabase } from "@lib/supabase/client";
 import { logger } from "@utils/logger";
-import { withErrorHandling } from "@lib/utils/error-handler";
+import { withErrorHandling } from "@utils/error-handler";
 
 /**
  * Fetch user dashboard statistics

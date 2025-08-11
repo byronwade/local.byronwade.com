@@ -9,6 +9,7 @@ import Link from "next/link";
 import ServiceBookingWidget from "@components/business/field-service/service-booking-widget";
 import BizProfileClient from "./biz-profile-client";
 import { generateAdvancedServerSEO } from "@utils/advanced-server-seo";
+import { generateCompleteSEOConfig, generateEnhancedStructuredData } from "@lib/seo/enhanced-business-seo";
 
 /**
  * Unified Business Profile Page for Thorbis Platform
@@ -101,17 +102,27 @@ export async function generateMetadata({ params }) {
 				openGraph: {
 					title: `${business.name} - ${business.city}, ${business.state}`,
 					description: business.description?.substring(0, 200) || `Local business in ${business.city}, ${business.state}`,
-					type: "business.business",
-					url: `/biz/${business.slug}`,
+					type: "website",
+					url: `https://thorbis.com/biz/${business.slug}`,
 					siteName: "Local Business Directory",
+					images: [`https://thorbis.com/opengraph-image?title=${encodeURIComponent(business.name)}&description=${encodeURIComponent(`${business.city}${business.state ? ", " + business.state : ""}`)}`],
 				},
-				robots: "index,follow",
-				canonical: `/biz/${business.slug}`,
+				robots: { index: true, follow: true },
+				alternates: { canonical: `https://thorbis.com/biz/${business.slug}` },
 			};
 		}
 
-		// Advanced SEO generation with comprehensive error handling (runtime only)
+		// Enhanced SEO generation with comprehensive structured data
 		try {
+			// First try enhanced SEO config
+			const enhancedSEO = generateCompleteSEOConfig(business);
+
+			// Validate enhanced SEO data
+			if (enhancedSEO && enhancedSEO.title && enhancedSEO.description) {
+				return enhancedSEO;
+			}
+
+			// Fallback to advanced server SEO
 			const seoData = await generateAdvancedServerSEO({
 				type: "business_profile",
 				data: business,
@@ -152,17 +163,19 @@ export async function generateMetadata({ params }) {
 				openGraph: {
 					title: `${businessName} - ${businessCity}${businessState ? `, ${businessState}` : ""}`,
 					description: businessDescription?.substring(0, 200) || `Local business in ${businessCity}${businessState ? `, ${businessState}` : ""}`,
-					type: "business.business",
-					url: `/biz/${businessSlug}`,
+					type: "website",
+					url: `https://thorbis.com/biz/${businessSlug}`,
 					siteName: "Local Business Directory",
+					images: [`https://thorbis.com/opengraph-image?title=${encodeURIComponent(businessName)}&description=${encodeURIComponent(`${businessCity}${businessState ? ", " + businessState : ""}`)}`],
 				},
 				twitter: {
 					card: "summary",
 					title: `${businessName} - ${businessCity}${businessState ? `, ${businessState}` : ""}`,
 					description: businessDescription?.substring(0, 200) || `Local business in ${businessCity}${businessState ? `, ${businessState}` : ""}`,
+					images: [`https://thorbis.com/twitter-image?title=${encodeURIComponent(businessName)}`],
 				},
-				robots: "index,follow",
-				canonical: `/biz/${businessSlug}`,
+				robots: { index: true, follow: true },
+				alternates: { canonical: `https://thorbis.com/biz/${businessSlug}` },
 			};
 		}
 	} catch (error) {
@@ -201,15 +214,37 @@ export default async function BusinessProfilePage({ params }) {
 			notFound();
 		}
 
+		// Generate enhanced structured data for maximum SEO impact
+		const structuredData = generateEnhancedStructuredData(business);
+
 		// Check if this is a field service business and render appropriate component
 		const isFieldService = business.business_type === "field_service" || business.business_categories?.some((cat) => ["plumbing", "electrical", "hvac", "landscaping", "cleaning", "handyman"].includes(cat.categories?.slug));
 
+		// Enhanced JSON-LD structured data for rich search results
+		const jsonLdScripts = [
+			<script key="local-business" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData.localBusiness) }} />,
+			<script key="breadcrumbs" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData.breadcrumbs) }} />,
+			...structuredData.reviews.map((review, index) => <script key={`review-${index}`} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(review) }} />),
+			...structuredData.services.map((service, index) => <script key={`service-${index}`} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(service) }} />),
+			...(structuredData.faq ? [<script key="faq" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData.faq) }} />] : []),
+		];
+
 		if (isFieldService) {
-			return <FieldServiceBusinessProfile business={business} slug={resolvedParams.slug} />;
+			return (
+				<>
+					{jsonLdScripts}
+					<FieldServiceBusinessProfile business={business} slug={resolvedParams.slug} />
+				</>
+			);
 		}
 
 		// Render the sophisticated business profile client (no tabs as per user preference)
-		return <BizProfileClient businessId={business.id} initialBusiness={business} />;
+		return (
+			<>
+				{jsonLdScripts}
+				<BizProfileClient businessId={business.id} initialBusiness={business} />
+			</>
+		);
 	} catch (error) {
 		console.error("Error rendering business profile:", error);
 		notFound();

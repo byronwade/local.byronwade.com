@@ -9,14 +9,21 @@ export const metadata = {
 		type: "website",
 		url: "https://thorbis.com/nonprofit-operations-platform",
 		siteName: "Thorbis",
-		images: [{ url: "https://thorbis.com/og-nonprofit.jpg", width: 1200, height: 630, alt: "Thorbis Nonprofit Operations Platform" }],
+		images: [
+			{
+				url: `https://thorbis.com/opengraph-image?title=${encodeURIComponent("Nonprofit Operations Platform")}&description=${encodeURIComponent("Programs, volunteers, donors, and outcome reporting.")}`,
+				width: 1200,
+				height: 630,
+				alt: "Thorbis Nonprofit Operations Platform",
+			},
+		],
 		locale: "en_US",
 	},
 	twitter: {
 		card: "summary_large_image",
 		title: "Nonprofit Operations Platform – Mission Impact",
 		description: "Programs, volunteers, donors, and outcome reporting.",
-		images: ["https://thorbis.com/og-nonprofit.jpg"],
+		images: [`https://thorbis.com/twitter-image?title=${encodeURIComponent("Nonprofit Operations Platform")}`],
 		creator: "@thorbis",
 		site: "@thorbis",
 	},

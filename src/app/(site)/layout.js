@@ -2,10 +2,15 @@ import Header from "@components/site/header";
 import Footer from "@components/site/footer";
 import { evaluateAllFlags } from "@lib/flags/server";
 import { cookies } from "next/headers";
-import DevToolsClient from "@components/debug/DevToolsClient";
-import WebVitalsClient from "@components/debug/WebVitalsClient";
-import WDYRClient from "@components/debug/WDYRClient";
-import ProfilerToggle from "@components/debug/ProfilerToggle";
+
+// Disable caching for this segment site-wide in dev and ensure SSR evaluation
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
+import DevToolsClient from "@components/debug/dev-tools-client";
+import WebVitalsClient from "@components/debug/web-vitals-client";
+import WDYRClient from "@components/debug/wdyr-client";
+import ProfilerToggle from "@components/debug/profiler-toggle";
 
 /**
  * DashboardRootLayout is a layout component that includes a header, footer, and the main content.
@@ -223,7 +228,8 @@ export default async function DashboardRootLayout({ children }) {
 	let overridden = { ...ff };
 	if (process.env.NODE_ENV !== "production") {
 		try {
-			const raw = cookies().get("dev_flag_overrides")?.value;
+            const cookieStore = await cookies();
+			const raw = cookieStore.get("dev_flag_overrides")?.value;
 			if (raw) {
 				const parsed = JSON.parse(decodeURIComponent(raw));
 				if (parsed && typeof parsed === "object") {

@@ -1,4 +1,5 @@
 import React, { Suspense } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
@@ -34,6 +35,8 @@ async function getBlogPostData(slug) {
 }
 
 // Generate metadata for SEO
+export const revalidate = 3600; // ISR: refresh blog pages hourly for freshness
+
 export async function generateMetadata({ params }) {
 	const { slug } = await params;
 	const data = await getBlogPostData(slug);
@@ -59,14 +62,14 @@ export async function generateMetadata({ params }) {
 			publishedTime: post.published_at,
 			modifiedTime: post.updated_at,
 			authors: [post.author?.name || "Anonymous"],
-			images: post.featured_image ? [post.featured_image] : undefined,
+			images: post.featured_image ? [post.featured_image] : [`https://thorbis.com/opengraph-image?title=${encodeURIComponent(post.title)}&description=${encodeURIComponent(post.excerpt || "")}`],
 			url: `https://thorbis.com/blog/${post.slug}`,
 		},
 		twitter: {
 			card: "summary_large_image",
 			title: post.title,
 			description: post.excerpt,
-			images: post.featured_image ? [post.featured_image] : undefined,
+			images: post.featured_image ? [post.featured_image] : [`https://thorbis.com/twitter-image?title=${encodeURIComponent(post.title)}`],
 		},
 		alternates: {
 			canonical: `https://thorbis.com/blog/${post.slug}`,
@@ -92,8 +95,11 @@ function PostContent({ post, relatedPosts }) {
 			name: "Thorbis",
 			logo: {
 				"@type": "ImageObject",
-				url: "https://thorbis.com/logo.png",
+				url: "https://thorbis.com/logos/ThorbisLogo.webp",
+				width: 512,
+				height: 512,
 			},
+			url: "https://thorbis.com",
 		},
 		datePublished: post.published_at,
 		dateModified: post.updated_at,
@@ -103,9 +109,20 @@ function PostContent({ post, relatedPosts }) {
 		},
 	};
 
+	const breadcrumbsLd = {
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		itemListElement: [
+			{ "@type": "ListItem", position: 1, name: "Home", item: "https://thorbis.com/" },
+			{ "@type": "ListItem", position: 2, name: "Blog", item: "https://thorbis.com/blog" },
+			{ "@type": "ListItem", position: 3, name: post.title, item: `https://thorbis.com/blog/${post.slug}` },
+		],
+	};
+
 	return (
 		<>
 			<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+			<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbsLd) }} />
 			<main className="pt-8 pb-16 lg:pt-16 lg:pb-24">
 				<div className="flex justify-center max-w-screen-xl px-4 mx-auto">
 					<article className="w-full max-w-2xl format format-sm sm:format-base lg:format-lg format-blue dark:format-invert">
@@ -113,7 +130,7 @@ function PostContent({ post, relatedPosts }) {
 							{/* Featured Image */}
 							{post.featured_image && (
 								<div className="mb-6">
-									<img src={post.featured_image} alt={post.title} className="w-full rounded-lg" />
+									<Image src={post.featured_image} alt={post.title} width={1200} height={630} className="w-full rounded-lg h-auto" priority />
 								</div>
 							)}
 
@@ -172,7 +189,7 @@ function PostContent({ post, relatedPosts }) {
 								<article key={article.slug} className="max-w-xs">
 									<Link href={`/blog/${article.slug}`}>
 										{article.featured_image ? (
-											<img src={article.featured_image} className="mb-5 rounded-lg w-full h-48 object-cover" alt={article.title} />
+											<Image src={article.featured_image} alt={article.title} width={640} height={384} className="mb-5 rounded-lg w-full h-48 object-cover" />
 										) : (
 											<div className="mb-5 rounded-lg w-full h-48 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
 												<span className="text-gray-500 dark:text-gray-400">No image</span>

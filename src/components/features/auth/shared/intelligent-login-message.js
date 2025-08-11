@@ -42,7 +42,7 @@ const getSourceSpecificMessage = (context, isSignupMode) => {
 		direct: "You'll have full access to all features and personalized recommendations.",
 	};
 
-	return <p className="text-sm text-blue-800 dark:text-blue-200">{sourceMessages[context?.source] || sourceMessages.direct}</p>;
+	return <p className="text-sm text-muted-foreground">{sourceMessages[context?.source] || sourceMessages.direct}</p>;
 };
 
 const getDiscoveryPreview = (context) => {
@@ -74,7 +74,7 @@ export default function IntelligentLoginMessage({ onContextDetected, isSignupMod
 	const searchParams = useSearchParams();
 	const [context, setContext] = useState(null);
 	const [isVisible, setIsVisible] = useState(false);
-	const [showPersonalizedContent, setShowPersonalizedContent] = useState(false);
+	const [expanded, setExpanded] = useState(false);
 
 	useEffect(() => {
 		// Validate logger functionality on component mount
@@ -167,8 +167,8 @@ export default function IntelligentLoginMessage({ onContextDetected, isSignupMod
 			}
 		}
 
-		// Animate visibility
-		setTimeout(() => setIsVisible(true), 100);
+		// One-time reveal without looping animations
+		setIsVisible(true);
 	}, [searchParams, onContextDetected]);
 
 	if (!context || context.key === "default") {
@@ -181,67 +181,68 @@ export default function IntelligentLoginMessage({ onContextDetected, isSignupMod
 	const timeSensitive = ContextMessageGenerator.getTimeSensitiveMessage(context);
 
 	return (
-		<div className={cn("transition-all duration-500 ease-out transform", isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4")}>
-			<Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 dark:border-blue-800 dark:from-blue-950/30 dark:to-indigo-950/30">
-				<CardContent className="p-6">
+		<div className={cn(isVisible ? "opacity-100" : "opacity-0")}>
+			<Card className="bg-card border border-border">
+				<CardContent className="p-5 sm:p-6">
 					{/* Header with Icon and Badge */}
 					<div className="flex justify-between items-start mb-4">
 						<div className="flex items-center space-x-3">
-							<div className={cn("p-3 rounded-full", urgency.color === "red" && "bg-red-100 dark:bg-red-900/30", urgency.color === "blue" && "bg-blue-100 dark:bg-blue-900/30", urgency.color === "gray" && "bg-gray-100 dark:bg-gray-900/30")}>
-								<IconComponent className={cn("h-6 w-6", urgency.color === "red" && "text-red-600 dark:text-red-400", urgency.color === "blue" && "text-blue-600 dark:text-blue-400", urgency.color === "gray" && "text-gray-600 dark:text-gray-400", urgency.pulse && "animate-pulse")} />
+							<div className="p-2.5 rounded-full border border-border">
+								<IconComponent className="h-5 w-5 text-foreground" />
 							</div>
 
 							<div>
 								<h3 className="text-lg font-semibold text-gray-900 dark:text-white">{context.title}</h3>
-								<p className="text-sm text-gray-600 dark:text-gray-300">{context.subtitle}</p>
+								<p className="text-sm text-muted-foreground">{context.subtitle}</p>
 							</div>
 						</div>
 
-						{context.priority === "high" && (
-							<Badge variant="destructive" className="animate-pulse">
-								Priority
-							</Badge>
-						)}
+						{context.priority === "high" && <Badge variant="destructive">Priority</Badge>}
 					</div>
 
-					{/* Main Message */}
-					<div className="mb-4">
-						<p className="leading-relaxed text-gray-700 dark:text-gray-300">{context.message}</p>
+					{/* Main Message with collapse */}
+					<div className="mb-2">
+						<p className="leading-relaxed text-foreground/90">{context.message}</p>
 					</div>
+					<button type="button" className="text-xs text-primary hover:underline" onClick={() => setExpanded((v) => !v)} aria-expanded={expanded}>
+						{expanded ? "Hide details" : "Show details"}
+					</button>
 
 					{/* Time Sensitive Alert */}
-					{timeSensitive && (
-						<div className="p-3 mb-4 bg-orange-50 rounded-lg border border-orange-200 dark:bg-orange-900/20 dark:border-orange-800">
+					{expanded && timeSensitive && (
+						<div className="p-3 mb-4 bg-muted rounded-lg border border-border">
 							<div className="flex items-center space-x-2">
-								<Clock className="w-4 h-4 text-orange-600 dark:text-orange-400" />
-								<span className="text-sm font-medium text-orange-800 dark:text-orange-200">{timeSensitive}</span>
+								<Clock className="w-4 h-4 text-foreground" />
+								<span className="text-sm font-medium text-foreground">{timeSensitive}</span>
 							</div>
 						</div>
 					)}
 
 					{/* Benefits Grid */}
-					<div className="grid grid-cols-1 gap-2 mb-4 md:grid-cols-2">
-						{context.benefits.map((benefit, index) => (
-							<div key={index} className="flex items-center space-x-2">
-								<CheckCircle className="flex-shrink-0 w-4 h-4 text-green-600 dark:text-green-400" />
-								<span className="text-sm text-gray-600 dark:text-gray-300">{benefit}</span>
-							</div>
-						))}
-					</div>
+					{expanded && (
+						<div className="grid grid-cols-1 gap-2 mb-4 md:grid-cols-2">
+							{context.benefits.map((benefit, index) => (
+								<div key={index} className="flex items-center space-x-2">
+									<CheckCircle className="flex-shrink-0 w-4 h-4 text-foreground" />
+									<span className="text-sm text-muted-foreground">{benefit}</span>
+								</div>
+							))}
+						</div>
+					)}
 
 					{/* Social Proof */}
-					{socialProof && (
-						<div className="p-3 mb-4 bg-green-50 rounded-lg border border-green-200 dark:bg-green-900/20 dark:border-green-800">
+					{expanded && socialProof && (
+						<div className="p-3 mb-4 bg-muted rounded-lg border border-border">
 							<div className="flex items-center space-x-2">
-								<TrendingUp className="w-4 h-4 text-green-600 dark:text-green-400" />
-								<span className="text-sm font-medium text-green-800 dark:text-green-200">{socialProof}</span>
+								<TrendingUp className="w-4 h-4 text-foreground" />
+								<span className="text-sm font-medium text-foreground">{socialProof}</span>
 							</div>
 						</div>
 					)}
 
 					{/* Route-Specific Personalized Content */}
-					{context.source && (
-						<div className="p-3 mb-4 bg-blue-50 rounded-lg border border-blue-200 dark:bg-blue-900/20 dark:border-blue-800">
+					{expanded && context.source && (
+						<div className="p-3 mb-4 bg-muted rounded-lg border border-border">
 							<div className="flex items-center space-x-2 mb-2">
 								<Badge variant="secondary" className="text-xs">
 									{isSignupMode ? "Joining from" : "Coming from"}: {context.source.replace(/_/g, " ")}
@@ -252,35 +253,35 @@ export default function IntelligentLoginMessage({ onContextDetected, isSignupMod
 					)}
 
 					{/* Context-Specific Action Preview */}
-					{(context.key === "add-business" || context.key === "claim-business") && (
+					{expanded && (context.key === "add-business" || context.key === "claim-business") && (
 						<div className="pt-4 mt-4 border-t">
-							<p className="mb-2 text-sm text-gray-500 dark:text-gray-400">After signing in, you'll be able to:</p>
-							<div className="flex justify-between items-center p-3 bg-white rounded-lg border dark:bg-gray-800">
+							<p className="mb-2 text-sm text-muted-foreground">After signing in, you'll be able to:</p>
+							<div className="flex justify-between items-center p-3 bg-background rounded-lg border">
 								<div className="flex items-center space-x-3">
-									<div className="p-2 bg-blue-100 rounded dark:bg-blue-900/30">
-										<Building2 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+									<div className="p-2 rounded border border-border">
+										<Building2 className="w-4 h-4 text-foreground" />
 									</div>
 									<div>
-										<p className="text-sm font-medium text-gray-900 dark:text-white">{context.key === "add-business" ? "Add Your Business" : "Claim Your Business"}</p>
-										<p className="text-xs text-gray-500 dark:text-gray-400">Complete your business profile</p>
+										<p className="text-sm font-medium text-foreground">{context.key === "add-business" ? "Add Your Business" : "Claim Your Business"}</p>
+										<p className="text-xs text-muted-foreground">Complete your business profile</p>
 									</div>
 								</div>
-								<ChevronRight className="w-4 h-4 text-gray-400" />
+								<ChevronRight className="w-4 h-4 text-muted-foreground" />
 							</div>
 						</div>
 					)}
 
 					{/* Enhanced Discovery Context */}
-					{context.category === "discovery" && (
+					{expanded && context.category === "discovery" && (
 						<div className="pt-4 mt-4 border-t">
-							<p className="mb-2 text-sm text-gray-500 dark:text-gray-400">{isSignupMode ? "After creating your account:" : "After signing in:"}</p>
+							<p className="mb-2 text-sm text-muted-foreground">{isSignupMode ? "After creating your account:" : "After signing in:"}</p>
 							<div className="space-y-2">
 								{getDiscoveryPreview(context).map((item, index) => (
-									<div key={index} className="flex items-center space-x-3 p-2 bg-white rounded border dark:bg-gray-800">
-										<item.icon className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+									<div key={index} className="flex items-center space-x-3 p-2 bg-background rounded border">
+										<item.icon className="w-4 h-4 text-foreground" />
 										<div>
-											<p className="text-sm font-medium text-gray-900 dark:text-white">{item.title}</p>
-											<p className="text-xs text-gray-500 dark:text-gray-400">{item.description}</p>
+											<p className="text-sm font-medium text-foreground">{item.title}</p>
+											<p className="text-xs text-muted-foreground">{item.description}</p>
 										</div>
 									</div>
 								))}
@@ -289,14 +290,14 @@ export default function IntelligentLoginMessage({ onContextDetected, isSignupMod
 					)}
 
 					{/* Local Community Context */}
-					{context.category === "local" && (
+					{expanded && context.category === "local" && (
 						<div className="pt-4 mt-4 border-t">
-							<p className="mb-2 text-sm text-gray-500 dark:text-gray-400">Connect with your local community:</p>
+							<p className="mb-2 text-sm text-muted-foreground">Connect with your local community:</p>
 							<div className="grid grid-cols-2 gap-2">
 								{getLocalPreview().map((item, index) => (
-									<div key={index} className="flex items-center space-x-2 p-2 bg-white rounded border dark:bg-gray-800">
-										<item.icon className="w-4 h-4 text-green-600 dark:text-green-400" />
-										<span className="text-xs font-medium text-gray-900 dark:text-white">{item.label}</span>
+									<div key={index} className="flex items-center space-x-2 p-2 bg-background rounded border">
+										<item.icon className="w-4 h-4 text-foreground" />
+										<span className="text-xs font-medium text-foreground">{item.label}</span>
 									</div>
 								))}
 							</div>
@@ -307,12 +308,10 @@ export default function IntelligentLoginMessage({ onContextDetected, isSignupMod
 					<div className="pt-4 mt-4 border-t">
 						<div className="flex justify-between items-center">
 							<div>
-								<p className="text-sm font-medium text-gray-900 dark:text-white">Ready to get started?</p>
-								<p className="text-xs text-gray-500 dark:text-gray-400">Sign in takes less than 30 seconds</p>
+								<p className="text-sm font-medium text-foreground">Ready to get started?</p>
+								<p className="text-xs text-muted-foreground">Sign in takes less than 30 seconds</p>
 							</div>
-							<div className="text-right">
-								<div className="text-lg font-bold text-blue-600 dark:text-blue-400">{context.icon}</div>
-							</div>
+							<div className="text-right" />
 						</div>
 					</div>
 				</CardContent>

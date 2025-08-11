@@ -10,7 +10,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { BusinessHoursQueries } from "@lib/supabase/queries/business-hours.ts";
 import { useAuthStore } from "@store/use-auth-store";
 import { toast } from "@components/ui/use-toast";
-import { logger } from "@lib/utils/logger";
+import { logger } from "@utils/logger";
 
 /**
  * Custom hook for business hours management

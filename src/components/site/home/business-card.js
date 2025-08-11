@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { Star, MapPin } from "react-feather";
@@ -12,45 +14,62 @@ export default function BusinessCard({ business, disabled }) {
 			.replace(/-+/g, "-")
 			.trim();
 
-	const rating = parseFloat(business.rating);
+	const rating = parseFloat(business.rating) || 0;
+
+	// Ensure consistent data with fallbacks
+	const consistentBusiness = {
+		name: business.name || "Business Name",
+		category: business.category || "Local Business",
+		location: business.location || "Location",
+		rating: rating > 0 ? rating.toFixed(1) : "0.0",
+		reviewCount: business.reviewCount || 0,
+		image: business.image || "/placeholder-business.svg",
+	};
 
 	return (
-		<Link href={`/biz/${slug}`} className={`group block w-full ${disabled ? "opacity-50 pointer-events-none" : ""}`}>
-			<div className="w-full">
-				{/* Image - Better aspect ratio */}
-				<div className="relative aspect-[4/3] overflow-hidden rounded-xl mb-3">
-					<Image className="object-cover w-full h-full transition-transform duration-300 hover:scale-105" src={business.image} alt={business.name} width={350} height={260} />
+		<Link href={`/biz/${slug}`} className={`group/card block w-full ${disabled ? "opacity-50 pointer-events-none" : ""}`}>
+			{/* Minimalistic card with larger image */}
+			<div className="relative w-full bg-white dark:bg-neutral-900 rounded-xl overflow-hidden border border-neutral-200/60 dark:border-neutral-800 group-hover/card:shadow-lg transition-all duration-300">
+				{/* Large image section - takes up most of the card */}
+				<div className="relative aspect-[3/2] overflow-hidden bg-neutral-100 dark:bg-neutral-800">
+					<Image
+						className="object-cover w-full h-full transition-transform duration-300 group-hover/card:scale-105"
+						src={consistentBusiness.image}
+						alt={consistentBusiness.name}
+						width={400}
+						height={267}
+						onError={(e) => {
+							e.target.src = "/placeholder-business.svg";
+						}}
+					/>
+
+					{/* Simple rating badge in top right */}
+					{rating > 0 && (
+						<div className="absolute top-3 right-3">
+							<div className="flex items-center gap-1 px-2 py-1 bg-white/95 dark:bg-neutral-900/95 backdrop-blur-sm rounded-lg shadow-sm">
+								<Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
+								<span className="text-xs font-medium text-foreground">{consistentBusiness.rating}</span>
+							</div>
+						</div>
+					)}
 				</div>
 
-				{/* Business Info - Improved spacing and typography */}
-				<div className="space-y-2">
-					{/* Business Name - Larger font to match image */}
-					<h3 className="text-base font-semibold leading-tight tracking-tight text-foreground line-clamp-1">{business.name}</h3>
+				{/* Clean, minimal info section */}
+				<div className="p-4">
+					{/* Business name */}
+					<h3 className="font-semibold text-base text-foreground line-clamp-1 mb-1 group-hover/card:text-primary transition-colors duration-200">{consistentBusiness.name}</h3>
 
-					{/* Category & Location - Increased font size */}
-					<div className="flex items-center text-sm font-medium text-muted-foreground">
-						<span className="line-clamp-1">{business.category}</span>
-						<span className="mx-2">•</span>
-						<div className="flex items-center">
-							<MapPin className="w-3.5 h-3.5 mr-1 flex-shrink-0" />
-							<span className="truncate">{business.location}</span>
+					{/* Category */}
+					<p className="text-sm text-muted-foreground mb-2">{consistentBusiness.category}</p>
+
+					{/* Location and reviews on same line */}
+					<div className="flex items-center justify-between text-xs text-muted-foreground">
+						<div className="flex items-center gap-1">
+							<MapPin className="w-3 h-3 flex-shrink-0" />
+							<span className="truncate">{consistentBusiness.location}</span>
 						</div>
-					</div>
 
-					{/* Rating & Price - Larger text */}
-					<div className="flex items-center justify-between">
-						<div className="flex items-center space-x-1">
-							<Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-							<span className="text-sm font-semibold text-foreground">{business.rating}</span>
-							<span className="text-sm font-medium text-muted-foreground">({business.reviewCount})</span>
-						</div>
-						<div className="text-sm font-semibold text-foreground">{business.price}</div>
-					</div>
-
-					{/* Status - Larger status text */}
-					<div className="flex items-center">
-						<div className={`w-2 h-2 rounded-full mr-2 ${business.status === "Open" ? "bg-green-500" : "bg-red-500"}`} />
-						<span className={`text-sm font-semibold ${business.status === "Open" ? "text-green-600" : "text-red-600"}`}>{business.status}</span>
+						{consistentBusiness.reviewCount > 0 && <span className="flex-shrink-0">({consistentBusiness.reviewCount} reviews)</span>}
 					</div>
 				</div>
 			</div>

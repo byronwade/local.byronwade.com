@@ -10,7 +10,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { ScheduleQueries } from "@lib/supabase/queries/schedule.ts";
 import { useAuthStore } from "@store/use-auth-store";
 import { toast } from "@components/ui/use-toast";
-import { logger } from "@lib/utils/logger";
+import { logger } from "@utils/logger";
 
 /**
  * Custom hook for schedule management

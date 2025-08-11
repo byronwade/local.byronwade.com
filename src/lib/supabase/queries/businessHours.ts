@@ -5,8 +5,8 @@
  */
 
 import { supabase, getPooledClient, Tables } from "../client";
-import { CacheManager } from "@lib/utils/cache-manager";
-import { logger } from "@lib/utils/logger";
+import { CacheManager } from "@utils/cache-manager";
+import { logger } from "@utils/logger";
 
 type BusinessHours = Tables<"business_hours">;
 type SpecialHours = Tables<"special_hours">;

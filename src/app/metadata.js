@@ -48,18 +48,11 @@ export const metadata = {
 		description: "Discover amazing local businesses, events, and connect with your community. Your comprehensive guide to everything local.",
 		images: [
 			{
-				url: "https://thorbis.com/images/og-default.jpg",
+				url: `https://thorbis.com/opengraph-image?title=${encodeURIComponent("Thorbis – Your Community Business Hub")}&description=${encodeURIComponent("Discover local businesses, events, and connect with your community.")}`,
 				width: 1200,
 				height: 630,
 				alt: "Thorbis - Community Business Hub",
-				type: "image/jpeg",
-			},
-			{
-				url: "https://thorbis.com/images/og-logo.jpg",
-				width: 800,
-				height: 600,
-				alt: "Thorbis Logo",
-				type: "image/jpeg",
+				type: "image/png",
 			},
 		],
 	},
@@ -71,12 +64,7 @@ export const metadata = {
 		creator: "@byronwade",
 		title: "Thorbis - Your Community Business Hub",
 		description: "Discover amazing local businesses, events, and connect with your community.",
-		images: [
-			{
-				url: "https://thorbis.com/images/twitter-card.jpg",
-				alt: "Thorbis - Community Business Hub",
-			},
-		],
+		images: [`https://thorbis.com/twitter-image?title=${encodeURIComponent("Thorbis – Your Community Business Hub")}`],
 	},
 
 	// Icons

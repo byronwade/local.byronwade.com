@@ -9,14 +9,21 @@ export const metadata = {
 		type: "website",
 		url: "https://thorbis.com/fitness-studio-software",
 		siteName: "Thorbis",
-		images: [{ url: "https://thorbis.com/og-fitness.jpg", width: 1200, height: 630, alt: "Thorbis Fitness Studio Software" }],
+		images: [
+			{
+				url: `https://thorbis.com/opengraph-image?title=${encodeURIComponent("Fitness Studio Software")}&description=${encodeURIComponent("Classes & trainers, memberships, POS, and engagement.")}`,
+				width: 1200,
+				height: 630,
+				alt: "Thorbis Fitness Studio Software",
+			},
+		],
 		locale: "en_US",
 	},
 	twitter: {
 		card: "summary_large_image",
 		title: "Fitness Studio Software – Grow Memberships",
 		description: "Classes & trainers, memberships, POS, and engagement.",
-		images: ["https://thorbis.com/og-fitness.jpg"],
+		images: [`https://thorbis.com/twitter-image?title=${encodeURIComponent("Fitness Studio Software")}`],
 		creator: "@thorbis",
 		site: "@thorbis",
 	},

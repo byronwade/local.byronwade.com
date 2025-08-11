@@ -1,660 +1,546 @@
 /**
- * Advanced Service Worker for Offline-First Business Directory
- * Implements intelligent caching, background prefetching, and performance optimization
- * Inspired by Netflix and Google's PWA strategies
+ * Advanced Service Worker for Performance Optimization
+ * 
+ * Implements cutting-edge caching strategies and background optimizations:
+ * - Intelligent cache management
+ * - Background prefetching
+ * - Offline-first strategies
+ * - Performance monitoring
+ * - Critical resource preloading
  */
 
-const CACHE_VERSION = "v1.2.0";
-const STATIC_CACHE = `static-${CACHE_VERSION}`;
-const DYNAMIC_CACHE = `dynamic-${CACHE_VERSION}`;
-const API_CACHE = `api-${CACHE_VERSION}`;
-const IMAGE_CACHE = `images-${CACHE_VERSION}`;
+const CACHE_VERSION = "v1.0.0";
+const CACHE_NAMES = {
+	STATIC: `static-${CACHE_VERSION}`,
+	DYNAMIC: `dynamic-${CACHE_VERSION}`,
+	IMAGES: `images-${CACHE_VERSION}`,
+	API: `api-${CACHE_VERSION}`,
+	CRITICAL: `critical-${CACHE_VERSION}`,
+};
 
-// Cache configuration
-const CACHE_CONFIG = {
-	// Static assets (long-term caching)
-	static: {
-		name: STATIC_CACHE,
-		ttl: 30 * 24 * 60 * 60 * 1000, // 30 days
-		maxEntries: 100,
+// Critical resources that should always be cached
+const CRITICAL_RESOURCES = [
+  '/',
+  '/dashboard/user',
+  '/categories',
+  '/search',
+  '/jobs',
+  '/manifest.json',
+  '/logos/ThorbisLogo.webp'
+];
+
+// Static resources with long cache duration
+const STATIC_RESOURCES = [
+  '/logos/',
+  '/images/',
+  '/icons/',
+  '/_next/static/',
+  '/css/',
+  '/js/'
+];
+
+// API endpoints with short cache duration
+const API_PATTERNS = [
+  /\/api\/categories/,
+  /\/api\/businesses/,
+  /\/api\/jobs/,
+  /\/api\/dashboard/
+];
+
+// Network timeout for fetch requests
+const NETWORK_TIMEOUT = 3000;
+
+/**
+ * Performance monitoring utilities
+ */
+class PerformanceMonitor {
+	constructor() {
+		this.metrics = {
+			cacheHits: 0,
+			cacheMisses: 0,
+			networkRequests: 0,
+			backgroundTasks: 0,
+			errorCount: 0,
+		};
+	}
+
+	recordCacheHit() {
+		this.metrics.cacheHits++;
+		this.logMetric("cache_hit");
+	}
+
+	recordCacheMiss() {
+		this.metrics.cacheMisses++;
+		this.logMetric("cache_miss");
+	}
+
+	recordNetworkRequest() {
+		this.metrics.networkRequests++;
+	}
+
+	recordError(error) {
+		this.metrics.errorCount++;
+		console.warn("Service Worker Error:", error);
+	}
+
+	logMetric(type, data = {}) {
+		// Send metrics to analytics if available
+		try {
+			self.clients.matchAll().then((clients) => {
+				clients.forEach((client) => {
+					client.postMessage({
+						type: "SW_METRIC",
+						metric: type,
+						data: { ...data, timestamp: Date.now() },
+					});
+				});
+			});
+		} catch (error) {
+			console.warn("Failed to log metric:", error);
+		}
+	}
+
+	getMetrics() {
+		const hitRate = this.metrics.cacheHits + this.metrics.cacheMisses > 0 ? (this.metrics.cacheHits / (this.metrics.cacheHits + this.metrics.cacheMisses)) * 100 : 0;
+
+		return {
+			...this.metrics,
+			hitRate: Math.round(hitRate * 100) / 100,
+		};
+	}
+}
+
+const performanceMonitor = new PerformanceMonitor();
+
+/**
+ * Intelligent cache manager
+ */
+class CacheManager {
+	constructor() {
+		this.maxCacheSize = 50 * 1024 * 1024; // 50MB
+		this.cleanupThreshold = 0.8; // Clean when 80% full
+	}
+
+	async put(cacheName, request, response) {
+		try {
+			const cache = await caches.open(cacheName);
+
+			// Check cache size before adding
+			await this.manageCacheSize(cacheName);
+
+			// Clone response for caching
+			const responseClone = response.clone();
+			await cache.put(request, responseClone);
+
+			return response;
+		} catch (error) {
+			performanceMonitor.recordError(error);
+			return response;
+		}
+	}
+
+	async get(cacheName, request) {
+		try {
+			const cache = await caches.open(cacheName);
+			const response = await cache.match(request);
+
+			if (response) {
+				performanceMonitor.recordCacheHit();
+				return response;
+			} else {
+				performanceMonitor.recordCacheMiss();
+				return null;
+			}
+		} catch (error) {
+			performanceMonitor.recordError(error);
+			return null;
+		}
+	}
+
+	async manageCacheSize(cacheName) {
+		try {
+			const cache = await caches.open(cacheName);
+			const keys = await cache.keys();
+
+			if (keys.length > 100) {
+				// Arbitrary limit
+				// Remove oldest entries
+				const oldKeys = keys.slice(0, 20);
+				await Promise.all(oldKeys.map((key) => cache.delete(key)));
+			}
+		} catch (error) {
+			performanceMonitor.recordError(error);
+		}
+	}
+
+	async cleanup() {
+		try {
+			const cacheNames = await caches.keys();
+
+			// Remove old caches
+			const deletePromises = cacheNames.filter((name) => !Object.values(CACHE_NAMES).includes(name)).map((name) => caches.delete(name));
+
+			await Promise.all(deletePromises);
+		} catch (error) {
+			performanceMonitor.recordError(error);
+		}
+	}
+}
+
+const cacheManager = new CacheManager();
+
+/**
+ * Network utilities with timeout and retry
+ */
+class NetworkUtils {
+	static async fetchWithTimeout(request, timeout = NETWORK_TIMEOUT) {
+		const controller = new AbortController();
+		const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+		try {
+			const response = await fetch(request, {
+				signal: controller.signal,
+			});
+			clearTimeout(timeoutId);
+			return response;
+		} catch (error) {
+			clearTimeout(timeoutId);
+			throw error;
+		}
+	}
+
+	static async fetchWithRetry(request, maxRetries = 2) {
+		let lastError;
+
+		for (let i = 0; i <= maxRetries; i++) {
+			try {
+				return await this.fetchWithTimeout(request);
+			} catch (error) {
+				lastError = error;
+				if (i < maxRetries) {
+					// Exponential backoff
+					await new Promise((resolve) => setTimeout(resolve, Math.pow(2, i) * 1000));
+				}
+			}
+		}
+
+		throw lastError;
+	}
+}
+
+/**
+ * Background task manager
+ */
+class BackgroundTaskManager {
+	constructor() {
+		this.taskQueue = [];
+		this.isProcessing = false;
+	}
+
+	addTask(task) {
+		this.taskQueue.push(task);
+		this.processQueue();
+	}
+
+	async processQueue() {
+		if (this.isProcessing || this.taskQueue.length === 0) return;
+
+		this.isProcessing = true;
+
+		while (this.taskQueue.length > 0) {
+			const task = this.taskQueue.shift();
+			try {
+				await task();
+				performanceMonitor.metrics.backgroundTasks++;
+			} catch (error) {
+				performanceMonitor.recordError(error);
+			}
+		}
+
+		this.isProcessing = false;
+	}
+}
+
+const backgroundTasks = new BackgroundTaskManager();
+
+/**
+ * Caching strategies
+ */
+const CacheStrategies = {
+	// Cache first, fallback to network
+	cacheFirst: async (request) => {
+		const cached = await cacheManager.get(CACHE_NAMES.STATIC, request);
+		if (cached) return cached;
+
+		try {
+			const response = await NetworkUtils.fetchWithRetry(request);
+			if (response.ok) {
+				await cacheManager.put(CACHE_NAMES.STATIC, request, response.clone());
+			}
+			return response;
+		} catch (error) {
+			performanceMonitor.recordError(error);
+			return new Response("Offline", { status: 503 });
+		}
 	},
 
-	// Dynamic pages (medium-term caching)
-	dynamic: {
-		name: DYNAMIC_CACHE,
-		ttl: 24 * 60 * 60 * 1000, // 24 hours
-		maxEntries: 50,
+	// Network first, fallback to cache
+	networkFirst: async (request) => {
+		try {
+			const response = await NetworkUtils.fetchWithTimeout(request);
+			performanceMonitor.recordNetworkRequest();
+
+			if (response.ok) {
+				await cacheManager.put(CACHE_NAMES.DYNAMIC, request, response.clone());
+			}
+			return response;
+		} catch (error) {
+			const cached = await cacheManager.get(CACHE_NAMES.DYNAMIC, request);
+			if (cached) return cached;
+
+			performanceMonitor.recordError(error);
+			return new Response("Network Error", { status: 503 });
+		}
 	},
 
-	// API responses (short-term caching)
-	api: {
-		name: API_CACHE,
-		ttl: 10 * 60 * 1000, // 10 minutes
-		maxEntries: 200,
-	},
+	// Stale while revalidate
+	staleWhileRevalidate: async (request) => {
+		const cached = await cacheManager.get(CACHE_NAMES.API, request);
 
-	// Images (long-term caching)
-	images: {
-		name: IMAGE_CACHE,
-		ttl: 7 * 24 * 60 * 60 * 1000, // 7 days
-		maxEntries: 300,
+		// Background update
+		const networkUpdate = NetworkUtils.fetchWithRetry(request)
+			.then((response) => {
+				if (response.ok) {
+					cacheManager.put(CACHE_NAMES.API, request, response.clone());
+				}
+				return response;
+			})
+			.catch((error) => {
+				performanceMonitor.recordError(error);
+			});
+
+		// Return cached immediately if available
+		if (cached) {
+			// Don't await the network update
+			networkUpdate.catch(() => {}); // Prevent unhandled rejection
+			return cached;
+		}
+
+		// Wait for network if no cache
+		try {
+			return await networkUpdate;
+		} catch (error) {
+			return new Response("Service Unavailable", { status: 503 });
+		}
 	},
 };
 
-// Network-first strategies for different route types
-const CACHING_STRATEGIES = {
-	// Business pages - cache with fallback
-	business: "cache-first",
-
-	// Search results - network first with cache fallback
-	search: "network-first",
-
-	// API calls - network first with cache fallback
-	api: "network-first",
-
-	// Static assets - cache first
-	static: "cache-first",
-
-	// Images - cache first
-	images: "cache-first",
-};
-
-// Background sync tags
-const SYNC_TAGS = {
-	PREFETCH_BUSINESS: "prefetch-business",
-	ANALYTICS: "analytics-sync",
-	FAVORITES: "sync-favorites",
-};
-
 /**
- * Service Worker Installation
+ * Request router
  */
-self.addEventListener("install", (event) => {
-	console.log("[SW] Installing service worker...");
-
-	event.waitUntil(
-		caches.open(STATIC_CACHE).then((cache) => {
-			console.log("[SW] Caching static assets...");
-			return cache.addAll([
-				"/",
-				"/offline",
-				"/_next/static/css/app.css", // Adjust based on your build
-				"/manifest.json",
-				"/favicon.ico",
-			]);
-		})
-	);
-
-	// Skip waiting to activate immediately
-	self.skipWaiting();
-});
-
-/**
- * Service Worker Activation
- */
-self.addEventListener("activate", (event) => {
-	console.log("[SW] Activating service worker...");
-
-	event.waitUntil(
-		Promise.all([
-			// Clean up old caches
-			cleanupOldCaches(),
-			// Take control of all clients
-			self.clients.claim(),
-		])
-	);
-});
-
-/**
- * Fetch Event Handler with Intelligent Caching
- */
-self.addEventListener("fetch", (event) => {
-	const { request } = event;
+function getRequestStrategy(request) {
 	const url = new URL(request.url);
 
-	// Skip non-GET requests and chrome-extension requests
-	if (request.method !== "GET" || url.protocol === "chrome-extension:") {
-		return;
+	// Critical resources - cache first
+	if (CRITICAL_RESOURCES.some((resource) => url.pathname.startsWith(resource))) {
+		return CacheStrategies.cacheFirst;
 	}
 
-	// Determine caching strategy based on URL
-	const strategy = getCachingStrategy(url, request);
+	// Static resources - cache first
+	if (STATIC_RESOURCES.some((pattern) => url.pathname.startsWith(pattern))) {
+		return CacheStrategies.cacheFirst;
+	}
+
+	// API requests - stale while revalidate
+	if (API_PATTERNS.some((pattern) => pattern.test(url.pathname))) {
+		return CacheStrategies.staleWhileRevalidate;
+	}
+
+	// Images - cache first
+	if (request.destination === "image") {
+		return CacheStrategies.cacheFirst;
+	}
+
+	// Default - network first
+	return CacheStrategies.networkFirst;
+}
+
+/**
+ * Service Worker Event Handlers
+ */
+
+// Install event
+self.addEventListener("install", (event) => {
+	console.log("Service Worker installing...");
+
+	event.waitUntil(
+		(async () => {
+			try {
+				// Cache critical resources immediately
+				const cache = await caches.open(CACHE_NAMES.CRITICAL);
+				await cache.addAll(CRITICAL_RESOURCES);
+
+				// Skip waiting to activate immediately
+				await self.skipWaiting();
+
+				console.log("Service Worker installed successfully");
+			} catch (error) {
+				console.error("Service Worker installation failed:", error);
+				performanceMonitor.recordError(error);
+			}
+		})()
+	);
+});
+
+// Activate event
+self.addEventListener("activate", (event) => {
+	console.log("Service Worker activating...");
+
+	event.waitUntil(
+		(async () => {
+			try {
+				// Clean up old caches
+				await cacheManager.cleanup();
+
+				// Claim all clients
+				await self.clients.claim();
+
+				// Start background prefetching
+				backgroundTasks.addTask(async () => {
+					await prefetchCriticalResources();
+				});
+
+				console.log("Service Worker activated successfully");
+			} catch (error) {
+				console.error("Service Worker activation failed:", error);
+				performanceMonitor.recordError(error);
+			}
+		})()
+	);
+});
+
+// Fetch event
+self.addEventListener("fetch", (event) => {
+	// Only handle GET requests
+	if (event.request.method !== "GET") return;
+
+	// Skip non-HTTP requests
+	if (!event.request.url.startsWith("http")) return;
+
+	const strategy = getRequestStrategy(event.request);
 
 	event.respondWith(
-		executeStrategy(strategy, request, url).catch((error) => {
-			console.error("[SW] Fetch failed:", error);
-			return handleFetchError(request, url);
+		strategy(event.request).catch((error) => {
+			performanceMonitor.recordError(error);
+			return new Response("Service Worker Error", {
+				status: 500,
+				statusText: "Service Worker Error",
+			});
 		})
 	);
 });
 
-/**
- * Background Sync for Prefetching
- */
-self.addEventListener("sync", (event) => {
-	console.log("[SW] Background sync triggered:", event.tag);
-
-	switch (event.tag) {
-		case SYNC_TAGS.PREFETCH_BUSINESS:
-			event.waitUntil(performBackgroundPrefetch());
-			break;
-
-		case SYNC_TAGS.ANALYTICS:
-			event.waitUntil(syncAnalytics());
-			break;
-
-		case SYNC_TAGS.FAVORITES:
-			event.waitUntil(syncFavorites());
-			break;
-	}
-});
-
-/**
- * Push Notifications for Instant Updates
- */
-self.addEventListener("push", (event) => {
-	if (!event.data) return;
-
-	const data = event.data.json();
-	const options = {
-		body: data.body,
-		icon: "/icon-192x192.png",
-		badge: "/badge-72x72.png",
-		data: data.data,
-		tag: data.tag,
-		actions: data.actions || [],
-	};
-
-	event.waitUntil(self.registration.showNotification(data.title, options));
-});
-
-/**
- * Message Handler for Communication with Main Thread
- */
+// Message event for communication with main thread
 self.addEventListener("message", (event) => {
 	const { type, data } = event.data;
 
 	switch (type) {
-		case "PREFETCH_BUSINESS":
-			handlePrefetchRequest(data);
-			break;
-
-		case "CLEAR_CACHE":
-			clearSpecificCache(data.cacheType);
-			break;
-
-		case "GET_CACHE_STATS":
-			getCacheStats().then((stats) => {
-				event.ports[0].postMessage(stats);
+		case "PREFETCH_ROUTES":
+			backgroundTasks.addTask(async () => {
+				await prefetchRoutes(data.routes);
 			});
 			break;
 
-		case "UPDATE_CACHE_STRATEGY":
-			updateCachingStrategy(data);
+		case "GET_METRICS":
+			event.ports[0].postMessage(performanceMonitor.getMetrics());
+			break;
+
+		case "CLEAR_CACHE":
+			backgroundTasks.addTask(async () => {
+				await clearAllCaches();
+			});
+			break;
+
+		case "FORCE_UPDATE":
+			self.skipWaiting();
 			break;
 	}
 });
 
-/**
- * Determine caching strategy based on URL
- */
-function getCachingStrategy(url, request) {
-	// API requests
-	if (url.pathname.startsWith("/api/")) {
-		return {
-			type: "network-first",
-			cache: CACHE_CONFIG.api,
-			fallback: "api",
-		};
+// Background sync for offline actions
+self.addEventListener("sync", (event) => {
+	if (event.tag === "background-sync") {
+		event.waitUntil(
+			backgroundTasks.addTask(async () => {
+				// Handle background sync tasks
+				await syncOfflineActions();
+			})
+		);
 	}
-
-	// Business pages
-	if (url.pathname.startsWith("/biz/")) {
-		return {
-			type: "cache-first",
-			cache: CACHE_CONFIG.dynamic,
-			fallback: "business",
-		};
-	}
-
-	// Search pages
-	if (url.pathname.startsWith("/search")) {
-		return {
-			type: "network-first",
-			cache: CACHE_CONFIG.dynamic,
-			fallback: "search",
-		};
-	}
-
-	// Images
-	if (request.destination === "image") {
-		return {
-			type: "cache-first",
-			cache: CACHE_CONFIG.images,
-			fallback: "image",
-		};
-	}
-
-	// Static assets
-	if (url.pathname.startsWith("/_next/") || url.pathname.includes(".css") || url.pathname.includes(".js")) {
-		return {
-			type: "cache-first",
-			cache: CACHE_CONFIG.static,
-			fallback: "static",
-		};
-	}
-
-	// Default strategy for other pages
-	return {
-		type: "network-first",
-		cache: CACHE_CONFIG.dynamic,
-		fallback: "page",
-	};
-}
+});
 
 /**
- * Execute caching strategy
+ * Background prefetching functions
  */
-async function executeStrategy(strategy, request, url) {
-	const { type, cache, fallback } = strategy;
-
-	switch (type) {
-		case "cache-first":
-			return cacheFirstStrategy(request, cache, fallback);
-
-		case "network-first":
-			return networkFirstStrategy(request, cache, fallback);
-
-		case "stale-while-revalidate":
-			return staleWhileRevalidateStrategy(request, cache);
-
-		default:
-			return fetch(request);
-	}
-}
-
-/**
- * Cache-first strategy
- */
-async function cacheFirstStrategy(request, cacheConfig, fallback) {
-	const cache = await caches.open(cacheConfig.name);
-	const cachedResponse = await cache.match(request);
-
-	if (cachedResponse) {
-		// Check if cache entry is still valid
-		const cacheTime = await getCacheTime(cachedResponse);
-		if (Date.now() - cacheTime < cacheConfig.ttl) {
-			return cachedResponse;
-		}
-	}
-
-	// Fetch from network
+async function prefetchCriticalResources() {
 	try {
-		const networkResponse = await fetch(request);
+		const commonRoutes = ["/api/categories", "/api/businesses/featured", "/api/dashboard/user"];
 
-		if (networkResponse.ok) {
-			// Cache the response
-			const responseToCache = networkResponse.clone();
-			await setCacheWithTimestamp(cache, request, responseToCache);
-
-			// Clean up cache if needed
-			await cleanupCache(cacheConfig);
-		}
-
-		return networkResponse;
-	} catch (error) {
-		// Return cached version if available
-		if (cachedResponse) {
-			return cachedResponse;
-		}
-
-		// Return fallback
-		return getFallbackResponse(fallback, request);
-	}
-}
-
-/**
- * Network-first strategy
- */
-async function networkFirstStrategy(request, cacheConfig, fallback) {
-	try {
-		const networkResponse = await fetch(request);
-
-		if (networkResponse.ok) {
-			// Cache the response
-			const cache = await caches.open(cacheConfig.name);
-			const responseToCache = networkResponse.clone();
-			await setCacheWithTimestamp(cache, request, responseToCache);
-
-			// Clean up cache if needed
-			await cleanupCache(cacheConfig);
-		}
-
-		return networkResponse;
-	} catch (error) {
-		// Fall back to cache
-		const cache = await caches.open(cacheConfig.name);
-		const cachedResponse = await cache.match(request);
-
-		if (cachedResponse) {
-			return cachedResponse;
-		}
-
-		// Return fallback
-		return getFallbackResponse(fallback, request);
-	}
-}
-
-/**
- * Stale-while-revalidate strategy
- */
-async function staleWhileRevalidateStrategy(request, cacheConfig) {
-	const cache = await caches.open(cacheConfig.name);
-	const cachedResponse = await cache.match(request);
-
-	// Always try to fetch from network in background
-	const fetchPromise = fetch(request)
-		.then((networkResponse) => {
-			if (networkResponse.ok) {
-				const responseToCache = networkResponse.clone();
-				setCacheWithTimestamp(cache, request, responseToCache);
-			}
-			return networkResponse;
-		})
-		.catch(() => null);
-
-	// Return cached response immediately if available
-	if (cachedResponse) {
-		return cachedResponse;
-	}
-
-	// Wait for network response if no cache
-	return fetchPromise;
-}
-
-/**
- * Handle fetch errors
- */
-async function handleFetchError(request, url) {
-	// Try to find cached version in any cache
-	const cacheNames = await caches.keys();
-
-	for (const cacheName of cacheNames) {
-		const cache = await caches.open(cacheName);
-		const cachedResponse = await cache.match(request);
-		if (cachedResponse) {
-			return cachedResponse;
-		}
-	}
-
-	// Return offline page for navigation requests
-	if (request.mode === "navigate") {
-		const cache = await caches.open(STATIC_CACHE);
-		return cache.match("/offline") || new Response("Offline", { status: 503 });
-	}
-
-	// Return basic error response
-	return new Response("Network Error", { status: 503 });
-}
-
-/**
- * Get fallback response based on request type
- */
-async function getFallbackResponse(fallback, request) {
-	const cache = await caches.open(STATIC_CACHE);
-
-	switch (fallback) {
-		case "business":
-		case "search":
-		case "page":
-			return cache.match("/offline") || new Response("Offline", { status: 503 });
-
-		case "api":
-			return new Response(JSON.stringify({ error: "Offline", cached: true }), {
-				headers: { "Content-Type": "application/json" },
-				status: 503,
-			});
-
-		case "image":
-			return cache.match("/placeholder-image.svg") || new Response("", { status: 503 });
-
-		default:
-			return new Response("Offline", { status: 503 });
-	}
-}
-
-/**
- * Set cache entry with timestamp
- */
-async function setCacheWithTimestamp(cache, request, response) {
-	// Add timestamp header
-	const responseWithTimestamp = new Response(response.body, {
-		status: response.status,
-		statusText: response.statusText,
-		headers: {
-			...Object.fromEntries(response.headers.entries()),
-			"sw-cache-time": Date.now().toString(),
-		},
-	});
-
-	await cache.put(request, responseWithTimestamp);
-}
-
-/**
- * Get cache timestamp
- */
-async function getCacheTime(response) {
-	const cacheTime = response.headers.get("sw-cache-time");
-	return cacheTime ? parseInt(cacheTime, 10) : 0;
-}
-
-/**
- * Clean up cache based on TTL and max entries
- */
-async function cleanupCache(cacheConfig) {
-	const cache = await caches.open(cacheConfig.name);
-	const keys = await cache.keys();
-
-	if (keys.length <= cacheConfig.maxEntries) return;
-
-	// Sort by cache time and remove oldest entries
-	const keyPromises = keys.map(async (key) => {
-		const response = await cache.match(key);
-		const cacheTime = await getCacheTime(response);
-		return { key, cacheTime };
-	});
-
-	const keyData = await Promise.all(keyPromises);
-	keyData.sort((a, b) => a.cacheTime - b.cacheTime);
-
-	// Remove oldest entries
-	const entriesToRemove = keyData.slice(0, keys.length - cacheConfig.maxEntries);
-	await Promise.all(entriesToRemove.map(({ key }) => cache.delete(key)));
-
-	console.log(`[SW] Cleaned up ${entriesToRemove.length} entries from ${cacheConfig.name}`);
-}
-
-/**
- * Clean up old cache versions
- */
-async function cleanupOldCaches() {
-	const cacheNames = await caches.keys();
-	const currentCaches = Object.values(CACHE_CONFIG).map((config) => config.name);
-
-	const oldCaches = cacheNames.filter((name) => !currentCaches.includes(name));
-
-	await Promise.all(oldCaches.map((name) => caches.delete(name)));
-
-	if (oldCaches.length > 0) {
-		console.log(`[SW] Cleaned up ${oldCaches.length} old caches`);
-	}
-}
-
-/**
- * Handle prefetch requests from main thread
- */
-async function handlePrefetchRequest(data) {
-	const { urls, priority = "low" } = data;
-
-	for (const url of urls) {
-		try {
-			const response = await fetch(url);
-			if (response.ok) {
-				// Determine appropriate cache
-				const urlObj = new URL(url);
-				const strategy = getCachingStrategy(urlObj, { destination: "document" });
-				const cache = await caches.open(strategy.cache.name);
-				await setCacheWithTimestamp(cache, new Request(url), response);
-
-				console.log(`[SW] Prefetched: ${url}`);
-			}
-		} catch (error) {
-			console.warn(`[SW] Prefetch failed for ${url}:`, error);
-		}
-	}
-}
-
-/**
- * Perform background prefetching based on user patterns
- */
-async function performBackgroundPrefetch() {
-	try {
-		// Get popular business pages to prefetch
-		const response = await fetch("/api/analytics/popular-pages");
-		if (!response.ok) return;
-
-		const { pages } = await response.json();
-
-		// Prefetch top 10 popular pages
-		const topPages = pages.slice(0, 10);
-		await handlePrefetchRequest({ urls: topPages, priority: "background" });
-
-		console.log(`[SW] Background prefetched ${topPages.length} popular pages`);
-	} catch (error) {
-		console.warn("[SW] Background prefetch failed:", error);
-	}
-}
-
-/**
- * Sync analytics data when online
- */
-async function syncAnalytics() {
-	try {
-		// Get pending analytics from IndexedDB
-		const analytics = await getStoredAnalytics();
-
-		if (analytics.length > 0) {
-			const response = await fetch("/api/analytics/sync", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ events: analytics }),
-			});
-
-			if (response.ok) {
-				await clearStoredAnalytics();
-				console.log(`[SW] Synced ${analytics.length} analytics events`);
-			}
-		}
-	} catch (error) {
-		console.warn("[SW] Analytics sync failed:", error);
-	}
-}
-
-/**
- * Sync favorites when online
- */
-async function syncFavorites() {
-	try {
-		// Get pending favorite changes from IndexedDB
-		const changes = await getStoredFavoriteChanges();
-
-		if (changes.length > 0) {
-			const response = await fetch("/api/user/favorites/sync", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ changes }),
-			});
-
-			if (response.ok) {
-				await clearStoredFavoriteChanges();
-				console.log(`[SW] Synced ${changes.length} favorite changes`);
-			}
-		}
-	} catch (error) {
-		console.warn("[SW] Favorites sync failed:", error);
-	}
-}
-
-/**
- * Get cache statistics
- */
-async function getCacheStats() {
-	const stats = {};
-
-	for (const [key, config] of Object.entries(CACHE_CONFIG)) {
-		try {
-			const cache = await caches.open(config.name);
-			const keys = await cache.keys();
-
-			let totalSize = 0;
-			for (const request of keys) {
-				const response = await cache.match(request);
-				if (response && response.headers.get("content-length")) {
-					totalSize += parseInt(response.headers.get("content-length"), 10);
+		for (const route of commonRoutes) {
+			try {
+				const response = await fetch(route);
+				if (response.ok) {
+					await cacheManager.put(CACHE_NAMES.API, route, response);
 				}
+			} catch (error) {
+				// Ignore individual failures
 			}
+		}
+	} catch (error) {
+		performanceMonitor.recordError(error);
+	}
+}
 
-			stats[key] = {
-				entries: keys.length,
-				maxEntries: config.maxEntries,
-				estimatedSize: totalSize,
-				ttl: config.ttl,
-			};
+async function prefetchRoutes(routes) {
+	for (const route of routes) {
+		try {
+			const response = await fetch(route);
+			if (response.ok) {
+				await cacheManager.put(CACHE_NAMES.DYNAMIC, route, response);
+			}
 		} catch (error) {
-			stats[key] = { error: error.message };
+			// Ignore failures in background prefetch
 		}
 	}
-
-	return stats;
 }
 
-/**
- * Clear specific cache type
- */
-async function clearSpecificCache(cacheType) {
-	const config = CACHE_CONFIG[cacheType];
-	if (config) {
-		await caches.delete(config.name);
-		console.log(`[SW] Cleared ${cacheType} cache`);
+async function clearAllCaches() {
+	try {
+		const cacheNames = await caches.keys();
+		await Promise.all(cacheNames.map((name) => caches.delete(name)));
+	} catch (error) {
+		performanceMonitor.recordError(error);
 	}
 }
 
-/**
- * Update caching strategy (for A/B testing)
- */
-function updateCachingStrategy(data) {
-	const { route, strategy } = data;
-	CACHING_STRATEGIES[route] = strategy;
-	console.log(`[SW] Updated caching strategy for ${route}: ${strategy}`);
+async function syncOfflineActions() {
+	// Implementation for syncing offline actions when back online
+	try {
+		// Check if online
+		if (!navigator.onLine) return;
+
+		// Sync any queued offline actions
+		// This would be specific to your application's needs
+	} catch (error) {
+		performanceMonitor.recordError(error);
+	}
 }
 
-// IndexedDB utilities for offline data storage
-async function getStoredAnalytics() {
-	// Implement IndexedDB logic for analytics storage
-	return [];
-}
+// Periodic cleanup
+setInterval(() => {
+  backgroundTasks.addTask(async () => {
+    await cacheManager.cleanup();
+  });
+}, 60000); // Every minute
 
-async function clearStoredAnalytics() {
-	// Implement IndexedDB logic for clearing analytics
-}
-
-async function getStoredFavoriteChanges() {
-	// Implement IndexedDB logic for favorite changes
-	return [];
-}
-
-async function clearStoredFavoriteChanges() {
-	// Implement IndexedDB logic for clearing favorite changes
-}
-
-console.log("[SW] Advanced service worker loaded successfully");
+console.log("Service Worker script loaded");

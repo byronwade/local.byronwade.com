@@ -221,7 +221,7 @@ function VerifyEmailContent() {
 							<div>
 								<h2 className="text-xl font-semibold">Verify Your Email</h2>
 								<p className="text-sm text-muted-foreground mt-2">
-									We've sent a verification email to <strong>{user?.email}</strong>. Please check your inbox and click the verification link.
+									We&apos;ve sent a verification email to <strong>{user?.email}</strong>. Please check your inbox and click the verification link.
 								</p>
 							</div>
 
@@ -245,7 +245,7 @@ function VerifyEmailContent() {
 								</div>
 
 								<div className="pt-4 border-t">
-									<p className="text-xs text-muted-foreground mb-3">Didn't receive the email? Check your spam folder or:</p>
+									<p className="text-xs text-muted-foreground mb-3">Didn&apos;t receive the email? Check your spam folder or:</p>
 									<Button variant="outline" onClick={handleResendVerification} className="w-full">
 										Resend Verification Email
 									</Button>

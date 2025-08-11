@@ -5,7 +5,7 @@ import { Button } from "@components/ui/button";
 import { Card, CardHeader, CardTitle } from "@components/ui/card";
 import { Badge } from "@components/ui/badge";
 import { MapPin, TrendingUp } from "lucide-react";
-import SearchBarHeader from "@components/shared/searchBox/search-bar-header";
+import { SearchBarUnified as SearchBarHeader } from "@components/shared/searchBox";
 
 export default function InitialSearch() {
 	const popularSearches = ["Restaurants", "Plumbers", "Hair Salons", "Auto Repair", "Dentists", "Coffee Shops", "Gyms", "Pet Stores"];

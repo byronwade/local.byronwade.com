@@ -245,11 +245,25 @@ export class SEOPerformanceOptimizer {
 	 * Private: Generate cache key for SEO data
 	 */
 	_generateCacheKey(pageConfig, options) {
-		const baseKey = `${pageConfig.type}_${JSON.stringify(pageConfig.data)}`;
-		const optionsKey = JSON.stringify(options);
-		return `seo_${btoa(baseKey + optionsKey)
-			.replace(/[^a-zA-Z0-9]/g, "")
-			.substring(0, 50)}`;
+    const baseKey = `${pageConfig.type}_${JSON.stringify(pageConfig.data || {})}`;
+	const optionsKey = JSON.stringify(options || {});
+
+	// UTF-8 safe base64 encoding (Node and browser compatible)
+	let encoded = "";
+	try {
+		if (typeof Buffer !== "undefined") {
+			encoded = Buffer.from(baseKey + optionsKey, "utf-8").toString("base64");
+		} else if (typeof btoa === "function") {
+			// Handle Unicode for btoa
+			encoded = btoa(unescape(encodeURIComponent(baseKey + optionsKey)));
+		} else {
+			encoded = baseKey + optionsKey;
+		}
+	} catch (_) {
+		encoded = baseKey + optionsKey;
+	}
+
+	return `seo_${encoded.replace(/[^a-zA-Z0-9]/g, "").substring(0, 50)}`;
 	}
 
 	/**

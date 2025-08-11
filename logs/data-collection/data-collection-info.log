@@ -1,1 +1,0 @@
-{"timestamp":"2025-08-03T04:11:02.550Z","level":"INFO","message":"Received SIGINT, shutting down gracefully","pid":54116,"memory":{"rss":41320448,"heapTotal":22200320,"heapUsed":20312656,"external":3672437,"arrayBuffers":126648},"uptime":306.530092333}

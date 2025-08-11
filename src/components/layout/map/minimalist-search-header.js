@@ -43,78 +43,78 @@ const MinimalistSearchHeader = ({ resultsCount = 0, openCount = 0, searchQuery =
 
 	return (
 		<div className={`bg-white dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-800 ${className}`}>
-			<div className="px-4 py-3">
-				{/* Top Row - Results Count and Search Info */}
-				<div className="flex items-center justify-between mb-3">
+			<div className="px-3 py-2.5">
+				{/* Top Row - Results Count and Search Info - More Compact */}
+				<div className="flex items-center justify-between mb-2">
 					<div className="flex-1 min-w-0">
-						<div className="flex items-center gap-3">
-							{/* Results Count */}
-							<h2 className="text-lg font-semibold text-gray-900 dark:text-white">{formatResultsText()}</h2>
+						<div className="flex items-center gap-2.5">
+							{/* Results Count - Smaller */}
+							<h2 className="text-base font-semibold text-gray-900 dark:text-white">{formatResultsText()}</h2>
 
-							{/* Open Count Badge */}
+							{/* Open Count Badge - More Compact */}
 							{!loading && resultsCount > 0 && (
-								<Badge variant="outline" className="text-emerald-600 border-emerald-200 bg-emerald-50 dark:text-emerald-400 dark:border-emerald-800 dark:bg-emerald-950/30">
-									<div className="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-1.5" />
+								<Badge variant="outline" className="text-emerald-600 border-emerald-200 bg-emerald-50 dark:text-emerald-400 dark:border-emerald-800 dark:bg-emerald-950/30 px-1.5 py-0.5 text-xs">
+									<div className="w-1 h-1 bg-emerald-500 rounded-full mr-1" />
 									{openCount} open
 								</Badge>
 							)}
 						</div>
 
-						{/* Search Query */}
-						{formatSearchText() && <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 truncate">{formatSearchText()}</p>}
+						{/* Search Query - More Compact */}
+						{formatSearchText() && <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 truncate">{formatSearchText()}</p>}
 					</div>
 				</div>
 
-				{/* Bottom Row - Controls */}
+				{/* Bottom Row - Controls - More Compact */}
 				<div className="flex items-center justify-between">
-					{/* Left Side - View Toggle */}
-					<div className="flex items-center gap-2">
+					{/* Left Side - View Toggle - More Compact */}
+					<div className="flex items-center gap-1.5">
 						{onMapToggle && (
-							<Button variant={showMap ? "default" : "outline"} size="sm" onClick={onMapToggle} className="h-9 px-3 text-sm">
+							<Button variant={showMap ? "default" : "outline"} size="sm" onClick={onMapToggle} className="h-7 px-3 text-xs">
 								{showMap ? (
 									<>
-										<Map className="w-4 h-4 mr-2" />
-										Map View
+										<Map className="w-3 h-3 mr-1.5" />
+										Map
 									</>
 								) : (
 									<>
-										<List className="w-4 h-4 mr-2" />
-										List View
+										<List className="w-3 h-3 mr-1.5" />
+										List
 									</>
 								)}
 							</Button>
 						)}
 
 						{onAIClick && (
-							<Button variant="outline" size="sm" onClick={onAIClick} className="h-9 px-3 text-sm bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-950/50">
-								<Bot className="w-4 h-4 mr-2" />
-								AI Assistant
+							<Button variant="outline" size="sm" onClick={onAIClick} className="h-7 px-3 text-xs bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-950/50">
+								<Bot className="w-3 h-3 mr-1.5" />
+								AI
 							</Button>
 						)}
 					</div>
 
-					{/* Right Side - Filter and Sort */}
-					<div className="flex items-center gap-2">
-						{/* Filter Button */}
+					{/* Right Side - Filter and Sort - More Compact */}
+					<div className="flex items-center gap-1.5">
+						{/* Filter Button - More Compact */}
 						{onFilterClick && (
-							<Button variant="outline" size="sm" onClick={onFilterClick} className="h-9 px-3 text-sm">
-								<Filter className="w-4 h-4 mr-2" />
+							<Button variant="outline" size="sm" onClick={onFilterClick} className="h-7 px-3 text-xs">
+								<Filter className="w-3 h-3 mr-1.5" />
 								Filters
 							</Button>
 						)}
 
-						{/* Sort Dropdown */}
+						{/* Sort Dropdown - More Compact */}
 						{onSortChange && (
 							<DropdownMenu open={showSort} onOpenChange={setShowSort}>
 								<DropdownMenuTrigger asChild>
-									<Button variant="outline" size="sm" className="h-9 px-3 text-sm min-w-[120px] justify-between">
+									<Button variant="outline" size="sm" className="h-7 px-3 text-xs min-w-[100px] justify-between">
 										<span className="truncate">{sortOptions.find((option) => option.value === sortBy)?.label || "Sort"}</span>
-										<ChevronDown className="w-4 h-4 ml-2 flex-shrink-0" />
+										<ChevronDown className="w-3 h-3 ml-1.5 flex-shrink-0" />
 									</Button>
 								</DropdownMenuTrigger>
-								<DropdownMenuContent align="end" className="w-48">
+								<DropdownMenuContent align="end" className="w-40">
 									{sortOptions.map((option) => (
-										<DropdownMenuItem key={option.value} onClick={() => handleSortSelect(option.value)} className="cursor-pointer">
+										<DropdownMenuItem key={option.value} onClick={() => handleSortSelect(option.value)} className="cursor-pointer text-sm py-2">
 											{option.label}
 										</DropdownMenuItem>
 									))}

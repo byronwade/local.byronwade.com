@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useCallback, useMemo, Suspense, useState } from "react";
 import { Button } from "@components/ui/button";
-import { Minus, Plus, MapPin, Search, Target } from "lucide-react";
+import { Minus, Plus, MapPin, Search, Target, ExternalLink, RefreshCw } from "lucide-react";
 import BusinessInfoPanel from "@components/site/map/business-info-panel";
 import FullScreenMapSkeleton from "@components/site/map/full-screen-map-skeleton";
 import { useMapStore } from "@store/map";
@@ -404,18 +404,45 @@ const MapContainer = React.forwardRef((props, ref) => {
 	// Show fallback UI when Mapbox token is missing
 	if (!MAPBOX_TOKEN) {
 		return (
-			<div className="map-container relative w-full h-full overflow-hidden bg-gray-100 dark:bg-gray-800 flex items-center justify-center" ref={containerRef}>
-				<div className="text-center p-8 max-w-md">
-					<MapPin className="mx-auto h-16 w-16 text-gray-400 mb-4" />
-					<h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Map Configuration Required</h3>
-					<p className="text-gray-600 dark:text-gray-400 mb-4">To display the interactive map, please add your Mapbox access token to the environment configuration.</p>
-					<div className="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg text-sm font-mono text-left">
-						<div className="text-gray-500 dark:text-gray-400 mb-1">Add to .env.local:</div>
-						<div className="text-gray-800 dark:text-gray-200">NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=your_token_here</div>
+			<div className="map-container relative w-full h-full overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-800 dark:to-gray-900 flex items-center justify-center" ref={containerRef}>
+				{/* Background Pattern */}
+				<div className="absolute inset-0 opacity-5 dark:opacity-10">
+					<div className="grid grid-cols-8 h-full">
+						{Array.from({ length: 64 }).map((_, i) => (
+							<div key={i} className="border border-gray-300 dark:border-gray-600"></div>
+						))}
 					</div>
-					<Button variant="outline" className="mt-4" onClick={() => window.open("https://account.mapbox.com/access-tokens/", "_blank")}>
-						Get Mapbox Token
-					</Button>
+				</div>
+
+				<div className="text-center p-8 max-w-lg relative z-10">
+					<div className="mb-6">
+						<div className="relative mb-4">
+							<MapPin className="w-16 h-16 text-blue-500 mx-auto" />
+							<div className="absolute -top-1 -right-1 w-4 h-4 bg-orange-500 rounded-full flex items-center justify-center">
+								<span className="text-white text-xs">!</span>
+							</div>
+						</div>
+						<h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Map Display Unavailable</h3>
+						<p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed mb-4">The interactive map requires a Mapbox access token. You can still view businesses in list format.</p>
+					</div>
+
+					<div className="bg-white dark:bg-gray-800 rounded-lg p-4 mb-6 border border-gray-200 dark:border-gray-700">
+						<div className="text-sm text-gray-700 dark:text-gray-300 space-y-2">
+							<p className="font-medium text-left">For developers:</p>
+							<code className="block bg-gray-100 dark:bg-gray-700 p-2 rounded text-xs text-left">NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=your_token_here</code>
+						</div>
+					</div>
+
+					<div className="flex gap-3 justify-center">
+						<Button variant="outline" onClick={() => window.open("https://account.mapbox.com/access-tokens/", "_blank")} className="text-sm">
+							<ExternalLink className="w-4 h-4 mr-2" />
+							Get Token
+						</Button>
+						<Button onClick={() => window.location.reload()} className="text-sm">
+							<RefreshCw className="w-4 h-4 mr-2" />
+							Retry
+						</Button>
+					</div>
 				</div>
 			</div>
 		);

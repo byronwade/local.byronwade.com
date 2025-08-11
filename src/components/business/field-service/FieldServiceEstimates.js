@@ -739,7 +739,7 @@ export default function FieldServiceEstimates({
                         <SelectItem value="all">All Values</SelectItem>
                         <SelectItem value="high">High Value ($10,000+)</SelectItem>
                         <SelectItem value="medium">Medium Value ($2,000-$9,999)</SelectItem>
-                        <SelectItem value="low">Low Value (<$2,000)</SelectItem>
+                        <SelectItem value="low">Low Value (&lt;$2,000)</SelectItem>
                       </SelectContent>
                     </Select>
 

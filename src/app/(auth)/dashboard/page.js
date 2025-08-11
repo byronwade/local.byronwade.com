@@ -75,34 +75,43 @@ function DashboardRouter() {
  * Determine the correct dashboard path based on user data
  */
 function getDashboardPath(user) {
-	// Check user metadata/role/type to determine dashboard
-	const userRole = user?.user_metadata?.role || user?.role || "user";
-	const accountType = user?.user_metadata?.account_type || user?.account_type;
+	// Use the new industry configuration system
+	const { getDashboardRoute } = require("../_shared/services/industryConfig");
 
-	// Admin users go to admin dashboard
-	if (userRole === "admin" || userRole === "super_admin") {
-		return "/dashboard/admin";
+	try {
+		return getDashboardRoute(user);
+	} catch (error) {
+		console.error("Error determining dashboard route:", error);
+
+		// Fallback to legacy logic
+		const userRole = user?.user_metadata?.role || user?.role || "user";
+		const accountType = user?.user_metadata?.account_type || user?.account_type;
+
+		// Admin users go to admin dashboard
+		if (userRole === "admin" || userRole === "super_admin") {
+			return "/dashboard/admin";
+		}
+
+		// LocalHub operators go to LocalHub dashboard
+		if (userRole === "localhub_operator" || accountType === "localhub") {
+			return "/dashboard/localhub";
+		}
+
+		// Business owners → split between Field Management and Business Admin
+		if (userRole === "business_owner" || accountType === "business" || userRole === "business_manager") {
+			try {
+				const pref = typeof window !== "undefined" ? window.sessionStorage.getItem("prefersFieldManagement") : null;
+				if (pref === "true") return "/dashboard/field-management";
+			} catch {}
+			return "/dashboard/business";
+		}
+
+		// Field service providers
+		if (accountType === "field_service" || userRole === "field_service") {
+			return "/dashboard/field-management";
+		}
+
+		// Default to general business dashboard
+		return "/dashboard/business";
 	}
-
-	// LocalHub operators go to LocalHub dashboard
-	if (userRole === "localhub_operator" || accountType === "localhub") {
-		return "/dashboard/localhub";
-	}
-
-	// Business owners → split between Field Management and Business Admin
-	if (userRole === "business_owner" || accountType === "business" || userRole === "business_manager") {
-		try {
-			const pref = typeof window !== "undefined" ? window.sessionStorage.getItem("prefersFieldManagement") : null;
-			if (pref === "true") return "/dashboard/field-management";
-		} catch {}
-		return "/dashboard/business-admin";
-	}
-
-	// Field service providers
-	if (accountType === "field_service" || userRole === "field_service") {
-		return "/dashboard/field-management";
-	}
-
-	// Default to academy dashboard for regular users (learning platform)
-	return "/dashboard/academy";
 }

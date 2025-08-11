@@ -16,12 +16,12 @@ const LocationDropdown = ({ className, size = "default" }) => {
 	const inputRef = useRef(null);
 	const { setActiveBusinessId } = useBusinessStore();
 	const { location, setLocation, fetchCurrentLocation, fetchAutocompleteSuggestions, fetchPlaceDetails, fetchCoordinatesFromCityAndState, fetchCityAndStateFromCoordinates, activeDropdown, setActiveDropdown } = useSearchStore();
-	const { centerOn } = useMapStore();
+	const { centerOn, isMapAvailable } = useMapStore();
 
 	// Size variants for different contexts
 	const sizeVariants = {
 		small: {
-			button: "h-6 text-xs",
+			button: "h-6 text-xs px-2 rounded-md",
 			icon: "w-3 h-3",
 			text: "max-w-20 sm:max-w-24",
 			dropdown: "w-64",
@@ -29,7 +29,7 @@ const LocationDropdown = ({ className, size = "default" }) => {
 			content: "p-3",
 		},
 		default: {
-			button: "h-8 text-sm",
+			button: "h-7 text-sm px-3 rounded-lg",
 			icon: "w-4 h-4",
 			text: "max-w-24 sm:max-w-32",
 			dropdown: "w-72",
@@ -37,7 +37,7 @@ const LocationDropdown = ({ className, size = "default" }) => {
 			content: "p-4",
 		},
 		large: {
-			button: "h-10 text-base",
+			button: "h-10 text-base px-4 rounded-lg",
 			icon: "w-5 h-5",
 			text: "max-w-28 sm:max-w-36",
 			dropdown: "w-80",
@@ -55,9 +55,11 @@ const LocationDropdown = ({ className, size = "default" }) => {
 				setLocation({ lat, lng, value: locationValue, city: locationValue, error: false });
 				setActiveBusinessId(null);
 
-				// Validate coordinates before centering
+				// Validate coordinates before centering (only if map is available)
 				if (typeof lat === "number" && typeof lng === "number" && !isNaN(lat) && !isNaN(lng) && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
-					centerOn(lat, lng);
+					if (isMapAvailable()) {
+						centerOn(lat, lng);
+					}
 				} else {
 					console.error("Invalid coordinates from fetchCoordinatesFromCityAndState:", { lat, lng });
 				}
@@ -129,7 +131,9 @@ const LocationDropdown = ({ className, size = "default" }) => {
 					});
 					setActiveBusinessId(null);
 					updateURL({ location: locationString });
-					centerOn(lat, lng);
+					if (isMapAvailable()) {
+						centerOn(lat, lng);
+					}
 				} catch (reverseGeocodeError) {
 					console.error("Reverse geocoding failed:", reverseGeocodeError);
 					// Still set the location with coordinates, just use a generic location name
@@ -144,7 +148,9 @@ const LocationDropdown = ({ className, size = "default" }) => {
 					});
 					setActiveBusinessId(null);
 					updateURL({ location: fallbackLocation });
-					centerOn(lat, lng);
+					if (isMapAvailable()) {
+						centerOn(lat, lng);
+					}
 				}
 			} else {
 				throw new Error("Invalid coordinates received");
@@ -217,7 +223,9 @@ const LocationDropdown = ({ className, size = "default" }) => {
 			if (typeof lat === "number" && typeof lng === "number" && !isNaN(lat) && !isNaN(lng) && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
 				setLocation({ lat, lng, value: location.description, city: location.description, error: false });
 				updateURL({ location: location.description });
-				centerOn(lat, lng);
+				if (isMapAvailable()) {
+					centerOn(lat, lng);
+				}
 			} else {
 				console.error("Invalid coordinates from place details:", { lat, lng });
 				throw new Error("Invalid coordinates from place details");
@@ -266,30 +274,30 @@ const LocationDropdown = ({ className, size = "default" }) => {
 					setActiveDropdown(open ? "location" : null);
 				}}
 			>
-				{/* Main Button Container */}
-				<div className={`flex items-center ${currentSize.button} border rounded-md transition-all duration-200 bg-background border-border hover:bg-accent`}>
+				{/* Main Button Container - Modern Design */}
+				<div className={`flex items-center ${currentSize.button} transition-all duration-200 bg-slate-100/80 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 hover:bg-slate-200/80 dark:hover:bg-slate-700/80 hover:text-slate-700 dark:hover:text-slate-300`}>
 					{/* Status Icon Section - only show when there's an icon */}
 					{getStatusIcon() && <div className="flex items-center justify-center px-2">{getStatusIcon()}</div>}
 
 					{/* Dropdown Trigger Section */}
 					<DropdownMenuTrigger asChild>
-						<button className={`flex items-center gap-1 py-1 font-medium focus:outline-none focus-visible:ring-1 focus-visible:ring-ring flex-1 transition-colors ${getStatusIcon() ? "px-1" : "px-2"} ${currentSize.button}`} type="button" title={location.error ? location.errorMessage || "Click to set your location" : location.city ? `Current location: ${typeof location.city === "string" ? location.city : location.value || "Unknown"}` : "Click here to set your location"}>
-							<MapPin className={`${currentSize.icon} text-muted-foreground`} />
-							<span className={`truncate ${currentSize.text} text-foreground`}>{typeof location.city === "string" ? location.city : typeof location.value === "string" ? location.value : "Set Location"}</span>
-							<ChevronDown className={`${currentSize.icon} flex-shrink-0 text-muted-foreground`} />
+						<button className={`flex items-center gap-1.5 py-1 font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 flex-1 transition-colors ${getStatusIcon() ? "px-1" : "px-2"}`} type="button" title={location.error ? location.errorMessage || "Click to set your location" : location.city ? `Current location: ${typeof location.city === "string" ? location.city : location.value || "Unknown"}` : "Click here to set your location"}>
+							<MapPin className={`${currentSize.icon} text-slate-500 dark:text-slate-400`} />
+							<span className={`truncate ${currentSize.text} text-slate-700 dark:text-slate-300 font-medium`}>{typeof location.city === "string" ? location.city : typeof location.value === "string" ? location.value : "Location"}</span>
+							<ChevronDown className={`${currentSize.icon} flex-shrink-0 text-slate-400 dark:text-slate-500`} />
 						</button>
 					</DropdownMenuTrigger>
 
 					{/* Clear Button Section */}
 					{(typeof location.city === "string" && location.city) || (typeof location.value === "string" && location.value) ? (
-						<button onClick={clearLocation} className="flex items-center justify-center w-5 h-full border-l border-neutral-700 dark:border-neutral-700 hover:bg-destructive/10 hover:text-destructive text-muted-foreground transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-ring" title="Clear location" type="button">
+						<button onClick={clearLocation} className="flex items-center justify-center w-6 h-full border-l border-slate-300/60 dark:border-slate-600/60 hover:bg-red-100/80 dark:hover:bg-red-900/30 hover:text-red-500 dark:hover:text-red-400 text-slate-400 dark:text-slate-500 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" title="Clear location" type="button">
 							<X className="w-3 h-3" />
 						</button>
 					) : null}
 				</div>
 
 				{/* Dropdown Content */}
-				<DropdownMenuContent className={`${currentSize.dropdown} bg-background border border-neutral-700 dark:border-neutral-700 rounded-lg shadow-lg z-[100]`} side="top" align="center" sideOffset={12} avoidCollisions={true} collisionPadding={20}>
+				<DropdownMenuContent className={`${currentSize.dropdown} bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl z-[9999]`} side="bottom" align="center" sideOffset={8} avoidCollisions={true} collisionPadding={20}>
 					{/* Current Location Button */}
 					<DropdownMenuItem asChild>
 						<Button onClick={handleGetLocationClick} disabled={location.loading} variant="ghost" className="w-full justify-start gap-3 h-12 hover:bg-accent hover:text-accent-foreground">

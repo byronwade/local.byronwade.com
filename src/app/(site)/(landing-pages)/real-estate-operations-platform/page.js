@@ -9,14 +9,21 @@ export const metadata = {
 		type: "website",
 		url: "https://thorbis.com/real-estate-operations-platform",
 		siteName: "Thorbis",
-		images: [{ url: "https://thorbis.com/og-real-estate.jpg", width: 1200, height: 630, alt: "Thorbis Real Estate Operations Platform" }],
+		images: [
+			{
+				url: `https://thorbis.com/opengraph-image?title=${encodeURIComponent("Real Estate Operations Platform")}&description=${encodeURIComponent("Listings, showings, offers, and agent coordination.")}`,
+				width: 1200,
+				height: 630,
+				alt: "Thorbis Real Estate Operations Platform",
+			},
+		],
 		locale: "en_US",
 	},
 	twitter: {
 		card: "summary_large_image",
 		title: "Real Estate Operations Platform – Close More Deals",
 		description: "Listings, showings, offers, and agent coordination.",
-		images: ["https://thorbis.com/og-real-estate.jpg"],
+		images: [`https://thorbis.com/twitter-image?title=${encodeURIComponent("Real Estate Operations Platform")}`],
 		creator: "@thorbis",
 		site: "@thorbis",
 	},

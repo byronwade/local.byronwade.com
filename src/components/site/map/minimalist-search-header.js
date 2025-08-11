@@ -42,85 +42,180 @@ const MinimalistSearchHeader = ({ resultsCount = 0, openCount = 0, searchQuery =
 	};
 
 	return (
-		<div className={`bg-white dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-800 ${className}`}>
-			<div className="px-4 py-3">
-				{/* Top Row - Results Count and Search Info */}
-				<div className="flex items-center justify-between mb-3">
-					<div className="flex-1 min-w-0">
-						<div className="flex items-center gap-3">
-							{/* Results Count */}
-							<h2 className="text-lg font-semibold text-gray-900 dark:text-white">{formatResultsText()}</h2>
-
-							{/* Open Count Badge */}
-							{!loading && resultsCount > 0 && (
-								<Badge variant="outline" className="text-emerald-600 border-emerald-200 bg-emerald-50 dark:text-emerald-400 dark:border-emerald-800 dark:bg-emerald-950/30">
-									<div className="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-1.5" />
-									{openCount} open
-								</Badge>
-							)}
-						</div>
-
-						{/* Search Query */}
-						{formatSearchText() && <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 truncate">{formatSearchText()}</p>}
+		<div className={`bg-white/95 dark:bg-neutral-900/95 backdrop-blur-sm border-b border-neutral-200/80 dark:border-neutral-800/80 sticky top-0 z-20 ${className}`}>
+			{/* Compact Header Layout */}
+			<div className="px-3 py-2.5">
+				{/* Mobile Layout (sm and below) */}
+				<div className="sm:hidden space-y-2">
+					{/* Mobile: Results Count */}
+					<div className="flex items-center justify-between">
+						<h1 className="text-base font-bold tracking-tight text-gray-900 dark:text-white">{formatResultsText()}</h1>
+						{!loading && resultsCount > 0 && (
+							<Badge className="bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800 px-1.5 py-0.5 rounded-full font-medium text-xs">
+								<div className="w-1 h-1 bg-emerald-500 rounded-full mr-1 animate-pulse" />
+								{openCount} open
+							</Badge>
+						)}
 					</div>
-				</div>
 
-				{/* Bottom Row - Controls */}
-				<div className="flex items-center justify-between">
-					{/* Left Side - View Toggle */}
-					<div className="flex items-center gap-2">
+					{/* Mobile: Search Context - More Compact */}
+					{formatSearchText() && (
+						<div className="text-xs text-gray-600 dark:text-gray-400">
+							<span className="font-medium">Searching: </span>
+							<span className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 rounded text-xs font-mono">{formatSearchText()}</span>
+						</div>
+					)}
+
+					{/* Mobile: Action Buttons - More Compact */}
+					<div className="flex flex-wrap gap-1.5">
+						{/* Mobile Map/List Toggle - More Compact */}
 						{onMapToggle && (
-							<Button variant={showMap ? "default" : "outline"} size="sm" onClick={onMapToggle} className="h-9 px-3 text-sm">
+							<Button variant={showMap ? "default" : "outline"} size="sm" onClick={onMapToggle} className="flex-1 min-w-0 h-8 text-xs font-medium transition-all duration-200 active:scale-95">
 								{showMap ? (
 									<>
-										<Map className="w-4 h-4 mr-2" />
-										Map View
+										<Map className="w-3 h-3 mr-1.5 flex-shrink-0" />
+										<span className="truncate">Map</span>
 									</>
 								) : (
 									<>
-										<List className="w-4 h-4 mr-2" />
-										List View
+										<List className="w-3 h-3 mr-1.5 flex-shrink-0" />
+										<span className="truncate">List</span>
 									</>
 								)}
 							</Button>
 						)}
 
+						{/* Mobile Filter Button - More Compact */}
+						{onFilterClick && (
+							<Button variant="outline" size="sm" onClick={onFilterClick} className="flex-1 min-w-0 h-8 text-xs font-medium border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-200 active:scale-95">
+								<Filter className="w-3 h-3 mr-1.5 flex-shrink-0" />
+								<span className="truncate">Filters</span>
+							</Button>
+						)}
+
+						{/* Mobile AI Button - More Compact */}
 						{onAIClick && (
-							<Button variant="outline" size="sm" onClick={onAIClick} className="h-9 px-3 text-sm bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-950/50">
-								<Bot className="w-4 h-4 mr-2" />
-								AI Assistant
+							<Button variant="outline" size="sm" onClick={onAIClick} className="flex-1 min-w-0 h-8 text-xs font-medium bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/50 dark:to-indigo-950/50 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800 hover:from-blue-100 hover:to-indigo-100 dark:hover:from-blue-950 dark:hover:to-indigo-950 transition-all duration-200 active:scale-95">
+								<Bot className="w-3 h-3 mr-1.5 flex-shrink-0" />
+								<span className="truncate">AI</span>
 							</Button>
 						)}
 					</div>
 
-					{/* Right Side - Filter and Sort */}
-					<div className="flex items-center gap-2">
-						{/* Filter Button */}
-						{onFilterClick && (
-							<Button variant="outline" size="sm" onClick={onFilterClick} className="h-9 px-3 text-sm">
-								<Filter className="w-4 h-4 mr-2" />
-								Filters
-							</Button>
-						)}
+					{/* Mobile: Sort Dropdown - Full Width */}
+					{onSortChange && (
+						<DropdownMenu open={showSort} onOpenChange={setShowSort}>
+							<DropdownMenuTrigger asChild>
+								<Button variant="outline" size="sm" className="w-full h-10 text-sm font-medium justify-between border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-200 active:scale-95">
+									<div className="flex items-center">
+										<span className="font-normal text-gray-500 dark:text-gray-400 mr-2">Sort:</span>
+										<span className="font-medium">{sortOptions.find((option) => option.value === sortBy)?.label || "Relevance"}</span>
+									</div>
+									<ChevronDown className="w-4 h-4 flex-shrink-0 transition-transform duration-200" />
+								</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent align="center" className="w-[calc(100vw-2rem)] max-w-sm shadow-lg border-gray-200 dark:border-gray-700">
+								{sortOptions.map((option) => (
+									<DropdownMenuItem key={option.value} onClick={() => handleSortSelect(option.value)} className="cursor-pointer py-3 px-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-150 active:bg-gray-100 dark:active:bg-gray-700">
+										<span className="font-medium text-base">{option.label}</span>
+									</DropdownMenuItem>
+								))}
+							</DropdownMenuContent>
+						</DropdownMenu>
+					)}
+				</div>
 
-						{/* Sort Dropdown */}
-						{onSortChange && (
-							<DropdownMenu open={showSort} onOpenChange={setShowSort}>
-								<DropdownMenuTrigger asChild>
-									<Button variant="outline" size="sm" className="h-9 px-3 text-sm min-w-[120px] justify-between">
-										<span className="truncate">{sortOptions.find((option) => option.value === sortBy)?.label || "Sort"}</span>
-										<ChevronDown className="w-4 h-4 ml-2 flex-shrink-0" />
+				{/* Desktop/Tablet Layout (sm and up) - More Compact */}
+				<div className="hidden sm:block">
+					<div className="space-y-2.5">
+						{/* Desktop: Results Summary - Compact */}
+						<div className="flex items-start justify-between">
+							<div className="flex-1 min-w-0 space-y-1.5">
+								{/* Desktop: Main Results Count - Smaller */}
+								<div className="flex items-center gap-3">
+									<h1 className="text-lg font-bold tracking-tight text-gray-900 dark:text-white leading-tight">{formatResultsText()}</h1>
+
+									{/* Desktop: Status Badges - More Compact */}
+									{!loading && resultsCount > 0 && (
+										<div className="flex items-center gap-2">
+											<Badge className="bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800 px-2 py-0.5 rounded-full font-medium text-xs">
+												<div className="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-1.5 animate-pulse" />
+												{openCount} open
+											</Badge>
+										</div>
+									)}
+								</div>
+
+								{/* Desktop: Search Context - More Compact */}
+								{formatSearchText() && (
+									<div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
+										<span className="font-medium">Searching:</span>
+										<span className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 rounded font-mono text-xs">{formatSearchText()}</span>
+									</div>
+								)}
+							</div>
+						</div>
+
+						{/* Desktop: Action Bar - More Compact */}
+						<div className="flex items-center justify-between pt-1.5 border-t border-gray-100 dark:border-gray-800">
+							{/* Desktop: Primary Actions - More Compact */}
+							<div className="flex items-center gap-2">
+								{onMapToggle && (
+									<div className="bg-gray-50 dark:bg-gray-800/50 rounded-md p-0.5">
+										<Button variant={showMap ? "default" : "ghost"} size="sm" onClick={onMapToggle} className={`h-7 px-3 text-xs font-medium transition-all duration-200 ${showMap ? "bg-blue-600 hover:bg-blue-700 text-white" : "hover:bg-gray-100 dark:hover:bg-gray-700"}`}>
+											{showMap ? (
+												<>
+													<Map className="w-3 h-3 mr-1.5" />
+													Map
+												</>
+											) : (
+												<>
+													<List className="w-3 h-3 mr-1.5" />
+													List
+												</>
+											)}
+										</Button>
+									</div>
+								)}
+
+								{onAIClick && (
+									<Button variant="outline" size="sm" onClick={onAIClick} className="h-7 px-3 text-xs font-medium bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/50 dark:to-indigo-950/50 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800 hover:from-blue-100 hover:to-indigo-100 dark:hover:from-blue-950 dark:hover:to-indigo-950 transition-all duration-200">
+										<Bot className="w-3 h-3 mr-1.5" />
+										AI
 									</Button>
-								</DropdownMenuTrigger>
-								<DropdownMenuContent align="end" className="w-48">
-									{sortOptions.map((option) => (
-										<DropdownMenuItem key={option.value} onClick={() => handleSortSelect(option.value)} className="cursor-pointer">
-											{option.label}
-										</DropdownMenuItem>
-									))}
-								</DropdownMenuContent>
-							</DropdownMenu>
-						)}
+								)}
+							</div>
+
+							{/* Desktop: Secondary Actions - More Compact */}
+							<div className="flex items-center gap-1.5">
+								{/* Desktop: Filter Button - More Compact */}
+								{onFilterClick && (
+									<Button variant="outline" size="sm" onClick={onFilterClick} className="h-7 px-3 text-xs font-medium border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-200">
+										<Filter className="w-3 h-3 mr-1.5" />
+										Filters
+									</Button>
+								)}
+
+								{/* Desktop: Sort Dropdown - More Compact */}
+								{onSortChange && (
+									<DropdownMenu open={showSort} onOpenChange={setShowSort}>
+										<DropdownMenuTrigger asChild>
+											<Button variant="outline" size="sm" className="h-7 px-3 text-xs font-medium min-w-[120px] justify-between border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-200">
+												<span className="truncate">{sortOptions.find((option) => option.value === sortBy)?.label || "Sort"}</span>
+												<ChevronDown className="w-3 h-3 ml-1.5 flex-shrink-0 transition-transform duration-200" />
+											</Button>
+										</DropdownMenuTrigger>
+										<DropdownMenuContent align="end" className="w-48 shadow-lg border-gray-200 dark:border-gray-700">
+											{sortOptions.map((option) => (
+												<DropdownMenuItem key={option.value} onClick={() => handleSortSelect(option.value)} className="cursor-pointer py-2 px-3 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-150">
+													<span className="font-medium text-sm">{option.label}</span>
+												</DropdownMenuItem>
+											))}
+										</DropdownMenuContent>
+									</DropdownMenu>
+								)}
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>

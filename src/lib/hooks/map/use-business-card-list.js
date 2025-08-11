@@ -35,7 +35,7 @@ export const useBusinessCardList = (businesses = []) => {
 
 	const { setActiveBusinessId, selectedBusiness } = useBusinessStore();
 	const { searchQuery, searchLocation } = useSearchStore();
-	const { centerOn, loadingBusinessId } = useMapStore();
+	const { centerOn, loadingBusinessId, isMapAvailable } = useMapStore();
 
 	// Refs
 	const listRef = useRef(null);
@@ -326,8 +326,8 @@ export const useBusinessCardList = (businesses = []) => {
 		try {
 			setActiveBusinessId(business.id);
 
-			// Center map on business if coordinates are valid
-			if (business.coordinates) {
+			// Center map on business if map is available and coordinates are valid
+			if (isMapAvailable() && business.coordinates) {
 				const { lat, lng } = business.coordinates;
 				if (typeof lat === "number" && typeof lng === "number" && !isNaN(lat) && !isNaN(lng) && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
 					centerOn(lat, lng, 15);
@@ -344,8 +344,8 @@ export const useBusinessCardList = (businesses = []) => {
 	const handleCardHover = (business) => {
 		setHoveredBusinessId(business.id);
 
-		// Optional: Center map on hover with smaller zoom
-		if (business.coordinates) {
+		// Only center map on hover if map is available and coordinates are valid
+		if (isMapAvailable() && business.coordinates) {
 			const { lat, lng } = business.coordinates;
 			if (typeof lat === "number" && typeof lng === "number" && !isNaN(lat) && !isNaN(lng)) {
 				centerOn(lat, lng, 12, { duration: 500 });

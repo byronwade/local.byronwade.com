@@ -1,9 +1,16 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect, useRef, useMemo, Suspense } from "react";
 import ErrorBoundary from "@components/shared/error-boundary";
-import { ArrowLeft, Share, Heart, Star, MapPin, CheckCircle, Shield, Award, Users, MessageCircle, Car, DollarSign, Building, Eye, Target, Zap, ClipboardCheck, Settings, Handshake, Utensils } from "lucide-react";
+import { ArrowLeft, Share, Heart, Star, MapPin, CheckCircle, Shield, Award, Users, MessageCircle, Car, DollarSign, Building, Eye, Target, Zap, ClipboardCheck, Settings, Handshake, Utensils, Phone, Mail, Globe, Clock, Calendar, Camera, Play, ChevronRight, TrendingUp, Bookmark, Send, MessageSquare, Video, Navigation, Verified, ThumbsUp, ExternalLink, Copy, Facebook, Twitter, Instagram, Linkedin, Briefcase } from "lucide-react";
 import { Button } from "@components/ui/button";
+import { Badge } from "@components/ui/badge";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
+import { Separator } from "@components/ui/separator";
+import { toast } from "@components/ui/use-toast";
+import { cn } from "@utils";
+import businessProfileAnalytics, { initializeAnalytics, trackBusinessAction, trackSectionView } from "@lib/analytics/business-profile-analytics";
 // Removed mock data generator imports - now using real Supabase data
 
 // Direct imports instead of lazy loading
@@ -22,6 +29,7 @@ import Careers from "./sections/careers";
 import Partnerships from "./sections/partnerships";
 import MenuSection from "./sections/menu-section";
 import AutomotiveServices from "./sections/automotive-services";
+import EnhancedContact from "./sections/enhanced-contact";
 
 // Performance optimization: Memoized loading component
 const LoadingSpinner = () => (
@@ -30,11 +38,95 @@ const LoadingSpinner = () => (
 	</div>
 );
 
-// Section wrapper with Suspense and Error Boundary
-const SectionWrapper = React.memo(({ children, ref }) => (
-	<div ref={ref} className="performance-container">
-		<ErrorBoundary>{children}</ErrorBoundary>
+// Enhanced loading component for different sections
+const SectionLoader = ({ className = "" }) => (
+	<div className={cn("animate-pulse space-y-4", className)}>
+		<div className="h-4 bg-muted rounded w-3/4"></div>
+		<div className="h-4 bg-muted rounded w-1/2"></div>
+		<div className="h-32 bg-muted rounded"></div>
 	</div>
+);
+
+// Modern Hero Image Component with fallback
+const HeroImage = React.memo(({ src, alt, className = "" }) => {
+	const [imageLoaded, setImageLoaded] = useState(false);
+	const [imageError, setImageError] = useState(false);
+
+	return (
+		<div className={cn("relative overflow-hidden", className)}>
+			{!imageLoaded && !imageError && (
+				<div className="absolute inset-0 bg-muted animate-pulse flex items-center justify-center">
+					<Camera className="w-12 h-12 text-muted-foreground" />
+				</div>
+			)}
+			<img src={imageError ? "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&h=400&fit=crop" : src} alt={alt} className={cn("w-full h-full object-cover transition-opacity duration-300", imageLoaded ? "opacity-100" : "opacity-0")} onLoad={() => setImageLoaded(true)} onError={() => setImageError(true)} loading="lazy" />
+			<div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+		</div>
+	);
+});
+
+HeroImage.displayName = "HeroImage";
+
+// Quick Action Button Component
+const QuickActionButton = React.memo(({ icon: Icon, label, onClick, variant = "outline", className = "" }) => (
+	<Button variant={variant} size="lg" className={cn("flex flex-col items-center h-auto p-4 space-y-2 min-w-[100px]", className)} onClick={onClick}>
+		<Icon className="w-5 h-5" />
+		<span className="text-sm font-medium">{label}</span>
+	</Button>
+));
+
+QuickActionButton.displayName = "QuickActionButton";
+
+// Business Stats Component
+const BusinessStat = React.memo(({ icon: Icon, label, value, trend, className = "" }) => (
+	<div className={cn("flex items-center space-x-3 p-4 bg-card rounded-lg border", className)}>
+		<div className="p-2 bg-primary/10 rounded-lg">
+			<Icon className="w-5 h-5 text-primary" />
+		</div>
+		<div className="flex-1">
+			<p className="text-sm text-muted-foreground">{label}</p>
+			<div className="flex items-center space-x-2">
+				<p className="text-lg font-semibold text-foreground">{value}</p>
+				{trend && (
+					<Badge variant="secondary" className="text-xs">
+						<TrendingUp className="w-3 h-3 mr-1" />
+						{trend}
+					</Badge>
+				)}
+			</div>
+		</div>
+	</div>
+));
+
+BusinessStat.displayName = "BusinessStat";
+
+// Section wrapper with enhanced error boundary and loading states
+const SectionWrapper = React.memo(({ children, title, className = "", loading = false }) => (
+	<Card className={cn("border-0 shadow-sm", className)}>
+		{title && (
+			<CardHeader className="pb-4">
+				<CardTitle className="text-xl font-semibold">{title}</CardTitle>
+			</CardHeader>
+		)}
+		<CardContent className={title ? "pt-0" : ""}>
+			{loading ? (
+				<SectionLoader />
+			) : (
+				<ErrorBoundary
+					fallback={(error) => (
+						<div className="p-6 text-center border border-dashed border-gray-300 rounded-lg">
+							<p className="text-muted-foreground mb-2">Content temporarily unavailable</p>
+							<Button variant="outline" size="sm" onClick={() => window.location.reload()}>
+								Try Again
+							</Button>
+						</div>
+					)}
+				>
+					{children}
+				</ErrorBoundary>
+			)}
+		</CardContent>
+	</Card>
 ));
 
 SectionWrapper.displayName = "SectionWrapper";
@@ -43,20 +135,8 @@ export default function BizProfileClient({ businessId, initialBusiness, seoData 
 	const [business, setBusiness] = useState(initialBusiness || null);
 	const [showAllPhotos, setShowAllPhotos] = useState(false);
 	const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-	const [activeSection, setActiveSection] = useState("overview");
-	const [showScrollSpy, setShowScrollSpy] = useState(true); // Always show scroll spy
-	const [showHeaderSection, setShowHeaderSection] = useState(false); // Controls sticky header section
-	const [showMobileNav, setShowMobileNav] = useState(false);
+	const [activeTab, setActiveTab] = useState("overview");
 	const [showReviewModal, setShowReviewModal] = useState(false);
-	const [scrollSpyScrollPosition, setScrollSpyScrollPosition] = useState(0);
-	const [headerHeight, setHeaderHeight] = useState(64);
-	const [shouldShowArrows, setShouldShowArrows] = useState(false);
-	const [scrollSpyContainerHeight, setScrollSpyContainerHeight] = useState(400);
-	const [actualContentHeight, setActualContentHeight] = useState(null);
-
-	// Enhanced scroll spy state
-	const [scrollSpyReady, setScrollSpyReady] = useState(false);
-	const [scrollSpyError, setScrollSpyError] = useState(null);
 
 	const [newReview, setNewReview] = useState({
 		rating: 5,
@@ -64,6 +144,139 @@ export default function BizProfileClient({ businessId, initialBusiness, seoData 
 		text: "",
 		author: "",
 	});
+
+	// Tab definitions for Amazon-style organization
+	const businessTabs = useMemo(
+		() => [
+			{
+				id: "overview",
+				label: "Overview",
+				icon: Building,
+				description: "Quick summary and key information",
+			},
+			{
+				id: "services",
+				label: "Services & Pricing",
+				icon: Settings,
+				description: "Detailed services, rates, and packages",
+			},
+			{
+				id: "reviews",
+				label: "Reviews & Ratings",
+				icon: Star,
+				description: "Customer feedback and testimonials",
+			},
+			{
+				id: "gallery",
+				label: "Gallery & Work",
+				icon: Camera,
+				description: "Photos, portfolio, and work examples",
+			},
+			{
+				id: "about",
+				label: "About & Team",
+				icon: Users,
+				description: "Company information and team details",
+			},
+			{
+				id: "availability",
+				label: "Availability & Contact",
+				icon: Calendar,
+				description: "Schedules, booking, and contact options",
+			},
+			{
+				id: "contact",
+				label: "Contact Information",
+				icon: Phone,
+				description: "Phone, address, and direct contact methods",
+			},
+			{
+				id: "location",
+				label: "Location & Hours",
+				icon: MapPin,
+				description: "Business location and operating hours",
+			},
+			{
+				id: "credentials",
+				label: "Credentials & Licenses",
+				icon: Shield,
+				description: "Certifications, licenses, and verifications",
+			},
+			{
+				id: "expertise",
+				label: "Expertise & Skills",
+				icon: Award,
+				description: "Professional expertise and specializations",
+			},
+			{
+				id: "booking",
+				label: "Book Service",
+				icon: Calendar,
+				description: "Schedule appointments and consultations",
+			},
+			{
+				id: "warranty",
+				label: "Warranties & Guarantees",
+				icon: Shield,
+				description: "Service warranties and guarantees",
+			},
+			{
+				id: "portfolio",
+				label: "Portfolio & Projects",
+				icon: Briefcase,
+				description: "Past projects and work examples",
+			},
+			{
+				id: "before-after",
+				label: "Before & After",
+				icon: TrendingUp,
+				description: "Transformation examples and results",
+			},
+			{
+				id: "faq",
+				label: "FAQ",
+				icon: MessageCircle,
+				description: "Frequently asked questions",
+			},
+			{
+				id: "careers",
+				label: "Careers & Jobs",
+				icon: Briefcase,
+				description: "Career opportunities and team openings",
+			},
+			{
+				id: "operations",
+				label: "Business Operations",
+				icon: Settings,
+				description: "Operational procedures and business processes",
+			},
+			{
+				id: "certified-elite",
+				label: "Certified Elite",
+				icon: Award,
+				description: "Elite certifications and premium status",
+			},
+			{
+				id: "partnerships",
+				label: "Partnerships & Affiliations",
+				icon: Handshake,
+				description: "Business partnerships and professional affiliations",
+			},
+			{
+				id: "menu",
+				label: "Menu & Offerings",
+				icon: Utensils,
+				description: "Restaurant menu and food offerings",
+			},
+			{
+				id: "automotive",
+				label: "Automotive Services",
+				icon: Car,
+				description: "Specialized automotive and vehicle services",
+			},
+		],
+		[]
+	);
 
 	// Intelligently combine all images for photo navigation with rich portfolio data
 	const allImages = business
@@ -113,78 +326,23 @@ export default function BizProfileClient({ businessId, initialBusiness, seoData 
 					},
 				];
 
-	// Refs for scroll spy
-	const scrollSpyContainerRef = useRef(null);
-	const scrollSpyContentRef = useRef(null);
-	const scrollSpyRef = useRef(null);
-	const navigationTimeoutRef = useRef(null);
-	const intersectionObserverRef = useRef(null);
+	// Tab navigation component (Amazon-style)
+	const TabNavigation = React.memo(() => (
+		<div className="sticky top-14 z-40 bg-background/95 backdrop-blur-md border-b">
+			<div className="px-4 mx-auto max-w-7xl lg:px-8">
+				<div className="flex overflow-x-auto scrollbar-hide">
+					{businessTabs.map((tab) => (
+						<button key={tab.id} onClick={() => setActiveTab(tab.id)} className={cn("flex items-center space-x-2 px-6 py-4 text-sm font-medium whitespace-nowrap border-b-2 transition-colors min-w-fit", activeTab === tab.id ? "border-primary text-primary bg-primary/5" : "border-transparent text-muted-foreground hover:text-foreground hover:border-muted-foreground/50")}>
+							<tab.icon className="w-4 h-4" />
+							<span>{tab.label}</span>
+						</button>
+					))}
+				</div>
+			</div>
+		</div>
+	));
 
-	// Section navigation items - memoized to avoid re-creation
-	const navigationItems = useMemo(
-		() => [
-			{ id: "overview", label: "Overview", icon: Building },
-			{ id: "certification", label: "Get Certified", icon: Award },
-			{ id: "reviews", label: "Reviews", icon: Star },
-			{ id: "credentials", label: "Credentials & Recognition", icon: Shield },
-			{ id: "availability", label: "Live Availability", icon: Zap },
-			{ id: "services", label: "Services & Gallery", icon: Settings },
-			{ id: "expertise", label: "Expertise & Team", icon: Target },
-			{ id: "pricing", label: "Service Info", icon: DollarSign },
-			{ id: "businessTransparency", label: "Business Operations", icon: Eye },
-			{ id: "warrantyTracker", label: "Warranty Tracker", icon: ClipboardCheck },
-			{ id: "faq", label: "FAQ & Support", icon: MessageCircle },
-			{ id: "careers", label: "Careers", icon: Users },
-			{ id: "partnerships", label: "Partnerships", icon: Handshake },
-			// Industry-specific sections (only include created ones)
-			{ id: "menu", label: "Menu", icon: Utensils, industry: "restaurant" },
-			{ id: "automotive", label: "Auto Services", icon: Car, industry: "automotive" },
-		],
-		[]
-	);
-
-	// Refs for sections - create refs directly (they're stable by nature)
-	const overviewRef = useRef(null);
-	const certificationRef = useRef(null);
-	const reviewsRef = useRef(null);
-	const credentialsRef = useRef(null);
-	const availabilityRef = useRef(null);
-	const servicesRef = useRef(null);
-	const expertiseRef = useRef(null);
-	const pricingRef = useRef(null);
-	const informationRef = useRef(null);
-	const businessTransparencyRef = useRef(null);
-	const warrantyTrackerRef = useRef(null);
-	const faqRef = useRef(null);
-	const careersRef = useRef(null);
-	const partnershipsRef = useRef(null);
-	// New industry-specific refs (only include created ones)
-	const menuRef = useRef(null);
-	const automotiveRef = useRef(null);
-
-	// Create refs object with useMemo to prevent recreation
-	const sectionRefs = useMemo(
-		() => ({
-			overview: overviewRef,
-			certification: certificationRef,
-			reviews: reviewsRef,
-			credentials: credentialsRef,
-			availability: availabilityRef,
-			services: servicesRef,
-			expertise: expertiseRef,
-			pricing: pricingRef,
-			information: informationRef,
-			businessTransparency: businessTransparencyRef,
-			warrantyTracker: warrantyTrackerRef,
-			faq: faqRef,
-			careers: careersRef,
-			partnerships: partnershipsRef,
-			// New industry-specific refs (only include created ones)
-			menu: menuRef,
-			automotive: automotiveRef,
-		}),
-		[]
-	);
+	TabNavigation.displayName = "TabNavigation";
 
 	// Transform real Supabase business data to match component expectations
 	const transformRealBusinessData = (realBusiness) => {
@@ -447,6 +605,18 @@ export default function BizProfileClient({ businessId, initialBusiness, seoData 
 		};
 	};
 
+	// Initialize analytics when component mounts
+	useEffect(() => {
+		if (business?.id && business?.name) {
+			initializeAnalytics(business.id, business.name);
+		}
+
+		// Cleanup analytics on unmount
+		return () => {
+			businessProfileAnalytics.cleanup();
+		};
+	}, [business?.id, business?.name]);
+
 	// Load business data using the centralized business data generator
 	useEffect(() => {
 		const loadBusinessData = () => {
@@ -546,189 +716,974 @@ export default function BizProfileClient({ businessId, initialBusiness, seoData 
 
 	return (
 		<div className="min-h-screen bg-background">
-			{/* Header */}
-			<header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur-md border-border">
-				<div className="px-3 mx-auto max-w-7xl sm:px-4 lg:px-8">
-					<div className="flex items-center justify-between h-14 sm:h-16">
-						<div className="flex items-center space-x-2 sm:space-x-4">
-							<Button variant="ghost" size="sm" className="px-2 h-8 text-muted-foreground hover:text-foreground sm:h-9 sm:px-3">
-								<ArrowLeft className="mr-1 w-4 h-4 sm:mr-2" />
-								<span className="text-sm">Back</span>
+			{/* Enhanced Mobile-First Business Profile Toolbar */}
+			<header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur-md shadow-sm">
+				<div className="px-3 sm:px-4 mx-auto max-w-screen-2xl lg:px-8">
+					{/* Mobile-Optimized Top Row - Breadcrumb and Quick Actions */}
+					<div className="flex items-center justify-between h-11 sm:h-12 border-b border-border/40">
+						<div className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm text-muted-foreground min-w-0">
+							<Button variant="ghost" size="sm" className="px-1.5 sm:px-2 h-6 sm:h-7 text-muted-foreground hover:text-foreground touch-manipulation" onClick={() => window.history.back()}>
+								<ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
+							</Button>
+							<span className="hidden sm:inline">Search Results</span>
+							<ChevronRight className="w-3 h-3 hidden sm:inline" />
+							<span className="capitalize hidden md:inline">{business.categories?.[0] || "Business"}</span>
+							<ChevronRight className="w-3 h-3 hidden md:inline" />
+							<span className="font-medium text-foreground truncate max-w-[120px] sm:max-w-[200px]">{business.name}</span>
+						</div>
+						<div className="flex items-center space-x-1">
+							<Button variant="ghost" size="sm" className="px-1.5 sm:px-2 h-6 sm:h-7 text-muted-foreground hover:text-foreground touch-manipulation">
+								<Eye className="w-3 h-3 sm:w-4 sm:h-4" />
+								<span className="text-xs ml-1 hidden lg:inline">View Mode</span>
+							</Button>
+							<Button variant="ghost" size="sm" className="px-1.5 sm:px-2 h-6 sm:h-7 text-muted-foreground hover:text-foreground touch-manipulation">
+								<ExternalLink className="w-3 h-3 sm:w-4 sm:h-4" />
+								<span className="text-xs ml-1 hidden lg:inline">Open</span>
 							</Button>
 						</div>
-						<div className="flex items-center space-x-1 sm:space-x-2">
-							<Button variant="ghost" size="sm" className="px-2 h-8 text-muted-foreground hover:text-foreground sm:h-9 sm:px-3">
-								<Share className="mr-1 w-4 h-4 sm:mr-2" />
-								<span className="hidden text-sm sm:inline">Share</span>
+					</div>
+
+					{/* Mobile-First Main Toolbar - Business Actions */}
+					<div className="flex items-center justify-between h-14 sm:h-16 py-2">
+						{/* Left Side - Business Info & Status */}
+						<div className="flex items-center space-x-2 sm:space-x-4 min-w-0 flex-1">
+							<div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
+								{business.logo ? (
+									<img src={business.logo} alt={`${business.name} logo`} className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg object-cover border flex-shrink-0" />
+								) : (
+									<div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
+										<Building className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
+									</div>
+								)}
+								<div className="flex flex-col min-w-0 flex-1">
+									<div className="flex items-center space-x-1 sm:space-x-2">
+										<h1 className="font-semibold text-sm sm:text-lg text-foreground truncate max-w-[150px] sm:max-w-[300px]">{business.name}</h1>
+										{business.verified && (
+											<Badge variant="secondary" className="bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/20 text-xs sm:text-sm hidden sm:flex">
+												<Verified className="w-2 h-2 sm:w-3 sm:h-3 mr-1" />
+												<span className="hidden sm:inline">Verified</span>
+											</Badge>
+										)}
+									</div>
+									<div className="flex items-center space-x-1 sm:space-x-3 text-xs sm:text-sm text-muted-foreground">
+										<div className="flex items-center space-x-1">
+											<Star className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-yellow-500 fill-yellow-500" />
+											<span className="font-medium">{business.ratings?.overall || 4.5}</span>
+											<span className="hidden sm:inline">({business.reviewCount || 0} reviews)</span>
+											<span className="sm:hidden">({business.reviewCount || 0})</span>
+										</div>
+										<span className="hidden sm:inline">•</span>
+										<span className={cn("font-medium text-xs sm:text-sm", business.isOpenNow ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400")}>{business.isOpenNow ? "Open" : "Closed"}</span>
+										<span className="hidden md:inline">•</span>
+										<span className="hidden md:inline text-xs sm:text-sm">
+											{business.city}, {business.state}
+										</span>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						{/* Mobile-Optimized Action Buttons */}
+						<div className="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">
+							{/* Mobile Primary Actions - Touch Optimized */}
+							<div className="flex items-center space-x-1 sm:space-x-2">
+								{/* Call Button - Always Visible on Mobile */}
+								<Button size="sm" className="h-8 sm:h-9 px-2 sm:px-3 text-xs sm:text-sm touch-manipulation" onClick={() => business.phone && window.open(`tel:${business.phone}`)}>
+									<Phone className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
+									<span className="hidden sm:inline">Call Now</span>
+								</Button>
+
+								{/* Book Button - Responsive */}
+								<Button variant="outline" size="sm" className="h-8 sm:h-9 px-2 sm:px-3 text-xs sm:text-sm touch-manipulation hidden xs:flex" onClick={() => setActiveTab("booking")}>
+									<Calendar className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
+									<span className="hidden sm:inline">Book</span>
+								</Button>
+
+								{/* Message Button - Desktop Only */}
+								<Button variant="outline" size="sm" className="h-8 sm:h-9 px-2 sm:px-3 text-xs sm:text-sm touch-manipulation hidden md:flex" onClick={() => setActiveTab("contact")}>
+									<MessageSquare className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
+									<span className="hidden sm:inline">Message</span>
+								</Button>
+							</div>
+
+							{/* Mobile Secondary Actions - Compact */}
+							<div className="flex items-center space-x-0.5 sm:space-x-1 ml-1 sm:ml-2 pl-1 sm:pl-2 border-l border-border">
+								{/* Share Button - Native sharing on mobile */}
+								<Button
+									variant="ghost"
+									size="sm"
+									className="px-1.5 sm:px-3 h-8 sm:h-9 touch-manipulation"
+									onClick={() => {
+										if (navigator.share) {
+											navigator.share({
+												title: business.name,
+												text: business.description,
+												url: window.location.href,
+											});
+										} else {
+											navigator.clipboard.writeText(window.location.href).then(() => {
+												toast({ title: "Link copied to clipboard!" });
+											});
+										}
+									}}
+								>
+									<Share className="w-3 h-3 sm:w-4 sm:h-4" />
+									<span className="text-xs ml-1 hidden xl:inline">Share</span>
+								</Button>
+
+								{/* Save Button */}
+								<Button
+									variant="ghost"
+									size="sm"
+									className="px-1.5 sm:px-3 h-8 sm:h-9 touch-manipulation"
+									onClick={() => {
+										// Save to favorites functionality
+										toast({ title: "Added to favorites!" });
+									}}
+								>
+									<Heart className="w-3 h-3 sm:w-4 sm:h-4" />
+									<span className="text-xs ml-1 hidden xl:inline">Save</span>
+								</Button>
+
+								{/* Directions Button */}
+								<Button variant="ghost" size="sm" className="px-1.5 sm:px-3 h-8 sm:h-9 touch-manipulation" onClick={() => setActiveTab("location")}>
+									<Navigation className="w-3 h-3 sm:w-4 sm:h-4" />
+									<span className="text-xs ml-1 hidden xl:inline">Directions</span>
+								</Button>
+
+								{/* Website Button - Desktop Only */}
+								{business.website && (
+									<Button variant="ghost" size="sm" className="px-1.5 sm:px-3 h-8 sm:h-9 touch-manipulation hidden lg:flex" onClick={() => window.open(business.website, "_blank")}>
+										<Globe className="w-3 h-3 sm:w-4 sm:h-4" />
+										<span className="text-xs ml-1 hidden xl:inline">Website</span>
+									</Button>
+								)}
+							</div>
+						</div>
+					</div>
+
+					{/* Mobile-Responsive Quick Stats Bar */}
+					<div className="flex items-center justify-between h-8 sm:h-10 text-xs overflow-x-auto">
+						<div className="flex items-center space-x-3 sm:space-x-6 min-w-0">
+							<div className="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">
+								<Clock className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-muted-foreground" />
+								<span className="text-muted-foreground hidden sm:inline">Response time:</span>
+								<span className="text-muted-foreground sm:hidden">Response:</span>
+								<span className="font-medium">{business.responseTime || "< 2hrs"}</span>
+							</div>
+							<div className="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">
+								<Shield className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-muted-foreground" />
+								<span className="text-muted-foreground hidden sm:inline">Trust score:</span>
+								<span className="text-muted-foreground sm:hidden">Trust:</span>
+								<span className="font-medium">{business.trustScore || 95}%</span>
+							</div>
+							<div className="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">
+								<Target className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-muted-foreground" />
+								<span className="text-muted-foreground hidden md:inline">Service area:</span>
+								<span className="text-muted-foreground md:hidden">Area:</span>
+								<span className="font-medium">{business?.serviceArea?.coverage || "Local"}</span>
+							</div>
+						</div>
+						<div className="flex items-center space-x-2 sm:space-x-4 text-muted-foreground">
+							<span className="hidden lg:inline">Updated: {new Date().toLocaleDateString()}</span>
+							<Button variant="ghost" size="sm" className="px-1.5 sm:px-2 h-6 sm:h-7 text-xs touch-manipulation" onClick={() => setActiveTab("credentials")}>
+								<span className="hidden sm:inline">View Credentials →</span>
+								<span className="sm:hidden">Credentials →</span>
 							</Button>
-							<Button variant="ghost" size="sm" className="px-2 h-8 text-muted-foreground hover:text-foreground sm:h-9 sm:px-3">
-								<Heart className="mr-1 w-4 h-4 sm:mr-2" />
-								<span className="hidden text-sm sm:inline">Save</span>
-							</Button>
+						</div>
+					</div>
+				</div>
+
+				{/* Mobile Quick Action Row - Only visible on mobile */}
+				<div className="block sm:hidden border-t bg-background/95 backdrop-blur-md">
+					<div className="px-3 py-2 mx-auto max-w-screen-2xl">
+						<div className="flex items-center justify-between space-x-2">
+							{/* Essential Mobile Actions */}
+							<div className="flex items-center space-x-2 flex-1">
+								<Button size="sm" className="h-8 px-3 text-xs touch-manipulation flex-1" onClick={() => business.phone && window.open(`tel:${business.phone}`)}>
+									<Phone className="w-3 h-3 mr-1" />
+									Call
+								</Button>
+								<Button variant="outline" size="sm" className="h-8 px-3 text-xs touch-manipulation flex-1" onClick={() => setActiveTab("booking")}>
+									<Calendar className="w-3 h-3 mr-1" />
+									Book
+								</Button>
+								<Button variant="outline" size="sm" className="h-8 px-3 text-xs touch-manipulation flex-1" onClick={() => setActiveTab("contact")}>
+									<MessageSquare className="w-3 h-3 mr-1" />
+									Message
+								</Button>
+							</div>
+
+							{/* Mobile Secondary Actions */}
+							<div className="flex items-center space-x-1">
+								<Button variant="ghost" size="sm" className="px-2 h-8 touch-manipulation" onClick={() => setActiveTab("location")}>
+									<Navigation className="w-3 h-3" />
+								</Button>
+								<Button
+									variant="ghost"
+									size="sm"
+									className="px-2 h-8 touch-manipulation"
+									onClick={() => {
+										if (navigator.share) {
+											navigator.share({
+												title: business.name,
+												text: business.description,
+												url: window.location.href,
+											});
+										} else {
+											navigator.clipboard.writeText(window.location.href).then(() => {
+												toast({ title: "Link copied!" });
+											});
+										}
+									}}
+								>
+									<Share className="w-3 h-3" />
+								</Button>
+							</div>
 						</div>
 					</div>
 				</div>
 			</header>
 
-			{/* Main Content */}
-			<div className="px-3 py-4 mx-auto max-w-7xl sm:px-4 sm:py-6 lg:px-8 lg:py-8">
-				<div className="space-y-6 sm:space-y-8">
-					{/* Business Header */}
-					<div className="space-y-4">
-						<div className="flex justify-between items-start">
-							<div className="flex-1 space-y-3">
-								<h1 className="text-3xl font-bold text-foreground sm:text-4xl lg:text-5xl">{business.name}</h1>
-								<div className="flex items-center space-x-2 text-muted-foreground">
-									<span className="text-lg">{business.type}</span>
-									<span>•</span>
-									<MapPin className="w-4 h-4" />
-									<span>{business?.serviceArea?.primary || business?.address || "Location not specified"}</span>
-								</div>
+			{/* Amazon-Style Product Section */}
+			<div className="px-4 pt-6 mx-auto max-w-screen-2xl lg:px-8">
+				<div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+					{/* Left Column - Image Gallery (Amazon Style) */}
+					<div className="lg:col-span-5">
+						<div className="sticky top-20">
+							{/* Main Image */}
+							<div className="aspect-square mb-4 bg-white rounded-lg border shadow-sm overflow-hidden">
+								<img src={business.photos?.[selectedImageIndex] || business.photos?.[0] || "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600&h=600&fit=crop"} alt={`${business.name} main image`} className="w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform duration-300" onClick={() => setShowAllPhotos(true)} />
 							</div>
-							{business.verified && (
-								<div className="flex items-center px-3 py-1.5 space-x-2 text-blue-700 bg-blue-50 rounded-full border border-blue-200 dark:bg-blue-950/20 dark:text-blue-400 dark:border-blue-800/50">
-									<Shield className="w-4 h-4" />
-									<span className="text-sm font-medium">Verified</span>
+
+							{/* Thumbnail Gallery */}
+							{business.photos && business.photos.length > 1 && (
+								<div className="grid grid-cols-5 gap-2">
+									{business.photos.slice(0, 5).map((photo, index) => (
+										<div key={index} className={cn("aspect-square bg-white rounded border cursor-pointer overflow-hidden transition-all", selectedImageIndex === index ? "ring-2 ring-primary" : "hover:ring-1 hover:ring-gray-300")} onClick={() => setSelectedImageIndex(index)}>
+											<img src={photo} alt={`${business.name} thumbnail ${index + 1}`} className="w-full h-full object-cover" />
+										</div>
+									))}
+									{business.photos.length > 5 && (
+										<div className="aspect-square bg-muted rounded border cursor-pointer overflow-hidden flex items-center justify-center" onClick={() => setShowAllPhotos(true)}>
+											<div className="text-center">
+												<Camera className="w-4 h-4 mx-auto mb-1 text-muted-foreground" />
+												<span className="text-xs text-muted-foreground">+{business.photos.length - 5}</span>
+											</div>
+										</div>
+									)}
 								</div>
 							)}
 						</div>
+					</div>
 
-						{/* Rating & Status Row */}
-						<div className="flex justify-between items-center">
-							<div className="flex items-center space-x-6">
-								<div className="flex items-center space-x-2">
-									<Star className="w-5 h-5 text-yellow-500 fill-yellow-500" />
-									<span className="text-lg font-semibold text-foreground">{business.ratings?.overall || 0}</span>
-									<span className="text-muted-foreground">({business.reviewCount || 0} reviews)</span>
+					{/* Right Column - Business Information Panel */}
+					<div className="lg:col-span-7">
+						<div className="space-y-6">
+							{/* Business Title & Basic Info */}
+							<div className="space-y-2">
+								<div className="flex items-center space-x-2 text-sm text-muted-foreground">
+									{business.categories?.slice(0, 2).map((category, index) => (
+										<span key={index}>{category}</span>
+									))}
+									{business.verified && (
+										<Badge variant="secondary" className="bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/20 ml-2">
+											<Verified className="w-3 h-3 mr-1" />
+											Verified Business
+										</Badge>
+									)}
 								</div>
-								<div className="text-sm text-green-600">{business.isOpenNow ? "Open Now" : "Closed"}</div>
+								<h1 className="text-3xl lg:text-4xl font-bold text-foreground leading-tight">{business.name}</h1>
+
+								{/* Rating & Reviews */}
+								<div className="flex items-center space-x-4">
+									<div className="flex items-center space-x-1">
+										<div className="flex text-yellow-400">
+											{[...Array(5)].map((_, i) => (
+												<Star key={i} className={cn("w-4 h-4", i < Math.floor(business.ratings?.overall || 4.5) ? "fill-current" : "")} />
+											))}
+										</div>
+										<span className="text-sm font-medium">{business.ratings?.overall || 4.5}</span>
+									</div>
+									<Button variant="link" className="p-0 h-auto text-sm text-primary hover:underline" onClick={() => setActiveTab("reviews")}>
+										{business.reviewCount || 0} customer reviews
+									</Button>
+									<span className="text-sm text-muted-foreground">|</span>
+									<span className="text-sm text-muted-foreground">{business.responseTime || "< 2 hours response"}</span>
+								</div>
+							</div>
+
+							{/* Key Business Info */}
+							<div className="space-y-3 p-4 bg-muted/30 rounded-lg">
+								<div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+									<div className="flex items-center space-x-2">
+										<MapPin className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+										<span className="text-foreground">{business?.address || business?.serviceArea?.primary || "Service Area Available"}</span>
+									</div>
+									<div className="flex items-center space-x-2">
+										<Clock className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+										<span className={cn("font-medium", business.isOpenNow ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400")}>
+											{business.isOpenNow ? "Open Now" : "Closed"} • {business.realTimeAvailability?.nextAvailable || "Call for hours"}
+										</span>
+									</div>
+									{business.phone && (
+										<div className="flex items-center space-x-2">
+											<Phone className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+											<span className="text-foreground">{business.phone}</span>
+										</div>
+									)}
+									<div className="flex items-center space-x-2">
+										<Shield className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+										<span className="text-foreground">Licensed & Insured • {business.trustScore || 95}% Trust Score</span>
+									</div>
+								</div>
+							</div>
+
+							{/* Pricing Information */}
+							<div className="space-y-2">
+								<div className="flex items-baseline space-x-2">
+									<span className="text-2xl font-bold text-foreground">{business.pricing?.hourlyRate || "$85-125"}</span>
+									<span className="text-muted-foreground">per hour</span>
+								</div>
+								<div className="flex items-center space-x-4 text-sm">
+									<span className="text-green-600 dark:text-green-400 font-medium">{business.pricing?.consultationFee || "FREE"} consultation</span>
+									<span className="text-muted-foreground">•</span>
+									<span className="text-muted-foreground">{business.pricing?.estimates || "Free estimates available"}</span>
+								</div>
+							</div>
+
+							{/* Action Buttons (Amazon-style) */}
+							<div className="space-y-3">
+								<div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+									<Button size="lg" className="h-12 font-semibold" onClick={() => business.phone && window.open(`tel:${business.phone}`)}>
+										<Phone className="w-5 h-5 mr-2" />
+										Call Now
+									</Button>
+									<Button variant="outline" size="lg" className="h-12 font-semibold">
+										<Calendar className="w-5 h-5 mr-2" />
+										Book Service
+									</Button>
+								</div>
+								<div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+									<Button variant="outline" size="lg" className="h-12">
+										<MessageSquare className="w-5 h-5 mr-2" />
+										Send Message
+									</Button>
+									<Button variant="outline" size="lg" className="h-12">
+										<DollarSign className="w-5 h-5 mr-2" />
+										Get Quote
+									</Button>
+								</div>
+							</div>
+
+							{/* Quick Features */}
+							<div className="border rounded-lg p-4">
+								<h3 className="font-semibold text-foreground mb-3">Service Highlights</h3>
+								<div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+									{business.businessHighlights?.slice(0, 8).map((highlight, index) => (
+										<div key={index} className="flex items-center space-x-2">
+											<CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+											<span className="text-sm text-foreground">{highlight}</span>
+										</div>
+									))}
+								</div>
+							</div>
+
+							{/* Trust Indicators */}
+							<div className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+								<div className="flex items-center space-x-2">
+									<Shield className="w-5 h-5 text-green-600" />
+									<span className="text-sm font-medium text-green-800 dark:text-green-200">Thorbis Verified Business</span>
+								</div>
+								<Button variant="link" className="p-0 h-auto text-xs text-green-600" onClick={() => setActiveTab("about")}>
+									View credentials
+								</Button>
 							</div>
 						</div>
 					</div>
+				</div>
+			</div>
 
-					{/* No tab navigation as per user preference - show all content */}
+			{/* Detailed Content Sections with Left Sidebar Navigation */}
+			<div className="px-4 py-8 mx-auto max-w-screen-2xl lg:px-8">
+				<div className="grid grid-cols-12 gap-8">
+					{/* Minimal Left Sidebar Navigation (full-width section below hero) */}
+					<aside className="col-span-12 lg:col-span-3">
+						<nav aria-label="Profile sections" className="space-y-1">
+							{businessTabs.map((tab) => (
+								<button key={tab.id} onClick={() => setActiveTab(tab.id)} aria-current={activeTab === tab.id ? "page" : undefined} className={cn("w-full text-left flex items-center gap-2 px-2 py-2 text-sm rounded-md transition-colors", activeTab === tab.id ? "text-foreground bg-muted/40" : "text-muted-foreground hover:text-foreground hover:bg-muted/30")}>
+									<tab.icon className="w-4 h-4" />
+									<span>{tab.label}</span>
+								</button>
+							))}
+						</nav>
+					</aside>
 
-					{/* All Rich Content Sections - Showcase full platform capabilities */}
-					<div className="space-y-8">
-						{/* Core Business Information */}
-						<SectionWrapper>
-							<BusinessOverview business={business} />
-						</SectionWrapper>
-
-						{/* Certified Elite Status */}
-						<SectionWrapper>
-							<CertifiedElite business={business} />
-						</SectionWrapper>
-
-						{/* Professional Credentials */}
-						<SectionWrapper>
-							<Credentials business={business} />
-						</SectionWrapper>
-
-						{/* Real-time Availability */}
-						<SectionWrapper>
-							<Availability business={business} />
-						</SectionWrapper>
-
-						{/* Services Offered */}
-						<SectionWrapper>
-							<Services business={business} />
-						</SectionWrapper>
-
-						{/* Expertise & Specializations */}
-						<SectionWrapper>
-							<Expertise business={business} />
-						</SectionWrapper>
-
-						{/* Pricing Information */}
-						<SectionWrapper>
-							<Pricing business={business} />
-						</SectionWrapper>
-
-						{/* Business Operations */}
-						<SectionWrapper>
-							<BusinessOperations business={business} />
-						</SectionWrapper>
-
-						{/* Reviews & Testimonials */}
-						<SectionWrapper>
-							<ErrorBoundary
-								fallback={(error) => (
-									<div className="p-6 border border-orange-200 rounded-lg bg-orange-50 dark:bg-orange-900/20 dark:border-orange-800">
-										<div className="flex items-center gap-2 mb-3">
-											<Star className="w-5 h-5 text-orange-600" />
-											<h3 className="text-lg font-semibold text-orange-800 dark:text-orange-200">Reviews & Testimonials</h3>
-										</div>
-										<p className="text-sm text-orange-700 dark:text-orange-300 mb-4">Reviews are temporarily unavailable. Please check back later.</p>
-										<Button variant="outline" size="sm" className="border-orange-300 text-orange-700 hover:bg-orange-100">
-											Try Again
-										</Button>
-									</div>
-								)}
-							>
-								<Reviews business={business} setShowReviewModal={setShowReviewModal} />
-							</ErrorBoundary>
-						</SectionWrapper>
-
-						{/* Warranty & Guarantees */}
-						<SectionWrapper>
-							<WarrantyTracker business={business} />
-						</SectionWrapper>
-
-						{/* Frequently Asked Questions */}
-						<SectionWrapper>
-							<FAQ business={business} />
-						</SectionWrapper>
-
-						{/* Career Opportunities */}
-						<SectionWrapper>
-							<Careers business={business} />
-						</SectionWrapper>
-
-						{/* Business Partnerships */}
-						<SectionWrapper>
-							<Partnerships business={business} />
-						</SectionWrapper>
-
-						{/* Menu Section (for restaurants/food businesses) */}
-						{(business.industry === "restaurant" || business.categories?.some((cat) => ["restaurant", "food", "dining", "cafe", "bar"].includes(cat.toLowerCase()))) && (
-							<SectionWrapper>
-								<MenuSection business={business} />
-							</SectionWrapper>
+					{/* Right content area */}
+					<div className="col-span-12 lg:col-span-9">
+						{/* Tab Content */}
+						{activeTab === "overview" && (
+							<div className="space-y-8">
+								<Suspense fallback={<SectionLoader />}>
+									<Card>
+										<CardHeader>
+											<CardTitle className="text-xl font-semibold text-foreground">Business Overview</CardTitle>
+											<CardDescription className="text-muted-foreground">Complete overview of our business and services</CardDescription>
+										</CardHeader>
+										<CardContent>
+											<BusinessOverview business={business} />
+										</CardContent>
+									</Card>
+								</Suspense>
+							</div>
 						)}
 
-						{/* Automotive Services (for automotive businesses) */}
-						{(business.industry === "automotive" || business.categories?.some((cat) => ["automotive", "auto", "car", "vehicle", "mechanic"].includes(cat.toLowerCase()))) && (
-							<SectionWrapper>
-								<AutomotiveServices business={business} />
-							</SectionWrapper>
-						)}
+						{activeTab === "services" && (
+							<div className="space-y-8">
+								{/* Services and Pricing */}
+								<div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+									<Suspense fallback={<SectionLoader />}>
+										<Card>
+											<CardHeader>
+												<CardTitle className="text-xl font-semibold text-foreground">Services & Specialties</CardTitle>
+											</CardHeader>
+											<CardContent>
+												<Services business={business} />
+											</CardContent>
+										</Card>
+									</Suspense>
 
-						{/* Photos Gallery */}
-						{business.photos && business.photos.length > 0 && (
-							<SectionWrapper>
-								<div className="mb-6">
-									<h3 className="text-xl font-semibold mb-4">Photos</h3>
-									<div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-										{business.photos?.map((photo, index) => (
-											<img
-												key={index}
-												src={photo}
-												alt={`${business.name} photo ${index + 1}`}
-												className="w-full h-48 object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
-												onClick={() => {
-													setSelectedImageIndex(index);
-													setShowAllPhotos(true);
-												}}
-											/>
-										))}
-									</div>
+									<Suspense fallback={<SectionLoader />}>
+										<Card>
+											<CardHeader>
+												<CardTitle className="text-xl font-semibold text-foreground">Pricing & Service Information</CardTitle>
+											</CardHeader>
+											<CardContent>
+												<Pricing business={business} />
+											</CardContent>
+										</Card>
+									</Suspense>
 								</div>
-							</SectionWrapper>
+							</div>
+						)}
+
+						{activeTab === "reviews" && (
+							<div className="space-y-8">
+								<Suspense fallback={<SectionLoader />}>
+									<Card>
+										<CardHeader>
+											<CardTitle className="text-xl font-semibold text-foreground">Customer Reviews & Ratings</CardTitle>
+											<CardDescription className="text-muted-foreground">See what our customers have to say about our work</CardDescription>
+										</CardHeader>
+										<CardContent>
+											<Reviews business={business} setShowReviewModal={setShowReviewModal} />
+										</CardContent>
+									</Card>
+								</Suspense>
+							</div>
+						)}
+
+						{activeTab === "gallery" && (
+							<div className="space-y-8">
+								{/* Photo Gallery Section */}
+								{business.photos && business.photos.length > 0 && (
+									<Card>
+										<CardHeader>
+											<CardTitle className="text-xl font-semibold text-foreground">Photo Gallery & Work Examples</CardTitle>
+											<CardDescription className="text-muted-foreground">Browse through our work and see what we can do for you</CardDescription>
+										</CardHeader>
+										<CardContent>
+											<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+												{business.photos?.map((photo, index) => (
+													<div
+														key={index}
+														className="relative group cursor-pointer"
+														onClick={() => {
+															setSelectedImageIndex(index);
+															setShowAllPhotos(true);
+														}}
+													>
+														<div className="aspect-square bg-white rounded-lg border overflow-hidden">
+															<img src={photo} alt={`${business.name} photo ${index + 1}`} className="w-full h-full object-cover transition-transform group-hover:scale-105" loading="lazy" />
+														</div>
+														<div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors rounded-lg flex items-center justify-center">
+															<Camera className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+														</div>
+													</div>
+												))}
+											</div>
+										</CardContent>
+									</Card>
+								)}
+							</div>
+						)}
+
+						{activeTab === "about" && (
+							<div className="space-y-8">
+								<Card>
+									<CardHeader>
+										<CardTitle className="text-xl font-semibold text-foreground">About {business.name}</CardTitle>
+										<CardDescription className="text-muted-foreground">Learn more about our company and team</CardDescription>
+									</CardHeader>
+									<CardContent className="prose max-w-none">
+										<p className="text-muted-foreground leading-relaxed mb-6">{business.description || "A trusted local business serving the community with excellent service and expertise. We pride ourselves on delivering quality workmanship and exceptional customer service to every project we undertake."}</p>
+
+										{/* Company History & Mission */}
+										<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+											<div>
+												<h4 className="font-semibold text-foreground mb-3">Our Mission</h4>
+												<p className="text-sm text-muted-foreground mb-4">To provide exceptional service and quality workmanship while building lasting relationships with our customers and community.</p>
+											</div>
+											<div>
+												<h4 className="font-semibold text-foreground mb-3">Experience</h4>
+												<p className="text-sm text-muted-foreground mb-4">With years of experience in the industry, we've built a reputation for reliability, professionalism, and excellence.</p>
+											</div>
+										</div>
+									</CardContent>
+								</Card>
+							</div>
+						)}
+
+						{activeTab === "availability" && (
+							<div className="space-y-8">
+								<Suspense fallback={<SectionLoader />}>
+									<Card>
+										<CardHeader>
+											<CardTitle className="text-xl font-semibold text-foreground">Live Availability & Booking</CardTitle>
+										</CardHeader>
+										<CardContent>
+											<Availability business={business} />
+										</CardContent>
+									</Card>
+								</Suspense>
+							</div>
+						)}
+
+						{activeTab === "contact" && (
+							<div className="space-y-8">
+								<Card>
+									<CardHeader>
+										<CardTitle className="text-xl font-semibold text-foreground">Contact Information</CardTitle>
+									</CardHeader>
+									<CardContent>
+										<div className="space-y-4">
+											{/* Contact Details */}
+											<div className="space-y-3">
+												{business.phone && (
+													<div className="flex items-center space-x-3">
+														<Phone className="w-5 h-5 text-muted-foreground" />
+														<div>
+															<p className="font-medium text-foreground">{business.phone}</p>
+															<Button variant="link" className="p-0 h-auto text-sm text-primary" onClick={() => window.open(`tel:${business.phone}`)}>
+																Call Now
+															</Button>
+														</div>
+													</div>
+												)}
+												<div className="flex items-start space-x-3">
+													<MapPin className="w-5 h-5 text-muted-foreground mt-0.5" />
+													<div>
+														<p className="font-medium text-foreground">{business.address || "Address not available"}</p>
+														<p className="text-sm text-muted-foreground">{business.city && business.state ? `${business.city}, ${business.state}` : "Location"}</p>
+													</div>
+												</div>
+												{business.website && (
+													<div className="flex items-center space-x-3">
+														<Globe className="w-5 h-5 text-muted-foreground" />
+														<Button variant="link" className="p-0 h-auto text-primary" onClick={() => window.open(business.website, "_blank")}>
+															Visit Website
+															<ExternalLink className="w-3 h-3 ml-1" />
+														</Button>
+													</div>
+												)}
+											</div>
+										</div>
+									</CardContent>
+								</Card>
+
+								{/* Enhanced Contact Section */}
+								<Suspense fallback={<SectionLoader />}>
+									<Card>
+										<CardHeader>
+											<CardTitle className="text-xl font-semibold text-foreground">Get In Touch</CardTitle>
+											<CardDescription className="text-muted-foreground">Ready to get started? Contact us today for more information</CardDescription>
+										</CardHeader>
+										<CardContent>
+											<EnhancedContact business={business} />
+										</CardContent>
+									</Card>
+								</Suspense>
+							</div>
+						)}
+
+						{activeTab === "location" && (
+							<div className="space-y-8">
+								<Card>
+									<CardHeader>
+										<CardTitle className="text-xl font-semibold text-foreground">Location & Business Hours</CardTitle>
+									</CardHeader>
+									<CardContent>
+										<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+											<div>
+												<h4 className="font-semibold text-foreground mb-3 flex items-center">
+													<MapPin className="w-4 h-4 mr-2" />
+													Location
+												</h4>
+												<div className="space-y-2">
+													<p className="font-medium text-foreground">{business.address || "Address not available"}</p>
+													<p className="text-sm text-muted-foreground">{business.city && business.state ? `${business.city}, ${business.state}` : "Location"}</p>
+													<p className="text-sm text-muted-foreground">Service Area: {business?.serviceArea?.primary || "Local area"}</p>
+												</div>
+											</div>
+											<div>
+												<h4 className="font-semibold text-foreground mb-3 flex items-center">
+													<Clock className="w-4 h-4 mr-2" />
+													Business Hours
+												</h4>
+												<div className="space-y-2">
+													{business.business_hours?.length > 0 ? (
+														business.business_hours.map((hours, index) => (
+															<div key={index} className="flex justify-between text-sm">
+																<span className="capitalize font-medium text-foreground">{hours.day_of_week}</span>
+																<span className={hours.is_closed ? "text-red-600 dark:text-red-400" : "text-green-600 dark:text-green-400"}>{hours.is_closed ? "Closed" : `${hours.open_time} - ${hours.close_time}`}</span>
+															</div>
+														))
+													) : (
+														<p className="text-muted-foreground text-sm">Contact for hours</p>
+													)}
+												</div>
+											</div>
+										</div>
+									</CardContent>
+								</Card>
+							</div>
+						)}
+
+						{activeTab === "credentials" && (
+							<div className="space-y-8">
+								<Suspense fallback={<SectionLoader />}>
+									<Card>
+										<CardHeader>
+											<CardTitle className="text-xl font-semibold text-foreground">Credentials & Certifications</CardTitle>
+										</CardHeader>
+										<CardContent>
+											<Credentials business={business} />
+										</CardContent>
+									</Card>
+								</Suspense>
+							</div>
+						)}
+
+						{activeTab === "expertise" && (
+							<div className="space-y-8">
+								<Suspense fallback={<SectionLoader />}>
+									<Card>
+										<CardHeader>
+											<CardTitle className="text-xl font-semibold text-foreground">Expertise & Team</CardTitle>
+										</CardHeader>
+										<CardContent>
+											<Expertise business={business} />
+										</CardContent>
+									</Card>
+								</Suspense>
+							</div>
+						)}
+
+						{activeTab === "booking" && (
+							<div className="space-y-8">
+								<Card>
+									<CardHeader>
+										<CardTitle className="text-xl font-semibold text-foreground">Book a Service</CardTitle>
+										<CardDescription className="text-muted-foreground">Schedule your appointment or consultation</CardDescription>
+									</CardHeader>
+									<CardContent>
+										<div className="space-y-6">
+											<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+												<Button size="lg" className="h-16">
+													<Calendar className="w-5 h-5 mr-2" />
+													Schedule Service
+												</Button>
+												<Button variant="outline" size="lg" className="h-16">
+													<Video className="w-5 h-5 mr-2" />
+													Video Consultation
+												</Button>
+											</div>
+											<Suspense fallback={<SectionLoader />}>
+												<Availability business={business} />
+											</Suspense>
+										</div>
+									</CardContent>
+								</Card>
+							</div>
+						)}
+
+						{activeTab === "warranty" && (
+							<div className="space-y-8">
+								<Suspense fallback={<SectionLoader />}>
+									<Card>
+										<CardHeader>
+											<CardTitle className="text-xl font-semibold text-foreground">Warranties & Guarantees</CardTitle>
+										</CardHeader>
+										<CardContent>
+											<WarrantyTracker business={business} />
+										</CardContent>
+									</Card>
+								</Suspense>
+							</div>
+						)}
+
+						{activeTab === "portfolio" && (
+							<div className="space-y-8">
+								<Card>
+									<CardHeader>
+										<CardTitle className="text-xl font-semibold text-foreground">Portfolio & Past Work</CardTitle>
+										<CardDescription className="text-muted-foreground">Browse our completed projects and success stories</CardDescription>
+									</CardHeader>
+									<CardContent>
+										{business.workGallery?.portfolio && (
+											<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+												{business.workGallery.portfolio.map((project, index) => (
+													<Card key={index} className="overflow-hidden">
+														<div className="aspect-video bg-white">
+															<img src={project.image} alt={project.title} className="w-full h-full object-cover" />
+														</div>
+														<CardContent className="p-4">
+															<h4 className="font-semibold text-foreground mb-2">{project.title}</h4>
+															<p className="text-sm text-muted-foreground mb-2">{project.description}</p>
+															<Badge variant="outline" className="text-xs">
+																{project.category}
+															</Badge>
+														</CardContent>
+													</Card>
+												))}
+											</div>
+										)}
+									</CardContent>
+								</Card>
+							</div>
+						)}
+
+						{activeTab === "before-after" && (
+							<div className="space-y-8">
+								<Card>
+									<CardHeader>
+										<CardTitle className="text-xl font-semibold text-foreground">Before & After Gallery</CardTitle>
+										<CardDescription className="text-muted-foreground">See the transformation we've achieved for our clients</CardDescription>
+									</CardHeader>
+									<CardContent>
+										{business.workGallery?.beforeAfter && (
+											<div className="space-y-8">
+												{business.workGallery.beforeAfter.map((project, index) => (
+													<Card key={index}>
+														<CardHeader>
+															<CardTitle className="text-lg">{project.title}</CardTitle>
+															<CardDescription>{project.description}</CardDescription>
+														</CardHeader>
+														<CardContent>
+															<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+																<div>
+																	<h4 className="font-medium text-foreground mb-2">Before</h4>
+																	<div className="aspect-video bg-white rounded border overflow-hidden">
+																		<img src={project.before} alt="Before" className="w-full h-full object-cover" />
+																	</div>
+																</div>
+																<div>
+																	<h4 className="font-medium text-foreground mb-2">After</h4>
+																	<div className="aspect-video bg-white rounded border overflow-hidden">
+																		<img src={project.after} alt="After" className="w-full h-full object-cover" />
+																	</div>
+																</div>
+															</div>
+														</CardContent>
+													</Card>
+												))}
+											</div>
+										)}
+									</CardContent>
+								</Card>
+							</div>
+						)}
+
+						{activeTab === "faq" && (
+							<div className="space-y-8">
+								<Suspense fallback={<SectionLoader />}>
+									<Card>
+										<CardHeader>
+											<CardTitle className="text-xl font-semibold text-foreground">Frequently Asked Questions</CardTitle>
+											<CardDescription className="text-muted-foreground">Get answers to common questions about our services</CardDescription>
+										</CardHeader>
+										<CardContent>
+											<FAQ business={business} />
+										</CardContent>
+									</Card>
+								</Suspense>
+							</div>
+						)}
+
+						{activeTab === "careers" && (
+							<div className="space-y-8">
+								<Suspense fallback={<SectionLoader />}>
+									<Card>
+										<CardHeader>
+											<CardTitle className="text-xl font-semibold text-foreground">Career Opportunities</CardTitle>
+											<CardDescription className="text-muted-foreground">Join our growing team</CardDescription>
+										</CardHeader>
+										<CardContent>
+											<Careers business={business} />
+										</CardContent>
+									</Card>
+								</Suspense>
+							</div>
+						)}
+
+						{activeTab === "operations" && (
+							<div className="space-y-8">
+								<Suspense fallback={<SectionLoader />}>
+									<Card>
+										<CardHeader>
+											<CardTitle className="text-xl font-semibold text-foreground">Business Operations</CardTitle>
+											<CardDescription className="text-muted-foreground">Our operational procedures and business processes</CardDescription>
+										</CardHeader>
+										<CardContent>
+											<BusinessOperations business={business} />
+										</CardContent>
+									</Card>
+								</Suspense>
+							</div>
+						)}
+
+						{activeTab === "certified-elite" && (
+							<div className="space-y-8">
+								<Suspense fallback={<SectionLoader />}>
+									<Card>
+										<CardHeader>
+											<CardTitle className="text-xl font-semibold text-foreground">Certified Elite Status</CardTitle>
+											<CardDescription className="text-muted-foreground">Elite certifications and premium recognition</CardDescription>
+										</CardHeader>
+										<CardContent>
+											<CertifiedElite business={business} />
+										</CardContent>
+									</Card>
+								</Suspense>
+							</div>
+						)}
+
+						{activeTab === "partnerships" && (
+							<div className="space-y-8">
+								<Suspense fallback={<SectionLoader />}>
+									<Card>
+										<CardHeader>
+											<CardTitle className="text-xl font-semibold text-foreground">Partnerships & Affiliations</CardTitle>
+											<CardDescription className="text-muted-foreground">Our business partnerships and professional network</CardDescription>
+										</CardHeader>
+										<CardContent>
+											<Partnerships business={business} />
+										</CardContent>
+									</Card>
+								</Suspense>
+							</div>
+						)}
+
+						{activeTab === "menu" && (
+							<div className="space-y-8">
+								<Suspense fallback={<SectionLoader />}>
+									<Card>
+										<CardHeader>
+											<CardTitle className="text-xl font-semibold text-foreground">Menu & Offerings</CardTitle>
+											<CardDescription className="text-muted-foreground">Browse our menu and available offerings</CardDescription>
+										</CardHeader>
+										<CardContent>
+											<MenuSection business={business} />
+										</CardContent>
+									</Card>
+								</Suspense>
+							</div>
+						)}
+
+						{activeTab === "automotive" && (
+							<div className="space-y-8">
+								<Suspense fallback={<SectionLoader />}>
+									<Card>
+										<CardHeader>
+											<CardTitle className="text-xl font-semibold text-foreground">Automotive Services</CardTitle>
+											<CardDescription className="text-muted-foreground">Specialized automotive and vehicle services</CardDescription>
+										</CardHeader>
+										<CardContent>
+											<AutomotiveServices business={business} />
+										</CardContent>
+									</Card>
+								</Suspense>
+							</div>
 						)}
 					</div>
 				</div>
 			</div>
+
+			{/* Enhanced Footer with Business Info */}
+			<footer className="bg-card border-t mt-16">
+				<div className="px-4 py-8 mx-auto max-w-screen-2xl lg:px-8">
+					<div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+						<div>
+							<h3 className="font-semibold text-lg mb-3 text-foreground">{business.name}</h3>
+							<p className="text-muted-foreground text-sm leading-relaxed mb-4">{business.description?.substring(0, 150) || "Professional service provider in your area."}</p>
+							<div className="flex items-center space-x-2 text-sm text-muted-foreground">
+								<Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+								<span>
+									{business.ratings?.overall || 4.5} ({business.reviewCount || 0} reviews)
+								</span>
+							</div>
+						</div>
+						<div>
+							<h4 className="font-semibold mb-3 text-foreground">Quick Links</h4>
+							<div className="space-y-2 text-sm">
+								<Button variant="link" className="p-0 h-auto font-normal text-muted-foreground hover:text-primary">
+									Services
+								</Button>
+								<Button variant="link" className="p-0 h-auto font-normal text-muted-foreground hover:text-primary">
+									Reviews
+								</Button>
+								<Button variant="link" className="p-0 h-auto font-normal text-muted-foreground hover:text-primary">
+									Contact
+								</Button>
+								<Button variant="link" className="p-0 h-auto font-normal text-muted-foreground hover:text-primary">
+									Book Now
+								</Button>
+							</div>
+						</div>
+						<div>
+							<h4 className="font-semibold mb-3 text-foreground">Contact</h4>
+							<div className="space-y-2 text-sm text-muted-foreground">
+								{business.phone && (
+									<div className="flex items-center space-x-2">
+										<Phone className="w-4 h-4" />
+										<span>{business.phone}</span>
+									</div>
+								)}
+								{business.address && (
+									<div className="flex items-start space-x-2">
+										<MapPin className="w-4 h-4 mt-0.5" />
+										<span>{business.address}</span>
+									</div>
+								)}
+								{business.website && (
+									<div className="flex items-center space-x-2">
+										<Globe className="w-4 h-4" />
+										<Button variant="link" className="p-0 h-auto text-sm text-muted-foreground hover:text-primary" onClick={() => window.open(business.website, "_blank")}>
+											Visit Website
+										</Button>
+									</div>
+								)}
+							</div>
+						</div>
+					</div>
+					<Separator className="my-6" />
+					<div className="flex items-center justify-between text-sm text-muted-foreground">
+						<p>© 2024 {business.name}. All rights reserved.</p>
+						<p>Last updated: {new Date().toLocaleDateString()}</p>
+					</div>
+				</div>
+			</footer>
 		</div>
 	);
 }
+

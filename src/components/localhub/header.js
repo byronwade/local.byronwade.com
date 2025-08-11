@@ -15,11 +15,11 @@ import { useTheme } from "next-themes";
 import { useAuthStore } from "@store/auth";
 
 const navigation = [
-	{ name: "Dashboard", href: "/dashboard/localhub" },
-	{ name: "Businesses", href: "/dashboard/localhub/businesses" },
-	{ name: "Analytics", href: "/dashboard/localhub/analytics" },
-	{ name: "Customization", href: "/dashboard/localhub/customization" },
-	{ name: "Settings", href: "/dashboard/localhub/settings" },
+	{ name: "Hub Dashboard", href: "/dashboard/localhub" },
+	{ name: "Directory Businesses", href: "/dashboard/localhub/businesses" },
+	{ name: "Community Analytics", href: "/dashboard/localhub/analytics" },
+	{ name: "Hub Customization", href: "/dashboard/localhub/customization" },
+	{ name: "Platform Settings", href: "/dashboard/localhub/settings" },
 ];
 
 // Mock data for LocalHub directories
@@ -87,11 +87,12 @@ export default function Header() {
 				<div className="flex flex-row items-center space-x-6 w-full">
 					<Link href="/" className="flex items-center space-x-3 text-xl font-bold group">
 						<div className="relative">
-							<Image src="/logos/ThorbisLogo.webp" alt="Thorbis LocalHub" width={50} height={50} className="w-12 h-12 transition-transform duration-200 group-hover:scale-105" />
+							<Image src="/logos/ThorbisLogo.webp" alt="Thorbis Business Directory" width={50} height={50} className="w-12 h-12 transition-transform duration-200 group-hover:scale-105" />
+							<div className="absolute inset-0 transition-opacity duration-200 rounded-full opacity-0 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 group-hover:opacity-100" />
 						</div>
 						<div className="hidden sm:block">
-							<h1 className="text-lg font-bold leading-none text-foreground">LocalHub</h1>
-							<p className="text-xs text-muted-foreground">Directory Manager</p>
+							<h1 className="text-lg font-bold leading-none text-foreground">Thorbis LocalHub</h1>
+							<p className="text-xs text-muted-foreground">Community Directory Platform</p>
 						</div>
 					</Link>
 
@@ -275,15 +276,20 @@ export default function Header() {
 							</DropdownMenuGroup>
 							<DropdownMenuSeparator />
 							<DropdownMenuItem asChild>
-								<Link href="/dashboard/user">
+								<Link href="/dashboard/business">
 									<Building2 className="mr-2 w-4 h-4" />
-									<span>User Dashboard</span>
+									<span>Business Directory Portal</span>
+								</Link>
+							</DropdownMenuItem>
+							<DropdownMenuItem asChild>
+								<Link href="/dashboard/user">
+									<span>Personal Dashboard</span>
 								</Link>
 							</DropdownMenuItem>
 							<DropdownMenuSeparator />
 							<DropdownMenuItem asChild>
 								<Link href="/">
-									<span>Back to Main Site</span>
+									<span>Back to Directory</span>
 								</Link>
 							</DropdownMenuItem>
 							<DropdownMenuSeparator />

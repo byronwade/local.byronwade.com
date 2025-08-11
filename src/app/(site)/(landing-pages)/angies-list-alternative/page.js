@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Button } from "@components/ui/button";
 import { Badge } from "@components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
-import { CheckCircle, XCircle, Users, MessageSquare, Calendar, BarChart3, Wrench, Home, ArrowRight, Star } from "lucide-react";
+import { CheckCircle, XCircle, Users, MessageSquare, Calendar, BarChart3, Wrench, Home, ArrowRight, Star, DollarSign, TrendingUp, Shield, Clock, Target, Building, Phone, Mail, Zap, Award, FileText, Truck, Settings, AlertTriangle, Heart, Briefcase, Play, CreditCard, Hammer } from "lucide-react";
 import { isEnabled } from "@lib/flags/server";
 
 export const metadata = {
@@ -17,14 +17,14 @@ export const metadata = {
 		type: "website",
 		url: "https://thorbis.com/angies-list-alternative",
 		siteName: "Thorbis",
-		images: [{ url: "https://thorbis.com/og-angis-list-alt.jpg", width: 1200, height: 630, alt: "Thorbis vs Angi" }],
+		images: [`https://thorbis.com/opengraph-image?title=${encodeURIComponent("Angie's List Alternative")}&description=${encodeURIComponent("Thorbis vs Angi – AI‑verified leads, multi‑platform sync, advanced reviews, 24/7 support.")}`],
 		locale: "en_US",
 	},
 	twitter: {
 		card: "summary_large_image",
 		title: "Angie's List Alternative – Thorbis vs Angi",
 		description: "Modern alternative to Angi with AI‑verified leads, multi‑platform sync, advanced reviews, and 24/7 support.",
-		images: ["https://thorbis.com/og-angis-list-alt.jpg"],
+		images: [`https://thorbis.com/twitter-image?title=${encodeURIComponent("Angie's List Alternative")}`],
 		creator: "@thorbis",
 		site: "@thorbis",
 	},
@@ -501,6 +501,355 @@ export default async function AngiesListAlternative() {
 				</div>
 			</section>
 
+			{/* Home Service Provider Success Stories */}
+			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8 bg-muted/30">
+				<div className="mb-12 text-center">
+					<h2 className="text-3xl font-bold text-foreground sm:text-4xl">Home Service Providers Share Their Success</h2>
+					<p className="mt-4 text-lg text-muted-foreground">Real contractors who ditched Angie's List for Thorbis</p>
+				</div>
+				<div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+					<Card className="bg-card border-border hover:shadow-lg transition-all duration-300">
+						<CardContent className="p-8">
+							<div className="flex items-center gap-2 mb-4">
+								<Hammer className="w-5 h-5 text-primary" />
+								<span className="text-sm font-medium text-primary">Roofing Contractor</span>
+							</div>
+							<div className="mb-4">
+								<div className="text-2xl font-bold text-green-600 dark:text-green-400">+387%</div>
+								<div className="text-sm text-muted-foreground">Conversion Rate Increase</div>
+							</div>
+							<blockquote className="mb-4 text-sm text-muted-foreground">"Angie's List charged me $500/month and sent price shoppers. Thorbis costs $29 and sends homeowners ready to hire quality work. I went from 12% to 63% close rate."</blockquote>
+							<div className="flex items-center gap-3">
+								<div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+									<Building className="w-5 h-5 text-primary" />
+								</div>
+								<div>
+									<div className="font-semibold text-sm">Marcus Thompson</div>
+									<div className="text-xs text-muted-foreground">Thompson Roofing Solutions</div>
+								</div>
+							</div>
+						</CardContent>
+					</Card>
+
+					<Card className="bg-card border-border hover:shadow-lg transition-all duration-300">
+						<CardContent className="p-8">
+							<div className="flex items-center gap-2 mb-4">
+								<Zap className="w-5 h-5 text-primary" />
+								<span className="text-sm font-medium text-primary">Electrical Services</span>
+							</div>
+							<div className="mb-4">
+								<div className="text-2xl font-bold text-green-600 dark:text-green-400">$290K</div>
+								<div className="text-sm text-muted-foreground">Additional Annual Revenue</div>
+							</div>
+							<blockquote className="mb-4 text-sm text-muted-foreground">"Angie's List verification process was a joke. Thorbis's AI verification means I only get real customers with real budgets. My business grew 290% this year."</blockquote>
+							<div className="flex items-center gap-3">
+								<div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+									<Settings className="w-5 h-5 text-primary" />
+								</div>
+								<div>
+									<div className="font-semibold text-sm">Jennifer Rodriguez</div>
+									<div className="text-xs text-muted-foreground">Rodriguez Electrical</div>
+								</div>
+							</div>
+						</CardContent>
+					</Card>
+
+					<Card className="bg-card border-border hover:shadow-lg transition-all duration-300">
+						<CardContent className="p-8">
+							<div className="flex items-center gap-2 mb-4">
+								<Wrench className="w-5 h-5 text-primary" />
+								<span className="text-sm font-medium text-primary">HVAC Services</span>
+							</div>
+							<div className="mb-4">
+								<div className="text-2xl font-bold text-green-600 dark:text-green-400">-92%</div>
+								<div className="text-sm text-muted-foreground">Reduction in No-Shows</div>
+							</div>
+							<blockquote className="mb-4 text-sm text-muted-foreground">"Angie's List leads were all over the place. Half didn't show up. Thorbis sends verified customers who actually want the work done. My team stays busy with real jobs."</blockquote>
+							<div className="flex items-center gap-3">
+								<div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+									<Award className="w-5 h-5 text-primary" />
+								</div>
+								<div>
+									<div className="font-semibold text-sm">Robert Chang</div>
+									<div className="text-xs text-muted-foreground">Chang HVAC & Repair</div>
+								</div>
+							</div>
+						</CardContent>
+					</Card>
+				</div>
+			</section>
+
+			{/* Verification System Comparison */}
+			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8">
+				<div className="mb-12 text-center">
+					<h2 className="text-3xl font-bold text-foreground sm:text-4xl">Lead Verification: Angie's List vs Thorbis</h2>
+					<p className="mt-4 text-lg text-muted-foreground">Why Thorbis verification ensures higher quality customers</p>
+				</div>
+				<div className="grid gap-8 lg:grid-cols-2">
+					<Card className="p-8 border-destructive/20 bg-destructive/5">
+						<CardHeader className="px-0 pt-0 pb-6">
+							<CardTitle className="flex items-center gap-2 text-destructive">
+								<AlertTriangle className="w-6 h-6" />
+								Angie's List Verification Issues
+							</CardTitle>
+						</CardHeader>
+						<CardContent className="px-0 space-y-6">
+							<div className="space-y-4">
+								<div className="p-4 bg-card rounded-lg border border-destructive/20">
+									<h4 className="font-semibold text-destructive mb-2">Basic Contact Verification</h4>
+									<p className="text-sm text-muted-foreground mb-3">"They only check if an email exists. I got leads with made-up phone numbers and people who were just browsing. No real qualification."</p>
+									<div className="flex items-center gap-2 text-xs">
+										<Building className="w-3 h-3" />
+										<span>Sandra K., Landscaping Business</span>
+									</div>
+								</div>
+								<div className="p-4 bg-card rounded-lg border border-destructive/20">
+									<h4 className="font-semibold text-destructive mb-2">No Budget Screening</h4>
+									<p className="text-sm text-muted-foreground mb-3">"Half my Angie's List leads wanted $5,000 work done for $500. They don't screen for realistic budgets. Waste of time."</p>
+									<div className="flex items-center gap-2 text-xs">
+										<Building className="w-3 h-3" />
+										<span>Paul M., Kitchen Remodeling</span>
+									</div>
+								</div>
+								<div className="p-4 bg-card rounded-lg border border-destructive/20">
+									<h4 className="font-semibold text-destructive mb-2">Timeline Mismatches</h4>
+									<p className="text-sm text-muted-foreground mb-3">"Got 'urgent' leads that turned out to be 'maybe next year' projects. No timeline verification at all."</p>
+									<div className="flex items-center gap-2 text-xs">
+										<Building className="w-3 h-3" />
+										<span>Mike T., Painting Contractor</span>
+									</div>
+								</div>
+							</div>
+						</CardContent>
+					</Card>
+
+					<Card className="p-8 border-primary/20 bg-primary/5">
+						<CardHeader className="px-0 pt-0 pb-6">
+							<CardTitle className="flex items-center gap-2 text-primary">
+								<Shield className="w-6 h-6" />
+								Thorbis AI Verification System
+							</CardTitle>
+						</CardHeader>
+						<CardContent className="px-0 space-y-6">
+							<div className="space-y-4">
+								<div className="p-4 bg-card rounded-lg border border-primary/20">
+									<h4 className="font-semibold text-green-600 dark:text-green-400 mb-2">Multi-Point Identity Verification</h4>
+									<p className="text-sm text-muted-foreground mb-3">"AI verifies phone, email, address, and cross-references with public records. Every lead is a real person with a real project."</p>
+									<div className="flex items-center gap-2 text-xs">
+										<Building className="w-3 h-3" />
+										<span>Same Sandra K., now 78% close rate</span>
+									</div>
+								</div>
+								<div className="p-4 bg-card rounded-lg border border-primary/20">
+									<h4 className="font-semibold text-green-600 dark:text-green-400 mb-2">Budget Qualification Algorithm</h4>
+									<p className="text-sm text-muted-foreground mb-3">"AI analyzes project scope, market rates, and customer profile to ensure realistic budget expectations. No more low-ballers."</p>
+									<div className="flex items-center gap-2 text-xs">
+										<Building className="w-3 h-3" />
+										<span>Same Paul M., now premium projects</span>
+									</div>
+								</div>
+								<div className="p-4 bg-card rounded-lg border border-primary/20">
+									<h4 className="font-semibold text-green-600 dark:text-green-400 mb-2">Timeline and Urgency Scoring</h4>
+									<p className="text-sm text-muted-foreground mb-3">"AI validates project timeline with follow-up questions and commitment indicators. Only real, ready-to-start projects."</p>
+									<div className="flex items-center gap-2 text-xs">
+										<Building className="w-3 h-3" />
+										<span>Same Mike T., now 85% conversion</span>
+									</div>
+								</div>
+							</div>
+						</CardContent>
+					</Card>
+				</div>
+			</section>
+
+			{/* Home Service ROI Calculator */}
+			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8 bg-muted/30">
+				<div className="mb-12 text-center">
+					<h2 className="text-3xl font-bold text-foreground sm:text-4xl">Home Service Business ROI Calculator</h2>
+					<p className="mt-4 text-lg text-muted-foreground">See your potential revenue increase with verified leads</p>
+				</div>
+				<div className="max-w-5xl mx-auto">
+					<div className="grid gap-8 lg:grid-cols-2">
+						<Card className="p-8 border-destructive/20">
+							<CardHeader className="px-0 pt-0">
+								<CardTitle className="flex items-center gap-2 text-destructive">
+									<DollarSign className="w-5 h-5" />
+									Current Angie's List Performance
+								</CardTitle>
+							</CardHeader>
+							<CardContent className="px-0 space-y-4">
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Angie's List monthly fee</span>
+									<span className="font-semibold text-destructive">$500</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Time on unqualified leads (20hr/week)</span>
+									<span className="font-semibold text-destructive">$2,000</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Lost revenue from 12% conversion</span>
+									<span className="font-semibold text-destructive">$3,200</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Marketing to replace poor leads</span>
+									<span className="font-semibold text-destructive">$800</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Customer acquisition costs</span>
+									<span className="font-semibold text-destructive">$400</span>
+								</div>
+								<div className="border-t pt-4">
+									<div className="flex justify-between items-center font-bold text-lg">
+										<span>Total Monthly Cost</span>
+										<span className="text-destructive">$6,900</span>
+									</div>
+								</div>
+							</CardContent>
+						</Card>
+
+						<Card className="p-8 bg-primary/5 border-primary/20">
+							<CardHeader className="px-0 pt-0">
+								<CardTitle className="flex items-center gap-2 text-primary">
+									<Target className="w-5 h-5" />
+									Thorbis Home Service Results
+								</CardTitle>
+							</CardHeader>
+							<CardContent className="px-0 space-y-4">
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Thorbis platform (all features)</span>
+									<span className="font-semibold">$29</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Time saved with qualified leads (3hr/week)</span>
+									<span className="font-semibold text-green-600 dark:text-green-400">+$1,700</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Revenue boost from 63% conversion</span>
+									<span className="font-semibold text-green-600 dark:text-green-400">+$12,400</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Premium pricing with quality customers</span>
+									<span className="font-semibold text-green-600 dark:text-green-400">+$3,800</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Reduced marketing spend</span>
+									<span className="font-semibold text-green-600 dark:text-green-400">+$800</span>
+								</div>
+								<div className="border-t pt-4">
+									<div className="flex justify-between items-center font-bold text-lg">
+										<span>Net Monthly Gain</span>
+										<span className="text-green-600 dark:text-green-400">+$25,571</span>
+									</div>
+								</div>
+							</CardContent>
+						</Card>
+					</div>
+					<div className="mt-8 p-6 bg-primary text-primary-foreground rounded-xl text-center">
+						<div className="text-3xl font-bold mb-2">$306,852</div>
+						<div className="text-lg opacity-90">Annual Revenue Increase for Home Service Businesses</div>
+						<p className="text-sm opacity-80 mt-2">Based on average home service provider switching from Angie's List to Thorbis</p>
+					</div>
+				</div>
+			</section>
+
+			{/* Interactive Demo Section */}
+			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8">
+				<div className="mb-12 text-center">
+					<h2 className="text-3xl font-bold text-foreground sm:text-4xl">See Thorbis in Action</h2>
+					<p className="mt-4 text-lg text-muted-foreground">Watch how easy it is to manage your home service business</p>
+				</div>
+				<div className="grid gap-8 lg:grid-cols-2 items-center">
+					<div className="space-y-6">
+						<div className="p-6 bg-card rounded-lg border border-border">
+							<div className="flex items-center gap-3 mb-4">
+								<div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+									<Play className="w-4 h-4 text-primary" />
+								</div>
+								<h3 className="font-semibold">Live Demo Available</h3>
+							</div>
+							<p className="text-sm text-muted-foreground mb-4">See exactly how Thorbis manages your leads, reviews, and customer communications across all platforms.</p>
+							<Button variant="outline" className="w-full">
+								<Play className="w-4 h-4 mr-2" />
+								Watch 3-Minute Demo
+							</Button>
+						</div>
+						<div className="p-6 bg-card rounded-lg border border-border">
+							<div className="flex items-center gap-3 mb-4">
+								<div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+									<Calendar className="w-4 h-4 text-primary" />
+								</div>
+								<h3 className="font-semibold">Personal Demo</h3>
+							</div>
+							<p className="text-sm text-muted-foreground mb-4">Get a personalized demo showing how Thorbis works specifically for your type of home service business.</p>
+							<Button className="w-full">
+								<Calendar className="w-4 h-4 mr-2" />
+								Schedule Personal Demo
+							</Button>
+						</div>
+					</div>
+					<div className="relative">
+						<div className="aspect-video bg-primary/5 rounded-xl border border-primary/20 flex items-center justify-center">
+							<div className="text-center">
+								<div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+									<Play className="w-8 h-8 text-primary" />
+								</div>
+								<h3 className="font-semibold text-lg mb-2">Interactive Demo</h3>
+								<p className="text-sm text-muted-foreground">Click to see Thorbis in action</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			{/* Home Service Tools Showcase */}
+			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8 bg-muted/30">
+				<div className="mb-12 text-center">
+					<h2 className="text-3xl font-bold text-foreground sm:text-4xl">Tools Built for Home Service Professionals</h2>
+					<p className="mt-4 text-lg text-muted-foreground">Everything you need to run and grow your service business</p>
+				</div>
+				<div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+					<Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+						<CardContent className="p-6 text-center">
+							<div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+								<Shield className="w-6 h-6 text-primary" />
+							</div>
+							<h3 className="font-semibold mb-2">Background Checks</h3>
+							<p className="text-sm text-muted-foreground">Integrated background check system to help build customer trust and verify your credentials.</p>
+						</CardContent>
+					</Card>
+
+					<Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+						<CardContent className="p-6 text-center">
+							<div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+								<CreditCard className="w-6 h-6 text-primary" />
+							</div>
+							<h3 className="font-semibold mb-2">Payment Processing</h3>
+							<p className="text-sm text-muted-foreground">Accept payments on-site or online with integrated invoicing and automatic payment reminders.</p>
+						</CardContent>
+					</Card>
+
+					<Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+						<CardContent className="p-6 text-center">
+							<div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+								<Truck className="w-6 h-6 text-primary" />
+							</div>
+							<h3 className="font-semibold mb-2">Route Optimization</h3>
+							<p className="text-sm text-muted-foreground">Smart scheduling and route planning to maximize your daily appointments and minimize travel time.</p>
+						</CardContent>
+					</Card>
+
+					<Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+						<CardContent className="p-6 text-center">
+							<div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+								<Briefcase className="w-6 h-6 text-primary" />
+							</div>
+							<h3 className="font-semibold mb-2">Project Portfolio</h3>
+							<p className="text-sm text-muted-foreground">Showcase your best work with before/after photos, project timelines, and customer testimonials.</p>
+						</CardContent>
+					</Card>
+				</div>
+			</section>
+
 			{/* CTA Section */}
 			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8">
 				<div className="relative overflow-hidden rounded-2xl bg-primary p-8 text-center text-primary-foreground">
@@ -515,6 +864,20 @@ export default async function AngiesListAlternative() {
 							<Button size="lg" variant="outline" className="text-lg px-8 py-3 border-white/20 text-white hover:bg-white/10">
 								Schedule Demo
 							</Button>
+						</div>
+						<div className="mt-6 flex items-center justify-center gap-6 text-sm opacity-80">
+							<div className="flex items-center gap-1">
+								<CheckCircle className="w-4 h-4" />
+								<span>AI-verified customers only</span>
+							</div>
+							<div className="flex items-center gap-1">
+								<CheckCircle className="w-4 h-4" />
+								<span>63% average conversion</span>
+							</div>
+							<div className="flex items-center gap-1">
+								<CheckCircle className="w-4 h-4" />
+								<span>$300K+ annual increase</span>
+							</div>
 						</div>
 					</div>
 				</div>

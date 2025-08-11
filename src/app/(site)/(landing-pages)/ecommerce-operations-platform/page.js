@@ -9,14 +9,21 @@ export const metadata = {
 		type: "website",
 		url: "https://thorbis.com/ecommerce-operations-platform",
 		siteName: "Thorbis",
-		images: [{ url: "https://thorbis.com/og-ecommerce.jpg", width: 1200, height: 630, alt: "Thorbis eCommerce Operations Platform" }],
+		images: [
+			{
+				url: `https://thorbis.com/opengraph-image?title=${encodeURIComponent("eCommerce Operations Platform")}&description=${encodeURIComponent("Orders, inventory, fulfillment, and support in one place.")}`,
+				width: 1200,
+				height: 630,
+				alt: "Thorbis eCommerce Operations Platform",
+			},
+		],
 		locale: "en_US",
 	},
 	twitter: {
 		card: "summary_large_image",
 		title: "eCommerce Operations Platform – Fulfillment & Growth",
 		description: "Orders, inventory, fulfillment, and support in one place.",
-		images: ["https://thorbis.com/og-ecommerce.jpg"],
+		images: [`https://thorbis.com/twitter-image?title=${encodeURIComponent("eCommerce Operations Platform")}`],
 		creator: "@thorbis",
 		site: "@thorbis",
 	},

@@ -9,14 +9,21 @@ export const metadata = {
 		type: "website",
 		url: "https://thorbis.com/retail-operations-platform",
 		siteName: "Thorbis",
-		images: [{ url: "https://thorbis.com/og-retail.jpg", width: 1200, height: 630, alt: "Thorbis Retail Operations Platform" }],
+		images: [
+			{
+				url: `https://thorbis.com/opengraph-image?title=${encodeURIComponent("Retail Operations Platform")}&description=${encodeURIComponent("POS, inventory, staffing, and footfall analytics.")}`,
+				width: 1200,
+				height: 630,
+				alt: "Thorbis Retail Operations Platform",
+			},
+		],
 		locale: "en_US",
 	},
 	twitter: {
 		card: "summary_large_image",
 		title: "Retail Operations Platform – Convert More",
 		description: "POS, inventory, staffing, and footfall analytics.",
-		images: ["https://thorbis.com/og-retail.jpg"],
+		images: [`https://thorbis.com/twitter-image?title=${encodeURIComponent("Retail Operations Platform")}`],
 		creator: "@thorbis",
 		site: "@thorbis",
 	},

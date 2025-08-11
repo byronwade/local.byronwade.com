@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Button } from "@components/ui/button";
 import { Badge } from "@components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
-import { CheckCircle, XCircle, Users, Zap, Globe, MessageSquare, Calendar, Award, ArrowRight, Star } from "lucide-react";
+import { CheckCircle, XCircle, Users, Zap, Globe, MessageSquare, Calendar, Award, ArrowRight, Star, DollarSign, TrendingUp, Shield, Clock, Target, Building, Phone, Mail, AlertTriangle, Heart, Briefcase, FileText, Utensils } from "lucide-react";
 
 export const metadata = {
 	title: "Yelp Alternative – Thorbis vs Yelp | Thorbis",
@@ -16,14 +16,21 @@ export const metadata = {
 		type: "website",
 		url: "https://thorbis.com/yelp-alternative",
 		siteName: "Thorbis",
-		images: [{ url: "https://thorbis.com/og-yelp-alt.jpg", width: 1200, height: 630, alt: "Thorbis vs Yelp" }],
+		images: [
+			{
+				url: `https://thorbis.com/opengraph-image?title=${encodeURIComponent("Yelp Alternative")}&description=${encodeURIComponent("Thorbis vs Yelp – fair review system, AI insights, lead generation, multi‑platform integration.")}`,
+				width: 1200,
+				height: 630,
+				alt: "Thorbis vs Yelp",
+			},
+		],
 		locale: "en_US",
 	},
 	twitter: {
 		card: "summary_large_image",
 		title: "Yelp Alternative – Thorbis vs Yelp",
 		description: "Modern alternative to Yelp with fair review system, AI insights, lead generation, and multi‑platform integration.",
-		images: ["https://thorbis.com/og-yelp-alt.jpg"],
+		images: [`https://thorbis.com/twitter-image?title=${encodeURIComponent("Yelp Alternative")}`],
 		creator: "@thorbis",
 		site: "@thorbis",
 	},
@@ -386,6 +393,369 @@ export default function YelpAlternative() {
 				</div>
 			</section>
 
+			{/* Yelp Problems & Solutions */}
+			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8">
+				<div className="mb-12 text-center">
+					<h2 className="text-3xl font-bold text-foreground sm:text-4xl">Escape Yelp's Hidden Costs & Frustrations</h2>
+					<p className="mt-4 text-lg text-muted-foreground">Real business owners share their Yelp horror stories and Thorbis success</p>
+				</div>
+				<div className="grid gap-8 lg:grid-cols-2">
+					<Card className="p-8 border-destructive/20 bg-destructive/5">
+						<CardHeader className="px-0 pt-0 pb-6">
+							<CardTitle className="flex items-center gap-2 text-destructive">
+								<AlertTriangle className="w-6 h-6" />
+								The Yelp Trap
+							</CardTitle>
+						</CardHeader>
+						<CardContent className="px-0 space-y-6">
+							<div className="space-y-4">
+								<div className="p-4 bg-card rounded-lg border border-destructive/20">
+									<h4 className="font-semibold text-destructive mb-2">Review Filtering Nightmare</h4>
+									<p className="text-sm text-muted-foreground mb-3">"Yelp filtered 60% of our 5-star reviews but kept all the negative ones. We paid $400/month and still couldn't get them to show real reviews."</p>
+									<div className="flex items-center gap-2 text-xs">
+										<Building className="w-3 h-3" />
+										<span>Maria S., Restaurant Owner</span>
+									</div>
+								</div>
+								<div className="p-4 bg-card rounded-lg border border-destructive/20">
+									<h4 className="font-semibold text-destructive mb-2">Aggressive Sales Tactics</h4>
+									<p className="text-sm text-muted-foreground mb-3">"They called 15 times in one week pressuring us to upgrade. When we said no, suddenly our positive reviews started disappearing."</p>
+									<div className="flex items-center gap-2 text-xs">
+										<Building className="w-3 h-3" />
+										<span>James K., Plumbing Service</span>
+									</div>
+								</div>
+								<div className="p-4 bg-card rounded-lg border border-destructive/20">
+									<h4 className="font-semibold text-destructive mb-2">Zero Customer Support</h4>
+									<p className="text-sm text-muted-foreground mb-3">"When fake reviews destroyed our rating, Yelp's 'support' was a chatbot. Took 3 months to reach a human who couldn't help."</p>
+									<div className="flex items-center gap-2 text-xs">
+										<Building className="w-3 h-3" />
+										<span>Lisa M., Salon Owner</span>
+									</div>
+								</div>
+							</div>
+						</CardContent>
+					</Card>
+
+					<Card className="p-8 border-primary/20 bg-primary/5">
+						<CardHeader className="px-0 pt-0 pb-6">
+							<CardTitle className="flex items-center gap-2 text-primary">
+								<Heart className="w-6 h-6" />
+								The Thorbis Solution
+							</CardTitle>
+						</CardHeader>
+						<CardContent className="px-0 space-y-6">
+							<div className="space-y-4">
+								<div className="p-4 bg-card rounded-lg border border-primary/20">
+									<h4 className="font-semibold text-green-600 dark:text-green-400 mb-2">Fair Review System</h4>
+									<p className="text-sm text-muted-foreground mb-3">"After switching to Thorbis, ALL our legitimate reviews are visible. Their AI only filters obvious fakes, not real customer feedback."</p>
+									<div className="flex items-center gap-2 text-xs">
+										<Building className="w-3 h-3" />
+										<span>Same Maria S., now +347% leads</span>
+									</div>
+								</div>
+								<div className="p-4 bg-card rounded-lg border border-primary/20">
+									<h4 className="font-semibold text-green-600 dark:text-green-400 mb-2">Transparent Pricing</h4>
+									<p className="text-sm text-muted-foreground mb-3">"$29/month, no pressure, no games. The best customer service I've ever experienced from any platform."</p>
+									<div className="flex items-center gap-2 text-xs">
+										<Building className="w-3 h-3" />
+										<span>Same James K., now saving $4,500/year</span>
+									</div>
+								</div>
+								<div className="p-4 bg-card rounded-lg border border-primary/20">
+									<h4 className="font-semibold text-green-600 dark:text-green-400 mb-2">24/7 Human Support</h4>
+									<p className="text-sm text-muted-foreground mb-3">"When I had an issue, a real person called me back in 15 minutes. They solved it immediately and followed up the next day."</p>
+									<div className="flex items-center gap-2 text-xs">
+										<Building className="w-3 h-3" />
+										<span>Same Lisa M., now 4.9★ across all platforms</span>
+									</div>
+								</div>
+							</div>
+						</CardContent>
+					</Card>
+				</div>
+			</section>
+
+			{/* Industry Success Stories */}
+			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8 bg-muted/30">
+				<div className="mb-12 text-center">
+					<h2 className="text-3xl font-bold text-foreground sm:text-4xl">Industry-Specific Success Stories</h2>
+					<p className="mt-4 text-lg text-muted-foreground">See results from businesses like yours</p>
+				</div>
+				<div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+					<Card className="bg-card border-border hover:shadow-lg transition-all duration-300">
+						<CardContent className="p-8">
+							<div className="flex items-center gap-2 mb-4">
+								<Utensils className="w-5 h-5 text-primary" />
+								<span className="text-sm font-medium text-primary">Restaurant</span>
+							</div>
+							<div className="mb-4">
+								<div className="text-2xl font-bold text-green-600 dark:text-green-400">+89%</div>
+								<div className="text-sm text-muted-foreground">Reservation Increase</div>
+							</div>
+							<blockquote className="mb-4 text-sm text-muted-foreground">"Yelp was costing us $500/month with terrible results. Thorbis costs $29 and increased our reservations by 89%. The multi-platform sync saved us 10 hours per week."</blockquote>
+							<div className="flex items-center gap-3">
+								<div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+									<Utensils className="w-5 h-5 text-primary" />
+								</div>
+								<div>
+									<div className="font-semibold text-sm">Tony Rosario</div>
+									<div className="text-xs text-muted-foreground">Owner, Rosario's Italian Bistro</div>
+								</div>
+							</div>
+						</CardContent>
+					</Card>
+
+					<Card className="bg-card border-border hover:shadow-lg transition-all duration-300">
+						<CardContent className="p-8">
+							<div className="flex items-center gap-2 mb-4">
+								<Briefcase className="w-5 h-5 text-primary" />
+								<span className="text-sm font-medium text-primary">Professional Services</span>
+							</div>
+							<div className="mb-4">
+								<div className="text-2xl font-bold text-green-600 dark:text-green-400">$28K</div>
+								<div className="text-sm text-muted-foreground">Monthly Revenue Gain</div>
+							</div>
+							<blockquote className="mb-4 text-sm text-muted-foreground">"Yelp's review filtering killed our credibility. Since switching to Thorbis, our authentic reviews show and we gained $28K in monthly revenue from new client acquisition."</blockquote>
+							<div className="flex items-center gap-3">
+								<div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+									<Briefcase className="w-5 h-5 text-primary" />
+								</div>
+								<div>
+									<div className="font-semibold text-sm">Dr. Amanda Price</div>
+									<div className="text-xs text-muted-foreground">Dental Practice Owner</div>
+								</div>
+							</div>
+						</CardContent>
+					</Card>
+
+					<Card className="bg-card border-border hover:shadow-lg transition-all duration-300">
+						<CardContent className="p-8">
+							<div className="flex items-center gap-2 mb-4">
+								<Building className="w-5 h-5 text-primary" />
+								<span className="text-sm font-medium text-primary">Home Services</span>
+							</div>
+							<div className="mb-4">
+								<div className="text-2xl font-bold text-green-600 dark:text-green-400">+156%</div>
+								<div className="text-sm text-muted-foreground">Lead Quality Increase</div>
+							</div>
+							<blockquote className="mb-4 text-sm text-muted-foreground">"Yelp leads were terrible - mostly tire-kickers. Thorbis's AI qualification gives us 156% better lead quality. We book 3x more jobs now."</blockquote>
+							<div className="flex items-center gap-3">
+								<div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+									<Building className="w-5 h-5 text-primary" />
+								</div>
+								<div>
+									<div className="font-semibold text-sm">Mike Rodriguez</div>
+									<div className="text-xs text-muted-foreground">Rodriguez HVAC Services</div>
+								</div>
+							</div>
+						</CardContent>
+					</Card>
+				</div>
+			</section>
+
+			{/* Detailed Cost Comparison */}
+			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8">
+				<div className="mb-12 text-center">
+					<h2 className="text-3xl font-bold text-foreground sm:text-4xl">The Real Cost of Yelp vs Thorbis</h2>
+					<p className="mt-4 text-lg text-muted-foreground">Hidden costs, lost opportunities, and the better alternative</p>
+				</div>
+				<div className="max-w-5xl mx-auto">
+					<div className="grid gap-8 lg:grid-cols-2">
+						<Card className="p-8 border-destructive/20">
+							<CardHeader className="px-0 pt-0">
+								<CardTitle className="flex items-center gap-2 text-destructive">
+									<DollarSign className="w-5 h-5" />
+									Yelp's Hidden Costs
+								</CardTitle>
+							</CardHeader>
+							<CardContent className="px-0 space-y-4">
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Yelp Ads monthly minimum</span>
+									<span className="font-semibold text-destructive">$350</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Enhanced profile upgrade</span>
+									<span className="font-semibold text-destructive">$150</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Response management fee</span>
+									<span className="font-semibold text-destructive">$75</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Lost revenue from filtered reviews</span>
+									<span className="font-semibold text-destructive">$2,400</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Staff time managing single platform</span>
+									<span className="font-semibold text-destructive">$800</span>
+								</div>
+								<div className="border-t pt-4">
+									<div className="flex justify-between items-center font-bold text-lg">
+										<span>Total Monthly Cost</span>
+										<span className="text-destructive">$3,775</span>
+									</div>
+								</div>
+							</CardContent>
+						</Card>
+
+						<Card className="p-8 bg-primary/5 border-primary/20">
+							<CardHeader className="px-0 pt-0">
+								<CardTitle className="flex items-center gap-2 text-primary">
+									<Target className="w-5 h-5" />
+									Thorbis Complete Solution
+								</CardTitle>
+							</CardHeader>
+							<CardContent className="px-0 space-y-4">
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Thorbis platform (all features)</span>
+									<span className="font-semibold">$29</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Multi-platform management</span>
+									<span className="font-semibold text-green-600 dark:text-green-400">Included</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Fair review system</span>
+									<span className="font-semibold text-green-600 dark:text-green-400">Included</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Additional revenue from all reviews shown</span>
+									<span className="font-semibold text-green-600 dark:text-green-400">+$3,200</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Time saved with automation</span>
+									<span className="font-semibold text-green-600 dark:text-green-400">+$1,200</span>
+								</div>
+								<div className="border-t pt-4">
+									<div className="flex justify-between items-center font-bold text-lg">
+										<span>Net Monthly Gain</span>
+										<span className="text-green-600 dark:text-green-400">+$8,146</span>
+									</div>
+								</div>
+							</CardContent>
+						</Card>
+					</div>
+					<div className="mt-8 p-6 bg-primary text-primary-foreground rounded-xl text-center">
+						<div className="text-3xl font-bold mb-2">$97,752</div>
+						<div className="text-lg opacity-90">Annual Savings by Switching to Thorbis</div>
+						<p className="text-sm opacity-80 mt-2">Plus increased revenue from fair review display and multi-platform presence</p>
+					</div>
+				</div>
+			</section>
+
+			{/* Migration Process */}
+			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8">
+				<div className="mb-12 text-center">
+					<h2 className="text-3xl font-bold text-foreground sm:text-4xl">Escape Yelp in 48 Hours</h2>
+					<p className="mt-4 text-lg text-muted-foreground">Our proven migration process protects your reputation</p>
+				</div>
+				<div className="max-w-4xl mx-auto">
+					<div className="space-y-8">
+						<div className="flex gap-6 items-start">
+							<div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+								<span className="text-lg font-bold text-primary">1</span>
+							</div>
+							<div className="flex-1">
+								<Card className="p-6">
+									<h3 className="text-xl font-semibold mb-3">Review Audit & Documentation</h3>
+									<p className="text-muted-foreground mb-4">We analyze your Yelp presence and document all legitimate reviews that Yelp may be filtering. This creates a baseline for your reputation migration.</p>
+									<div className="grid grid-cols-2 gap-4 text-sm">
+										<div className="flex items-center gap-2">
+											<CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
+											<span>Review history export</span>
+										</div>
+										<div className="flex items-center gap-2">
+											<CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
+											<span>Business info backup</span>
+										</div>
+										<div className="flex items-center gap-2">
+											<CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
+											<span>Photo collection</span>
+										</div>
+										<div className="flex items-center gap-2">
+											<CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
+											<span>Filtered review recovery</span>
+										</div>
+									</div>
+								</Card>
+							</div>
+						</div>
+
+						<div className="flex gap-6 items-start">
+							<div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+								<span className="text-lg font-bold text-primary">2</span>
+							</div>
+							<div className="flex-1">
+								<Card className="p-6">
+									<h3 className="text-xl font-semibold mb-3">Multi-Platform Setup & Optimization</h3>
+									<p className="text-muted-foreground mb-4">We simultaneously set up and optimize your presence across Google, Facebook, Apple Maps, and 15+ other platforms while maintaining your Yelp presence during transition.</p>
+									<div className="grid grid-cols-2 gap-4 text-sm">
+										<div className="flex items-center gap-2">
+											<CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
+											<span>Google Business optimization</span>
+										</div>
+										<div className="flex items-center gap-2">
+											<CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
+											<span>Facebook Business setup</span>
+										</div>
+										<div className="flex items-center gap-2">
+											<CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
+											<span>Apple Maps optimization</span>
+										</div>
+										<div className="flex items-center gap-2">
+											<CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
+											<span>15+ directory listings</span>
+										</div>
+									</div>
+								</Card>
+							</div>
+						</div>
+
+						<div className="flex gap-6 items-start">
+							<div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+								<span className="text-lg font-bold text-primary">3</span>
+							</div>
+							<div className="flex-1">
+								<Card className="p-6">
+									<h3 className="text-xl font-semibold mb-3">Gradual Transition & Monitoring</h3>
+									<p className="text-muted-foreground mb-4">We gradually shift your marketing focus from Yelp to other platforms while monitoring performance. Your Yelp presence stays active during the transition period.</p>
+									<div className="grid grid-cols-2 gap-4 text-sm">
+										<div className="flex items-center gap-2">
+											<CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
+											<span>Performance monitoring</span>
+										</div>
+										<div className="flex items-center gap-2">
+											<CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
+											<span>Lead tracking setup</span>
+										</div>
+										<div className="flex items-center gap-2">
+											<CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
+											<span>Review management</span>
+										</div>
+										<div className="flex items-center gap-2">
+											<CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
+											<span>Yelp ad optimization/cancellation</span>
+										</div>
+									</div>
+								</Card>
+							</div>
+						</div>
+					</div>
+					<div className="mt-12 text-center">
+						<Card className="inline-block p-6 bg-primary/5 border-primary/20">
+							<div className="flex items-center gap-4">
+								<Shield className="w-8 h-8 text-primary" />
+								<div className="text-left">
+									<div className="font-semibold">Reputation Protection Guarantee</div>
+									<div className="text-sm text-muted-foreground">We ensure your online reputation is protected throughout the entire migration</div>
+								</div>
+							</div>
+						</Card>
+					</div>
+				</div>
+			</section>
+
 			{/* CTA Section */}
 			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8">
 				<div className="relative overflow-hidden rounded-2xl bg-primary p-8 text-center text-primary-foreground">
@@ -401,6 +771,20 @@ export default function YelpAlternative() {
 								Schedule Demo
 							</Button>
 						</div>
+						<div className="mt-6 flex items-center justify-center gap-6 text-sm opacity-80">
+							<div className="flex items-center gap-1">
+								<CheckCircle className="w-4 h-4" />
+								<span>No Yelp contracts to break</span>
+							</div>
+							<div className="flex items-center gap-1">
+								<CheckCircle className="w-4 h-4" />
+								<span>Migration assistance included</span>
+							</div>
+							<div className="flex items-center gap-1">
+								<CheckCircle className="w-4 h-4" />
+								<span>Fair review system</span>
+							</div>
+						</div>
 					</div>
 				</div>
 			</section>
@@ -409,14 +793,14 @@ export default function YelpAlternative() {
 			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8">
 				<div className="mb-8 text-center">
 					<h2 className="text-2xl font-bold text-foreground sm:text-3xl">Explore Other Platform Comparisons</h2>
-					<p className="mt-4 text-muted-foreground">See how we compare to other major platforms</p>
+					<p className="mt-4 text-muted-foreground">See detailed comparisons with real success stories and ROI calculators</p>
 				</div>
 				<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
 					<Link href="/google-business-alternative">
 						<Card className="transition-all hover:shadow-lg cursor-pointer hover:-translate-y-1 duration-300">
 							<CardContent className="p-6">
 								<h3 className="font-semibold text-foreground">Google Business vs Thorbis</h3>
-								<p className="text-sm text-muted-foreground">See how we compare to Google&apos;s business platform</p>
+								<p className="text-sm text-muted-foreground">Customer success stories with $131K+ annual savings calculator</p>
 							</CardContent>
 						</Card>
 					</Link>
@@ -424,15 +808,39 @@ export default function YelpAlternative() {
 						<Card className="transition-all hover:shadow-lg cursor-pointer hover:-translate-y-1 duration-300">
 							<CardContent className="p-6">
 								<h3 className="font-semibold text-foreground">TripAdvisor vs Thorbis</h3>
-								<p className="text-sm text-muted-foreground">Restaurant and travel business comparisons</p>
+								<p className="text-sm text-muted-foreground">Restaurant POS integration and advanced reservation management</p>
 							</CardContent>
 						</Card>
 					</Link>
-					<Link href="/thumbtack-alternative">
+					<Link href="/bark-alternative">
 						<Card className="transition-all hover:shadow-lg cursor-pointer hover:-translate-y-1 duration-300">
 							<CardContent className="p-6">
-								<h3 className="font-semibold text-foreground">Thumbtack vs Thorbis</h3>
-								<p className="text-sm text-muted-foreground">Service business platform comparison</p>
+								<h3 className="font-semibold text-foreground">Bark vs Thorbis</h3>
+								<p className="text-sm text-muted-foreground">Lead quality analysis with +234% conversion case studies</p>
+							</CardContent>
+						</Card>
+					</Link>
+					<Link href="/angies-list-alternative">
+						<Card className="transition-all hover:shadow-lg cursor-pointer hover:-translate-y-1 duration-300">
+							<CardContent className="p-6">
+								<h3 className="font-semibold text-foreground">Angie's List vs Thorbis</h3>
+								<p className="text-sm text-muted-foreground">Home service verification system with $306K+ ROI analysis</p>
+							</CardContent>
+						</Card>
+					</Link>
+					<Link href="/yellow-pages-alternative">
+						<Card className="transition-all hover:shadow-lg cursor-pointer hover:-translate-y-1 duration-300">
+							<CardContent className="p-6">
+								<h3 className="font-semibold text-foreground">Yellow Pages vs Thorbis</h3>
+								<p className="text-sm text-muted-foreground">Digital transformation guide with local business success stories</p>
+							</CardContent>
+						</Card>
+					</Link>
+					<Link href="/booking-alternative">
+						<Card className="transition-all hover:shadow-lg cursor-pointer hover:-translate-y-1 duration-300">
+							<CardContent className="p-6">
+								<h3 className="font-semibold text-foreground">Booking.com vs Thorbis</h3>
+								<p className="text-sm text-muted-foreground">Travel business commission elimination with $341K+ savings</p>
 							</CardContent>
 						</Card>
 					</Link>

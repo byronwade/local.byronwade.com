@@ -9,14 +9,21 @@ export const metadata = {
 		type: "website",
 		url: "https://thorbis.com/business-management-platform",
 		siteName: "Thorbis",
-		images: [{ url: "https://thorbis.com/og-business-management.jpg", width: 1200, height: 630, alt: "Thorbis Business Management Platform" }],
+		images: [
+			{
+				url: `https://thorbis.com/opengraph-image?title=${encodeURIComponent("Business Management Platform")}&description=${encodeURIComponent("CRM, estimates, invoicing, payments, and analytics in one platform.")}`,
+				width: 1200,
+				height: 630,
+				alt: "Thorbis Business Management Platform",
+			},
+		],
 		locale: "en_US",
 	},
 	twitter: {
 		card: "summary_large_image",
 		title: "Business Management Platform – All-in-One",
 		description: "CRM, estimates, invoicing, payments, and analytics in one platform.",
-		images: ["https://thorbis.com/og-business-management.jpg"],
+		images: [`https://thorbis.com/twitter-image?title=${encodeURIComponent("Business Management Platform")}`],
 		creator: "@thorbis",
 		site: "@thorbis",
 	},

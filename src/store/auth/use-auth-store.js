@@ -188,7 +188,13 @@ const useAuthStore = create((set, get) => ({
 
 		try {
 			const { error } = await supabase.auth.signOut();
-			if (error) throw error;
+			if (error) {
+				const isMissingSession = error?.name === "AuthSessionMissingError" || error?.status === 400 || (error?.__isAuthError && !get().session);
+				if (!isMissingSession) {
+					throw error;
+				}
+				logger.debug("Sign out with no active session; treating as success");
+			}
 
 			// Clear all user data
 			set({

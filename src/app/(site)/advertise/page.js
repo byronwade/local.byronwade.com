@@ -32,7 +32,7 @@ export const metadata = {
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://images.unsplash.com/photo-1556740738-b6a63e27c4df?q=80&w=2070&auto=format&fit=crop",
+				url: `https://thorbis.com/opengraph-image?title=${encodeURIComponent("Advertise on Thorbis")}&description=${encodeURIComponent("Reach local customers with targeted ads and measurable results.")}`,
 				width: 1200,
 				height: 630,
 				alt: "Thorbis Advertising Platform",
@@ -45,7 +45,7 @@ export const metadata = {
 		card: "summary_large_image",
 		title: "Advertise on Thorbis - Reach Local Customers",
 		description: "Grow your business with targeted local advertising on Thorbis.",
-		images: ["https://images.unsplash.com/photo-1556740738-b6a63e27c4df?q=80&w=2070&auto=format&fit=crop"],
+		images: [`https://thorbis.com/twitter-image?title=${encodeURIComponent("Advertise on Thorbis")}`],
 	},
 	alternates: {
 		canonical: "https://thorbis.com/advertise",

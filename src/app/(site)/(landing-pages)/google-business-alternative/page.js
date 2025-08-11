@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Button } from "@components/ui/button";
 import { Badge } from "@components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
-import { CheckCircle, XCircle, Users, Globe, MessageSquare, Calendar, BarChart3, Settings, ArrowRight, Star } from "lucide-react";
+import { CheckCircle, XCircle, Users, Globe, MessageSquare, Calendar, BarChart3, Settings, ArrowRight, Star, DollarSign, TrendingUp, Shield, Clock, Target, Award, Phone, Mail, Zap, Building, MapPin, Play } from "lucide-react";
 
 export const metadata = {
 	title: "Google Business Alternative – Thorbis vs GBP | Thorbis",
@@ -16,14 +16,21 @@ export const metadata = {
 		type: "website",
 		url: "https://thorbis.com/google-business-alternative",
 		siteName: "Thorbis",
-		images: [{ url: "https://thorbis.com/og-google-business-alt.jpg", width: 1200, height: 630, alt: "Thorbis vs Google Business" }],
+		images: [
+			{
+				url: `https://thorbis.com/opengraph-image?title=${encodeURIComponent("Google Business Alternative")}&description=${encodeURIComponent("Thorbis vs GBP – AI analytics, lead generation, multi‑platform sync, customization.")}`,
+				width: 1200,
+				height: 630,
+				alt: "Thorbis vs Google Business",
+			},
+		],
 		locale: "en_US",
 	},
 	twitter: {
 		card: "summary_large_image",
 		title: "Google Business Alternative – Thorbis vs GBP",
 		description: "Modern alternative to Google Business Profile with AI analytics, lead generation, multi‑platform sync, and full customization.",
-		images: ["https://thorbis.com/og-google-business-alt.jpg"],
+		images: [`https://thorbis.com/twitter-image?title=${encodeURIComponent("Google Business Alternative")}`],
 		creator: "@thorbis",
 		site: "@thorbis",
 	},
@@ -381,6 +388,396 @@ export default function GoogleBusinessAlternative() {
 				</div>
 			</section>
 
+			{/* Customer Success Stories */}
+			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8">
+				<div className="mb-12 text-center">
+					<h2 className="text-3xl font-bold text-foreground sm:text-4xl">Real Results from Real Businesses</h2>
+					<p className="mt-4 text-lg text-muted-foreground">See how businesses like yours are winning with Thorbis</p>
+				</div>
+				<div className="grid gap-8 md:grid-cols-3">
+					<Card className="bg-card border-border hover:shadow-lg transition-all duration-300">
+						<CardContent className="p-8">
+							<div className="flex items-center gap-2 mb-4">
+								<Award className="w-5 h-5 text-primary" />
+								<span className="text-sm font-medium text-primary">Case Study</span>
+							</div>
+							<div className="mb-4">
+								<div className="text-2xl font-bold text-green-600 dark:text-green-400">+347%</div>
+								<div className="text-sm text-muted-foreground">Lead Increase</div>
+							</div>
+							<blockquote className="mb-4 text-sm text-muted-foreground">"After switching from Google Business to Thorbis, our leads increased by 347% in just 3 months. The AI-powered insights helped us optimize our presence across all platforms."</blockquote>
+							<div className="flex items-center gap-3">
+								<div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+									<Building className="w-5 h-5 text-primary" />
+								</div>
+								<div>
+									<div className="font-semibold text-sm">Sarah Chen</div>
+									<div className="text-xs text-muted-foreground">Owner, Chen's Auto Repair</div>
+								</div>
+							</div>
+						</CardContent>
+					</Card>
+
+					<Card className="bg-card border-border hover:shadow-lg transition-all duration-300">
+						<CardContent className="p-8">
+							<div className="flex items-center gap-2 mb-4">
+								<TrendingUp className="w-5 h-5 text-primary" />
+								<span className="text-sm font-medium text-primary">Success Story</span>
+							</div>
+							<div className="mb-4">
+								<div className="text-2xl font-bold text-green-600 dark:text-green-400">$45K</div>
+								<div className="text-sm text-muted-foreground">Monthly Revenue Increase</div>
+							</div>
+							<blockquote className="mb-4 text-sm text-muted-foreground">"Thorbis's multi-platform sync saved us 15 hours per week and increased our monthly revenue by $45,000. The ROI was immediate."</blockquote>
+							<div className="flex items-center gap-3">
+								<div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+									<Users className="w-5 h-5 text-primary" />
+								</div>
+								<div>
+									<div className="font-semibold text-sm">Mike Rodriguez</div>
+									<div className="text-xs text-muted-foreground">Director, Elite Fitness Studios</div>
+								</div>
+							</div>
+						</CardContent>
+					</Card>
+
+					<Card className="bg-card border-border hover:shadow-lg transition-all duration-300">
+						<CardContent className="p-8">
+							<div className="flex items-center gap-2 mb-4">
+								<Clock className="w-5 h-5 text-primary" />
+								<span className="text-sm font-medium text-primary">Time Savings</span>
+							</div>
+							<div className="mb-4">
+								<div className="text-2xl font-bold text-green-600 dark:text-green-400">20hrs</div>
+								<div className="text-sm text-muted-foreground">Weekly Time Saved</div>
+							</div>
+							<blockquote className="mb-4 text-sm text-muted-foreground">"No more logging into 5 different platforms. Thorbis manages everything from one dashboard. I save 20 hours per week and focus on what matters - my customers."</blockquote>
+							<div className="flex items-center gap-3">
+								<div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+									<MapPin className="w-5 h-5 text-primary" />
+								</div>
+								<div>
+									<div className="font-semibold text-sm">Jennifer Walsh</div>
+									<div className="text-xs text-muted-foreground">Owner, Walsh Dental Practice</div>
+								</div>
+							</div>
+						</CardContent>
+					</Card>
+				</div>
+			</section>
+
+			{/* ROI Calculator Section */}
+			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8 bg-muted/30">
+				<div className="mb-12 text-center">
+					<h2 className="text-3xl font-bold text-foreground sm:text-4xl">Calculate Your ROI</h2>
+					<p className="mt-4 text-lg text-muted-foreground">See how much you could save and earn with Thorbis</p>
+				</div>
+				<div className="max-w-4xl mx-auto">
+					<div className="grid gap-8 lg:grid-cols-2">
+						<Card className="p-8">
+							<CardHeader className="px-0 pt-0">
+								<CardTitle className="flex items-center gap-2">
+									<DollarSign className="w-5 h-5 text-primary" />
+									Current Costs with Google Business
+								</CardTitle>
+							</CardHeader>
+							<CardContent className="px-0 space-y-4">
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Google Ads monthly spend</span>
+									<span className="font-semibold">$2,500</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Staff time managing platforms (20hr/week)</span>
+									<span className="font-semibold">$2,000</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Lost leads due to poor management</span>
+									<span className="font-semibold">$3,200</span>
+								</div>
+								<div className="border-t pt-4">
+									<div className="flex justify-between items-center font-bold">
+										<span>Total Monthly Cost</span>
+										<span className="text-destructive">$7,700</span>
+									</div>
+								</div>
+							</CardContent>
+						</Card>
+
+						<Card className="p-8 bg-primary/5 border-primary/20">
+							<CardHeader className="px-0 pt-0">
+								<CardTitle className="flex items-center gap-2 text-primary">
+									<Target className="w-5 h-5" />
+									Projected Results with Thorbis
+								</CardTitle>
+							</CardHeader>
+							<CardContent className="px-0 space-y-4">
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Thorbis platform cost</span>
+									<span className="font-semibold">$29</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Reduced staff time (5hr/week)</span>
+									<span className="font-semibold">$500</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Increased leads (+40% conversion)</span>
+									<span className="font-semibold text-green-600 dark:text-green-400">+$4,800</span>
+								</div>
+								<div className="border-t pt-4">
+									<div className="flex justify-between items-center font-bold">
+										<span>Net Monthly Gain</span>
+										<span className="text-green-600 dark:text-green-400">+$10,971</span>
+									</div>
+								</div>
+							</CardContent>
+						</Card>
+					</div>
+					<div className="mt-8 p-6 bg-primary text-primary-foreground rounded-xl text-center">
+						<div className="text-3xl font-bold mb-2">$131,652</div>
+						<div className="text-lg opacity-90">Projected Annual Savings & Growth</div>
+						<Button variant="secondary" size="lg" className="mt-4 bg-white text-primary hover:bg-white/90">
+							Get Your Custom ROI Report
+							<ArrowRight className="ml-2 w-4 h-4" />
+						</Button>
+					</div>
+				</div>
+			</section>
+
+			{/* Industry-Specific Benefits */}
+			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8">
+				<div className="mb-12 text-center">
+					<h2 className="text-3xl font-bold text-foreground sm:text-4xl">Built for Every Industry</h2>
+					<p className="mt-4 text-lg text-muted-foreground">Specialized features for your business type</p>
+				</div>
+				<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+					<Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+						<CardContent className="p-6 text-center">
+							<div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+								<Building className="w-6 h-6 text-primary" />
+							</div>
+							<h3 className="font-semibold mb-2">Restaurants</h3>
+							<p className="text-sm text-muted-foreground">Menu management, reservation sync, review monitoring across TripAdvisor, Yelp, Google</p>
+						</CardContent>
+					</Card>
+
+					<Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+						<CardContent className="p-6 text-center">
+							<div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+								<Settings className="w-6 h-6 text-primary" />
+							</div>
+							<h3 className="font-semibold mb-2">Service Businesses</h3>
+							<p className="text-sm text-muted-foreground">Lead qualification, appointment booking, service area management, contractor verification</p>
+						</CardContent>
+					</Card>
+
+					<Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+						<CardContent className="p-6 text-center">
+							<div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+								<Shield className="w-6 h-6 text-primary" />
+							</div>
+							<h3 className="font-semibold mb-2">Healthcare</h3>
+							<p className="text-sm text-muted-foreground">HIPAA compliance, appointment scheduling, patient review management, insurance verification</p>
+						</CardContent>
+					</Card>
+
+					<Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+						<CardContent className="p-6 text-center">
+							<div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+								<Users className="w-6 h-6 text-primary" />
+							</div>
+							<h3 className="font-semibold mb-2">Retail</h3>
+							<p className="text-sm text-muted-foreground">Inventory sync, promotional campaigns, local event marketing, customer loyalty programs</p>
+						</CardContent>
+					</Card>
+				</div>
+			</section>
+
+			{/* Migration Guide */}
+			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8">
+				<div className="mb-12 text-center">
+					<h2 className="text-3xl font-bold text-foreground sm:text-4xl">Seamless Migration in 3 Steps</h2>
+					<p className="mt-4 text-lg text-muted-foreground">We handle the heavy lifting - zero downtime guaranteed</p>
+				</div>
+				<div className="grid gap-8 md:grid-cols-3">
+					<div className="relative">
+						<Card className="h-full">
+							<CardContent className="p-8 text-center">
+								<div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+									<span className="text-2xl font-bold text-primary">1</span>
+								</div>
+								<h3 className="text-xl font-semibold mb-4">Connect & Audit</h3>
+								<p className="text-muted-foreground mb-6">Our migration specialists connect to your Google Business Profile and audit your current setup. We identify optimization opportunities and create a custom migration plan.</p>
+								<div className="space-y-2 text-sm">
+									<div className="flex items-center gap-2">
+										<CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
+										<span>Profile analysis</span>
+									</div>
+									<div className="flex items-center gap-2">
+										<CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
+										<span>Review history import</span>
+									</div>
+									<div className="flex items-center gap-2">
+										<CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
+										<span>Photo migration</span>
+									</div>
+								</div>
+							</CardContent>
+						</Card>
+						<div className="hidden md:block absolute top-1/2 -right-4 w-8 h-0.5 bg-primary/30"></div>
+					</div>
+
+					<div className="relative">
+						<Card className="h-full">
+							<CardContent className="p-8 text-center">
+								<div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+									<span className="text-2xl font-bold text-primary">2</span>
+								</div>
+								<h3 className="text-xl font-semibold mb-4">Optimize & Expand</h3>
+								<p className="text-muted-foreground mb-6">We optimize your existing presence and expand to additional platforms. AI-powered optimization ensures maximum visibility and lead generation potential.</p>
+								<div className="space-y-2 text-sm">
+									<div className="flex items-center gap-2">
+										<CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
+										<span>Multi-platform setup</span>
+									</div>
+									<div className="flex items-center gap-2">
+										<CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
+										<span>SEO optimization</span>
+									</div>
+									<div className="flex items-center gap-2">
+										<CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
+										<span>Lead generation setup</span>
+									</div>
+								</div>
+							</CardContent>
+						</Card>
+						<div className="hidden md:block absolute top-1/2 -right-4 w-8 h-0.5 bg-primary/30"></div>
+					</div>
+
+					<div>
+						<Card className="h-full">
+							<CardContent className="p-8 text-center">
+								<div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+									<span className="text-2xl font-bold text-primary">3</span>
+								</div>
+								<h3 className="text-xl font-semibold mb-4">Launch & Monitor</h3>
+								<p className="text-muted-foreground mb-6">Your enhanced presence goes live across all platforms. We monitor performance and provide ongoing optimization recommendations to maximize your ROI.</p>
+								<div className="space-y-2 text-sm">
+									<div className="flex items-center gap-2">
+										<CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
+										<span>Performance monitoring</span>
+									</div>
+									<div className="flex items-center gap-2">
+										<CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
+										<span>AI recommendations</span>
+									</div>
+									<div className="flex items-center gap-2">
+										<CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
+										<span>Ongoing support</span>
+									</div>
+								</div>
+							</CardContent>
+						</Card>
+					</div>
+				</div>
+				<div className="mt-12 text-center">
+					<Card className="inline-block p-6 bg-primary/5 border-primary/20">
+						<div className="flex items-center gap-4">
+							<Shield className="w-8 h-8 text-primary" />
+							<div className="text-left">
+								<div className="font-semibold">Zero Downtime Guarantee</div>
+								<div className="text-sm text-muted-foreground">Your business stays visible throughout the entire migration process</div>
+							</div>
+						</div>
+					</Card>
+				</div>
+			</section>
+
+			{/* Interactive Demo Section */}
+			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8 bg-muted/30">
+				<div className="mb-12 text-center">
+					<h2 className="text-3xl font-bold text-foreground sm:text-4xl">See Thorbis in Action</h2>
+					<p className="mt-4 text-lg text-muted-foreground">Interactive demo - no signup required</p>
+				</div>
+				<div className="grid gap-8 lg:grid-cols-2 items-center">
+					<div>
+						<Card className="p-8 bg-card border-border hover:shadow-lg transition-shadow">
+							<div className="aspect-video bg-muted rounded-lg flex items-center justify-center mb-6 relative overflow-hidden">
+								<div className="absolute inset-0 bg-black/20"></div>
+								<Button size="lg" className="relative z-10">
+									<Play className="w-6 h-6 mr-2" />
+									Watch 2-Minute Demo
+								</Button>
+							</div>
+							<h3 className="text-xl font-semibold mb-4">Live Dashboard Preview</h3>
+							<p className="text-muted-foreground mb-6">See exactly how Thorbis manages your business presence across Google, Yelp, Facebook, and 15+ other platforms from one unified dashboard.</p>
+							<div className="grid grid-cols-2 gap-4 text-sm">
+								<div className="flex items-center gap-2">
+									<Zap className="w-4 h-4 text-primary" />
+									<span>Real-time sync</span>
+								</div>
+								<div className="flex items-center gap-2">
+									<BarChart3 className="w-4 h-4 text-primary" />
+									<span>AI insights</span>
+								</div>
+								<div className="flex items-center gap-2">
+									<Users className="w-4 h-4 text-primary" />
+									<span>Lead tracking</span>
+								</div>
+								<div className="flex items-center gap-2">
+									<MessageSquare className="w-4 h-4 text-primary" />
+									<span>Review management</span>
+								</div>
+							</div>
+						</Card>
+					</div>
+					<div className="space-y-6">
+						<Card className="p-6">
+							<div className="flex items-center gap-4 mb-4">
+								<div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+									<Phone className="w-6 h-6 text-primary" />
+								</div>
+								<div>
+									<h4 className="font-semibold">Book a Personal Demo</h4>
+									<p className="text-sm text-muted-foreground">15-minute walkthrough with migration specialist</p>
+								</div>
+							</div>
+							<Button className="w-full">
+								Schedule Your Demo
+								<ArrowRight className="ml-2 w-4 h-4" />
+							</Button>
+						</Card>
+
+						<Card className="p-6">
+							<div className="flex items-center gap-4 mb-4">
+								<div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+									<Mail className="w-6 h-6 text-primary" />
+								</div>
+								<div>
+									<h4 className="font-semibold">Free Migration Audit</h4>
+									<p className="text-sm text-muted-foreground">Get a detailed report of optimization opportunities</p>
+								</div>
+							</div>
+							<Button variant="outline" className="w-full">
+								Get Free Audit
+								<Target className="ml-2 w-4 h-4" />
+							</Button>
+						</Card>
+
+						<div className="p-4 bg-primary/5 rounded-lg border border-primary/20">
+							<div className="flex items-center gap-2 mb-2">
+								<Clock className="w-4 h-4 text-primary" />
+								<span className="text-sm font-semibold text-primary">Migration Timeline</span>
+							</div>
+							<div className="text-sm text-muted-foreground">
+								<div>• Day 1: Connect & audit your accounts</div>
+								<div>• Day 2-3: Setup and optimize all platforms</div>
+								<div>• Day 4: Launch with full monitoring</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
 			{/* CTA Section */}
 			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8">
 				<div className="relative overflow-hidden rounded-2xl bg-primary p-8 text-center text-primary-foreground">
@@ -396,6 +793,20 @@ export default function GoogleBusinessAlternative() {
 								Schedule Demo
 							</Button>
 						</div>
+						<div className="mt-6 flex items-center justify-center gap-6 text-sm opacity-80">
+							<div className="flex items-center gap-1">
+								<CheckCircle className="w-4 h-4" />
+								<span>No long-term contract</span>
+							</div>
+							<div className="flex items-center gap-1">
+								<CheckCircle className="w-4 h-4" />
+								<span>Migration included</span>
+							</div>
+							<div className="flex items-center gap-1">
+								<CheckCircle className="w-4 h-4" />
+								<span>24/7 support</span>
+							</div>
+						</div>
 					</div>
 				</div>
 			</section>
@@ -404,14 +815,46 @@ export default function GoogleBusinessAlternative() {
 			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8">
 				<div className="mb-8 text-center">
 					<h2 className="text-2xl font-bold text-foreground sm:text-3xl">Explore Other Platform Comparisons</h2>
-					<p className="mt-4 text-muted-foreground">See how we compare to other major platforms</p>
+					<p className="mt-4 text-muted-foreground">See how Thorbis outperforms other major business platforms</p>
 				</div>
 				<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
 					<Link href="/yelp-alternative">
 						<Card className="transition-all hover:shadow-lg cursor-pointer hover:-translate-y-1 duration-300">
 							<CardContent className="p-6">
 								<h3 className="font-semibold text-foreground">Yelp vs Thorbis</h3>
-								<p className="text-sm text-muted-foreground">See how we compare to Yelp&apos;s business platform</p>
+								<p className="text-sm text-muted-foreground">Industry-specific comparisons with cost analysis and migration timeline</p>
+							</CardContent>
+						</Card>
+					</Link>
+					<Link href="/bark-alternative">
+						<Card className="transition-all hover:shadow-lg cursor-pointer hover:-translate-y-1 duration-300">
+							<CardContent className="p-6">
+								<h3 className="font-semibold text-foreground">Bark vs Thorbis</h3>
+								<p className="text-sm text-muted-foreground">Service contractor success stories with +234% conversion increases</p>
+							</CardContent>
+						</Card>
+					</Link>
+					<Link href="/angies-list-alternative">
+						<Card className="transition-all hover:shadow-lg cursor-pointer hover:-translate-y-1 duration-300">
+							<CardContent className="p-6">
+								<h3 className="font-semibold text-foreground">Angie's List vs Thorbis</h3>
+								<p className="text-sm text-muted-foreground">Home service provider success stories with $306K+ annual gains</p>
+							</CardContent>
+						</Card>
+					</Link>
+					<Link href="/booking-alternative">
+						<Card className="transition-all hover:shadow-lg cursor-pointer hover:-translate-y-1 duration-300">
+							<CardContent className="p-6">
+								<h3 className="font-semibold text-foreground">Booking.com vs Thorbis</h3>
+								<p className="text-sm text-muted-foreground">Travel business ROI calculator showing $341K+ annual savings</p>
+							</CardContent>
+						</Card>
+					</Link>
+					<Link href="/expedia-alternative">
+						<Card className="transition-all hover:shadow-lg cursor-pointer hover:-translate-y-1 duration-300">
+							<CardContent className="p-6">
+								<h3 className="font-semibold text-foreground">Expedia vs Thorbis</h3>
+								<p className="text-sm text-muted-foreground">Commission elimination strategies with $528K+ total benefits</p>
 							</CardContent>
 						</Card>
 					</Link>
@@ -419,15 +862,7 @@ export default function GoogleBusinessAlternative() {
 						<Card className="transition-all hover:shadow-lg cursor-pointer hover:-translate-y-1 duration-300">
 							<CardContent className="p-6">
 								<h3 className="font-semibold text-foreground">TripAdvisor vs Thorbis</h3>
-								<p className="text-sm text-muted-foreground">Restaurant and travel business comparisons</p>
-							</CardContent>
-						</Card>
-					</Link>
-					<Link href="/thumbtack-alternative">
-						<Card className="transition-all hover:shadow-lg cursor-pointer hover:-translate-y-1 duration-300">
-							<CardContent className="p-6">
-								<h3 className="font-semibold text-foreground">Thumbtack vs Thorbis</h3>
-								<p className="text-sm text-muted-foreground">Service business platform comparison</p>
+								<p className="text-sm text-muted-foreground">Restaurant POS integration and reservation system comparison</p>
 							</CardContent>
 						</Card>
 					</Link>

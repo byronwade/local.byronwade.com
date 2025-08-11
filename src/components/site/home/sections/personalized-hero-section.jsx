@@ -9,8 +9,8 @@
 import React, { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Search, MapPin, TrendingUp, Star, Users, Clock } from "lucide-react";
-import { cn } from "@lib/utils";
-import { logger } from "@lib/utils/logger";
+import { cn } from "@utils";
+import { logger } from "@utils/logger";
 
 export default function PersonalizedHeroSection({ section, onInteraction, isPersonalized = false, personalizationScore = 0, userId, sessionId, className = "", ...props }) {
 	const [searchQuery, setSearchQuery] = useState("");

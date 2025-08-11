@@ -9,14 +9,21 @@ export const metadata = {
 		type: "website",
 		url: "https://thorbis.com/automotive-shop-software",
 		siteName: "Thorbis",
-		images: [{ url: "https://thorbis.com/og-automotive.jpg", width: 1200, height: 630, alt: "Thorbis Automotive Shop Software" }],
+		images: [
+			{
+				url: `https://thorbis.com/opengraph-image?title=${encodeURIComponent("Automotive Shop Software")}&description=${encodeURIComponent("Service bay scheduling, POS, inspections, CRM, and analytics.")}`,
+				width: 1200,
+				height: 630,
+				alt: "Thorbis Automotive Shop Software",
+			},
+		],
 		locale: "en_US",
 	},
 	twitter: {
 		card: "summary_large_image",
 		title: "Automotive Shop Software – Throughput & Revenue",
 		description: "Service bay scheduling, POS, inspections, CRM, and analytics.",
-		images: ["https://thorbis.com/og-automotive.jpg"],
+		images: [`https://thorbis.com/twitter-image?title=${encodeURIComponent("Automotive Shop Software")}`],
 		creator: "@thorbis",
 		site: "@thorbis",
 	},

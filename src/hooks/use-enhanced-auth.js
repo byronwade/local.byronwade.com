@@ -503,7 +503,14 @@ export function useEnhancedAuth() {
 			const { error } = await supabase.auth.signOut();
 
 			if (error) {
-				logger.error("Logout error:", error);
+				// Treat missing session as successful logout (idempotent)
+				const isMissingSession = error?.name === "AuthSessionMissingError" || error?.status === 400 || (error?.__isAuthError && !session);
+
+				if (isMissingSession) {
+					logger.debug("Logout with no active session; treating as success");
+				} else {
+					logger.error("Logout error:", error);
+				}
 				// Don't throw here as user state is already cleared
 			}
 

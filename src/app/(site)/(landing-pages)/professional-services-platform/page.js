@@ -9,14 +9,21 @@ export const metadata = {
 		type: "website",
 		url: "https://thorbis.com/professional-services-platform",
 		siteName: "Thorbis",
-		images: [{ url: "https://thorbis.com/og-professional-services.jpg", width: 1200, height: 630, alt: "Thorbis Professional Services Platform" }],
+		images: [
+			{
+				url: `https://thorbis.com/opengraph-image?title=${encodeURIComponent("Professional Services Platform")}&description=${encodeURIComponent("Projects, time tracking, invoicing, retainers, and CRM.")}`,
+				width: 1200,
+				height: 630,
+				alt: "Thorbis Professional Services Platform",
+			},
+		],
 		locale: "en_US",
 	},
 	twitter: {
 		card: "summary_large_image",
 		title: "Professional Services Platform – Deliver & Get Paid",
 		description: "Projects, time tracking, invoicing, retainers, and CRM.",
-		images: ["https://thorbis.com/og-professional-services.jpg"],
+		images: [`https://thorbis.com/twitter-image?title=${encodeURIComponent("Professional Services Platform")}`],
 		creator: "@thorbis",
 		site: "@thorbis",
 	},

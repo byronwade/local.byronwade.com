@@ -11,7 +11,7 @@ export const metadata = {
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://thorbis.com/og-login.jpg",
+				url: "https://thorbis.com/logos/ThorbisLogo.webp",
 				width: 800,
 				height: 600,
 				alt: "Login to Thorbis",
@@ -24,7 +24,7 @@ export const metadata = {
 		card: "summary_large_image",
 		title: "Login - Thorbis",
 		description: "Log in to your Thorbis account to post jobs and connect with professional service providers easily.",
-		images: ["https://thorbis.com/twitter-login.jpg"],
+		images: ["https://thorbis.com/logos/ThorbisLogo.webp"],
 	},
 	alternates: {
 		canonical: "https://thorbis.com/login",
@@ -36,23 +36,28 @@ export const metadata = {
 };
 
 const jsonLdData = {
-	"@context": "http://schema.org",
-	"@type": "WebSite",
+	"@context": "https://schema.org",
+	"@type": "WebPage",
 	url: "https://thorbis.com/login",
-	name: "Thorbis",
+	name: "Login - Thorbis",
+	inLanguage: "en-US",
 	description: "Log in to your Thorbis account to post jobs and connect with professional service providers easily.",
 	publisher: {
 		"@type": "Organization",
 		name: "Thorbis",
 		logo: {
 			"@type": "ImageObject",
-			url: "https://thorbis.com/logo.png",
+			url: "https://thorbis.com/logos/ThorbisLogo.webp",
 		},
 	},
+	primaryImageOfPage: {
+		"@type": "ImageObject",
+		url: "https://thorbis.com/logos/ThorbisLogo.webp",
+	},
 	potentialAction: {
-		"@type": "SearchAction",
-		target: "https://thorbis.com/search?q={search_term_string}",
-		"query-input": "required name=search_term_string",
+		"@type": "LoginAction",
+		target: "https://thorbis.com/login",
+		name: "Login to Thorbis",
 	},
 };
 

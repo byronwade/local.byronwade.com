@@ -9,14 +9,21 @@ export const metadata = {
 		type: "website",
 		url: "https://thorbis.com/healthcare-operations-platform",
 		siteName: "Thorbis",
-		images: [{ url: "https://thorbis.com/og-healthcare.jpg", width: 1200, height: 630, alt: "Thorbis Healthcare Operations Platform" }],
+		images: [
+			{
+				url: `https://thorbis.com/opengraph-image?title=${encodeURIComponent("Healthcare Operations Platform")}&description=${encodeURIComponent("Appointments, staff schedules, documentation, and billing.")}`,
+				width: 1200,
+				height: 630,
+				alt: "Thorbis Healthcare Operations Platform",
+			},
+		],
 		locale: "en_US",
 	},
 	twitter: {
 		card: "summary_large_image",
 		title: "Healthcare Operations Platform – Coordinated Care",
 		description: "Appointments, staff schedules, documentation, and billing.",
-		images: ["https://thorbis.com/og-healthcare.jpg"],
+		images: [`https://thorbis.com/twitter-image?title=${encodeURIComponent("Healthcare Operations Platform")}`],
 		creator: "@thorbis",
 		site: "@thorbis",
 	},

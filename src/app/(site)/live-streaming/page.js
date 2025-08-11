@@ -9,7 +9,7 @@ export const metadata = {
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://thorbis.com/og-live-streaming.jpg",
+				url: `https://thorbis.com/opengraph-image?title=${encodeURIComponent("Live Streaming for Businesses")}&description=${encodeURIComponent("Engage customers with real-time video and live commerce.")}`,
 				width: 1200,
 				height: 630,
 				alt: "Live Streaming for Businesses on Thorbis",
@@ -22,7 +22,7 @@ export const metadata = {
 		card: "summary_large_image",
 		title: "Live Streaming for Businesses - Thorbis",
 		description: "Connect with customers in real-time through live streaming and interactive content.",
-		images: ["https://thorbis.com/og-live-streaming.jpg"],
+		images: [`https://thorbis.com/twitter-image?title=${encodeURIComponent("Live Streaming for Businesses")}`],
 	},
 	alternates: {
 		canonical: "https://thorbis.com/live-streaming",

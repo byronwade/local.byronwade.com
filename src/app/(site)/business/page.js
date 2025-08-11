@@ -36,7 +36,7 @@ export const metadata = {
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://thorbis.com/og-business.jpg",
+				url: `https://thorbis.com/opengraph-image?title=${encodeURIComponent("Thorbis Business Solutions")}&description=${encodeURIComponent("Claim your page, manage reviews, track analytics, advertise.")}`,
 				width: 1200,
 				height: 630,
 				alt: "Thorbis Business Solutions",
@@ -49,7 +49,7 @@ export const metadata = {
 		card: "summary_large_image",
 		title: "Grow Your Business with Thorbis",
 		description: "Claim your free business page and connect with millions of potential customers.",
-		images: ["https://thorbis.com/og-business.jpg"],
+		images: [`https://thorbis.com/twitter-image?title=${encodeURIComponent("Thorbis Business Solutions")}`],
 	},
 	alternates: {
 		canonical: "https://thorbis.com/business",

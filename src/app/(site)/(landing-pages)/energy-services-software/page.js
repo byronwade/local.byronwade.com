@@ -9,14 +9,21 @@ export const metadata = {
 		type: "website",
 		url: "https://thorbis.com/energy-services-software",
 		siteName: "Thorbis",
-		images: [{ url: "https://thorbis.com/og-energy.jpg", width: 1200, height: 630, alt: "Thorbis Energy Services Software" }],
+		images: [
+			{
+				url: `https://thorbis.com/opengraph-image?title=${encodeURIComponent("Energy Services Software")}&description=${encodeURIComponent("Dispatch, asset tracking, inspections, and compliance.")}`,
+				width: 1200,
+				height: 630,
+				alt: "Thorbis Energy Services Software",
+			},
+		],
 		locale: "en_US",
 	},
 	twitter: {
 		card: "summary_large_image",
 		title: "Energy Services Software – Reliable Operations",
 		description: "Dispatch, asset tracking, inspections, and compliance.",
-		images: ["https://thorbis.com/og-energy.jpg"],
+		images: [`https://thorbis.com/twitter-image?title=${encodeURIComponent("Energy Services Software")}`],
 		creator: "@thorbis",
 		site: "@thorbis",
 	},

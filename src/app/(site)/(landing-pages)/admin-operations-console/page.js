@@ -9,14 +9,21 @@ export const metadata = {
 		type: "website",
 		url: "https://thorbis.com/admin-operations-console",
 		siteName: "Thorbis",
-		images: [{ url: "https://thorbis.com/og-admin-console.jpg", width: 1200, height: 630, alt: "Thorbis Admin Operations Console" }],
+		images: [
+			{
+				url: `https://thorbis.com/opengraph-image?title=${encodeURIComponent("Admin Operations Console")}&description=${encodeURIComponent("Manage roles, permissions, billing, and security from one console.")}`,
+				width: 1200,
+				height: 630,
+				alt: "Thorbis Admin Operations Console",
+			},
+		],
 		locale: "en_US",
 	},
 	twitter: {
 		card: "summary_large_image",
 		title: "Admin Operations Console – Control & Compliance",
 		description: "Manage roles, permissions, billing, and security from one console.",
-		images: ["https://thorbis.com/og-admin-console.jpg"],
+		images: [`https://thorbis.com/twitter-image?title=${encodeURIComponent("Admin Operations Console")}`],
 		creator: "@thorbis",
 		site: "@thorbis",
 	},

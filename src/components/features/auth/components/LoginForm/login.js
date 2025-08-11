@@ -12,6 +12,9 @@ import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { toast } from "sonner";
 import { getEnabledProviders } from "@lib/supabase/auth/providers";
 import { Eye, EyeOff, Loader2, AlertCircle, Shield, CheckCircle2, Mail, Lock, ArrowRight } from "lucide-react";
+import { FcGoogle } from "react-icons/fc";
+import { FaFacebook, FaGithub, FaTwitter, FaApple } from "react-icons/fa";
+import { SiDiscord, SiLinkedin } from "react-icons/si";
 import { cn } from "@utils";
 import { logger } from "@utils/logger";
 import { DeviceFingerprint } from "@lib/security/device-fingerprint";
@@ -549,6 +552,27 @@ export default function LoginPage() {
 		return !loading && !isSubmitting && !isRateLimited;
 	}, [loading, isSubmitting, isRateLimited]);
 
+  const ProviderIcon = ({ name }) => {
+		switch (name) {
+			case "google":
+				return <FcGoogle className="mr-2 h-5 w-5" />;
+			case "facebook":
+				return <FaFacebook className="mr-2 h-5 w-5 text-[#1877f2]" />;
+			case "github":
+				return <FaGithub className="mr-2 h-5 w-5" />;
+			case "twitter":
+				return <FaTwitter className="mr-2 h-5 w-5 text-[#1da1f2]" />;
+			case "discord":
+				return <SiDiscord className="mr-2 h-5 w-5 text-[#5865f2]" />;
+			case "linkedin":
+				return <SiLinkedin className="mr-2 h-5 w-5 text-[#0077b5]" />;
+			case "apple":
+				return <FaApple className="mr-2 h-5 w-5" />;
+			default:
+				return null;
+		}
+  };
+
 	return (
 		<ZodErrorBoundary>
 			{/* Intelligent Context Message */}
@@ -661,7 +685,7 @@ export default function LoginPage() {
 													suppressHydrationWarning={true}
 												/>
 												<Mail className={cn("absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors", emailValidation.error && fieldTouched.email ? "text-red-500" : emailValidation.isValid && fieldTouched.email ? "text-green-600" : focusedField === "email" ? "text-primary" : "text-muted-foreground")} />
-												{emailValidation.isChecking && <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-muted-foreground" />}
+												{emailValidation.isChecking && <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />}
 												{emailValidation.isValid && fieldTouched.email && !emailValidation.isChecking && (
 													<div className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
 														<CheckCircle2 className="w-3 h-3 text-white" />
@@ -809,8 +833,8 @@ export default function LoginPage() {
 								{/* Loading state */}
 								{isSubmitting && (
 									<div className="absolute inset-0 flex items-center justify-center">
-										<Loader2 className="mr-2 h-5 w-5 animate-spin" />
-										<span className="animate-pulse">{loginContext && loginContext.key !== "default" ? `Signing in to ${loginContext.actionText.toLowerCase()}...` : "Signing you in..."}</span>
+										<Loader2 className="mr-2 h-5 w-5" />
+										<span>{loginContext && loginContext.key !== "default" ? `Signing in to ${loginContext.actionText.toLowerCase()}...` : "Signing you in..."}</span>
 									</div>
 								)}
 
@@ -830,16 +854,16 @@ export default function LoginPage() {
 							<div className="absolute inset-0 flex items-center">
 								<span className="w-full border-t" />
 							</div>
-							<div className="relative flex justify-center text-xs uppercase">
+							<div className="relative flex justify-center text-xs">
 								<span className="bg-background px-2 text-muted-foreground">Or continue with</span>
 							</div>
 						</div>
 
 						<div className="grid gap-3">
 							{oauthProviders.map((provider) => (
-								<Button key={provider.name} type="button" variant="outline" className="w-full" onClick={() => handleOAuthLogin(provider.name)} disabled={isSubmitting || loading}>
-									{isSubmitting || loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <span className="mr-2">{provider.icon}</span>}
-									Sign in with {provider.displayName}
+								<Button key={provider.name} type="button" variant="outline" className="w-full h-11" onClick={() => handleOAuthLogin(provider.name)} disabled={isSubmitting || loading}>
+									{isSubmitting || loading ? <Loader2 className="mr-2 h-4 w-4" /> : <ProviderIcon name={provider.name} />}
+									Continue with {provider.displayName}
 								</Button>
 							))}
 						</div>

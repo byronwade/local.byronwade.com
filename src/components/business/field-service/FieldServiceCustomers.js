@@ -673,7 +673,7 @@ export default function FieldServiceCustomers({
                         <SelectItem value="all">All Values</SelectItem>
                         <SelectItem value="high">High Value ($5,000+)</SelectItem>
                         <SelectItem value="medium">Medium Value ($1,000-$4,999)</SelectItem>
-                        <SelectItem value="low">Low Value (<$1,000)</SelectItem>
+                        <SelectItem value="low">Low Value (&lt;$1,000)</SelectItem>
                       </SelectContent>
                     </Select>
 

@@ -284,7 +284,7 @@ export async function generateMetadata({ params }) {
 	// Check if it's a location
 	if (LOCATION_SLUGS[category]) {
 		const location = LOCATION_SLUGS[category];
-		return {
+        return {
 			title: `Local Businesses in ${location.name}, ${location.state} | Thorbis`,
 			description: `Discover top-rated local businesses in ${location.name}, ${location.state}. Find restaurants, services, and more with verified reviews.`,
 			keywords: [`businesses in ${location.name}`, `local services ${location.state}`, "business directory", "reviews"],
@@ -292,11 +292,13 @@ export async function generateMetadata({ params }) {
 				title: `Local Businesses in ${location.name}, ${location.state}`,
 				description: `Discover top-rated local businesses in ${location.name}, ${location.state}. Find restaurants, services, and more with verified reviews.`,
 				url: `https://thorbis.com/categories/${category}`,
+				images: [`https://thorbis.com/opengraph-image?title=${encodeURIComponent(`Businesses in ${location.name}`)}&description=${encodeURIComponent(`Discover top-rated businesses in ${location.name}, ${location.state}.`)}`],
 			},
 			twitter: {
 				card: "summary_large_image",
 				title: `Local Businesses in ${location.name}, ${location.state}`,
 				description: `Discover top-rated local businesses in ${location.name}, ${location.state}.`,
+				images: [`https://thorbis.com/twitter-image?title=${encodeURIComponent(`Businesses in ${location.name}`)}`],
 			},
 			alternates: {
 				canonical: `https://thorbis.com/categories/${category}`,
@@ -309,7 +311,7 @@ export async function generateMetadata({ params }) {
 		const categoryName = BUSINESS_CATEGORIES[category];
 		const isHomeService = HOME_SERVICE_CATEGORIES.includes(category);
 
-		return {
+        return {
 			title: `${categoryName} Near You | Thorbis`,
 			description: `Find the best ${categoryName.toLowerCase()} ${isHomeService ? "in your area" : "near you"}. Read reviews, compare prices, and book services instantly.`,
 			keywords: [categoryName, `${categoryName} services`, "local businesses", "reviews"],
@@ -317,11 +319,13 @@ export async function generateMetadata({ params }) {
 				title: `${categoryName} Near You`,
 				description: `Find the best ${categoryName.toLowerCase()} ${isHomeService ? "in your area" : "near you"}. Read reviews, compare prices, and book services instantly.`,
 				url: `https://thorbis.com/categories/${category}`,
+				images: [`https://thorbis.com/opengraph-image?title=${encodeURIComponent(`${categoryName} near you`)}&description=${encodeURIComponent("Compare reviews and book instantly.")}`],
 			},
 			twitter: {
 				card: "summary_large_image",
 				title: `${categoryName} Near You`,
 				description: `Find the best ${categoryName.toLowerCase()} ${isHomeService ? "in your area" : "near you"}.`,
+				images: [`https://thorbis.com/twitter-image?title=${encodeURIComponent(`${categoryName} near you`)}`],
 			},
 			alternates: {
 				canonical: `https://thorbis.com/categories/${category}`,

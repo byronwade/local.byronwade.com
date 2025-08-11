@@ -9,8 +9,12 @@ import UnifiedAIChat from "@components/shared/ai/unified-ai-chat";
 import { useSearchParams } from "next/navigation";
 import { logger } from "@utils/logger";
 
-// Direct import instead of dynamic import
-import MapContainer from "@components/site/map/map-container";
+// Lazy-load the heavy map to improve initial TTI and SEO (client-only)
+import dynamic from "next/dynamic";
+const MapContainer = dynamic(() => import("@components/site/map/map-container"), {
+  ssr: false,
+  loading: () => <div className="h-full w-full bg-muted/20" aria-hidden />,
+});
 
 const SearchContainer = ({ searchParams: propSearchParams }) => {
 	const urlSearchParams = useSearchParams();
@@ -197,54 +201,105 @@ const SearchContainer = ({ searchParams: propSearchParams }) => {
 
 	return (
 		<div className="w-full flex flex-col bg-white dark:bg-neutral-900 overflow-hidden" style={{ height: contentHeight }}>
-			{/* Main Content Area */}
+			{/* Mobile-First Responsive Layout */}
 			<div className="flex-1 min-h-0 relative">
-				{showMap ? (
-					<ResizablePanelGroup direction="horizontal" className="h-full" onLayout={handlePanelResize}>
-						{/* Sidebar Panel - Better minimum width for proper header layout */}
-						<ResizablePanel defaultSize={activeBusinessId ? 35 : 28} minSize={22} maxSize={85} className="lg:max-w-[45%] md:max-w-[65%] sm:max-w-[80%] max-w-[95%]">
-							<div className="h-full bg-white dark:bg-neutral-900 border-r border-neutral-800 dark:border-neutral-700 overflow-hidden relative">
-								{/* Business List - Default View */}
-								<div className={`absolute inset-0 transition-all duration-500 ease-in-out ${!isAISidebarOpen ? "transform translate-x-0 opacity-100 z-10" : "transform -translate-x-full opacity-0 z-0"}`}>
-									<BusinessCardList businesses={filteredBusinesses} loading={loading} onBusinessSelect={handleBusinessSelect} activeBusinessId={activeBusinessId} activeCardRef={activeCardRef} onAIClick={handleAIClick} showMap={showMap} onMapToggle={handleMapToggle} />
-								</div>
+				{/* Desktop: Side-by-side layout (lg and up) */}
+				<div className="hidden lg:flex h-full">
+					{showMap ? (
+						<ResizablePanelGroup direction="horizontal" className="h-full" onLayout={handlePanelResize}>
+							{/* Desktop Sidebar Panel - More Compact Default */}
+							<ResizablePanel defaultSize={activeBusinessId ? 32 : 25} minSize={20} maxSize={80} className="max-w-[42%]">
+								<div className="h-full bg-white dark:bg-neutral-900 border-r border-neutral-200 dark:border-neutral-700 overflow-hidden relative">
+									{/* Business List - Desktop View */}
+									<div className={`absolute inset-0 transition-all duration-500 ease-in-out ${!isAISidebarOpen ? "transform translate-x-0 opacity-100 z-10" : "transform -translate-x-full opacity-0 z-0"}`}>
+										<BusinessCardList businesses={filteredBusinesses} loading={loading} onBusinessSelect={handleBusinessSelect} activeBusinessId={activeBusinessId} activeCardRef={activeCardRef} onAIClick={handleAIClick} showMap={showMap} onMapToggle={handleMapToggle} />
+									</div>
 
-								{/* AI Chat Sidebar */}
+									{/* AI Chat Sidebar - Desktop */}
+									<div className={`absolute inset-0 transition-all duration-500 ease-in-out ${isAISidebarOpen ? "transform translate-x-0 opacity-100 z-10" : "transform translate-x-full opacity-0 z-0"}`}>{isAISidebarOpen && <UnifiedAIChat isOpen={isAISidebarOpen} onClose={handleAIClose} mode="sidebar" />}</div>
+								</div>
+							</ResizablePanel>
+
+							{/* Desktop Resizable Handle */}
+							<ResizableHandle withHandle />
+
+							{/* Desktop Map Panel - Adjusted for Compact Sidebar */}
+							<ResizablePanel defaultSize={activeBusinessId ? 68 : 75}>
+								<div className="h-full w-full relative overflow-hidden">
+									<MapContainer businesses={filteredBusinesses} selectedBusiness={selectedBusiness} onBusinessSelect={handleBusinessSelect} />
+								</div>
+							</ResizablePanel>
+						</ResizablePanelGroup>
+					) : (
+						/* Desktop List-only view */
+						<div className="h-full w-full transition-all duration-300 ease-in-out bg-white dark:bg-neutral-900">
+							<div className="h-full overflow-hidden relative">
+								<div className={`absolute inset-0 transition-all duration-500 ease-in-out ${!isAISidebarOpen ? "transform translate-x-0 opacity-100 z-10" : "transform -translate-x-full opacity-0 z-0"}`}>
+									<BusinessCardList businesses={filteredBusinesses} loading={loading} onBusinessSelect={handleBusinessSelect} activeBusinessId={activeBusinessId} activeCardRef={activeCardRef} onAIClick={handleAIClick} showMap={showMap} onMapToggle={handleMapToggle} listMode="full" />
+								</div>
 								<div className={`absolute inset-0 transition-all duration-500 ease-in-out ${isAISidebarOpen ? "transform translate-x-0 opacity-100 z-10" : "transform translate-x-full opacity-0 z-0"}`}>{isAISidebarOpen && <UnifiedAIChat isOpen={isAISidebarOpen} onClose={handleAIClose} mode="sidebar" />}</div>
 							</div>
-						</ResizablePanel>
-
-						{/* Resizable Handle */}
-						<ResizableHandle withHandle />
-
-						{/* Map Panel */}
-						<ResizablePanel defaultSize={activeBusinessId ? 65 : 72}>
-							<div className="h-full w-full relative overflow-hidden">
-								<MapContainer businesses={filteredBusinesses} selectedBusiness={selectedBusiness} onBusinessSelect={handleBusinessSelect} />
-							</div>
-						</ResizablePanel>
-					</ResizablePanelGroup>
-				) : (
-					/* List-only view - Full width */
-					<div className="h-full w-full transition-all duration-500 ease-in-out bg-white dark:bg-neutral-900">
-						<div className="h-full overflow-hidden relative">
-							{/* Business List - Full Width View */}
-							<div className={`absolute inset-0 transition-all duration-500 ease-in-out ${!isAISidebarOpen ? "transform translate-x-0 opacity-100 z-10" : "transform -translate-x-full opacity-0 z-0"}`}>
-								<BusinessCardList businesses={filteredBusinesses} loading={loading} onBusinessSelect={handleBusinessSelect} activeBusinessId={activeBusinessId} activeCardRef={activeCardRef} onAIClick={handleAIClick} showMap={showMap} onMapToggle={handleMapToggle} listMode="full" />
-							</div>
-
-							{/* AI Chat Sidebar */}
-							<div className={`absolute inset-0 transition-all duration-500 ease-in-out ${isAISidebarOpen ? "transform translate-x-0 opacity-100 z-10" : "transform translate-x-full opacity-0 z-0"}`}>{isAISidebarOpen && <UnifiedAIChat isOpen={isAISidebarOpen} onClose={handleAIClose} mode="sidebar" />}</div>
 						</div>
-					</div>
-				)}
+					)}
+				</div>
+
+				{/* Mobile & Tablet: Stacked layout (lg and below) */}
+				<div className="flex lg:hidden h-full flex-col">
+					{showMap ? (
+						/* Mobile: Map + Bottom Sheet List */
+						<div className="flex flex-col h-full">
+							{/* Mobile Map Container */}
+							<div className="flex-1 relative">
+								<MapContainer businesses={filteredBusinesses} selectedBusiness={selectedBusiness} onBusinessSelect={handleBusinessSelect} />
+
+								{/* Mobile Floating Action Button */}
+								<div className="absolute bottom-4 right-4 z-30">
+									<button onClick={handleMapToggle} className="flex items-center justify-center w-14 h-14 bg-white dark:bg-gray-800 rounded-full shadow-lg border border-gray-200 dark:border-gray-600 hover:shadow-xl transition-all duration-200 active:scale-95">
+										<svg className="w-6 h-6 text-gray-700 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+										</svg>
+									</button>
+								</div>
+							</div>
+
+							{/* Mobile Bottom Sheet - Business List */}
+							<div className="bg-white dark:bg-neutral-900 border-t border-gray-200 dark:border-gray-700 max-h-[60vh] min-h-[200px] overflow-hidden">
+								{/* Bottom Sheet Handle */}
+								<div className="flex justify-center py-2 bg-gray-50 dark:bg-gray-800">
+									<div className="w-12 h-1 bg-gray-300 dark:bg-gray-600 rounded-full"></div>
+								</div>
+
+								{/* Mobile Business List */}
+								<div className="h-full">
+									<div className={`h-full transition-all duration-500 ease-in-out ${!isAISidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
+										<BusinessCardList businesses={filteredBusinesses} loading={loading} onBusinessSelect={handleBusinessSelect} activeBusinessId={activeBusinessId} activeCardRef={activeCardRef} onAIClick={handleAIClick} showMap={showMap} onMapToggle={handleMapToggle} isMobile={true} />
+									</div>
+								</div>
+							</div>
+						</div>
+					) : (
+						/* Mobile: List-only view */
+						<div className="h-full flex flex-col bg-white dark:bg-neutral-900">
+							{/* Mobile Full-Screen List */}
+							<div className="flex-1 overflow-hidden relative">
+								<div className={`absolute inset-0 transition-all duration-500 ease-in-out ${!isAISidebarOpen ? "transform translate-x-0 opacity-100 z-10" : "transform -translate-x-full opacity-0 z-0"}`}>
+									<BusinessCardList businesses={filteredBusinesses} loading={loading} onBusinessSelect={handleBusinessSelect} activeBusinessId={activeBusinessId} activeCardRef={activeCardRef} onAIClick={handleAIClick} showMap={showMap} onMapToggle={handleMapToggle} listMode="full" isMobile={true} />
+								</div>
+
+								{/* Mobile AI Chat Overlay */}
+								<div className={`absolute inset-0 transition-all duration-500 ease-in-out ${isAISidebarOpen ? "transform translate-x-0 opacity-100 z-20" : "transform translate-x-full opacity-0 z-0"}`}>{isAISidebarOpen && <UnifiedAIChat isOpen={isAISidebarOpen} onClose={handleAIClose} mode="fullscreen" />}</div>
+							</div>
+						</div>
+					)}
+				</div>
 			</div>
-			{/* Loading Overlay */}
+
+			{/* Mobile-Optimized Loading Overlay */}
 			{loading && (
-				<div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 flex items-center justify-center">
-					<div className="bg-white dark:bg-neutral-900 rounded-lg p-6 shadow-2xl flex items-center gap-3 border border-neutral-800 dark:border-neutral-700">
-						<div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
-						<span className="text-sm font-medium text-card-foreground">Loading businesses...</span>
+				<div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+					<div className="bg-white dark:bg-neutral-900 rounded-2xl p-6 shadow-2xl flex items-center gap-3 border border-gray-200 dark:border-gray-700 min-w-[280px]">
+						<div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+						<span className="text-sm font-medium text-gray-900 dark:text-white">Finding businesses near you...</span>
 					</div>
 				</div>
 			)}

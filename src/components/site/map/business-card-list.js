@@ -10,8 +10,7 @@
 import React, { useEffect } from "react";
 import { ScrollArea } from "@components/ui/scroll-area";
 import { Button } from "@components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@components/ui/dropdown-menu";
-import { SortAsc, ChevronDown, Map, List, ArrowUp } from "lucide-react";
+import { Map, List, ArrowUp } from "lucide-react";
 import { ReloadIcon } from "@radix-ui/react-icons";
 
 // Import extracted components and hooks
@@ -21,9 +20,9 @@ import SkeletonBusinessCard from "./skeleton-business-card";
 import FilterPanel from "./filter-panel";
 import MinimalistSearchHeader from "./minimalist-search-header";
 import MinimalistEmptyState from "./minimalist-empty-state";
-import { SORT_LABELS } from "@utils/sorting";
+import QuickFilterPills from "./quick-filter-pills";
 
-const BusinessCardList = ({ businesses, activeBusinessId, activeCardRef, onAIClick, onBusinessSelect, loading, showMap, onMapToggle, listMode }) => {
+const BusinessCardList = ({ businesses, activeBusinessId, activeCardRef, onAIClick, onBusinessSelect, loading, showMap, onMapToggle, listMode, isMobile = false }) => {
 	const {
 		// Data
 		visibleBusinesses,
@@ -48,7 +47,6 @@ const BusinessCardList = ({ businesses, activeBusinessId, activeCardRef, onAICli
 		handleCardHover,
 		handleCardLeave,
 		handleFilterClick,
-		handleSortSelect,
 		handleFiltersChange,
 		handleClearFilters,
 		handleKeyDown,
@@ -60,7 +58,6 @@ const BusinessCardList = ({ businesses, activeBusinessId, activeCardRef, onAICli
 
 		// Setters
 		setShowFilters,
-		setShowSort,
 	} = useBusinessCardList(businesses);
 
 	// Add keyboard event listener
@@ -105,55 +102,74 @@ const BusinessCardList = ({ businesses, activeBusinessId, activeCardRef, onAICli
 		);
 	}
 
+	// Mobile-specific layout
+	if (isMobile) {
+		return (
+			<div className="h-full flex flex-col bg-white dark:bg-neutral-900">
+				{/* Mobile Search Header */}
+				<MinimalistSearchHeader resultsCount={filteredBusinesses.length} showMap={showMap} onMapToggle={onMapToggle} onFilterClick={handleFilterClick} showFilters={showFilters} onAIClick={onAIClick} />
+
+				{/* Mobile Quick Filter Pills */}
+				{!loading && visibleBusinesses.length > 0 && <QuickFilterPills onFilterChange={handleFiltersChange} activeFilters={currentFilters} totalResults={visibleBusinesses.length} loading={isLoadingMore} />}
+
+				{/* Mobile Filter Panel */}
+				{showFilters && <FilterPanel filters={currentFilters} onFiltersChange={handleFiltersChange} onClose={() => setShowFilters(false)} />}
+
+				{/* Mobile Business List - Touch-Optimized */}
+				<ScrollArea className="flex-1" ref={listRef}>
+					<div className="px-4 py-3 space-y-4">
+						{visibleBusinesses.map((business, index) => {
+							const isActive = business.id === activeBusinessId;
+							const ref = isActive ? activeCardElementRef : null;
+
+							// Mobile: Use touch-friendly card style
+							return <BusinessCard key={business.id} ref={ref} business={business} isActive={isActive} handleClick={handleCardClick} isLoading={loading} onHover={handleCardHover} onLeave={handleCardLeave} isMobile={true} />;
+						})}
+
+						{/* Mobile: Enhanced Loading Indicator */}
+						{isLoadingMore && (
+							<div className="flex items-center justify-center py-8 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
+								<ReloadIcon className="mr-3 h-5 w-5 animate-spin text-blue-600 dark:text-blue-400" />
+								<span className="text-sm font-medium text-gray-900 dark:text-white">Loading more businesses...</span>
+							</div>
+						)}
+
+						{/* Mobile: Intersection Observer Sentinel */}
+						<div ref={sentinelRef} className="h-4" />
+
+						{/* Mobile: Touch-Friendly Load More Button */}
+						{!isLoadingMore && itemsToShow < filteredBusinesses.length && (
+							<div className="flex justify-center py-2">
+								<Button variant="outline" onClick={() => setVisibleStartIndex((prev) => prev + 20)} className="flex items-center gap-3 h-14 px-6 text-base font-medium border-2 border-blue-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-950/30 hover:bg-blue-100 dark:hover:bg-blue-950/50 text-blue-700 dark:text-blue-300 active:scale-95 transition-all duration-200 rounded-xl">
+									<ArrowUp className="w-5 h-5 rotate-180" />
+									<span>Show {Math.min(20, filteredBusinesses.length - itemsToShow)} More</span>
+								</Button>
+							</div>
+						)}
+
+						{/* Mobile: Safe Area Bottom Padding */}
+						<div className="h-8" />
+					</div>
+				</ScrollArea>
+			</div>
+		);
+	}
+
+	// Desktop layout
 	return (
-		<div className="h-full flex flex-col bg-white">
-			{/* Minimalistic Search Header */}
+		<div className="h-full flex flex-col bg-white dark:bg-neutral-900">
+			{/* Desktop Search Header */}
 			<MinimalistSearchHeader resultsCount={filteredBusinesses.length} showMap={showMap} onMapToggle={onMapToggle} onFilterClick={handleFilterClick} showFilters={showFilters} onAIClick={onAIClick} />
 
-			{/* Filter Panel */}
+			{/* Quick Filter Pills */}
+			{!loading && visibleBusinesses.length > 0 && <QuickFilterPills onFilterChange={handleFiltersChange} activeFilters={currentFilters} totalResults={visibleBusinesses.length} loading={isLoadingMore} />}
+
+			{/* Desktop Filter Panel */}
 			{showFilters && <FilterPanel filters={currentFilters} onFiltersChange={handleFiltersChange} onClose={() => setShowFilters(false)} />}
 
-			{/* Sort Controls */}
-			<div className="flex items-center justify-between p-4 border-b bg-gray-50">
-				<div className="flex items-center space-x-3">
-					{/* Sort Dropdown */}
-					<DropdownMenu open={showSort} onOpenChange={setShowSort}>
-						<DropdownMenuTrigger asChild>
-							<Button variant="outline" size="sm" className="flex items-center space-x-1">
-								<SortAsc className="w-4 h-4" />
-								<span>Sort: {SORT_LABELS[sortBy] || "Relevance"}</span>
-								<ChevronDown className="w-3 h-3" />
-							</Button>
-						</DropdownMenuTrigger>
-						<DropdownMenuContent align="start" className="w-48">
-							{Object.entries(SORT_LABELS).map(([value, label]) => (
-								<DropdownMenuItem key={value} onClick={() => handleSortSelect(value)} className={sortBy === value ? "bg-primary/10 font-medium" : ""}>
-									{label}
-								</DropdownMenuItem>
-							))}
-						</DropdownMenuContent>
-					</DropdownMenu>
-
-					{/* Results Count */}
-					<span className="text-sm text-gray-600">
-						Showing {itemsToShow} of {filteredBusinesses.length} results
-					</span>
-				</div>
-
-				{/* View Toggle */}
-				<div className="flex items-center space-x-1">
-					<Button variant={listMode === "list" ? "default" : "outline"} size="sm" className="px-2">
-						<List className="w-4 h-4" />
-					</Button>
-					<Button variant={listMode === "google" ? "default" : "outline"} size="sm" className="px-2">
-						<Map className="w-4 h-4" />
-					</Button>
-				</div>
-			</div>
-
-			{/* Business List */}
+			{/* Desktop Business List - More Compact */}
 			<ScrollArea className="flex-1" ref={listRef}>
-				<div className="p-4 space-y-4">
+				<div className="p-3 space-y-3">
 					{visibleBusinesses.map((business, index) => {
 						const isActive = business.id === activeBusinessId;
 						const ref = isActive ? activeCardElementRef : null;
@@ -174,7 +190,7 @@ const BusinessCardList = ({ businesses, activeBusinessId, activeCardRef, onAICli
 					{isLoadingMore && (
 						<div className="flex items-center justify-center py-4">
 							<ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-							<span className="text-sm text-gray-600">Loading more results...</span>
+							<span className="text-sm text-gray-600 dark:text-gray-300">Loading more results...</span>
 						</div>
 					)}
 

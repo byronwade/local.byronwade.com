@@ -9,7 +9,7 @@ export const metadata = {
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://thorbis.com/og-challenges.jpg",
+				url: `https://thorbis.com/opengraph-image?title=${encodeURIComponent("Business Challenges")}&description=${encodeURIComponent("Competitive events and contests for businesses.")}`,
 				width: 1200,
 				height: 630,
 				alt: "Business Challenges on Thorbis",
@@ -22,7 +22,7 @@ export const metadata = {
 		card: "summary_large_image",
 		title: "Business Challenges - Thorbis",
 		description: "Join exciting business challenges and showcase your skills.",
-		images: ["https://thorbis.com/og-challenges.jpg"],
+		images: [`https://thorbis.com/twitter-image?title=${encodeURIComponent("Business Challenges")}`],
 	},
 	alternates: {
 		canonical: "https://thorbis.com/challenges",

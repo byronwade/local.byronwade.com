@@ -5,12 +5,12 @@
  */
 
 import { logger } from "@utils/logger";
-import { observeWebVitals, initPerformanceMonitoring } from "@lib/utils/web-vitals";
-import { initInstantPreloader } from "@lib/utils/instant-preloader";
-import { initInstantLoading } from "@lib/utils/instant-page-script";
-import { initAdvancedPrefetching } from "@lib/utils/advanced-prefetching";
-import { initStreamingSearch } from "@lib/utils/streaming-search";
-import { buildSearchIndex } from "@lib/utils/compressed-search-index";
+import { observeWebVitals, initPerformanceMonitoring } from "@utils/web-vitals";
+import { initInstantPreloader } from "@utils/instant-preloader";
+import { initInstantLoading } from "@utils/instant-page-script";
+import { initAdvancedPrefetching } from "@utils/advanced-prefetching";
+import { initStreamingSearch } from "@utils/streaming-search";
+import { buildSearchIndex } from "@utils/compressed-search-index";
 
 // Performance configuration
 const PERFORMANCE_CONFIG = {

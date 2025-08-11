@@ -9,14 +9,21 @@ export const metadata = {
 		type: "website",
 		url: "https://thorbis.com/property-management-platform",
 		siteName: "Thorbis",
-		images: [{ url: "https://thorbis.com/og-property-management.jpg", width: 1200, height: 630, alt: "Thorbis Property Management Platform" }],
+		images: [
+			{
+				url: `https://thorbis.com/opengraph-image?title=${encodeURIComponent("Property Management Platform")}&description=${encodeURIComponent("Units, tenants, work orders, vendors, and billing.")}`,
+				width: 1200,
+				height: 630,
+				alt: "Thorbis Property Management Platform",
+			},
+		],
 		locale: "en_US",
 	},
 	twitter: {
 		card: "summary_large_image",
 		title: "Property Management Platform – Modern Ops",
 		description: "Units, tenants, work orders, vendors, and billing.",
-		images: ["https://thorbis.com/og-property-management.jpg"],
+		images: [`https://thorbis.com/twitter-image?title=${encodeURIComponent("Property Management Platform")}`],
 		creator: "@thorbis",
 		site: "@thorbis",
 	},

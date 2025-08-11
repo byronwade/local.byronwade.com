@@ -8,8 +8,8 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
-import { withErrorHandling, showErrorToast, showSuccessToast } from "@lib/utils/error-handler";
-import { debounce } from "@lib/utils/performance-utils";
+import { withErrorHandling, showErrorToast, showSuccessToast } from "@utils/error-handler";
+import { debounce } from "@utils/performance-utils";
 import type { AdFormData, AdSchedule, ValidationRules, FieldError, ValidationResult, UseAdsFormOptions, UseAdsFormReturn, PerformanceEstimate } from "@/types/ads";
 
 /**

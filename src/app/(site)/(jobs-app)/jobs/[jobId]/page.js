@@ -93,14 +93,16 @@ export async function generateMetadata({ params }) {
 			title,
 			description,
 			type: "website",
-			images: job.logo ? [{ url: job.logo, width: 300, height: 300, alt: `${job.company} logo` }] : [],
+			url: `https://thorbis.com/jobs/${resolvedParams.jobId}`,
+			images: job.logo ? [{ url: job.logo, width: 300, height: 300, alt: `${job.company} logo` }] : [`https://thorbis.com/opengraph-image?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}`],
 		},
 		twitter: {
-			card: "summary",
+			card: "summary_large_image",
 			title,
 			description,
-			images: job.logo ? [job.logo] : [],
+			images: job.logo ? [job.logo] : [`https://thorbis.com/twitter-image?title=${encodeURIComponent(title)}`],
 		},
+		alternates: { canonical: `https://thorbis.com/jobs/${resolvedParams.jobId}` },
 	};
 }
 
@@ -152,6 +154,51 @@ async function JobDetails({ params }) {
 
 	return (
 		<div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
+			{/* Structured Data: JobPosting + BreadcrumbList */}
+			<script
+				type="application/ld+json"
+				dangerouslySetInnerHTML={{
+					__html: JSON.stringify({
+						"@context": "https://schema.org",
+						"@type": "JobPosting",
+						title: job.title,
+						description: job.description,
+						hiringOrganization: {
+							"@type": "Organization",
+							name: job.company,
+							sameAs: job.companyInfo?.website || undefined,
+							logo: job.logo || undefined,
+						},
+						jobLocation: job.isRemote
+							? undefined
+							: {
+									"@type": "Place",
+									address: {
+										"@type": "PostalAddress",
+										addressLocality: job.location,
+										addressCountry: "US",
+									},
+								},
+						employmentType: job.type,
+						datePosted: new Date().toISOString(),
+						validThrough: job.applicationDeadline || undefined,
+					}),
+				}}
+			/>
+			<script
+				type="application/ld+json"
+				dangerouslySetInnerHTML={{
+					__html: JSON.stringify({
+						"@context": "https://schema.org",
+						"@type": "BreadcrumbList",
+						itemListElement: [
+							{ "@type": "ListItem", position: 1, name: "Home", item: "https://thorbis.com/" },
+							{ "@type": "ListItem", position: 2, name: "Jobs", item: "https://thorbis.com/jobs" },
+							{ "@type": "ListItem", position: 3, name: job.title, item: `https://thorbis.com/jobs/${resolvedParams.jobId}` },
+						],
+					}),
+				}}
+			/>
 			{/* Left Column - Job Description */}
 			<div className="lg:col-span-3 space-y-6">
 				<Card>

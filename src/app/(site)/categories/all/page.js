@@ -12,9 +12,9 @@ export const metadata = {
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://thorbis.com/og-all-categories.jpg",
-				width: 800,
-				height: 600,
+				url: `https://thorbis.com/opengraph-image?title=${encodeURIComponent("All Business Categories")}&description=${encodeURIComponent("Complete directory of business types to find exactly what you need.")}`,
+				width: 1200,
+				height: 630,
 				alt: "Thorbis All Categories",
 			},
 		],
@@ -25,7 +25,7 @@ export const metadata = {
 		card: "summary_large_image",
 		title: "All Business Categories - Thorbis",
 		description: "Browse the complete category directory.",
-		images: ["https://thorbis.com/og-all-categories.jpg"],
+		images: [`https://thorbis.com/twitter-image?title=${encodeURIComponent("All Business Categories")}`],
 	},
 	alternates: {
 		canonical: "https://thorbis.com/categories/all",

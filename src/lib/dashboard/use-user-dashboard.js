@@ -9,7 +9,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuthStore } from "@store/auth";
 import { logger } from "@utils/logger";
-import { withErrorHandling } from "@lib/utils/error-handler";
+import { withErrorHandling } from "@utils/error-handler";
 
 export const useUserDashboard = () => {
 	const { user } = useAuthStore();

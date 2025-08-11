@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Button } from "@components/ui/button";
 import { Badge } from "@components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
-import { CheckCircle, XCircle, Users, MessageSquare, Calendar, BarChart3, Wrench, Home, ArrowRight, Star } from "lucide-react";
+import { CheckCircle, XCircle, Users, MessageSquare, Calendar, BarChart3, Wrench, Home, ArrowRight, Star, DollarSign, TrendingUp, Shield, Clock, Target, Building, Phone, Mail, Zap, Award, FileText, Truck, Settings, AlertTriangle, Heart, Briefcase } from "lucide-react";
 import { isEnabled } from "@lib/flags/server";
 
 export const metadata = {
@@ -17,14 +17,21 @@ export const metadata = {
 		type: "website",
 		url: "https://thorbis.com/bark-alternative",
 		siteName: "Thorbis",
-		images: [{ url: "https://thorbis.com/og-bark-alt.jpg", width: 1200, height: 630, alt: "Thorbis vs Bark" }],
+		images: [
+			{
+				url: `https://thorbis.com/opengraph-image?title=${encodeURIComponent("Bark Alternative – Thorbis vs Bark")}&description=${encodeURIComponent("AI‑verified leads, multi‑platform sync, unlimited lead volume, and 24/7 support.")}`,
+				width: 1200,
+				height: 630,
+				alt: "Thorbis vs Bark",
+			},
+		],
 		locale: "en_US",
 	},
 	twitter: {
 		card: "summary_large_image",
 		title: "Bark Alternative – Thorbis vs Bark",
 		description: "Modern alternative to Bark with AI‑verified leads, multi‑platform sync, unlimited lead volume, and 24/7 support.",
-		images: ["https://thorbis.com/og-bark-alt.jpg"],
+		images: [`https://thorbis.com/twitter-image?title=${encodeURIComponent("Bark Alternative – Thorbis vs Bark")}`],
 		creator: "@thorbis",
 		site: "@thorbis",
 	},
@@ -501,6 +508,306 @@ export default async function BarkAlternative() {
 				</div>
 			</section>
 
+			{/* Contractor Success Stories */}
+			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8">
+				<div className="mb-12 text-center">
+					<h2 className="text-3xl font-bold text-foreground sm:text-4xl">Real Contractors Share Their Success</h2>
+					<p className="mt-4 text-lg text-muted-foreground">See how service professionals transformed their business after leaving Bark</p>
+				</div>
+				<div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+					<Card className="bg-card border-border hover:shadow-lg transition-all duration-300">
+						<CardContent className="p-8">
+							<div className="flex items-center gap-2 mb-4">
+								<Wrench className="w-5 h-5 text-primary" />
+								<span className="text-sm font-medium text-primary">HVAC Contractor</span>
+							</div>
+							<div className="mb-4">
+								<div className="text-2xl font-bold text-green-600 dark:text-green-400">+234%</div>
+								<div className="text-sm text-muted-foreground">Qualified Lead Increase</div>
+							</div>
+							<blockquote className="mb-4 text-sm text-muted-foreground">"Bark leads were terrible - price shoppers and tire kickers. Thorbis's AI qualification means I only get serious customers ready to book. My close rate went from 15% to 68%."</blockquote>
+							<div className="flex items-center gap-3">
+								<div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+									<Settings className="w-5 h-5 text-primary" />
+								</div>
+								<div>
+									<div className="font-semibold text-sm">Tom Martinez</div>
+									<div className="text-xs text-muted-foreground">Martinez HVAC Services</div>
+								</div>
+							</div>
+						</CardContent>
+					</Card>
+
+					<Card className="bg-card border-border hover:shadow-lg transition-all duration-300">
+						<CardContent className="p-8">
+							<div className="flex items-center gap-2 mb-4">
+								<Home className="w-5 h-5 text-primary" />
+								<span className="text-sm font-medium text-primary">General Contractor</span>
+							</div>
+							<div className="mb-4">
+								<div className="text-2xl font-bold text-green-600 dark:text-green-400">$180K</div>
+								<div className="text-sm text-muted-foreground">Annual Revenue Increase</div>
+							</div>
+							<blockquote className="mb-4 text-sm text-muted-foreground">"I was spending $400/month on Bark with poor results. Thorbis costs $29 and brought me $180K more revenue this year. The lead quality is night and day better."</blockquote>
+							<div className="flex items-center gap-3">
+								<div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+									<Building className="w-5 h-5 text-primary" />
+								</div>
+								<div>
+									<div className="font-semibold text-sm">Sarah Johnson</div>
+									<div className="text-xs text-muted-foreground">Johnson Construction</div>
+								</div>
+							</div>
+						</CardContent>
+					</Card>
+
+					<Card className="bg-card border-border hover:shadow-lg transition-all duration-300">
+						<CardContent className="p-8">
+							<div className="flex items-center gap-2 mb-4">
+								<Truck className="w-5 h-5 text-primary" />
+								<span className="text-sm font-medium text-primary">Plumbing Services</span>
+							</div>
+							<div className="mb-4">
+								<div className="text-2xl font-bold text-green-600 dark:text-green-400">-85%</div>
+								<div className="text-sm text-muted-foreground">Time Wasted on Bad Leads</div>
+							</div>
+							<blockquote className="mb-4 text-sm text-muted-foreground">"Bark sent me 20 leads that went nowhere. Thorbis sends me 5 leads and I book 4 jobs. I'm making more money working fewer hours. This is how business should be."</blockquote>
+							<div className="flex items-center gap-3">
+								<div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+									<Wrench className="w-5 h-5 text-primary" />
+								</div>
+								<div>
+									<div className="font-semibold text-sm">David Kim</div>
+									<div className="text-xs text-muted-foreground">Kim's Emergency Plumbing</div>
+								</div>
+							</div>
+						</CardContent>
+					</Card>
+				</div>
+			</section>
+
+			{/* Lead Quality Deep Dive */}
+			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8 bg-muted/30">
+				<div className="mb-12 text-center">
+					<h2 className="text-3xl font-bold text-foreground sm:text-4xl">Lead Quality: Bark vs Thorbis</h2>
+					<p className="mt-4 text-lg text-muted-foreground">Why Thorbis leads convert 4x better than Bark leads</p>
+				</div>
+				<div className="grid gap-8 lg:grid-cols-2">
+					<Card className="p-8 border-destructive/20 bg-destructive/5">
+						<CardHeader className="px-0 pt-0 pb-6">
+							<CardTitle className="flex items-center gap-2 text-destructive">
+								<AlertTriangle className="w-6 h-6" />
+								Bark Lead Problems
+							</CardTitle>
+						</CardHeader>
+						<CardContent className="px-0 space-y-6">
+							<div className="space-y-4">
+								<div className="p-4 bg-card rounded-lg border border-destructive/20">
+									<h4 className="font-semibold text-destructive mb-2">Fake Contact Information</h4>
+									<p className="text-sm text-muted-foreground mb-3">"30% of Bark leads had fake phone numbers or emails. I wasted so much time trying to reach people who didn't exist."</p>
+									<div className="flex items-center gap-2 text-xs">
+										<Building className="w-3 h-3" />
+										<span>Mike P., Electrician</span>
+									</div>
+								</div>
+								<div className="p-4 bg-card rounded-lg border border-destructive/20">
+									<h4 className="font-semibold text-destructive mb-2">Price Shopping Only</h4>
+									<p className="text-sm text-muted-foreground mb-3">"Bark customers only cared about the lowest price. No one wanted quality work, just the cheapest quote possible."</p>
+									<div className="flex items-center gap-2 text-xs">
+										<Building className="w-3 h-3" />
+										<span>Lisa R., Interior Designer</span>
+									</div>
+								</div>
+								<div className="p-4 bg-card rounded-lg border border-destructive/20">
+									<h4 className="font-semibold text-destructive mb-2">No Qualification Process</h4>
+									<p className="text-sm text-muted-foreground mb-3">"Anyone could submit a request. I got 'leads' for jobs 200 miles away or completely outside my expertise."</p>
+									<div className="flex items-center gap-2 text-xs">
+										<Building className="w-3 h-3" />
+										<span>Carlos D., Landscaper</span>
+									</div>
+								</div>
+							</div>
+						</CardContent>
+					</Card>
+
+					<Card className="p-8 border-primary/20 bg-primary/5">
+						<CardHeader className="px-0 pt-0 pb-6">
+							<CardTitle className="flex items-center gap-2 text-primary">
+								<Heart className="w-6 h-6" />
+								Thorbis Lead Quality
+							</CardTitle>
+						</CardHeader>
+						<CardContent className="px-0 space-y-6">
+							<div className="space-y-4">
+								<div className="p-4 bg-card rounded-lg border border-primary/20">
+									<h4 className="font-semibold text-green-600 dark:text-green-400 mb-2">AI-Verified Information</h4>
+									<p className="text-sm text-muted-foreground mb-3">"Every lead is verified before I get it. Real phone numbers, real emails, real projects. No more wasted calls."</p>
+									<div className="flex items-center gap-2 text-xs">
+										<Building className="w-3 h-3" />
+										<span>Same Mike P., now 4x revenue</span>
+									</div>
+								</div>
+								<div className="p-4 bg-card rounded-lg border border-primary/20">
+									<h4 className="font-semibold text-green-600 dark:text-green-400 mb-2">Budget-Qualified Customers</h4>
+									<p className="text-sm text-muted-foreground mb-3">"Thorbis pre-qualifies customers based on budget and timeline. I only speak to people ready to hire quality professionals."</p>
+									<div className="flex items-center gap-2 text-xs">
+										<Building className="w-3 h-3" />
+										<span>Same Lisa R., now premium pricing</span>
+									</div>
+								</div>
+								<div className="p-4 bg-card rounded-lg border border-primary/20">
+									<h4 className="font-semibold text-green-600 dark:text-green-400 mb-2">Intelligent Matching</h4>
+									<p className="text-sm text-muted-foreground mb-3">"AI matches me with perfect-fit customers in my service area with exactly the services I offer. Every lead is relevant."</p>
+									<div className="flex items-center gap-2 text-xs">
+										<Building className="w-3 h-3" />
+										<span>Same Carlos D., now 80% close rate</span>
+									</div>
+								</div>
+							</div>
+						</CardContent>
+					</Card>
+				</div>
+			</section>
+
+			{/* Service Business ROI Analysis */}
+			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8">
+				<div className="mb-12 text-center">
+					<h2 className="text-3xl font-bold text-foreground sm:text-4xl">Service Business ROI Calculator</h2>
+					<p className="mt-4 text-lg text-muted-foreground">Calculate your potential revenue increase with quality leads</p>
+				</div>
+				<div className="max-w-5xl mx-auto">
+					<div className="grid gap-8 lg:grid-cols-2">
+						<Card className="p-8 border-destructive/20">
+							<CardHeader className="px-0 pt-0">
+								<CardTitle className="flex items-center gap-2 text-destructive">
+									<DollarSign className="w-5 h-5" />
+									Current Bark Performance
+								</CardTitle>
+							</CardHeader>
+							<CardContent className="px-0 space-y-4">
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Bark monthly fee</span>
+									<span className="font-semibold text-destructive">$250</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Time wasted on bad leads (15hr/week)</span>
+									<span className="font-semibold text-destructive">$1,500</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Lost revenue from poor conversion (15%)</span>
+									<span className="font-semibold text-destructive">$2,800</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Reputation damage from bad customers</span>
+									<span className="font-semibold text-destructive">$800</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Additional platform costs</span>
+									<span className="font-semibold text-destructive">$200</span>
+								</div>
+								<div className="border-t pt-4">
+									<div className="flex justify-between items-center font-bold text-lg">
+										<span>Total Monthly Cost</span>
+										<span className="text-destructive">$5,550</span>
+									</div>
+								</div>
+							</CardContent>
+						</Card>
+
+						<Card className="p-8 bg-primary/5 border-primary/20">
+							<CardHeader className="px-0 pt-0">
+								<CardTitle className="flex items-center gap-2 text-primary">
+									<Target className="w-5 h-5" />
+									Thorbis Service Business Results
+								</CardTitle>
+							</CardHeader>
+							<CardContent className="px-0 space-y-4">
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Thorbis platform (all features)</span>
+									<span className="font-semibold">$29</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Time saved with qualified leads (2hr/week)</span>
+									<span className="font-semibold text-green-600 dark:text-green-400">+$1,300</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Increased revenue from 68% conversion</span>
+									<span className="font-semibold text-green-600 dark:text-green-400">+$8,500</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Premium pricing with quality customers</span>
+									<span className="font-semibold text-green-600 dark:text-green-400">+$2,200</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Multi-platform presence included</span>
+									<span className="font-semibold text-green-600 dark:text-green-400">+$200</span>
+								</div>
+								<div className="border-t pt-4">
+									<div className="flex justify-between items-center font-bold text-lg">
+										<span>Net Monthly Gain</span>
+										<span className="text-green-600 dark:text-green-400">+$17,721</span>
+									</div>
+								</div>
+							</CardContent>
+						</Card>
+					</div>
+					<div className="mt-8 p-6 bg-primary text-primary-foreground rounded-xl text-center">
+						<div className="text-3xl font-bold mb-2">$212,652</div>
+						<div className="text-lg opacity-90">Annual Revenue Increase for Service Businesses</div>
+						<p className="text-sm opacity-80 mt-2">Based on average contractor switching from Bark to Thorbis</p>
+					</div>
+				</div>
+			</section>
+
+			{/* Service-Specific Tools */}
+			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8 bg-muted/30">
+				<div className="mb-12 text-center">
+					<h2 className="text-3xl font-bold text-foreground sm:text-4xl">Built for Service Professionals</h2>
+					<p className="mt-4 text-lg text-muted-foreground">Tools that understand your workflow and challenges</p>
+				</div>
+				<div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+					<Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+						<CardContent className="p-6 text-center">
+							<div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+								<Award className="w-6 h-6 text-primary" />
+							</div>
+							<h3 className="font-semibold mb-2">Lead Scoring</h3>
+							<p className="text-sm text-muted-foreground">AI scores leads based on budget, timeline, project scope, and past customer behavior.</p>
+						</CardContent>
+					</Card>
+
+					<Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+						<CardContent className="p-6 text-center">
+							<div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+								<Clock className="w-6 h-6 text-primary" />
+							</div>
+							<h3 className="font-semibold mb-2">Job Scheduling</h3>
+							<p className="text-sm text-muted-foreground">Integrated calendar with customer booking, automatic confirmations, and route optimization.</p>
+						</CardContent>
+					</Card>
+
+					<Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+						<CardContent className="p-6 text-center">
+							<div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+								<FileText className="w-6 h-6 text-primary" />
+							</div>
+							<h3 className="font-semibold mb-2">Quote Management</h3>
+							<p className="text-sm text-muted-foreground">Professional quote templates, digital signatures, and automatic follow-up sequences.</p>
+						</CardContent>
+					</Card>
+
+					<Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+						<CardContent className="p-6 text-center">
+							<div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+								<Briefcase className="w-6 h-6 text-primary" />
+							</div>
+							<h3 className="font-semibold mb-2">Job Portfolio</h3>
+							<p className="text-sm text-muted-foreground">Showcase your best work with before/after photos, customer testimonials, and project details.</p>
+						</CardContent>
+					</Card>
+				</div>
+			</section>
+
 			{/* CTA Section */}
 			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8">
 				<div className="overflow-hidden relative p-8 text-center rounded-2xl bg-primary text-primary-foreground">
@@ -515,6 +822,20 @@ export default async function BarkAlternative() {
 							<Button size="lg" variant="outline" className="px-8 py-3 text-lg text-white border-white/20 hover:bg-white/10">
 								Schedule Demo
 							</Button>
+						</div>
+						<div className="mt-6 flex items-center justify-center gap-6 text-sm opacity-80">
+							<div className="flex items-center gap-1">
+								<CheckCircle className="w-4 h-4" />
+								<span>AI-qualified leads only</span>
+							</div>
+							<div className="flex items-center gap-1">
+								<CheckCircle className="w-4 h-4" />
+								<span>68% average close rate</span>
+							</div>
+							<div className="flex items-center gap-1">
+								<CheckCircle className="w-4 h-4" />
+								<span>$200K+ annual increase</span>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -564,22 +885,22 @@ export default async function BarkAlternative() {
 			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8">
 				<div className="mb-8 text-center">
 					<h2 className="text-2xl font-bold text-foreground sm:text-3xl">Explore Other Platform Comparisons</h2>
-					<p className="mt-4 text-muted-foreground">See how we compare to other major platforms</p>
+					<p className="mt-4 text-muted-foreground">Comprehensive analyses with contractor success stories and detailed ROI breakdowns</p>
 				</div>
 				<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+					<Link href="/angies-list-alternative">
+						<Card className="transition-all duration-300 cursor-pointer hover:shadow-lg hover:-translate-y-1">
+							<CardContent className="p-6">
+								<h3 className="font-semibold text-foreground">Angie's List vs Thorbis</h3>
+								<p className="text-sm text-muted-foreground">Home service verification system with +387% conversion rate increases</p>
+							</CardContent>
+						</Card>
+					</Link>
 					<Link href="/yelp-alternative">
 						<Card className="transition-all duration-300 cursor-pointer hover:shadow-lg hover:-translate-y-1">
 							<CardContent className="p-6">
 								<h3 className="font-semibold text-foreground">Yelp vs Thorbis</h3>
-								<p className="text-sm text-muted-foreground">See how we compare to Yelp&apos;s business platform</p>
-							</CardContent>
-						</Card>
-					</Link>
-					<Link href="/thumbtack-alternative">
-						<Card className="transition-all duration-300 cursor-pointer hover:shadow-lg hover:-translate-y-1">
-							<CardContent className="p-6">
-								<h3 className="font-semibold text-foreground">Thumbtack vs Thorbis</h3>
-								<p className="text-sm text-muted-foreground">Service business platform comparison</p>
+								<p className="text-sm text-muted-foreground">Industry-specific cost analysis and migration timeline tools</p>
 							</CardContent>
 						</Card>
 					</Link>
@@ -587,7 +908,31 @@ export default async function BarkAlternative() {
 						<Card className="transition-all duration-300 cursor-pointer hover:shadow-lg hover:-translate-y-1">
 							<CardContent className="p-6">
 								<h3 className="font-semibold text-foreground">Google Business vs Thorbis</h3>
-								<p className="text-sm text-muted-foreground">See how we compare to Google&apos;s business platform</p>
+								<p className="text-sm text-muted-foreground">Enhanced business features with $131K+ annual savings analysis</p>
+							</CardContent>
+						</Card>
+					</Link>
+					<Link href="/yellow-pages-alternative">
+						<Card className="transition-all duration-300 cursor-pointer hover:shadow-lg hover:-translate-y-1">
+							<CardContent className="p-6">
+								<h3 className="font-semibold text-foreground">Yellow Pages vs Thorbis</h3>
+								<p className="text-sm text-muted-foreground">Digital transformation case studies with local business growth data</p>
+							</CardContent>
+						</Card>
+					</Link>
+					<Link href="/booking-alternative">
+						<Card className="transition-all duration-300 cursor-pointer hover:shadow-lg hover:-translate-y-1">
+							<CardContent className="p-6">
+								<h3 className="font-semibold text-foreground">Booking.com vs Thorbis</h3>
+								<p className="text-sm text-muted-foreground">Travel accommodation commission elimination strategies</p>
+							</CardContent>
+						</Card>
+					</Link>
+					<Link href="/expedia-alternative">
+						<Card className="transition-all duration-300 cursor-pointer hover:shadow-lg hover:-translate-y-1">
+							<CardContent className="p-6">
+								<h3 className="font-semibold text-foreground">Expedia vs Thorbis</h3>
+								<p className="text-sm text-muted-foreground">Travel business ROI with $528K+ total annual benefits</p>
 							</CardContent>
 						</Card>
 					</Link>

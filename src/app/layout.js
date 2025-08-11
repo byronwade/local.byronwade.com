@@ -9,7 +9,15 @@ import AnalyticsInitializer from "@components/shared/analytics-initializer";
 import { cn } from "@utils";
 
 import { AuthProvider } from "@context/auth-context";
+import PerformanceProvider from "@components/performance/performance-provider";
+
+// NextFaster Performance Optimizations - Disable cache for dev
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
 import SiteWideAlert from "@components/shared/site-alert";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/next";
 
 // Import global metadata configuration
 export { metadata, viewport } from "./metadata";
@@ -47,15 +55,29 @@ export default function RootLayout({ children }) {
 					}}
 				/>
 
-				{/* Performance optimizations */}
+				{/* NextFaster Performance Optimizations */}
 				<link rel="preconnect" href="https://fonts.googleapis.com" />
 				<link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
 				<link rel="dns-prefetch" href="https://www.googletagmanager.com" />
 				<link rel="dns-prefetch" href="https://www.google-analytics.com" />
 
-				{/* Preload critical assets with proper priority */}
+				{/* Critical resource prefetching */}
 				<link rel="preload" as="image" href="/logos/ThorbisLogo.webp" fetchPriority="high" />
-				<link rel="preload" href="/_next/static/media/e4af272ccee01ff0-s.p.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+				<link rel="preload" as="script" href="/sw.js" />
+				<link rel="prefetch" href="/api/categories" />
+				<link rel="prefetch" href="/api/businesses/featured" />
+
+				{/* Service Worker registration hint */}
+				<link rel="manifest" href="/manifest.json" />
+				<meta name="theme-color" content="#000000" />
+
+				{/* Advanced image format support */}
+				<meta name="image-formats" content="avif,webp,jpg" />
+
+				{/* Performance hints */}
+				<meta name="resource-hints" content="preload,prefetch,preconnect" />
+
+				{/* Font preloading handled by next/font; avoid hashed preload warnings */}
 
 				{/* Organization structured data for global recognition */}
 				<script
@@ -127,22 +149,43 @@ export default function RootLayout({ children }) {
 						),
 					}}
 				/>
+
+				{/* Site Navigation structured data */}
+				<script
+					type="application/ld+json"
+					dangerouslySetInnerHTML={{
+						__html: JSON.stringify(
+							{
+								"@context": "https://schema.org",
+								"@type": "SiteNavigationElement",
+								name: ["Home", "Search", "Categories", "LocalHub", "About"],
+								url: ["https://thorbis.com/", "https://thorbis.com/search", "https://thorbis.com/categories", "https://thorbis.com/localhub", "https://thorbis.com/about-us"],
+							},
+							null,
+							0
+						),
+					}}
+				/>
 			</head>
 			<body className={cn("min-h-screen bg-background text-foreground font-sans antialiased", fontSans.variable)}>
 				<ErrorBoundary>
-					<ThemeProvider>
-						<LanguageProvider initialLocale="en">
-							<AuthProvider>
-								<StatsigProvider>
-									<AnalyticsInitializer />
-									{/* Compact global site alert above all headers */}
-									<SiteWideAlert />
-									{children}
-									<Toaster />
-								</StatsigProvider>
-							</AuthProvider>
-						</LanguageProvider>
-					</ThemeProvider>
+					<PerformanceProvider enableServiceWorker={true} enableMonitoring={true} enableExperimentalAPIs={true} showPerformanceMonitor={process.env.NODE_ENV === "development"} autoOptimize={true}>
+						<ThemeProvider>
+							<LanguageProvider initialLocale="en">
+								<AuthProvider>
+									<StatsigProvider>
+										<AnalyticsInitializer />
+										{/* Compact global site alert above all headers */}
+										<SiteWideAlert />
+										{children}
+										<Toaster />
+										<SpeedInsights />
+										<Analytics />
+									</StatsigProvider>
+								</AuthProvider>
+							</LanguageProvider>
+						</ThemeProvider>
+					</PerformanceProvider>
 				</ErrorBoundary>
 				{/* Global error handlers and performance optimizations */}
 				<script

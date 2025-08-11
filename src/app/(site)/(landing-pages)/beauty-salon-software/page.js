@@ -9,14 +9,21 @@ export const metadata = {
 		type: "website",
 		url: "https://thorbis.com/beauty-salon-software",
 		siteName: "Thorbis",
-		images: [{ url: "https://thorbis.com/og-salon.jpg", width: 1200, height: 630, alt: "Thorbis Beauty Salon Software" }],
+		images: [
+			{
+				url: `https://thorbis.com/opengraph-image?title=${encodeURIComponent("Beauty Salon Software")}&description=${encodeURIComponent("Appointments, POS, memberships, and marketing automation.")}`,
+				width: 1200,
+				height: 630,
+				alt: "Thorbis Beauty Salon Software",
+			},
+		],
 		locale: "en_US",
 	},
 	twitter: {
 		card: "summary_large_image",
 		title: "Beauty Salon Software – Grow Bookings",
 		description: "Appointments, POS, memberships, and marketing automation.",
-		images: ["https://thorbis.com/og-salon.jpg"],
+		images: [`https://thorbis.com/twitter-image?title=${encodeURIComponent("Beauty Salon Software")}`],
 		creator: "@thorbis",
 		site: "@thorbis",
 	},

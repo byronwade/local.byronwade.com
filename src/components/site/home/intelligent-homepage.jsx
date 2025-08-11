@@ -8,10 +8,10 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { generatePersonalizedHomepage } from "@lib/utils/homepage-personalization-engine";
-import { behaviorTracker } from "@lib/utils/user-behavior-tracker";
-import { logger } from "@lib/utils/logger";
-import { cn } from "@lib/utils";
+import { generatePersonalizedHomepage } from "@utils/homepage-personalization-engine";
+import { behaviorTracker } from "@utils/user-behavior-tracker";
+import { logger } from "@utils/logger";
+import { cn } from "@utils";
 
 // Dynamic section components
 import HeroSection from "./sections/Personalizedhero-section";
@@ -23,7 +23,7 @@ import RecommendedSection from "./sections/RecommendedSection";
 import LoadingSkeletonSection from "./sections/LoadingSkeletonSection";
 
 // Performance monitoring
-import { PerformanceMonitor } from "@lib/utils/performance-monitor";
+import { PerformanceMonitor } from "@utils/performance-monitor";
 
 export default function IntelligentHomepage({ userId = null, userLocation = null, initialData = null, className = "", ...props }) {
 	// State management

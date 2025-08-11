@@ -33,7 +33,7 @@ export const metadata = {
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://images.unsplash.com/photo-1556740738-b6a63e27c4df?q=80&w=2070&auto=format&fit=crop",
+				url: `https://thorbis.com/opengraph-image?title=${encodeURIComponent("Affiliate Program")}&description=${encodeURIComponent("Partner with Thorbis and earn commissions.")}`,
 				width: 1200,
 				height: 630,
 				alt: "Thorbis Affiliate Program",
@@ -46,7 +46,7 @@ export const metadata = {
 		card: "summary_large_image",
 		title: "Affiliate Program - Partner with Thorbis",
 		description: "Join our affiliate program and earn competitive commissions by referring customers.",
-		images: ["https://images.unsplash.com/photo-1556740738-b6a63e27c4df?q=80&w=2070&auto=format&fit=crop"],
+		images: [`https://thorbis.com/twitter-image?title=${encodeURIComponent("Affiliate Program")}`],
 	},
 	alternates: {
 		canonical: "https://thorbis.com/affiliates",

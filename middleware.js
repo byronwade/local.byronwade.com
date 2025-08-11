@@ -1,8 +1,9 @@
 // REQUIRED: Advanced Application Middleware
-// Implements comprehensive security, performance, subdomain routing, and monitoring
+// Implements comprehensive security, performance, subdomain routing, redirects, and monitoring
 
 import { NextResponse } from "next/server";
 import { createProfessionalSubdomainMiddleware } from "./lib/middleware/professional-subdomain";
+import { getRedirectDestination } from "./src/app/redirects";
 
 /**
  * TEMPORARILY SIMPLIFIED - Main application middleware
@@ -16,6 +17,31 @@ export async function middleware(request) {
 		// Skip middleware for static assets
 		if (shouldSkipMiddleware(pathname)) {
 			return NextResponse.next();
+		}
+
+		// Handle page consolidation redirects FIRST
+		const redirectDestination = getRedirectDestination(pathname);
+		if (redirectDestination) {
+			console.log(`Redirecting ${pathname} to ${redirectDestination}`);
+
+			// Create the new URL with the redirect destination
+			const redirectUrl = new URL(redirectDestination, request.url);
+
+			// Preserve query parameters
+			redirectUrl.search = request.nextUrl.search;
+
+			// Return 301 permanent redirect for SEO
+			const redirectResponse = NextResponse.redirect(redirectUrl, 301);
+
+			// Add security headers to redirect response
+			addSecurityHeaders(redirectResponse);
+
+			// Log redirect for analytics
+			redirectResponse.headers.set("X-Redirect-From", pathname);
+			redirectResponse.headers.set("X-Redirect-To", redirectDestination);
+			redirectResponse.headers.set("X-Redirect-Type", "consolidation");
+
+			return redirectResponse;
 		}
 
 		// Re-enabled advanced middleware after dependency updates

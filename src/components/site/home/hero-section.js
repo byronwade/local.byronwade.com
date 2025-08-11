@@ -620,16 +620,16 @@ export default function HeroSection() {
 						{/* Enhanced Typography */}
 						<div className="text-center space-y-8">
 							<h1 className="text-5xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[0.9] animate-slide-up animation-delay-200">
-								<span className="block text-white">Find the Best Local</span>
+								<span className="block text-white">Your Premier</span>
 								<span className="block text-primary text-6xl md:text-7xl lg:text-8xl mt-2 font-extrabold relative">
-									Businesses
+									Business Directory
 									<div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-3/4 h-1 bg-blue-500 rounded-full scale-x-0 origin-center" style={{ animation: "scaleX 1s ease-out 1.5s forwards" }}></div>
 								</span>
-								<span className="block text-2xl md:text-3xl lg:text-4xl font-normal text-gray-400 mt-4">Near You</span>
+								<span className="block text-2xl md:text-3xl lg:text-4xl font-normal text-gray-400 mt-4">Find Local Businesses • Field Services • Community Hub</span>
 							</h1>
 
 							{/* Enhanced Subheading */}
-							<p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed animate-fade-in animation-delay-400">Read real reviews, compare prices, and book services instantly</p>
+							<p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed animate-fade-in animation-delay-400">Discover trusted local businesses, read verified reviews, compare services, and connect with your community</p>
 						</div>
 					</div>
 
@@ -703,7 +703,7 @@ export default function HeroSection() {
 									onChange={handleInputChange}
 									onFocus={handleSearchFocus}
 									onBlur={handleSearchBlur}
-									placeholder={aiMode ? "Ask me anything about local businesses..." : searchIntent === "location" ? "Find businesses near you..." : searchIntent === "category" ? "Explore business categories..." : "Search restaurants, services, healthcare..."}
+									placeholder={aiMode ? "Ask me anything about local businesses..." : searchIntent === "location" ? "Find businesses near you..." : searchIntent === "category" ? "Browse business directory categories..." : "Search business directory: restaurants, services, healthcare..."}
 									className={`w-full bg-transparent text-lg outline-none border-0 py-3 text-foreground transition-all duration-200 ${aiMode ? "placeholder:text-blue-400/80 dark:placeholder:text-blue-500/80" : "placeholder:text-neutral-400/80 dark:placeholder:text-neutral-500/80"} ${searchFocus ? "text-lg" : "text-base"}`}
 									disabled={loading}
 								/>
@@ -1140,7 +1140,7 @@ export default function HeroSection() {
 
 					{/* Enhanced Popular Categories */}
 					<div className="relative mb-20">
-						<h3 className="text-xl font-semibold text-white mb-8 text-center">Popular Categories</h3>
+						<h3 className="text-xl font-semibold text-white mb-8 text-center">Browse Business Directory</h3>
 
 						{/* Staggered grid layout */}
 						<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -1190,18 +1190,22 @@ export default function HeroSection() {
 					{/* Call-to-Action Enhancement */}
 					<div className="text-center">
 						<div className="inline-flex items-center gap-4 animate-fade-in animation-delay-600">
-							<Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 group">
-								Start Exploring
-								<ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-							</Button>
+							<Link href="/categories">
+								<Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 group">
+									Browse Directory
+									<ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+								</Button>
+							</Link>
 
-							<Button variant="outline" size="lg" className="border-white/20 text-white hover:bg-white/10 px-8 py-4 rounded-2xl text-lg font-semibold backdrop-blur-sm">
-								Watch Demo
-							</Button>
+							<Link href="/add-a-business">
+								<Button variant="outline" size="lg" className="border-white/20 text-white hover:bg-white/10 px-8 py-4 rounded-2xl text-lg font-semibold backdrop-blur-sm">
+									Add Business
+								</Button>
+							</Link>
 						</div>
 
 						{/* Trust indicators below CTAs */}
-						<p className="text-sm text-gray-400 mt-6">Join 2.3M+ happy customers • Free to use • No credit card required</p>
+						<p className="text-sm text-gray-400 mt-6">Join 50,000+ verified businesses • Free directory listing • Read millions of reviews</p>
 					</div>
 				</div>
 			</div>

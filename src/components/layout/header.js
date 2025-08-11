@@ -9,7 +9,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@components/ui/command";
 import { ChevronDown, Menu, Search, Bell, Plus, CheckCircle, Shield, MapPin, User, Settings, X } from "react-feather";
 import { Sparkles } from "lucide-react";
-import SearchBarHeader from "@components/shared/searchBox/search-bar-header";
+import { SearchBarUnified as SearchBarHeader } from "@components/shared/searchBox";
 import { useAuth } from "@context/auth-context";
 import { useUserProfile } from "@hooks/use-user-profile";
 import { motion, AnimatePresence } from "framer-motion";
@@ -77,46 +77,61 @@ export default function Header() {
 	};
 
 	// Function to determine page context and branding
+	// Emphasizes Business Directory as primary function
 	const getPageContext = () => {
 		if (pathname.startsWith("/search")) {
 			return {
-				title: "Thorbis",
-				subtitle: "Business Search",
+				title: "Thorbis Business Directory",
+				subtitle: "Find & Connect with Local Businesses",
 				gradient: "from-blue-500/20 to-green-500/20",
 			};
 		}
 		if (pathname.startsWith("/shorts")) {
 			return {
-				title: "Thorbis",
-				subtitle: "Business Shorts",
+				title: "Thorbis Business Directory",
+				subtitle: "Business Stories & Insights",
 				gradient: "from-blue-500/20 to-green-500/20",
 			};
 		}
 		if (pathname.startsWith("/networking")) {
 			return {
-				title: "Networking",
-				subtitle: "Connect & Grow",
+				title: "Business Networking",
+				subtitle: "Connect & Grow Your Business",
 				gradient: "from-purple-500/20 to-pink-500/20",
 			};
 		}
 		if (pathname.startsWith("/events")) {
 			return {
-				title: "Thorbis",
-				subtitle: "Local Events",
+				title: "Thorbis Business Directory",
+				subtitle: "Local Business Events",
 				gradient: "from-orange-500/20 to-red-500/20",
 			};
 		}
 		if (pathname.startsWith("/neighborhoods")) {
 			return {
-				title: "Thorbis",
-				subtitle: "Neighborhoods",
+				title: "Thorbis Business Directory",
+				subtitle: "Businesses by Neighborhood",
 				gradient: "from-green-500/20 to-blue-500/20",
 			};
 		}
-		// Default branding
+		if (pathname.startsWith("/categories")) {
+			return {
+				title: "Thorbis Business Directory",
+				subtitle: "Browse Business Categories",
+				gradient: "from-blue-500/20 to-green-500/20",
+			};
+		}
+		if (pathname.startsWith("/localhub")) {
+			return {
+				title: "LocalHub Platform",
+				subtitle: "Build Your Business Community",
+				gradient: "from-indigo-500/20 to-purple-500/20",
+			};
+		}
+		// Default branding - Business Directory First
 		return {
-			title: "Thorbis",
-			subtitle: "Local Business Directory",
+			title: "Thorbis Business Directory",
+			subtitle: "Find Local Businesses • Field Services • Community Hub",
 			gradient: "from-blue-500/20 to-green-500/20",
 		};
 	};
@@ -148,34 +163,61 @@ export default function Header() {
 					</div>
 				</div>
 
-				{/* Desktop Navigation */}
-				<div className="hidden space-x-1 lg:flex xl:space-x-2">
-					<Link href="/categories" passHref>
-						<Button variant="ghost" size="sm" className="text-sm font-medium transition-colors hover:text-primary hover:bg-accent">
-							Categories
-						</Button>
-					</Link>
-					<Link href="/dashboard/user/jobs/create" passHref>
-						<Button variant="ghost" size="sm" className="text-sm font-medium transition-colors hover:text-primary hover:bg-accent">
-							Post a Job
-						</Button>
-					</Link>
-					<Link href="/dashboard/user/reviews/create" passHref>
-						<Button variant="ghost" size="sm" className="text-sm font-medium transition-colors hover:text-primary hover:bg-accent">
-							Write Review
-						</Button>
-					</Link>
+				{/* Enhanced Desktop Navigation - Clear Visual Hierarchy */}
+				<div className="hidden lg:flex items-center space-x-1">
+					{/* Primary: Business Directory Section */}
+					<div className="flex items-center bg-blue-50/80 dark:bg-blue-950/30 rounded-xl px-1 py-1 border border-blue-100 dark:border-blue-800/50">
+						<Link href="/categories" passHref>
+							<Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg shadow-sm hover:shadow-md transition-all">
+								Browse Directory
+							</Button>
+						</Link>
+						<Link href="/search" passHref>
+							<Button variant="ghost" size="sm" className="text-blue-700 dark:text-blue-300 font-medium hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors">
+								Find Businesses
+							</Button>
+						</Link>
+						<Link href="/dashboard/user/reviews/create" passHref>
+							<Button variant="ghost" size="sm" className="text-blue-700 dark:text-blue-300 font-medium hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors">
+								Write Review
+							</Button>
+						</Link>
+					</div>
 
-					{/* Business Dropdown */}
+					{/* Separator */}
+					<div className="w-px h-6 bg-neutral-300 dark:bg-neutral-600 mx-2"></div>
+
+					{/* Secondary: Field Services */}
+					<div className="flex items-center bg-green-50/80 dark:bg-green-950/30 rounded-xl px-1 py-1 border border-green-100 dark:border-green-800/50">
+						<Link href="/dashboard/user/jobs/create" passHref>
+							<Button variant="ghost" size="sm" className="text-green-700 dark:text-green-300 font-medium hover:bg-green-100 dark:hover:bg-green-900/50 transition-colors">
+								Post Field Job
+							</Button>
+						</Link>
+					</div>
+
+					{/* Separator */}
+					<div className="w-px h-6 bg-neutral-300 dark:bg-neutral-600 mx-2"></div>
+
+					{/* Tertiary: LocalHub */}
+					<div className="flex items-center">
+						<Link href="/localhub" passHref>
+							<Button variant="ghost" size="sm" className="text-purple-600 dark:text-purple-400 font-medium hover:bg-purple-50 dark:hover:bg-purple-950/30 border border-purple-200 dark:border-purple-700/50 rounded-lg transition-colors">
+								LocalHub
+							</Button>
+						</Link>
+					</div>
+
+					{/* Business Tools Dropdown - Enhanced */}
 					<DropdownMenu modal={false}>
 						<DropdownMenuTrigger asChild>
-							<Button variant="ghost" size="sm" className="text-sm font-medium transition-colors hover:text-primary hover:bg-accent">
-								For Business <ChevronDown className="ml-1 w-4 h-4" />
+							<Button variant="outline" size="sm" className="text-sm font-medium border-neutral-300 dark:border-neutral-600 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors ml-3">
+								Business Tools <ChevronDown className="ml-1 w-4 h-4" />
 							</Button>
 						</DropdownMenuTrigger>
 						<DropdownMenuPortal>
 							<DropdownMenuContent className="z-[999] w-72 bg-neutral-900/90 dark:bg-neutral-900/90 backdrop-blur-md border-neutral-800 dark:border-neutral-800">
-								<DropdownMenuLabel>Business Solutions</DropdownMenuLabel>
+								<DropdownMenuLabel>Business Directory Tools</DropdownMenuLabel>
 								<DropdownMenuSeparator />
 								<DropdownMenuItem asChild className="flex items-center gap-3 py-2.5">
 									<Link href="/add-a-business">
@@ -183,8 +225,8 @@ export default function Header() {
 											<Plus className="w-4 h-4 text-green-600 dark:text-green-400" />
 										</div>
 										<div className="flex flex-col">
-											<span className="text-sm font-medium">Add a Business</span>
-											<span className="text-xs text-muted-foreground">List your business for free</span>
+											<span className="text-sm font-medium">Add to Directory</span>
+											<span className="text-xs text-muted-foreground">List your business in our directory</span>
 										</div>
 									</Link>
 								</DropdownMenuItem>
@@ -194,24 +236,24 @@ export default function Header() {
 											<CheckCircle className="w-4 h-4 text-blue-600 dark:text-blue-400" />
 										</div>
 										<div className="flex flex-col">
-											<span className="text-sm font-medium">Claim Your Business</span>
-											<span className="text-xs text-muted-foreground">Already listed? Claim ownership</span>
+											<span className="text-sm font-medium">Claim Directory Listing</span>
+											<span className="text-xs text-muted-foreground">Already listed? Take control</span>
 										</div>
 									</Link>
 								</DropdownMenuItem>
 								<DropdownMenuSeparator />
+								<DropdownMenuLabel>Business Management</DropdownMenuLabel>
 								<DropdownMenuItem asChild className="flex items-center gap-3 py-2.5">
 									<Link href="/explore-business">
 										<div className="w-8 h-8 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
 											<Sparkles className="w-4 h-4 text-purple-600 dark:text-purple-400" />
 										</div>
 										<div className="flex flex-col">
-											<span className="text-sm font-medium">Business Solutions</span>
-											<span className="text-xs text-muted-foreground">Grow your business with Thorbis</span>
+											<span className="text-sm font-medium">Field Service Tools</span>
+											<span className="text-xs text-muted-foreground">Manage jobs, scheduling & operations</span>
 										</div>
 									</Link>
 								</DropdownMenuItem>
-								<DropdownMenuSeparator />
 								<DropdownMenuItem asChild className="flex items-center gap-3 py-2.5">
 									<Link href="/business-certification">
 										<div className="w-8 h-8 rounded-lg bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center">
@@ -219,14 +261,15 @@ export default function Header() {
 										</div>
 										<div className="flex flex-col">
 											<div className="flex items-center gap-2">
-												<span className="text-sm font-medium text-blue-600 dark:text-blue-400">Get Thorbis Certified</span>
-												<span className="px-1.5 py-0.5 text-xs text-white bg-blue-600 rounded-full">Elite</span>
+												<span className="text-sm font-medium text-blue-600 dark:text-blue-400">Get Verified</span>
+												<span className="px-1.5 py-0.5 text-xs text-white bg-blue-600 rounded-full">Trusted</span>
 											</div>
-											<span className="text-xs text-muted-foreground">Premium verification badge</span>
+											<span className="text-xs text-muted-foreground">Boost directory credibility</span>
 										</div>
 									</Link>
 								</DropdownMenuItem>
 								<DropdownMenuSeparator />
+								<DropdownMenuLabel>Community Platform</DropdownMenuLabel>
 								<DropdownMenuItem asChild className="flex items-center gap-3 py-2.5">
 									<Link href="/localhub">
 										<div className="w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
@@ -234,10 +277,10 @@ export default function Header() {
 										</div>
 										<div className="flex flex-col">
 											<div className="flex items-center gap-2">
-												<span className="text-sm font-medium">Build Your Local Directory</span>
-												<span className="px-1.5 py-0.5 text-xs text-white bg-purple-600 rounded-full">New</span>
+												<span className="text-sm font-medium">LocalHub Creation</span>
+												<span className="px-1.5 py-0.5 text-xs text-white bg-purple-600 rounded-full">Advanced</span>
 											</div>
-											<span className="text-xs text-muted-foreground">Create & monetize your neighborhood hub</span>
+											<span className="text-xs text-muted-foreground">Build your community directory</span>
 										</div>
 									</Link>
 								</DropdownMenuItem>
@@ -427,44 +470,76 @@ export default function Header() {
 										)}
 									</div>
 
-									{/* Navigation */}
-									<nav className="flex-grow p-4 space-y-2 overflow-y-auto">
-										{/* Main Navigation */}
-										<div className="space-y-1">
-											<p className="px-4 py-2 text-sm font-semibold text-muted-foreground">Navigation</p>
-											<Link href="/categories" className="flex items-center gap-4 px-4 py-3 text-base rounded-lg hover:bg-neutral-800 transition-colors" onClick={() => setMobileMenuOpen(false)}>
-												Categories
-											</Link>
-											<Link href="/dashboard/user/jobs/create" className="flex items-center gap-4 px-4 py-3 text-base rounded-lg hover:bg-neutral-800 transition-colors" onClick={() => setMobileMenuOpen(false)}>
-												Post a Job
-											</Link>
-											<Link href="/dashboard/user/reviews/create" className="flex items-center gap-4 px-4 py-3 text-base rounded-lg hover:bg-neutral-800 transition-colors" onClick={() => setMobileMenuOpen(false)}>
-												Write a Review
-											</Link>
+									{/* Enhanced Navigation with Visual Hierarchy */}
+									<nav className="flex-grow p-4 space-y-4 overflow-y-auto">
+										{/* Primary: Business Directory - Enhanced Styling */}
+										<div className="bg-blue-950/30 border border-blue-800/50 rounded-xl p-1">
+											<div className="flex items-center gap-2 px-3 py-2 mb-2 bg-blue-600/20 rounded-lg">
+												<div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+												<p className="text-sm font-bold text-blue-300">Business Directory • Primary</p>
+											</div>
+											<div className="space-y-1 px-2 pb-2">
+												<Link href="/categories" className="flex items-center gap-3 px-3 py-3 text-base font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors" onClick={() => setMobileMenuOpen(false)}>
+													Browse Directory
+												</Link>
+												<Link href="/search" className="flex items-center gap-3 px-3 py-3 text-base text-blue-300 rounded-lg hover:bg-blue-900/50 transition-colors" onClick={() => setMobileMenuOpen(false)}>
+													Find Businesses
+												</Link>
+												<Link href="/dashboard/user/reviews/create" className="flex items-center gap-3 px-3 py-3 text-base text-blue-300 rounded-lg hover:bg-blue-900/50 transition-colors" onClick={() => setMobileMenuOpen(false)}>
+													Write a Review
+												</Link>
+											</div>
 										</div>
 
-										<div className="px-4 pt-2 pb-2">
-											<DropdownMenuSeparator className="bg-neutral-800" />
+										{/* Secondary: Field Services - Enhanced Styling */}
+										<div className="bg-green-950/30 border border-green-800/50 rounded-xl p-1">
+											<div className="flex items-center gap-2 px-3 py-2 mb-2 bg-green-600/20 rounded-lg">
+												<div className="w-2 h-2 bg-green-400 rounded-full"></div>
+												<p className="text-sm font-bold text-green-300">Field Services • Secondary</p>
+											</div>
+											<div className="space-y-1 px-2 pb-2">
+												<Link href="/dashboard/user/jobs/create" className="flex items-center gap-3 px-3 py-3 text-base text-green-300 rounded-lg hover:bg-green-900/50 transition-colors" onClick={() => setMobileMenuOpen(false)}>
+													Post Field Job
+												</Link>
+											</div>
 										</div>
 
-										{/* For Business Section */}
-										<div className="space-y-1">
-											<p className="px-4 py-2 text-sm font-semibold text-muted-foreground">For Business</p>
-											<Link href="/add-a-business" className="flex items-center gap-4 px-4 py-3 text-base rounded-lg hover:bg-neutral-800 transition-colors" onClick={() => setMobileMenuOpen(false)}>
-												<Plus className="w-5 h-5 text-green-400" /> Add a Business
-											</Link>
-											<Link href="/claim-a-business" className="flex items-center gap-4 px-4 py-3 text-base rounded-lg hover:bg-neutral-800 transition-colors" onClick={() => setMobileMenuOpen(false)}>
-												<CheckCircle className="w-5 h-5 text-blue-400" /> Claim Your Business
-											</Link>
-											<Link href="/explore-business" className="flex items-center gap-4 px-4 py-3 text-base rounded-lg hover:bg-neutral-800 transition-colors" onClick={() => setMobileMenuOpen(false)}>
-												<Sparkles className="w-5 h-5 text-purple-400" /> Business Solutions
-											</Link>
-											<Link href="/business-certification" className="flex items-center gap-4 px-4 py-3 text-base rounded-lg hover:bg-neutral-800 transition-colors" onClick={() => setMobileMenuOpen(false)}>
-												<Shield className="w-5 h-5 text-yellow-400" /> Get Certified
-											</Link>
-											<Link href="/localhub" className="flex items-center gap-4 px-4 py-3 text-base rounded-lg hover:bg-neutral-800 transition-colors" onClick={() => setMobileMenuOpen(false)}>
-												<MapPin className="w-5 h-5 text-indigo-400" /> Build Your Local Directory
-											</Link>
+										{/* Tertiary: LocalHub - Enhanced Styling */}
+										<div className="bg-purple-950/30 border border-purple-800/50 rounded-xl p-1">
+											<div className="flex items-center gap-2 px-3 py-2 mb-2 bg-purple-600/20 rounded-lg">
+												<div className="w-2 h-2 bg-purple-400 rounded-full"></div>
+												<p className="text-sm font-bold text-purple-300">LocalHub • Tertiary</p>
+											</div>
+											<div className="space-y-1 px-2 pb-2">
+												<Link href="/localhub" className="flex items-center gap-3 px-3 py-3 text-base text-purple-300 rounded-lg hover:bg-purple-900/50 transition-colors" onClick={() => setMobileMenuOpen(false)}>
+													<MapPin className="w-5 h-5" /> Build LocalHub
+												</Link>
+											</div>
+										</div>
+
+										{/* Business Tools - Compact Section */}
+										<div className="bg-neutral-900/50 border border-neutral-700/50 rounded-xl p-1">
+											<div className="flex items-center gap-2 px-3 py-2 mb-2">
+												<p className="text-sm font-semibold text-neutral-400">Business Tools</p>
+											</div>
+											<div className="grid grid-cols-2 gap-2 px-2 pb-2">
+												<Link href="/add-a-business" className="flex flex-col items-center gap-2 px-3 py-3 text-sm text-center rounded-lg hover:bg-neutral-800 transition-colors" onClick={() => setMobileMenuOpen(false)}>
+													<Plus className="w-5 h-5 text-green-400" />
+													<span>Add Business</span>
+												</Link>
+												<Link href="/claim-a-business" className="flex flex-col items-center gap-2 px-3 py-3 text-sm text-center rounded-lg hover:bg-neutral-800 transition-colors" onClick={() => setMobileMenuOpen(false)}>
+													<CheckCircle className="w-5 h-5 text-blue-400" />
+													<span>Claim Listing</span>
+												</Link>
+												<Link href="/explore-business" className="flex flex-col items-center gap-2 px-3 py-3 text-sm text-center rounded-lg hover:bg-neutral-800 transition-colors" onClick={() => setMobileMenuOpen(false)}>
+													<Sparkles className="w-5 h-5 text-purple-400" />
+													<span>Field Tools</span>
+												</Link>
+												<Link href="/business-certification" className="flex flex-col items-center gap-2 px-3 py-3 text-sm text-center rounded-lg hover:bg-neutral-800 transition-colors" onClick={() => setMobileMenuOpen(false)}>
+													<Shield className="w-5 h-5 text-yellow-400" />
+													<span>Get Verified</span>
+												</Link>
+											</div>
 										</div>
 
 										<div className="px-4 pt-2 pb-2">

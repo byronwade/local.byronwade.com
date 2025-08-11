@@ -633,14 +633,14 @@ select {
   border-radius: 0.375rem;
 }
 
-/* Loading shimmer effect */
+/* Loading shimmer effect - Enhanced Netflix-style */
 @keyframes shimmer {
   0% {
-    background-position: -200px 0;
+    transform: translateX(-100%);
   }
 
   100% {
-    background-position: calc(200px + 100%) 0;
+    transform: translateX(100%);
   }
 }
 

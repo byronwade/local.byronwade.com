@@ -9,14 +9,21 @@ export const metadata = {
 		type: "website",
 		url: "https://thorbis.com/construction-management-software",
 		siteName: "Thorbis",
-		images: [{ url: "https://thorbis.com/og-construction.jpg", width: 1200, height: 630, alt: "Thorbis Construction Management Software" }],
+		images: [
+			{
+				url: `https://thorbis.com/opengraph-image?title=${encodeURIComponent("Construction Management Software")}&description=${encodeURIComponent("Scheduling, budgets vs actuals, change orders, and billing.")}`,
+				width: 1200,
+				height: 630,
+				alt: "Thorbis Construction Management Software",
+			},
+		],
 		locale: "en_US",
 	},
 	twitter: {
 		card: "summary_large_image",
 		title: "Construction Management Software – Deliver On Time",
 		description: "Scheduling, budgets vs actuals, change orders, and billing.",
-		images: ["https://thorbis.com/og-construction.jpg"],
+		images: [`https://thorbis.com/twitter-image?title=${encodeURIComponent("Construction Management Software")}`],
 		creator: "@thorbis",
 		site: "@thorbis",
 	},

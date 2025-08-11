@@ -10,6 +10,10 @@ const useMapStore = create((set, get) => ({
 		return get().mapRef;
 	},
 
+	isMapAvailable: () => {
+		return get().mapRef !== null;
+	},
+
 	getMapCenter: () => {
 		const map = get().mapRef;
 		if (map) {
@@ -47,7 +51,7 @@ const useMapStore = create((set, get) => ({
 	centerOn: (latitude, longitude, radius, zoomLevel) => {
 		const mapRef = get().mapRef;
 		if (!mapRef) {
-			console.error("mapRef is not set");
+			// Silently return if map is not available (e.g., in list-only mode)
 			return;
 		}
 

@@ -191,10 +191,12 @@ function IntelligentLoginButton({ context = "default", contextParams = {}, class
 
 /**
  * Smart Login Link (for use with Next.js Link component)
+ * This function should only be called from within a React component that has access to useIntelligentAuth
  */
 function createIntelligentLoginLink(context, contextParams = {}) {
-	const { createContextLink } = useIntelligentAuth();
-	return createContextLink(context, contextParams);
+	// This should be called from within a React component
+	console.warn('createIntelligentLoginLink should be called from within a React component with useIntelligentAuth');
+	return `/login?context=${context}&${new URLSearchParams(contextParams).toString()}`;
 }
 
 // Named exports for better tree-shaking and build compatibility

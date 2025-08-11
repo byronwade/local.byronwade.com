@@ -99,7 +99,17 @@ export async function generateMetadata({ searchParams }) {
 			title,
 			description,
 			type: "website",
+			url: "https://thorbis.com/jobs",
+			images: [`https://thorbis.com/opengraph-image?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}`],
 		},
+		twitter: {
+			card: "summary_large_image",
+			title,
+			description,
+			images: [`https://thorbis.com/twitter-image?title=${encodeURIComponent(title)}`],
+		},
+		robots: { index: true, follow: true },
+		alternates: { canonical: "https://thorbis.com/jobs" },
 	};
 }
 

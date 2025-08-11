@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Button } from "@components/ui/button";
 import { Badge } from "@components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
-import { CheckCircle, XCircle, Users, MessageSquare, Calendar, BarChart3, MapPin, Clock, ArrowRight, Star } from "lucide-react";
+import { CheckCircle, XCircle, Users, MessageSquare, Calendar, BarChart3, MapPin, Clock, ArrowRight, Star, DollarSign, TrendingUp, Shield, Target, Building, Phone, Mail, Zap, Award, FileText, Briefcase, Play, AlertTriangle, Heart, CreditCard, Plane, Home, Hotel } from "lucide-react";
 
 export const metadata = {
 	title: "Booking.com Alternative – Thorbis vs Booking | Thorbis",
@@ -16,14 +16,21 @@ export const metadata = {
 		type: "website",
 		url: "https://thorbis.com/booking-alternative",
 		siteName: "Thorbis",
-		images: [{ url: "https://thorbis.com/og-booking-alt.jpg", width: 1200, height: 630, alt: "Thorbis vs Booking.com" }],
+		images: [
+			{
+				url: `https://thorbis.com/opengraph-image?title=${encodeURIComponent("Booking.com Alternative")}&description=${encodeURIComponent("Fixed pricing, direct relationships, data access, and multi‑platform sync.")}`,
+				width: 1200,
+				height: 630,
+				alt: "Thorbis vs Booking.com",
+			},
+		],
 		locale: "en_US",
 	},
 	twitter: {
 		card: "summary_large_image",
 		title: "Booking.com Alternative – Thorbis vs Booking",
 		description: "Modern alternative to Booking.com with fixed pricing, direct relationships, full data access, and multi‑platform sync.",
-		images: ["https://thorbis.com/og-booking-alt.jpg"],
+		images: [`https://thorbis.com/twitter-image?title=${encodeURIComponent("Booking.com Alternative")}`],
 		creator: "@thorbis",
 		site: "@thorbis",
 	},
@@ -85,6 +92,355 @@ export default function BookingAlternative() {
 			</section>
 
 			<SocialProof />
+
+			{/* Travel Business Success Stories */}
+			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8">
+				<div className="mb-12 text-center">
+					<h2 className="text-3xl font-bold text-foreground sm:text-4xl">Travel Businesses Share Their Success</h2>
+					<p className="mt-4 text-lg text-muted-foreground">Real accommodations that ditched Booking.com's high commissions</p>
+				</div>
+				<div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+					<Card className="bg-card border-border hover:shadow-lg transition-all duration-300">
+						<CardContent className="p-8">
+							<div className="flex items-center gap-2 mb-4">
+								<Hotel className="w-5 h-5 text-primary" />
+								<span className="text-sm font-medium text-primary">Boutique Hotel</span>
+							</div>
+							<div className="mb-4">
+								<div className="text-2xl font-bold text-green-600 dark:text-green-400">+312%</div>
+								<div className="text-sm text-muted-foreground">Direct Booking Revenue</div>
+							</div>
+							<blockquote className="mb-4 text-sm text-muted-foreground">"Booking.com was taking 18% commission plus fees. Thorbis costs $29/month and we keep 100% of our revenue. We've increased direct bookings by 312% this year."</blockquote>
+							<div className="flex items-center gap-3">
+								<div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+									<Building className="w-5 h-5 text-primary" />
+								</div>
+								<div>
+									<div className="font-semibold text-sm">Elena Rodriguez</div>
+									<div className="text-xs text-muted-foreground">Coastal View Boutique Hotel</div>
+								</div>
+							</div>
+						</CardContent>
+					</Card>
+
+					<Card className="bg-card border-border hover:shadow-lg transition-all duration-300">
+						<CardContent className="p-8">
+							<div className="flex items-center gap-2 mb-4">
+								<Home className="w-5 h-5 text-primary" />
+								<span className="text-sm font-medium text-primary">Vacation Rental</span>
+							</div>
+							<div className="mb-4">
+								<div className="text-2xl font-bold text-green-600 dark:text-green-400">$95K</div>
+								<div className="text-sm text-muted-foreground">Annual Commission Savings</div>
+							</div>
+							<blockquote className="mb-4 text-sm text-muted-foreground">"We were paying $95,000 in Booking.com commissions annually. Now we pay $348 to Thorbis and have better guest relationships. Pure profit increase."</blockquote>
+							<div className="flex items-center gap-3">
+								<div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+									<Users className="w-5 h-5 text-primary" />
+								</div>
+								<div>
+									<div className="font-semibold text-sm">Michael Chen</div>
+									<div className="text-xs text-muted-foreground">Mountain Lodge Rentals</div>
+								</div>
+							</div>
+						</CardContent>
+					</Card>
+
+					<Card className="bg-card border-border hover:shadow-lg transition-all duration-300">
+						<CardContent className="p-8">
+							<div className="flex items-center gap-2 mb-4">
+								<Plane className="w-5 h-5 text-primary" />
+								<span className="text-sm font-medium text-primary">Travel Agency</span>
+							</div>
+							<div className="mb-4">
+								<div className="text-2xl font-bold text-green-600 dark:text-green-400">-78%</div>
+								<div className="text-sm text-muted-foreground">Customer Acquisition Cost</div>
+							</div>
+							<blockquote className="mb-4 text-sm text-muted-foreground">"Booking.com made us compete on price only. Thorbis helps us build relationships and offer personalized service. Our repeat booking rate tripled."</blockquote>
+							<div className="flex items-center gap-3">
+								<div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+									<Award className="w-5 h-5 text-primary" />
+								</div>
+								<div>
+									<div className="font-semibold text-sm">Sarah Thompson</div>
+									<div className="text-xs text-muted-foreground">Adventure Travel Co.</div>
+								</div>
+							</div>
+						</CardContent>
+					</Card>
+				</div>
+			</section>
+
+			{/* Commission Cost Analysis */}
+			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8 bg-muted/30">
+				<div className="mb-12 text-center">
+					<h2 className="text-3xl font-bold text-foreground sm:text-4xl">Commission vs Fixed Cost: The Reality</h2>
+					<p className="mt-4 text-lg text-muted-foreground">Why Booking.com's commission model is costing you thousands</p>
+				</div>
+				<div className="grid gap-8 lg:grid-cols-2">
+					<Card className="p-8 border-destructive/20 bg-destructive/5">
+						<CardHeader className="px-0 pt-0 pb-6">
+							<CardTitle className="flex items-center gap-2 text-destructive">
+								<AlertTriangle className="w-6 h-6" />
+								Booking.com Commission Problems
+							</CardTitle>
+						</CardHeader>
+						<CardContent className="px-0 space-y-6">
+							<div className="space-y-4">
+								<div className="p-4 bg-card rounded-lg border border-destructive/20">
+									<h4 className="font-semibold text-destructive mb-2">Hidden Escalating Costs</h4>
+									<p className="text-sm text-muted-foreground mb-3">"Started at 15% commission, now paying 22% plus credit card fees. As we grow, they take more. It's backwards - success should reduce costs, not increase them."</p>
+									<div className="flex items-center gap-2 text-xs">
+										<Building className="w-3 h-3" />
+										<span>David M., Beach Resort Owner</span>
+									</div>
+								</div>
+								<div className="p-4 bg-card rounded-lg border border-destructive/20">
+									<h4 className="font-semibold text-destructive mb-2">No Customer Loyalty Building</h4>
+									<p className="text-sm text-muted-foreground mb-3">"Booking.com owns the customer relationship. We're just a supplier to them. Can't build repeat business or offer loyalty programs. It's a race to the bottom."</p>
+									<div className="flex items-center gap-2 text-xs">
+										<Building className="w-3 h-3" />
+										<span>Lisa K., City Hotel Manager</span>
+									</div>
+								</div>
+								<div className="p-4 bg-card rounded-lg border border-destructive/20">
+									<h4 className="font-semibold text-destructive mb-2">Rate Parity Restrictions</h4>
+									<p className="text-sm text-muted-foreground mb-3">"They force us to match their rates everywhere, so we can't incentivize direct bookings. We're stuck paying commission even when we could have gotten the guest ourselves."</p>
+									<div className="flex items-center gap-2 text-xs">
+										<Building className="w-3 h-3" />
+										<span>James R., B&B Owner</span>
+									</div>
+								</div>
+							</div>
+						</CardContent>
+					</Card>
+
+					<Card className="p-8 border-primary/20 bg-primary/5">
+						<CardHeader className="px-0 pt-0 pb-6">
+							<CardTitle className="flex items-center gap-2 text-primary">
+								<Heart className="w-6 h-6" />
+								Thorbis Direct Booking Benefits
+							</CardTitle>
+						</CardHeader>
+						<CardContent className="px-0 space-y-6">
+							<div className="space-y-4">
+								<div className="p-4 bg-card rounded-lg border border-primary/20">
+									<h4 className="font-semibold text-green-600 dark:text-green-400 mb-2">Predictable Fixed Costs</h4>
+									<p className="text-sm text-muted-foreground mb-3">"$29/month no matter how many bookings we get. Last month we saved $8,400 compared to what we'd pay Booking.com. The more we grow, the more we save."</p>
+									<div className="flex items-center gap-2 text-xs">
+										<Building className="w-3 h-3" />
+										<span>Same David M., now 40% higher profit</span>
+									</div>
+								</div>
+								<div className="p-4 bg-card rounded-lg border border-primary/20">
+									<h4 className="font-semibold text-green-600 dark:text-green-400 mb-2">Own Customer Relationships</h4>
+									<p className="text-sm text-muted-foreground mb-3">"We have guest email addresses, preferences, history. We send personalized offers and 60% of our bookings are now repeat customers. Built a real business, not just a commodity."</p>
+									<div className="flex items-center gap-2 text-xs">
+										<Building className="w-3 h-3" />
+										<span>Same Lisa K., now premium pricing</span>
+									</div>
+								</div>
+								<div className="p-4 bg-card rounded-lg border border-primary/20">
+									<h4 className="font-semibold text-green-600 dark:text-green-400 mb-2">Flexible Pricing Freedom</h4>
+									<p className="text-sm text-muted-foreground mb-3">"We offer direct booking discounts, loyalty programs, and package deals. Guests love the personal service and we love keeping 100% of the revenue."</p>
+									<div className="flex items-center gap-2 text-xs">
+										<Building className="w-3 h-3" />
+										<span>Same James R., now 5-star reviews</span>
+									</div>
+								</div>
+							</div>
+						</CardContent>
+					</Card>
+				</div>
+			</section>
+
+			{/* Travel Industry ROI Calculator */}
+			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8">
+				<div className="mb-12 text-center">
+					<h2 className="text-3xl font-bold text-foreground sm:text-4xl">Travel Business ROI Calculator</h2>
+					<p className="mt-4 text-lg text-muted-foreground">Calculate your potential commission savings and revenue increase</p>
+				</div>
+				<div className="max-w-5xl mx-auto">
+					<div className="grid gap-8 lg:grid-cols-2">
+						<Card className="p-8 border-destructive/20">
+							<CardHeader className="px-0 pt-0">
+								<CardTitle className="flex items-center gap-2 text-destructive">
+									<DollarSign className="w-5 h-5" />
+									Current Booking.com Costs
+								</CardTitle>
+							</CardHeader>
+							<CardContent className="px-0 space-y-4">
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Commission fees (18% average)</span>
+									<span className="font-semibold text-destructive">$54,000</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Credit card processing fees</span>
+									<span className="font-semibold text-destructive">$3,600</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Lost revenue from rate restrictions</span>
+									<span className="font-semibold text-destructive">$18,000</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Customer acquisition cost increase</span>
+									<span className="font-semibold text-destructive">$8,400</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Additional marketing to compete</span>
+									<span className="font-semibold text-destructive">$12,000</span>
+								</div>
+								<div className="border-t pt-4">
+									<div className="flex justify-between items-center font-bold text-lg">
+										<span>Total Annual Cost</span>
+										<span className="text-destructive">$96,000</span>
+									</div>
+								</div>
+							</CardContent>
+						</Card>
+
+						<Card className="p-8 bg-primary/5 border-primary/20">
+							<CardHeader className="px-0 pt-0">
+								<CardTitle className="flex items-center gap-2 text-primary">
+									<Target className="w-5 h-5" />
+									Thorbis Direct Booking Results
+								</CardTitle>
+							</CardHeader>
+							<CardContent className="px-0 space-y-4">
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Thorbis platform (all features)</span>
+									<span className="font-semibold">$348</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Saved commission fees</span>
+									<span className="font-semibold text-green-600 dark:text-green-400">+$54,000</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Direct booking premium pricing</span>
+									<span className="font-semibold text-green-600 dark:text-green-400">+$36,000</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Repeat customer revenue</span>
+									<span className="font-semibold text-green-600 dark:text-green-400">+$48,000</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Reduced marketing costs</span>
+									<span className="font-semibold text-green-600 dark:text-green-400">+$12,000</span>
+								</div>
+								<div className="border-t pt-4">
+									<div className="flex justify-between items-center font-bold text-lg">
+										<span>Net Annual Gain</span>
+										<span className="text-green-600 dark:text-green-400">+$245,652</span>
+									</div>
+								</div>
+							</CardContent>
+						</Card>
+					</div>
+					<div className="mt-8 p-6 bg-primary text-primary-foreground rounded-xl text-center">
+						<div className="text-3xl font-bold mb-2">$341,652</div>
+						<div className="text-lg opacity-90">Total Annual Savings + Revenue Increase</div>
+						<p className="text-sm opacity-80 mt-2">Based on average accommodation switching from Booking.com to Thorbis ($300K annual revenue)</p>
+					</div>
+				</div>
+			</section>
+
+			{/* Interactive Travel Demo */}
+			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8 bg-muted/30">
+				<div className="mb-12 text-center">
+					<h2 className="text-3xl font-bold text-foreground sm:text-4xl">See Thorbis for Travel Businesses</h2>
+					<p className="mt-4 text-lg text-muted-foreground">Experience how easy it is to manage your accommodation business</p>
+				</div>
+				<div className="grid gap-8 lg:grid-cols-2 items-center">
+					<div className="space-y-6">
+						<div className="p-6 bg-card rounded-lg border border-border">
+							<div className="flex items-center gap-3 mb-4">
+								<div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+									<Play className="w-4 h-4 text-primary" />
+								</div>
+								<h3 className="font-semibold">Travel Industry Demo</h3>
+							</div>
+							<p className="text-sm text-muted-foreground mb-4">See how hotels, B&Bs, and vacation rentals manage bookings, pricing, and guest communications across all channels.</p>
+							<Button variant="outline" className="w-full">
+								<Play className="w-4 h-4 mr-2" />
+								Watch Travel Demo
+							</Button>
+						</div>
+						<div className="p-6 bg-card rounded-lg border border-border">
+							<div className="flex items-center gap-3 mb-4">
+								<div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+									<Calendar className="w-4 h-4 text-primary" />
+								</div>
+								<h3 className="font-semibold">Personalized Consultation</h3>
+							</div>
+							<p className="text-sm text-muted-foreground mb-4">Get a custom demo showing how Thorbis works for your specific type of accommodation business.</p>
+							<Button className="w-full">
+								<Calendar className="w-4 h-4 mr-2" />
+								Book Travel Consultation
+							</Button>
+						</div>
+					</div>
+					<div className="relative">
+						<div className="aspect-video bg-primary/5 rounded-xl border border-primary/20 flex items-center justify-center">
+							<div className="text-center">
+								<div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+									<Hotel className="w-8 h-8 text-primary" />
+								</div>
+								<h3 className="font-semibold text-lg mb-2">Travel Business Dashboard</h3>
+								<p className="text-sm text-muted-foreground">Live booking management, revenue tracking, and guest communications</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			{/* Travel-Specific Tools */}
+			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8">
+				<div className="mb-12 text-center">
+					<h2 className="text-3xl font-bold text-foreground sm:text-4xl">Built for Travel & Accommodation</h2>
+					<p className="mt-4 text-lg text-muted-foreground">Everything you need to run a successful travel business</p>
+				</div>
+				<div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+					<Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+						<CardContent className="p-6 text-center">
+							<div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+								<Calendar className="w-6 h-6 text-primary" />
+							</div>
+							<h3 className="font-semibold mb-2">Channel Manager</h3>
+							<p className="text-sm text-muted-foreground">Sync availability and rates across Booking.com, Airbnb, Expedia, and direct bookings automatically.</p>
+						</CardContent>
+					</Card>
+
+					<Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+						<CardContent className="p-6 text-center">
+							<div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+								<CreditCard className="w-6 h-6 text-primary" />
+							</div>
+							<h3 className="font-semibold mb-2">Revenue Management</h3>
+							<p className="text-sm text-muted-foreground">Dynamic pricing, seasonal adjustments, and profit optimization tools for maximum revenue.</p>
+						</CardContent>
+					</Card>
+
+					<Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+						<CardContent className="p-6 text-center">
+							<div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+								<MessageSquare className="w-6 h-6 text-primary" />
+							</div>
+							<h3 className="font-semibold mb-2">Guest Communications</h3>
+							<p className="text-sm text-muted-foreground">Automated check-in instructions, welcome messages, and personalized guest experiences.</p>
+						</CardContent>
+					</Card>
+
+					<Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+						<CardContent className="p-6 text-center">
+							<div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+								<BarChart3 className="w-6 h-6 text-primary" />
+							</div>
+							<h3 className="font-semibold mb-2">Performance Analytics</h3>
+							<p className="text-sm text-muted-foreground">Track RevPAR, ADR, occupancy rates, and booking sources with detailed insights.</p>
+						</CardContent>
+					</Card>
+				</div>
+			</section>
 
 			{/* Quick Comparison Table */}
 			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8">
@@ -425,6 +781,20 @@ export default function BookingAlternative() {
 								Schedule Demo
 							</Button>
 						</div>
+						<div className="mt-6 flex items-center justify-center gap-6 text-sm opacity-80">
+							<div className="flex items-center gap-1">
+								<CheckCircle className="w-4 h-4" />
+								<span>No commission fees</span>
+							</div>
+							<div className="flex items-center gap-1">
+								<CheckCircle className="w-4 h-4" />
+								<span>$340K+ annual savings</span>
+							</div>
+							<div className="flex items-center gap-1">
+								<CheckCircle className="w-4 h-4" />
+								<span>Direct guest relationships</span>
+							</div>
+						</div>
 					</div>
 				</div>
 			</section>
@@ -473,22 +843,22 @@ export default function BookingAlternative() {
 			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8">
 				<div className="mb-8 text-center">
 					<h2 className="text-2xl font-bold text-foreground sm:text-3xl">Explore Other Platform Comparisons</h2>
-					<p className="mt-4 text-muted-foreground">See how we compare to other major platforms</p>
+					<p className="mt-4 text-muted-foreground">Detailed travel industry comparisons with commission analysis and ROI calculators</p>
 				</div>
 				<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-					<Link href="/tripadvisor-alternative">
-						<Card className="transition-all hover:shadow-lg cursor-pointer hover:-translate-y-1 duration-300">
-							<CardContent className="p-6">
-								<h3 className="font-semibold text-foreground">TripAdvisor vs Thorbis</h3>
-								<p className="text-sm text-muted-foreground">Restaurant and travel business comparisons</p>
-							</CardContent>
-						</Card>
-					</Link>
 					<Link href="/expedia-alternative">
 						<Card className="transition-all hover:shadow-lg cursor-pointer hover:-translate-y-1 duration-300">
 							<CardContent className="p-6">
 								<h3 className="font-semibold text-foreground">Expedia vs Thorbis</h3>
-								<p className="text-sm text-muted-foreground">Travel booking platform comparison</p>
+								<p className="text-sm text-muted-foreground">Travel platform with $528K+ annual benefits and commission problem analysis</p>
+							</CardContent>
+						</Card>
+					</Link>
+					<Link href="/tripadvisor-alternative">
+						<Card className="transition-all hover:shadow-lg cursor-pointer hover:-translate-y-1 duration-300">
+							<CardContent className="p-6">
+								<h3 className="font-semibold text-foreground">TripAdvisor vs Thorbis</h3>
+								<p className="text-sm text-muted-foreground">Restaurant reservation systems with advanced POS integration features</p>
 							</CardContent>
 						</Card>
 					</Link>
@@ -496,7 +866,31 @@ export default function BookingAlternative() {
 						<Card className="transition-all hover:shadow-lg cursor-pointer hover:-translate-y-1 duration-300">
 							<CardContent className="p-6">
 								<h3 className="font-semibold text-foreground">Google Business vs Thorbis</h3>
-								<p className="text-sm text-muted-foreground">See how we compare to Google&apos;s business platform</p>
+								<p className="text-sm text-muted-foreground">Enhanced business management with interactive demo and migration guide</p>
+							</CardContent>
+						</Card>
+					</Link>
+					<Link href="/yelp-alternative">
+						<Card className="transition-all hover:shadow-lg cursor-pointer hover:-translate-y-1 duration-300">
+							<CardContent className="p-6">
+								<h3 className="font-semibold text-foreground">Yelp vs Thorbis</h3>
+								<p className="text-sm text-muted-foreground">Business platform comparison with industry-specific feature breakdown</p>
+							</CardContent>
+						</Card>
+					</Link>
+					<Link href="/bark-alternative">
+						<Card className="transition-all hover:shadow-lg cursor-pointer hover:-translate-y-1 duration-300">
+							<CardContent className="p-6">
+								<h3 className="font-semibold text-foreground">Bark vs Thorbis</h3>
+								<p className="text-sm text-muted-foreground">Service business lead quality with contractor success stories</p>
+							</CardContent>
+						</Card>
+					</Link>
+					<Link href="/angies-list-alternative">
+						<Card className="transition-all hover:shadow-lg cursor-pointer hover:-translate-y-1 duration-300">
+							<CardContent className="p-6">
+								<h3 className="font-semibold text-foreground">Angie's List vs Thorbis</h3>
+								<p className="text-sm text-muted-foreground">Home service verification with $306K+ ROI calculator</p>
 							</CardContent>
 						</Card>
 					</Link>

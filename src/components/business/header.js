@@ -99,36 +99,38 @@ export default function Header() {
 		});
 	};
 
-	// Main navigation structure with sub-navigation
+	// Main navigation structure prioritized by: Directory > Field Management > Community
 	const mainNavItems = [
-		// Primary
-		{ key: "dashboard", text: "Dashboard", icon: BarChart3, href: "/dashboard/business", description: "Business overview and insights" },
-		{ key: "schedule", text: "Schedule", icon: Calendar, href: "/dashboard/business/schedule", description: "Job scheduling and calendar management" },
-		{ key: "jobs", text: "Jobs", icon: Briefcase, href: "/dashboard/business/jobs", description: "Job management and tracking" },
-		{ key: "communication", text: "Communication", icon: MessageSquare, href: "/dashboard/business/communication", description: "Inbox, calls, and team chat" },
-		{ key: "marketing", text: "Marketing", icon: Target, href: "/dashboard/business/marketing", description: "Marketing campaigns and leads" },
-		{ key: "ads", text: "Ads", icon: Zap, href: "/dashboard/business/ads", description: "Manage ads and placements" },
-		{ key: "projects", text: "Projects", icon: Book, href: "/dashboard/business/projects", description: "Construction project management" },
+		// Business Directory Functions (Primary)
+		{ key: "profile", text: "Directory Profile", icon: User, href: "/dashboard/business/profile", description: "Business directory listing & profile" },
+		{ key: "reviews", text: "Directory Reviews", icon: Star, href: "/dashboard/business/reviews", description: "Manage customer reviews & ratings" },
+		{ key: "marketing", text: "Directory Marketing", icon: Target, href: "/dashboard/business/marketing", description: "Promote your directory listing" },
+		{ key: "ads", text: "Directory Ads", icon: Zap, href: "/dashboard/business/ads", description: "Manage directory advertisements" },
 
-		// Secondary
-		{ key: "estimates", text: "Estimates", icon: FileText, href: "/dashboard/business/estimates", description: "Create and manage estimates" },
-		{ key: "invoices", text: "Invoices", icon: Receipt, href: "/dashboard/business/invoices", description: "Billing and payment management" },
-		{ key: "customers", text: "Customers", icon: Users, href: "/dashboard/business/customers", description: "Customer relationship management" },
-		{ key: "pricebook", text: "Pricebook", icon: Package, href: "/dashboard/business/pricebook", description: "Services and products catalog" },
-		{ key: "service-plans", text: "Service Plans", icon: Wrench, href: "/dashboard/business/service-plans", description: "Plans and subscriptions" },
-		{ key: "employees", text: "Employees", icon: Users, href: "/dashboard/business/employees", description: "Team management" },
-		{ key: "time-payroll", text: "Time & Payroll", icon: Clock, href: "/dashboard/business/time-payroll", description: "Timesheets, approvals, runs, commissions" },
-		{ key: "performance", text: "Performance", icon: Activity, href: "/dashboard/business/performance", description: "Scorecards and efficiency" },
-		{ key: "companies", text: "Companies", icon: Building2, href: "/dashboard/business/companies", description: "Manage companies" },
-		{ key: "billing", text: "Billing", icon: CreditCard, href: "/dashboard/business/billing", description: "Subscription and billing" },
-		{ key: "reviews", text: "Reviews", icon: Star, href: "/dashboard/business/reviews", description: "Customer reviews" },
-		{ key: "profile", text: "Profile", icon: User, href: "/dashboard/business/profile", description: "Business profile" },
+		// Field Service Management (Secondary)
+		{ key: "dashboard", text: "Field Dashboard", icon: BarChart3, href: "/dashboard/business", description: "Field service overview and insights" },
+		{ key: "schedule", text: "Job Scheduling", icon: Calendar, href: "/dashboard/business/schedule", description: "Schedule and manage field jobs" },
+		{ key: "jobs", text: "Field Jobs", icon: Briefcase, href: "/dashboard/business/jobs", description: "Track and manage field work" },
+		{ key: "estimates", text: "Job Estimates", icon: FileText, href: "/dashboard/business/estimates", description: "Create field service estimates" },
+		{ key: "invoices", text: "Job Invoicing", icon: Receipt, href: "/dashboard/business/invoices", description: "Bill for field services" },
+		{ key: "customers", text: "Service Customers", icon: Users, href: "/dashboard/business/customers", description: "Manage field service clients" },
+		{ key: "employees", text: "Field Team", icon: Users, href: "/dashboard/business/employees", description: "Manage field technicians" },
 
-		// Analytics & Config
-		{ key: "analytics", text: "Analytics", icon: TrendingUp, href: "/dashboard/business/analytics", description: "Business performance analytics" },
-		{ key: "integrations", text: "Integrations", icon: Puzzle, href: "/dashboard/business/integrations", description: "Third-party integrations" },
+		// Business Operations
+		{ key: "communication", text: "Communication", icon: MessageSquare, href: "/dashboard/business/communication", description: "Business communications hub" },
+		{ key: "projects", text: "Projects", icon: Book, href: "/dashboard/business/projects", description: "Manage construction projects" },
+		{ key: "pricebook", text: "Service Catalog", icon: Package, href: "/dashboard/business/pricebook", description: "Services and products pricing" },
+		{ key: "service-plans", text: "Service Plans", icon: Wrench, href: "/dashboard/business/service-plans", description: "Maintenance plans & contracts" },
+		{ key: "time-payroll", text: "Time & Payroll", icon: Clock, href: "/dashboard/business/time-payroll", description: "Team time tracking & payroll" },
+		{ key: "performance", text: "Performance", icon: Activity, href: "/dashboard/business/performance", description: "Business performance metrics" },
+
+		// Platform Management
+		{ key: "companies", text: "Companies", icon: Building2, href: "/dashboard/business/companies", description: "Manage business entities" },
+		{ key: "billing", text: "Platform Billing", icon: CreditCard, href: "/dashboard/business/billing", description: "Platform subscription & billing" },
+		{ key: "analytics", text: "Business Analytics", icon: TrendingUp, href: "/dashboard/business/analytics", description: "Comprehensive business analytics" },
+		{ key: "integrations", text: "Integrations", icon: Puzzle, href: "/dashboard/business/integrations", description: "Third-party tool integrations" },
 		{ key: "automation", text: "Automation", icon: Bot, href: "/dashboard/business/automation", description: "AI-powered business automation" },
-		{ key: "tools", text: "Tools", icon: Calculator, href: "/dashboard/business/tools", description: "Business calculation tools" },
+		{ key: "tools", text: "Business Tools", icon: Calculator, href: "/dashboard/business/tools", description: "Business calculation tools" },
 		{ key: "settings", text: "Settings", icon: Sliders, href: "/dashboard/business/settings", description: "Business configuration" },
 		{ key: "support", text: "Support", icon: HelpCircle, href: "/dashboard/business/support", description: "Help and support" },
 	];
@@ -305,14 +307,13 @@ export default function Header() {
 		],
 	};
 
-	// Category map for All Apps mega menu
+	// Category map for All Apps mega menu - Reorganized by Priority
 	const NAV_CATEGORIES = {
-		Sales: ["estimates", "invoices", "integrations", "payments", "financing", "accounting-sync"],
-		Operations: ["projects", "service-plans", "pricebook", "inventory", "dispatch", "schedule"],
-		Workforce: ["employees", "time-payroll", "vehicle-tracking"],
-		Growth: ["marketing", "ads", "reviews", "communication"],
-		Intelligence: ["performance", "analytics"],
-		Platform: ["integrations", "settings", "companies", "profile", "support"],
+		"Directory Management": ["profile", "reviews", "marketing", "ads"],
+		"Field Services": ["dashboard", "schedule", "jobs", "estimates", "invoices", "customers", "employees"],
+		"Business Operations": ["projects", "service-plans", "pricebook", "communication", "time-payroll", "performance"],
+		"Platform & Tools": ["companies", "billing", "analytics", "integrations", "automation", "tools", "settings"],
+		"Support & Growth": ["support"],
 	};
 
 	// Flatten all links for search/pins
@@ -402,12 +403,12 @@ export default function Header() {
 					<div className="flex flex-row items-center w-full space-x-6">
 						<Link href="/" className="flex items-center space-x-3 text-xl font-bold group">
 							<div className="relative">
-								<Image src="/logos/ThorbisLogo.webp" alt="Thorbis Business" width={50} height={50} className="w-12 h-12 transition-transform duration-200 group-hover:scale-105" />
+								<Image src="/logos/ThorbisLogo.webp" alt="Thorbis Business Directory" width={50} height={50} className="w-12 h-12 transition-transform duration-200 group-hover:scale-105" />
 								<div className="absolute inset-0 transition-opacity duration-200 rounded-full opacity-0 bg-gradient-to-r from-green-500/20 to-blue-500/20 group-hover:opacity-100" />
 							</div>
 							<div className="hidden sm:block">
-								<h1 className="text-lg font-bold leading-none text-foreground">Thorbis Business</h1>
-								<p className="text-xs text-muted-foreground">Business Dashboard</p>
+								<h1 className="text-lg font-bold leading-none text-foreground">Thorbis Business Directory</h1>
+								<p className="text-xs text-muted-foreground">Field Service Management Portal</p>
 							</div>
 						</Link>
 
@@ -697,7 +698,7 @@ export default function Header() {
 							</DropdownMenuTrigger>
 							<DropdownMenuContent className="w-80 z-[80] bg-neutral-950/95 backdrop-blur-md border border-neutral-900">
 								<div className="flex items-center justify-between p-3 border-b border-border/50">
-									<h3 className="font-semibold text-foreground">Business Notifications</h3>
+									<h3 className="font-semibold text-foreground">Directory & Business Updates</h3>
 									<Badge variant="secondary" className="text-xs">
 										3 new
 									</Badge>
@@ -706,16 +707,16 @@ export default function Header() {
 									<DropdownMenuItem className="flex items-start p-4 space-x-3">
 										<div className="flex-shrink-0 w-2 h-2 mt-2 bg-blue-500 rounded-full"></div>
 										<div className="flex-1 min-w-0">
-											<p className="text-sm font-medium text-foreground">New job application</p>
-											<p className="mt-1 text-xs text-muted-foreground">Someone applied for your plumbing job</p>
+											<p className="text-sm font-medium text-foreground">New directory review</p>
+											<p className="mt-1 text-xs text-muted-foreground">Customer left a 5-star review on your listing</p>
 											<p className="text-xs text-muted-foreground">5 minutes ago</p>
 										</div>
 									</DropdownMenuItem>
 									<DropdownMenuItem className="flex items-start p-4 space-x-3">
 										<div className="flex-shrink-0 w-2 h-2 mt-2 bg-green-500 rounded-full"></div>
 										<div className="flex-1 min-w-0">
-											<p className="text-sm font-medium text-foreground">Payment received</p>
-											<p className="mt-1 text-xs text-muted-foreground">$500 payment for website project</p>
+											<p className="text-sm font-medium text-foreground">Field job completed</p>
+											<p className="mt-1 text-xs text-muted-foreground">Plumbing service job marked complete</p>
 											<p className="text-xs text-muted-foreground">1 hour ago</p>
 										</div>
 									</DropdownMenuItem>
@@ -806,7 +807,7 @@ export default function Header() {
 							</SheetTrigger>
 							<SheetContent className="bg-card/95 backdrop-blur-md w-80">
 								<SheetHeader>
-									<SheetTitle>Business Menu</SheetTitle>
+									<SheetTitle>Business Directory Portal</SheetTitle>
 								</SheetHeader>
 
 								{/* Mobile Company Switcher */}
@@ -817,9 +818,7 @@ export default function Header() {
 										</div>
 										<div className="flex-1 min-w-0">
 											<p className="font-medium text-foreground">{currentCompany.name}</p>
-											<p className="text-sm text-muted-foreground">
-												{currentCompany.industry} • {currentCompany.subscription}
-											</p>
+											<p className="text-sm text-muted-foreground">Directory Listing • {currentCompany.subscription}</p>
 										</div>
 									</div>
 

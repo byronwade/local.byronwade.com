@@ -145,47 +145,70 @@ function DashboardSidebar({ user, profile, userRoles, checkPermission, getUserLe
 			description: "Test knowledge",
 		},
 
-		// Business Management
+		// Business Directory Management (Primary Platform Function)
 		{
-			name: "My Businesses",
+			name: "Browse Directory",
+			href: "/categories",
+			icon: Building,
+			permission: PERMISSIONS.PROFILE_READ,
+			description: "Explore business directory",
+		},
+		{
+			name: "My Directory Listings",
 			href: "/dashboard/business",
 			icon: Building,
 			permission: PERMISSIONS.BUSINESS_MANAGE,
-			description: "Manage your business listings",
+			description: "Manage your directory listings",
 			minLevel: 2,
 		},
 		{
-			name: "Business Analytics",
-			href: "/dashboard/business/analytics",
-			icon: BarChart3,
-			permission: PERMISSIONS.BUSINESS_MANAGE,
-			description: "View business insights",
-			minLevel: 2,
-		},
-		{
-			name: "Add Business",
+			name: "Add to Directory",
 			href: "/dashboard/business/add",
 			icon: Plus,
 			permission: PERMISSIONS.BUSINESS_CREATE,
-			description: "Add new business listing",
+			description: "Add new directory listing",
 			minLevel: 2,
-		},
-
-		// LocalHub Management
-		{
-			name: "LocalHub",
-			href: "/dashboard/localhub",
-			icon: MapPin,
-			permission: PERMISSIONS.BUSINESS_MODERATE,
-			description: "Manage local directory",
-			minLevel: 3,
 		},
 		{
 			name: "Directory Analytics",
+			href: "/dashboard/business/analytics",
+			icon: BarChart3,
+			permission: PERMISSIONS.BUSINESS_MANAGE,
+			description: "Directory performance insights",
+			minLevel: 2,
+		},
+
+		// Field Service Functions (Secondary)
+		{
+			name: "Post Field Job",
+			href: "/dashboard/user/jobs/create",
+			icon: Briefcase,
+			permission: PERMISSIONS.PROFILE_READ,
+			description: "Post field service jobs",
+		},
+		{
+			name: "My Jobs",
+			href: "/dashboard/user/jobs",
+			icon: Briefcase,
+			permission: PERMISSIONS.PROFILE_READ,
+			description: "Manage your job postings",
+		},
+
+		// LocalHub Community Platform (Tertiary)
+		{
+			name: "Build LocalHub",
+			href: "/dashboard/localhub",
+			icon: MapPin,
+			permission: PERMISSIONS.BUSINESS_MODERATE,
+			description: "Create community directory platform",
+			minLevel: 3,
+		},
+		{
+			name: "LocalHub Analytics",
 			href: "/dashboard/localhub/analytics",
 			icon: TrendingUp,
 			permission: PERMISSIONS.ANALYTICS_VIEW,
-			description: "Directory insights",
+			description: "Community platform insights",
 			minLevel: 3,
 		},
 
@@ -247,12 +270,13 @@ function DashboardSidebar({ user, profile, userRoles, checkPermission, getUserLe
 		return true;
 	});
 
-	// Group items by category
+	// Group items by category - Reorganized by Priority
 	const categories = {
-		Account: allowedItems.filter((item) => item.href.includes("/user/") || item.name === "Profile" || item.name === "Settings"),
+		Account: allowedItems.filter((item) => item.name === "Profile" || item.name === "Settings"),
+		"Business Directory": allowedItems.filter((item) => item.name.includes("Directory") || item.name === "Browse Directory" || (item.href.includes("/business") && !item.href.includes("/admin/"))),
+		"Field Services": allowedItems.filter((item) => item.name.includes("Job") || item.href.includes("/jobs")),
 		Academy: allowedItems.filter((item) => item.href.includes("/academy")),
-		Business: allowedItems.filter((item) => item.href.includes("/business") && !item.href.includes("/admin/")),
-		LocalHub: allowedItems.filter((item) => item.href.includes("/localhub")),
+		"LocalHub Platform": allowedItems.filter((item) => item.href.includes("/localhub")),
 		Administration: allowedItems.filter((item) => item.href.includes("/admin/")),
 	};
 
@@ -345,6 +369,7 @@ function DashboardSidebar({ user, profile, userRoles, checkPermission, getUserLe
 
 /**
  * Dashboard header with notifications and user menu
+ * Updated to reflect Business Directory > Field Management > LocalHub hierarchy
  */
 function DashboardHeader({ user, profile, logout }) {
 	const [showUserMenu, setShowUserMenu] = useState(false);
@@ -366,9 +391,10 @@ function DashboardHeader({ user, profile, logout }) {
 				{/* Mobile spacing */}
 				<div className="md:hidden w-12"></div>
 
-				{/* Title - could be dynamic based on current page */}
+				{/* Title - emphasizing Business Directory platform */}
 				<div className="flex-1">
-					<h1 className="text-xl font-semibold text-gray-900 dark:text-white">Dashboard</h1>
+					<h1 className="text-xl font-semibold text-gray-900 dark:text-white">Thorbis Business Directory</h1>
+					<p className="text-sm text-gray-600 dark:text-gray-400">Personal Dashboard</p>
 				</div>
 
 				{/* Right side - notifications and user menu */}

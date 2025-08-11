@@ -9,8 +9,8 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Star, MapPin, Phone, ExternalLink, Heart, Share2, Clock, Users } from "lucide-react";
-import { cn } from "@lib/utils";
-import { logger } from "@lib/utils/logger";
+import { cn } from "@utils";
+import { logger } from "@utils/logger";
 
 export default function FeaturedBusinessesSection({ section, onInteraction, isPersonalized = false, personalizationScore = 0, userId, sessionId, className = "", ...props }) {
 	const [favorites, setFavorites] = useState(new Set());

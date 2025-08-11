@@ -11,9 +11,9 @@ export const metadata = {
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://thorbis.com/og-how-it-works.jpg",
-				width: 800,
-				height: 600,
+				url: `https://thorbis.com/opengraph-image?title=${encodeURIComponent("How Thorbis Works")}&description=${encodeURIComponent("Discover, compare, and hire the right local business.")}`,
+				width: 1200,
+				height: 630,
 				alt: "How It Works at Thorbis",
 			},
 		],
@@ -24,7 +24,7 @@ export const metadata = {
 		card: "summary_large_image",
 		title: "How It Works - Thorbis",
 		description: "Learn how Thorbis connects you with professional contractors and local businesses.",
-		images: ["https://thorbis.com/og-how-it-works.jpg"],
+		images: [`https://thorbis.com/twitter-image?title=${encodeURIComponent("How Thorbis Works")}`],
 	},
 	alternates: {
 		canonical: "https://thorbis.com/how-it-works",

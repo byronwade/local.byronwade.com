@@ -201,8 +201,8 @@ const SearchContainer = ({ searchParams: propSearchParams }) => {
 			<div className="flex-1 min-h-0 relative">
 				{showMap ? (
 					<ResizablePanelGroup direction="horizontal" className="h-full" onLayout={handlePanelResize}>
-						{/* Sidebar Panel - Better minimum width for proper header layout */}
-						<ResizablePanel defaultSize={activeBusinessId ? 35 : 28} minSize={22} maxSize={85} className="lg:max-w-[45%] md:max-w-[65%] sm:max-w-[80%] max-w-[95%]">
+						{/* Sidebar Panel - More Compact Sizing */}
+						<ResizablePanel defaultSize={activeBusinessId ? 32 : 25} minSize={20} maxSize={80} className="lg:max-w-[42%] md:max-w-[60%] sm:max-w-[75%] max-w-[90%]">
 							<div className="h-full bg-white dark:bg-neutral-900 border-r border-neutral-800 dark:border-neutral-700 overflow-hidden relative">
 								{/* Business List - Default View */}
 								<div className={`absolute inset-0 transition-all duration-500 ease-in-out ${!isAISidebarOpen ? "transform translate-x-0 opacity-100 z-10" : "transform -translate-x-full opacity-0 z-0"}`}>
@@ -217,8 +217,8 @@ const SearchContainer = ({ searchParams: propSearchParams }) => {
 						{/* Resizable Handle */}
 						<ResizableHandle withHandle />
 
-						{/* Map Panel */}
-						<ResizablePanel defaultSize={activeBusinessId ? 65 : 72}>
+						{/* Map Panel - Adjusted for Compact Sidebar */}
+						<ResizablePanel defaultSize={activeBusinessId ? 68 : 75}>
 							<div className="h-full w-full relative overflow-hidden">
 								<MapContainer businesses={filteredBusinesses} selectedBusiness={selectedBusiness} onBusinessSelect={handleBusinessSelect} />
 							</div>

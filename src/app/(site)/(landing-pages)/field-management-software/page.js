@@ -11,7 +11,7 @@ export const metadata = {
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://thorbis.com/og-field-management.jpg",
+				url: `https://thorbis.com/opengraph-image?title=${encodeURIComponent("Field Management Software")}&description=${encodeURIComponent("Jobs, teams, customers, and cash flow in one fast platform.")}`,
 				width: 1200,
 				height: 630,
 				alt: "Thorbis Field Management Software",
@@ -23,7 +23,7 @@ export const metadata = {
 		card: "summary_large_image",
 		title: "Field Management Software – Complete Platform",
 		description: "Replace point tools with one fast platform for jobs, teams, customers, and cash flow.",
-		images: ["https://thorbis.com/og-field-management.jpg"],
+		images: [`https://thorbis.com/twitter-image?title=${encodeURIComponent("Field Management Software")}`],
 		creator: "@thorbis",
 		site: "@thorbis",
 	},

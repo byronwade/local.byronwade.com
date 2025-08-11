@@ -42,7 +42,7 @@ export const metadata = {
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop",
+				url: `https://thorbis.com/opengraph-image?title=${encodeURIComponent("Thorbis Partners")}&description=${encodeURIComponent("Collaborate with Thorbis to accelerate growth and reach targeted audiences.")}`,
 				width: 1200,
 				height: 630,
 				alt: "Thorbis Partners",
@@ -55,7 +55,7 @@ export const metadata = {
 		card: "summary_large_image",
 		title: "Partners - Thorbis Partnerships",
 		description: "Join our partner network and collaborate with leading companies.",
-		images: ["https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop"],
+		images: [`https://thorbis.com/twitter-image?title=${encodeURIComponent("Thorbis Partners")}`],
 	},
 	alternates: {
 		canonical: "https://thorbis.com/partners",

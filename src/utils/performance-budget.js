@@ -13,7 +13,7 @@
  */
 
 import { logger } from "@utils/logger";
-import { observeWebVitals } from "@lib/utils/web-vitals";
+import { observeWebVitals } from "@utils/web-vitals";
 
 /**
  * Performance Budget Configuration

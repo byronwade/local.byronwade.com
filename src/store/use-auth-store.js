@@ -2,6 +2,19 @@ import { create } from "zustand";
 import { supabase } from "@lib/database/supabase";
 import { logger } from "@utils/logger";
 
+// Dev helper: detect if auth should be disabled for testing (dev-only)
+function isDevAuthDisabled() {
+  if (typeof window === "undefined") return false;
+  if (process.env.NODE_ENV !== "development") return false;
+  try {
+    const ls = window.localStorage.getItem("thorbis_auth_dev_disabled");
+    const ck = document.cookie.includes("dev_auth_off=1");
+    return ls === "1" || ck;
+  } catch {
+    return false;
+  }
+}
+
 // Sync user profile to our users table
 const syncUserProfile = async (authUser) => {
 	try {
@@ -128,6 +141,13 @@ const useAuthStore = create((set, get) => ({
 
 		set({ loading: true });
 		try {
+			// Dev mode: force logged-out state for testing login screens
+			if (isDevAuthDisabled()) {
+				logger.debug("Dev auth disabled: forcing logged-out state");
+				set({ user: null, isAuthenticated: false, userRoles: [] });
+				return;
+			}
+
 			const startTime = performance.now();
 			const {
 				data: { session },
@@ -206,7 +226,11 @@ const useAuthStore = create((set, get) => ({
 			const { error } = await supabase.auth.signOut();
 
 			if (error) {
-				throw error;
+				const isMissingSession = error?.name === "AuthSessionMissingError" || error?.status === 400 || (error?.__isAuthError && !get().user);
+				if (!isMissingSession) {
+					throw error;
+				}
+				logger.debug("Logout with no active session; treating as success");
 			}
 
 			const duration = performance.now() - startTime;
@@ -328,62 +352,66 @@ const useAuthStore = create((set, get) => ({
 	},
 
 	onAuthStateChange: () => {
+		// If dev auth is disabled, ignore auth state changes
+		if (isDevAuthDisabled()) {
+			return () => {};
+		}
 		return supabase.auth.onAuthStateChange(async (event, session) => {
-			logger.debug("Auth state change - Event:", event, "Session:", !!session);
+		logger.debug("Auth state change - Event:", event, "Session:", !!session);
 
-			try {
-				if (session?.user) {
-					const user = session.user;
-					logger.debug("Auth state change - User signed in or token refreshed", user.id);
+		try {
+			if (session?.user) {
+				const user = session.user;
+				logger.debug("Auth state change - User signed in or token refreshed", user.id);
 
-					// Sync user profile on auth state change
-					await syncUserProfile(user);
+				// Sync user profile on auth state change
+				await syncUserProfile(user);
 
-					const roles = await fetchUserRolesClient(user.id);
-					logger.debug("Auth state change - Fetched roles", roles);
+				const roles = await fetchUserRolesClient(user.id);
+				logger.debug("Auth state change - Fetched roles", roles);
 
-					set({
-						user,
-						isAuthenticated: true,
-						userRoles: roles,
-						loading: false,
-					});
+				set({
+					user,
+					isAuthenticated: true,
+					userRoles: roles,
+					loading: false,
+				});
 
-					// Log auth state change for security auditing
-					logger.security({
-						action: "auth_state_change",
-						event: event,
-						userId: user.id,
-						timestamp: Date.now(),
-					});
-				} else {
-					logger.debug("Auth state change - User signed out or session is null");
-					set({
-						user: null,
-						isAuthenticated: false,
-						userRoles: [],
-						loading: false,
-					});
-
-					// Log signout event
-					if (event === "SIGNED_OUT") {
-						logger.security({
-							action: "auth_state_change",
-							event: event,
-							timestamp: Date.now(),
-						});
-					}
-				}
-			} catch (error) {
-				logger.error("Error handling auth state change:", error);
+				// Log auth state change for security auditing
+				logger.security({
+					action: "auth_state_change",
+					event: event,
+					userId: user.id,
+					timestamp: Date.now(),
+				});
+			} else {
+				logger.debug("Auth state change - User signed out or session is null");
 				set({
 					user: null,
 					isAuthenticated: false,
 					userRoles: [],
 					loading: false,
 				});
+
+				// Log signout event
+				if (event === "SIGNED_OUT") {
+					logger.security({
+						action: "auth_state_change",
+						event: event,
+						timestamp: Date.now(),
+					});
+				}
 			}
-		});
+		} catch (error) {
+			logger.error("Error handling auth state change:", error);
+			set({
+				user: null,
+				isAuthenticated: false,
+				userRoles: [],
+				loading: false,
+			});
+		}
+	});
 	},
 }));
 

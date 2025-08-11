@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Button } from "@components/ui/button";
 import { Badge } from "@components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
-import { CheckCircle, XCircle, MessageSquare, Calendar, BarChart3, MapPin, Clock, Utensils, ArrowRight, Star } from "lucide-react";
+import { CheckCircle, XCircle, MessageSquare, Calendar, BarChart3, MapPin, Clock, Utensils, ArrowRight, Star, DollarSign, TrendingUp, Shield, Target, Building, Phone, Mail, Zap, Users, Globe, Settings, Award, Play, CreditCard, Truck, FileText } from "lucide-react";
 
 export const metadata = {
 	title: "TripAdvisor Alternative – Thorbis vs TripAdvisor | Thorbis",
@@ -16,14 +16,21 @@ export const metadata = {
 		type: "website",
 		url: "https://thorbis.com/tripadvisor-alternative",
 		siteName: "Thorbis",
-		images: [{ url: "https://thorbis.com/og-tripadvisor-alt.jpg", width: 1200, height: 630, alt: "Thorbis vs TripAdvisor" }],
+		images: [
+			{
+				url: `https://thorbis.com/opengraph-image?title=${encodeURIComponent("TripAdvisor Alternative")}&description=${encodeURIComponent("Thorbis vs TripAdvisor – reviews, reservation integration, lead generation, analytics.")}`,
+				width: 1200,
+				height: 630,
+				alt: "Thorbis vs TripAdvisor",
+			},
+		],
 		locale: "en_US",
 	},
 	twitter: {
 		card: "summary_large_image",
 		title: "TripAdvisor Alternative – Thorbis vs TripAdvisor",
 		description: "Modern alternative to TripAdvisor with advanced reviews, reservation integration, lead generation, and analytics.",
-		images: ["https://thorbis.com/og-tripadvisor-alt.jpg"],
+		images: [`https://thorbis.com/twitter-image?title=${encodeURIComponent("TripAdvisor Alternative")}`],
 		creator: "@thorbis",
 		site: "@thorbis",
 	},
@@ -409,6 +416,396 @@ export default function TripAdvisorAlternative() {
 				</div>
 			</section>
 
+			{/* Restaurant Success Stories */}
+			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8">
+				<div className="mb-12 text-center">
+					<h2 className="text-3xl font-bold text-foreground sm:text-4xl">Restaurant Owners Share Their Results</h2>
+					<p className="mt-4 text-lg text-muted-foreground">Real restaurants, real revenue growth with Thorbis</p>
+				</div>
+				<div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+					<Card className="bg-card border-border hover:shadow-lg transition-all duration-300">
+						<CardContent className="p-8">
+							<div className="flex items-center gap-2 mb-4">
+								<Award className="w-5 h-5 text-primary" />
+								<span className="text-sm font-medium text-primary">Fine Dining</span>
+							</div>
+							<div className="mb-4">
+								<div className="text-2xl font-bold text-green-600 dark:text-green-400">+145%</div>
+								<div className="text-sm text-muted-foreground">Reservation Increase</div>
+							</div>
+							<blockquote className="mb-4 text-sm text-muted-foreground">"TripAdvisor was expensive and gave us no control. Since switching to Thorbis, reservations increased 145% and we saved $2,000/month. The POS integration is seamless."</blockquote>
+							<div className="flex items-center gap-3">
+								<div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+									<Utensils className="w-5 h-5 text-primary" />
+								</div>
+								<div>
+									<div className="font-semibold text-sm">Chef Marcus Williams</div>
+									<div className="text-xs text-muted-foreground">Owner, Williams Fine Dining</div>
+								</div>
+							</div>
+						</CardContent>
+					</Card>
+
+					<Card className="bg-card border-border hover:shadow-lg transition-all duration-300">
+						<CardContent className="p-8">
+							<div className="flex items-center gap-2 mb-4">
+								<TrendingUp className="w-5 h-5 text-primary" />
+								<span className="text-sm font-medium text-primary">Fast Casual</span>
+							</div>
+							<div className="mb-4">
+								<div className="text-2xl font-bold text-green-600 dark:text-green-400">+267%</div>
+								<div className="text-sm text-muted-foreground">Online Orders</div>
+							</div>
+							<blockquote className="mb-4 text-sm text-muted-foreground">"Thorbis connected our ordering system to all review platforms. Online orders went up 267% and our menu updates sync everywhere automatically. Game changer."</blockquote>
+							<div className="flex items-center gap-3">
+								<div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+									<Building className="w-5 h-5 text-primary" />
+								</div>
+								<div>
+									<div className="font-semibold text-sm">Sarah Kim</div>
+									<div className="text-xs text-muted-foreground">Owner, Seoul Kitchen (3 locations)</div>
+								</div>
+							</div>
+						</CardContent>
+					</Card>
+
+					<Card className="bg-card border-border hover:shadow-lg transition-all duration-300">
+						<CardContent className="p-8">
+							<div className="flex items-center gap-2 mb-4">
+								<Globe className="w-5 h-5 text-primary" />
+								<span className="text-sm font-medium text-primary">Boutique Hotel</span>
+							</div>
+							<div className="mb-4">
+								<div className="text-2xl font-bold text-green-600 dark:text-green-400">+89%</div>
+								<div className="text-sm text-muted-foreground">Direct Bookings</div>
+							</div>
+							<blockquote className="mb-4 text-sm text-muted-foreground">"We reduced TripAdvisor dependence and increased direct bookings by 89%. Thorbis helps us manage reviews across all platforms and capture more leads."</blockquote>
+							<div className="flex items-center gap-3">
+								<div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+									<Building className="w-5 h-5 text-primary" />
+								</div>
+								<div>
+									<div className="font-semibold text-sm">David Chen</div>
+									<div className="text-xs text-muted-foreground">Manager, Harbor View Inn</div>
+								</div>
+							</div>
+						</CardContent>
+					</Card>
+				</div>
+			</section>
+
+			{/* POS & Technology Integrations */}
+			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8 bg-muted/30">
+				<div className="mb-12 text-center">
+					<h2 className="text-3xl font-bold text-foreground sm:text-4xl">Seamless Restaurant Technology Integration</h2>
+					<p className="mt-4 text-lg text-muted-foreground">Connect with your existing POS, ordering, and reservation systems</p>
+				</div>
+				<div className="grid gap-8 lg:grid-cols-2">
+					<Card className="p-8">
+						<CardHeader className="px-0 pt-0">
+							<CardTitle className="flex items-center gap-2">
+								<CreditCard className="w-5 h-5 text-primary" />
+								POS System Integration
+							</CardTitle>
+						</CardHeader>
+						<CardContent className="px-0">
+							<p className="text-muted-foreground mb-6">Sync your menu, pricing, and availability across all platforms automatically. Real-time updates ensure customers always see accurate information.</p>
+							<div className="grid grid-cols-2 gap-4 mb-6">
+								<div className="p-3 bg-primary/5 rounded-lg text-center">
+									<div className="font-semibold text-sm">Square</div>
+									<div className="text-xs text-muted-foreground">Full Integration</div>
+								</div>
+								<div className="p-3 bg-primary/5 rounded-lg text-center">
+									<div className="font-semibold text-sm">Toast</div>
+									<div className="text-xs text-muted-foreground">Menu & Orders</div>
+								</div>
+								<div className="p-3 bg-primary/5 rounded-lg text-center">
+									<div className="font-semibold text-sm">Clover</div>
+									<div className="text-xs text-muted-foreground">Real-time Sync</div>
+								</div>
+								<div className="p-3 bg-primary/5 rounded-lg text-center">
+									<div className="font-semibold text-sm">Resy</div>
+									<div className="text-xs text-muted-foreground">Reservations</div>
+								</div>
+							</div>
+							<div className="space-y-2 text-sm">
+								<div className="flex items-center gap-2">
+									<CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
+									<span>Menu items sync across all platforms</span>
+								</div>
+								<div className="flex items-center gap-2">
+									<CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
+									<span>Pricing updates in real-time</span>
+								</div>
+								<div className="flex items-center gap-2">
+									<CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
+									<span>Availability tracking</span>
+								</div>
+							</div>
+						</CardContent>
+					</Card>
+
+					<Card className="p-8">
+						<CardHeader className="px-0 pt-0">
+							<CardTitle className="flex items-center gap-2">
+								<Truck className="w-5 h-5 text-primary" />
+								Delivery & Ordering Platforms
+							</CardTitle>
+						</CardHeader>
+						<CardContent className="px-0">
+							<p className="text-muted-foreground mb-6">Manage orders from DoorDash, Uber Eats, Grubhub, and your direct online ordering from one dashboard.</p>
+							<div className="grid grid-cols-2 gap-4 mb-6">
+								<div className="p-3 bg-primary/5 rounded-lg text-center">
+									<div className="font-semibold text-sm">DoorDash</div>
+									<div className="text-xs text-muted-foreground">Order Management</div>
+								</div>
+								<div className="p-3 bg-primary/5 rounded-lg text-center">
+									<div className="font-semibold text-sm">Uber Eats</div>
+									<div className="text-xs text-muted-foreground">Menu Sync</div>
+								</div>
+								<div className="p-3 bg-primary/5 rounded-lg text-center">
+									<div className="font-semibold text-sm">Grubhub</div>
+									<div className="text-xs text-muted-foreground">Analytics</div>
+								</div>
+								<div className="p-3 bg-primary/5 rounded-lg text-center">
+									<div className="font-semibold text-sm">Direct Orders</div>
+									<div className="text-xs text-muted-foreground">Commission-Free</div>
+								</div>
+							</div>
+							<div className="space-y-2 text-sm">
+								<div className="flex items-center gap-2">
+									<CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
+									<span>Unified order dashboard</span>
+								</div>
+								<div className="flex items-center gap-2">
+									<CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
+									<span>Commission tracking</span>
+								</div>
+								<div className="flex items-center gap-2">
+									<CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
+									<span>Customer data aggregation</span>
+								</div>
+							</div>
+						</CardContent>
+					</Card>
+				</div>
+			</section>
+
+			{/* TripAdvisor vs Thorbis Detailed Comparison */}
+			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8">
+				<div className="mb-12 text-center">
+					<h2 className="text-3xl font-bold text-foreground sm:text-4xl">Why Restaurants Choose Thorbis Over TripAdvisor</h2>
+					<p className="mt-4 text-lg text-muted-foreground">Feature-by-feature comparison for the hospitality industry</p>
+				</div>
+				<div className="max-w-6xl mx-auto">
+					<Card className="overflow-hidden">
+						<div className="overflow-x-auto">
+							<table className="w-full">
+								<thead className="bg-primary text-primary-foreground">
+									<tr>
+										<th className="px-6 py-4 text-left font-semibold">Feature</th>
+										<th className="px-6 py-4 text-center font-semibold">TripAdvisor</th>
+										<th className="px-6 py-4 text-center font-semibold">Thorbis</th>
+										<th className="px-6 py-4 text-center font-semibold">Benefit</th>
+									</tr>
+								</thead>
+								<tbody className="bg-card divide-y divide-border">
+									<tr className="hover:bg-muted/50 transition-colors">
+										<td className="px-6 py-4 font-medium">Menu Management</td>
+										<td className="px-6 py-4 text-center text-yellow-600 dark:text-yellow-400">Manual Updates</td>
+										<td className="px-6 py-4 text-center text-green-600 dark:text-green-400 font-bold">POS Integration</td>
+										<td className="px-6 py-4 text-center text-sm text-muted-foreground">Save 10hrs/week</td>
+									</tr>
+									<tr className="hover:bg-muted/50 transition-colors">
+										<td className="px-6 py-4 font-medium">Reservation System</td>
+										<td className="px-6 py-4 text-center text-yellow-600 dark:text-yellow-400">Basic</td>
+										<td className="px-6 py-4 text-center text-green-600 dark:text-green-400 font-bold">Full Integration</td>
+										<td className="px-6 py-4 text-center text-sm text-muted-foreground">+40% bookings</td>
+									</tr>
+									<tr className="hover:bg-muted/50 transition-colors">
+										<td className="px-6 py-4 font-medium">Review Response</td>
+										<td className="px-6 py-4 text-center text-yellow-600 dark:text-yellow-400">TripAdvisor Only</td>
+										<td className="px-6 py-4 text-center text-green-600 dark:text-green-400 font-bold">All Platforms</td>
+										<td className="px-6 py-4 text-center text-sm text-muted-foreground">Unified reputation</td>
+									</tr>
+									<tr className="hover:bg-muted/50 transition-colors">
+										<td className="px-6 py-4 font-medium">Analytics & Reporting</td>
+										<td className="px-6 py-4 text-center text-yellow-600 dark:text-yellow-400">Limited</td>
+										<td className="px-6 py-4 text-center text-green-600 dark:text-green-400 font-bold">AI-Powered</td>
+										<td className="px-6 py-4 text-center text-sm text-muted-foreground">Data-driven decisions</td>
+									</tr>
+									<tr className="hover:bg-muted/50 transition-colors">
+										<td className="px-6 py-4 font-medium">Customer Data</td>
+										<td className="px-6 py-4 text-center">
+											<XCircle className="inline w-5 h-5 text-destructive" />
+										</td>
+										<td className="px-6 py-4 text-center">
+											<CheckCircle className="inline w-5 h-5 text-green-600 dark:text-green-400" />
+										</td>
+										<td className="px-6 py-4 text-center text-sm text-muted-foreground">Build customer database</td>
+									</tr>
+									<tr className="hover:bg-muted/50 transition-colors">
+										<td className="px-6 py-4 font-medium">Direct Booking Promotion</td>
+										<td className="px-6 py-4 text-center">
+											<XCircle className="inline w-5 h-5 text-destructive" />
+										</td>
+										<td className="px-6 py-4 text-center">
+											<CheckCircle className="inline w-5 h-5 text-green-600 dark:text-green-400" />
+										</td>
+										<td className="px-6 py-4 text-center text-sm text-muted-foreground">Reduce commissions</td>
+									</tr>
+									<tr className="hover:bg-muted/50 transition-colors">
+										<td className="px-6 py-4 font-medium">Monthly Cost</td>
+										<td className="px-6 py-4 text-center text-destructive font-semibold">$200+</td>
+										<td className="px-6 py-4 text-center text-green-600 dark:text-green-400 font-bold">$29</td>
+										<td className="px-6 py-4 text-center text-sm text-muted-foreground">Save $2,052/year</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</Card>
+				</div>
+			</section>
+
+			{/* Restaurant ROI Calculator */}
+			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8 bg-muted/30">
+				<div className="mb-12 text-center">
+					<h2 className="text-3xl font-bold text-foreground sm:text-4xl">Restaurant ROI Calculator</h2>
+					<p className="mt-4 text-lg text-muted-foreground">See your potential savings and revenue increase</p>
+				</div>
+				<div className="max-w-5xl mx-auto">
+					<div className="grid gap-8 lg:grid-cols-2">
+						<Card className="p-8 border-destructive/20">
+							<CardHeader className="px-0 pt-0">
+								<CardTitle className="flex items-center gap-2 text-destructive">
+									<DollarSign className="w-5 h-5" />
+									Current TripAdvisor Costs
+								</CardTitle>
+							</CardHeader>
+							<CardContent className="px-0 space-y-4">
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">TripAdvisor subscription</span>
+									<span className="font-semibold text-destructive">$200</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Commission fees (3rd party bookings)</span>
+									<span className="font-semibold text-destructive">$800</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Manual menu management (10hr/week)</span>
+									<span className="font-semibold text-destructive">$1,000</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Lost direct bookings</span>
+									<span className="font-semibold text-destructive">$1,200</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Review management across platforms</span>
+									<span className="font-semibold text-destructive">$400</span>
+								</div>
+								<div className="border-t pt-4">
+									<div className="flex justify-between items-center font-bold text-lg">
+										<span>Total Monthly Cost</span>
+										<span className="text-destructive">$3,600</span>
+									</div>
+								</div>
+							</CardContent>
+						</Card>
+
+						<Card className="p-8 bg-primary/5 border-primary/20">
+							<CardHeader className="px-0 pt-0">
+								<CardTitle className="flex items-center gap-2 text-primary">
+									<Target className="w-5 h-5" />
+									Thorbis Restaurant Solution
+								</CardTitle>
+							</CardHeader>
+							<CardContent className="px-0 space-y-4">
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Thorbis platform (all features)</span>
+									<span className="font-semibold">$29</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Reduced commission fees</span>
+									<span className="font-semibold text-green-600 dark:text-green-400">-$400</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Automated menu management</span>
+									<span className="font-semibold text-green-600 dark:text-green-400">-$1,000</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Increased direct bookings (+40%)</span>
+									<span className="font-semibold text-green-600 dark:text-green-400">+$2,400</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted-foreground">Unified review management</span>
+									<span className="font-semibold text-green-600 dark:text-green-400">-$400</span>
+								</div>
+								<div className="border-t pt-4">
+									<div className="flex justify-between items-center font-bold text-lg">
+										<span>Net Monthly Gain</span>
+										<span className="text-green-600 dark:text-green-400">+$4,771</span>
+									</div>
+								</div>
+							</CardContent>
+						</Card>
+					</div>
+					<div className="mt-8 p-6 bg-primary text-primary-foreground rounded-xl text-center">
+						<div className="text-3xl font-bold mb-2">$57,252</div>
+						<div className="text-lg opacity-90">Annual Restaurant Savings & Growth</div>
+						<p className="text-sm opacity-80 mt-2">Plus improved customer experience and streamlined operations</p>
+					</div>
+				</div>
+			</section>
+
+			{/* Restaurant-Specific Features */}
+			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8">
+				<div className="mb-12 text-center">
+					<h2 className="text-3xl font-bold text-foreground sm:text-4xl">Built Specifically for Restaurants</h2>
+					<p className="mt-4 text-lg text-muted-foreground">Features that understand your business needs</p>
+				</div>
+				<div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+					<Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+						<CardContent className="p-6 text-center">
+							<div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+								<FileText className="w-6 h-6 text-primary" />
+							</div>
+							<h3 className="font-semibold mb-2">Dynamic Menu Management</h3>
+							<p className="text-sm text-muted-foreground">Update menus, prices, and availability across all platforms from your POS system in real-time.</p>
+						</CardContent>
+					</Card>
+
+					<Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+						<CardContent className="p-6 text-center">
+							<div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+								<Calendar className="w-6 h-6 text-primary" />
+							</div>
+							<h3 className="font-semibold mb-2">Smart Reservations</h3>
+							<p className="text-sm text-muted-foreground">Integrated reservation system with automatic confirmation, reminders, and no-show reduction.</p>
+						</CardContent>
+					</Card>
+
+					<Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+						<CardContent className="p-6 text-center">
+							<div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+								<MessageSquare className="w-6 h-6 text-primary" />
+							</div>
+							<h3 className="font-semibold mb-2">Guest Communication</h3>
+							<p className="text-sm text-muted-foreground">Automated follow-ups, special offers, and birthday/anniversary campaigns.</p>
+						</CardContent>
+					</Card>
+
+					<Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+						<CardContent className="p-6 text-center">
+							<div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+								<BarChart3 className="w-6 h-6 text-primary" />
+							</div>
+							<h3 className="font-semibold mb-2">Revenue Analytics</h3>
+							<p className="text-sm text-muted-foreground">Track revenue sources, customer lifetime value, and optimize for direct bookings.</p>
+						</CardContent>
+					</Card>
+				</div>
+			</section>
+
 			{/* CTA Section */}
 			<section className="px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8">
 				<div className="relative overflow-hidden rounded-2xl bg-primary p-8 text-center text-primary-foreground">
@@ -423,6 +820,20 @@ export default function TripAdvisorAlternative() {
 							<Button size="lg" variant="outline" className="text-lg px-8 py-3 border-white/20 text-white hover:bg-white/10">
 								Schedule Demo
 							</Button>
+						</div>
+						<div className="mt-6 flex items-center justify-center gap-6 text-sm opacity-80">
+							<div className="flex items-center gap-1">
+								<CheckCircle className="w-4 h-4" />
+								<span>POS integration included</span>
+							</div>
+							<div className="flex items-center gap-1">
+								<CheckCircle className="w-4 h-4" />
+								<span>Menu sync automation</span>
+							</div>
+							<div className="flex items-center gap-1">
+								<CheckCircle className="w-4 h-4" />
+								<span>Save $2,000+ monthly</span>
+							</div>
 						</div>
 					</div>
 				</div>

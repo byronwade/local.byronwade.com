@@ -11,7 +11,7 @@ import { logger } from "@utils/logger";
 
 export const useMapMarkers = () => {
 	const { filteredBusinesses, activeBusinessId, setActiveBusinessId, setSelectedBusiness } = useBusinessStore();
-	const { centerOn, mapRef } = useMapStore();
+	const { centerOn, mapRef, isMapAvailable } = useMapStore();
 
 	// Local state
 	const [hoveredBusiness, setHoveredBusiness] = useState(null);
@@ -291,12 +291,12 @@ export const useMapMarkers = () => {
 			setActiveBusinessId(business.id);
 			setSelectedBusiness(business);
 
-			// Simplified coordinate validation
+			// Center map if available and coordinates are valid
 			const { coordinates, serviceArea } = business;
-			if (coordinates && coordinates.lat && coordinates.lng) {
+			if (isMapAvailable() && coordinates && coordinates.lat && coordinates.lng) {
 				const radius = serviceArea && serviceArea.type === "radius" ? serviceArea.value : null;
 				centerOn(coordinates.lat, coordinates.lng, radius);
-			} else {
+			} else if (coordinates && (!coordinates.lat || !coordinates.lng)) {
 				logger.error("Invalid business coordinates:", business.name, coordinates);
 			}
 
@@ -322,15 +322,15 @@ export const useMapMarkers = () => {
 
 	const handleClusterClick = useCallback(
 		(cluster) => {
-			if (cluster.coordinates && cluster.coordinates.lat && cluster.coordinates.lng) {
+			if (isMapAvailable() && cluster.coordinates && cluster.coordinates.lat && cluster.coordinates.lng) {
 				// Zoom in to show individual businesses
 				const zoomLevel = Math.min(currentZoom + 3, 16);
 				centerOn(cluster.coordinates.lat, cluster.coordinates.lng, null, zoomLevel);
-			} else {
+			} else if (cluster.coordinates && (!cluster.coordinates.lat || !cluster.coordinates.lng)) {
 				logger.error("Invalid cluster coordinates:", cluster);
 			}
 		},
-		[centerOn, currentZoom]
+		[centerOn, currentZoom, isMapAvailable]
 	);
 
 	return {

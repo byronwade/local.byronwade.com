@@ -11,19 +11,63 @@ import { Suspense } from "react";
 // Force dynamic rendering to prevent build hanging
 export const dynamic = "force-dynamic";
 
-// Loading component for sections
+// Loading component for sections - Enhanced Netflix-style
 function SectionSkeleton() {
 	return (
-		<div className="space-y-4">
-			<div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
-				{Array.from({ length: 8 }).map((_, i) => (
-					<div key={i} className="animate-pulse">
-						<div className="bg-gray-200 dark:bg-gray-700 h-48 rounded-lg mb-2"></div>
-						<div className="bg-gray-200 dark:bg-gray-700 h-4 rounded mb-1"></div>
-						<div className="bg-gray-200 dark:bg-gray-700 h-4 rounded w-3/4"></div>
+		<div className="space-y-16">
+			{/* Section headers skeleton */}
+			{Array.from({ length: 3 }).map((_, sectionIndex) => (
+				<div key={sectionIndex} className="space-y-8">
+					{/* Header skeleton */}
+					<div className="flex justify-between items-start">
+						<div className="space-y-3">
+							<div className="flex items-center gap-3">
+								<div className="w-10 h-10 bg-neutral-200 dark:bg-neutral-700 rounded-xl animate-pulse"></div>
+								<div className="h-8 bg-neutral-200 dark:bg-neutral-700 rounded-lg w-64 animate-pulse"></div>
+							</div>
+							<div className="h-6 bg-neutral-200 dark:bg-neutral-700 rounded-lg w-96 animate-pulse"></div>
+						</div>
+						<div className="h-10 bg-neutral-200 dark:bg-neutral-700 rounded-xl w-28 animate-pulse"></div>
 					</div>
-				))}
-			</div>
+
+					{/* Subsection header skeleton */}
+					<div className="space-y-4">
+						<div className="h-6 bg-neutral-200 dark:bg-neutral-700 rounded-lg w-48 animate-pulse"></div>
+						<div className="h-4 bg-neutral-200 dark:bg-neutral-700 rounded w-72 animate-pulse"></div>
+					</div>
+
+					{/* Cards grid skeleton */}
+					<div className="flex gap-6 overflow-hidden">
+						{Array.from({ length: 6 }).map((_, cardIndex) => (
+							<div key={cardIndex} className="flex-none w-[250px] animate-pulse">
+								{/* Image skeleton */}
+								<div className="aspect-[4/3] bg-neutral-200 dark:bg-neutral-700 rounded-2xl mb-4 relative overflow-hidden">
+									{/* Shimmer effect */}
+									<div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent dark:via-neutral-600/20 -translate-x-full animate-[shimmer_2s_infinite]"></div>
+								</div>
+
+								{/* Content skeleton */}
+								<div className="space-y-3">
+									{/* Title */}
+									<div className="h-5 bg-neutral-200 dark:bg-neutral-700 rounded w-full"></div>
+
+									{/* Category */}
+									<div className="h-4 bg-neutral-200 dark:bg-neutral-700 rounded w-24"></div>
+
+									{/* Location */}
+									<div className="h-4 bg-neutral-200 dark:bg-neutral-700 rounded w-32"></div>
+
+									{/* Rating & Price */}
+									<div className="flex justify-between">
+										<div className="h-4 bg-neutral-200 dark:bg-neutral-700 rounded w-20"></div>
+										<div className="h-4 bg-neutral-200 dark:bg-neutral-700 rounded w-12"></div>
+									</div>
+								</div>
+							</div>
+						))}
+					</div>
+				</div>
+			))}
 		</div>
 	);
 }
@@ -92,20 +136,20 @@ function categorizeBusinesses(businesses) {
 }
 
 export const metadata = {
-	title: "Thorbis - Unified Local Discovery & Field Service Platform",
-	description: "The complete platform for local service discovery and business management. Find trusted professionals, book services instantly, and manage your field service operations - all in one place.",
-	keywords: ["local business", "field service management", "service booking", "professional services", "business operations", "scheduling", "invoicing", "reviews"],
+	title: "Thorbis Business Directory - Find Local Businesses • Field Services • Community Hub",
+	description: "The premier business directory for local discovery. Find trusted businesses, read verified reviews, compare services, plus field service management and community building tools.",
+	keywords: ["business directory", "local businesses", "find businesses", "business listings", "local directory", "field service management", "service booking", "professional services", "business reviews", "community hub"],
 	openGraph: {
-		title: "Thorbis - Complete Local Service Platform",
-		description: "Unified platform combining local business discovery with field service management tools. For customers: find and book trusted services. For businesses: complete operational suite.",
+		title: "Thorbis Business Directory - Find Local Businesses Near You",
+		description: "Premier business directory platform. Discover local businesses, read reviews, compare services. Plus field service management tools and community building features.",
 		url: "https://thorbis.com",
 		siteName: "Thorbis",
 		images: [
 			{
-				url: "https://thorbis.com/og-image.jpg",
-				width: 800,
-				height: 600,
-				alt: "Thorbis Platform",
+				url: `https://thorbis.com/opengraph-image?title=${encodeURIComponent("Thorbis Business Directory")}&description=${encodeURIComponent("Find Local Businesses • Field Services • Community Hub")}`,
+				width: 1200,
+				height: 630,
+				alt: "Thorbis Business Directory Platform",
 			},
 		],
 		locale: "en_US",
@@ -113,17 +157,13 @@ export const metadata = {
 	},
 	twitter: {
 		card: "summary_large_image",
-		title: "Thorbis - Complete Local Service Platform",
-		description: "Unified platform combining local business discovery with field service management tools. For customers: find and book trusted services. For businesses: complete operational suite.",
-		images: ["https://thorbis.com/twitter-image.jpg"],
+		title: "Thorbis Business Directory - Find Local Businesses Near You",
+		description: "Premier business directory platform. Discover local businesses, read reviews, compare services. Plus field service management tools and community building features.",
+		images: [`https://thorbis.com/twitter-image?title=${encodeURIComponent("Thorbis Business Directory – Find Local Businesses")}`],
 		creator: "@thorbis",
 	},
 	alternates: {
 		canonical: "https://thorbis.com",
-		languages: {
-			"en-US": "https://thorbis.com/en-US",
-			"es-ES": "https://thorbis.com/es-ES",
-		},
 	},
 	robots: "index, follow",
 	formatDetection: {
@@ -152,8 +192,7 @@ async function getHomePageData() {
 
 		console.log(`[DEBUG] Fetching from: ${apiUrl}/api/business/featured`);
 		const response = await fetch(`${apiUrl}/api/business/featured`, {
-			cache: "no-store", // Disable cache during development/testing
-			next: { revalidate: 60 }, // Revalidate every minute for testing
+			next: { revalidate: 60 }, // Revalidate every minute
 		});
 
 		if (!response.ok) {
@@ -178,20 +217,22 @@ async function getHomePageData() {
 async function BusinessSections({ categories }) {
 	return (
 		<>
-			{/* FOOD & DINING SECTION */}
+			{/* FOOD & DINING SECTION - Enhanced Netflix-style */}
 			{categories.restaurants.length > 0 && (
-				<div className="space-y-12">
-					<div className="flex justify-between items-center">
-						<div>
-							<h2 className="flex gap-2 items-center text-2xl font-semibold">
-								<Coffee className="w-6 h-6 text-orange-600" />
-								Food & Dining
-							</h2>
-							<p className="mt-1 text-muted-foreground">Restaurants, cafes, bars, and delivery</p>
+				<div className="space-y-8">
+					<div className="flex justify-between items-start">
+						<div className="space-y-3">
+							<div className="flex items-center gap-3">
+								<div className="p-2 rounded-xl bg-orange-100 dark:bg-orange-900/30">
+									<Coffee className="w-6 h-6 text-orange-600 dark:text-orange-400" />
+								</div>
+								<h2 className="text-3xl font-bold text-foreground tracking-tight">Food & Dining</h2>
+							</div>
+							<p className="text-lg text-muted-foreground max-w-2xl leading-relaxed">Discover exceptional restaurants, cozy cafes, vibrant bars, and convenient delivery options in your area</p>
 						</div>
-						<Button variant="ghost" asChild>
-							<Link href="/categories/restaurants" className="flex gap-2 items-center">
-								View all <ChevronRight className="w-4 h-4" />
+						<Button variant="outline" size="lg" className="border-2 hover:border-orange-500 hover:bg-orange-50 dark:hover:bg-orange-950/20 transition-all duration-300 group" asChild>
+							<Link href="/categories/restaurants" className="flex gap-2 items-center text-base font-medium">
+								Explore All <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
 							</Link>
 						</Button>
 					</div>
@@ -222,20 +263,22 @@ async function BusinessSections({ categories }) {
 
 			<Separator />
 
-			{/* HOME & SERVICES SECTION */}
+			{/* HOME & SERVICES SECTION - Enhanced Netflix-style */}
 			{categories.homeServices.length > 0 && (
-				<div className="space-y-12">
-					<div className="flex justify-between items-center">
-						<div>
-							<h2 className="flex gap-2 items-center text-2xl font-semibold">
-								<HomeIcon className="w-6 h-6 text-blue-600" />
-								Home & Professional Services
-							</h2>
-							<p className="mt-1 text-muted-foreground">Contractors, repairs, cleaning, and more</p>
+				<div className="space-y-8">
+					<div className="flex justify-between items-start">
+						<div className="space-y-3">
+							<div className="flex items-center gap-3">
+								<div className="p-2 rounded-xl bg-blue-100 dark:bg-blue-900/30">
+									<HomeIcon className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+								</div>
+								<h2 className="text-3xl font-bold text-foreground tracking-tight">Home & Professional Services</h2>
+							</div>
+							<p className="text-lg text-muted-foreground max-w-2xl leading-relaxed">Connect with trusted contractors, repair specialists, cleaning services, and professional experts for all your home needs</p>
 						</div>
-						<Button variant="ghost" asChild>
-							<Link href="/categories/home-services" className="flex gap-2 items-center">
-								View all <ChevronRight className="w-4 h-4" />
+						<Button variant="outline" size="lg" className="border-2 hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950/20 transition-all duration-300 group" asChild>
+							<Link href="/categories/home-services" className="flex gap-2 items-center text-base font-medium">
+								Explore All <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
 							</Link>
 						</Button>
 					</div>
@@ -266,20 +309,22 @@ async function BusinessSections({ categories }) {
 
 			<Separator />
 
-			{/* HEALTH & WELLNESS SECTION */}
+			{/* HEALTH & WELLNESS SECTION - Enhanced Netflix-style */}
 			{(categories.health.length > 0 || categories.beauty.length > 0 || categories.fitness.length > 0) && (
-				<div className="space-y-12">
-					<div className="flex justify-between items-center">
-						<div>
-							<h2 className="flex gap-2 items-center text-2xl font-semibold">
-								<Heart className="w-6 h-6 text-red-600" />
-								Health & Wellness
-							</h2>
-							<p className="mt-1 text-muted-foreground">Doctors, dentists, fitness, and spa services</p>
+				<div className="space-y-8">
+					<div className="flex justify-between items-start">
+						<div className="space-y-3">
+							<div className="flex items-center gap-3">
+								<div className="p-2 rounded-xl bg-red-100 dark:bg-red-900/30">
+									<Heart className="w-6 h-6 text-red-600 dark:text-red-400" />
+								</div>
+								<h2 className="text-3xl font-bold text-foreground tracking-tight">Health & Wellness</h2>
+							</div>
+							<p className="text-lg text-muted-foreground max-w-2xl leading-relaxed">Find quality healthcare providers, wellness centers, fitness facilities, and beauty services to support your well-being</p>
 						</div>
-						<Button variant="ghost" asChild>
-							<Link href="/categories/health-medical" className="flex gap-2 items-center">
-								View all <ChevronRight className="w-4 h-4" />
+						<Button variant="outline" size="lg" className="border-2 hover:border-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-all duration-300 group" asChild>
+							<Link href="/categories/health-medical" className="flex gap-2 items-center text-base font-medium">
+								Explore All <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
 							</Link>
 						</Button>
 					</div>
@@ -315,20 +360,22 @@ async function BusinessSections({ categories }) {
 
 			<Separator />
 
-			{/* SHOPPING & RETAIL SECTION */}
+			{/* SHOPPING & RETAIL SECTION - Enhanced Netflix-style */}
 			{categories.shopping.length > 0 && (
-				<div className="space-y-12">
-					<div className="flex justify-between items-center">
-						<div>
-							<h2 className="flex gap-2 items-center text-2xl font-semibold">
-								<ShoppingBag className="w-6 h-6 text-purple-600" />
-								Shopping & Retail
-							</h2>
-							<p className="mt-1 text-muted-foreground">Stores, boutiques, and specialty shops</p>
+				<div className="space-y-8">
+					<div className="flex justify-between items-start">
+						<div className="space-y-3">
+							<div className="flex items-center gap-3">
+								<div className="p-2 rounded-xl bg-purple-100 dark:bg-purple-900/30">
+									<ShoppingBag className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+								</div>
+								<h2 className="text-3xl font-bold text-foreground tracking-tight">Shopping & Retail</h2>
+							</div>
+							<p className="text-lg text-muted-foreground max-w-2xl leading-relaxed">Explore unique boutiques, specialty stores, local markets, and retail destinations for all your shopping needs</p>
 						</div>
-						<Button variant="ghost" asChild>
-							<Link href="/categories/shopping" className="flex gap-2 items-center">
-								View all <ChevronRight className="w-4 h-4" />
+						<Button variant="outline" size="lg" className="border-2 hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-950/20 transition-all duration-300 group" asChild>
+							<Link href="/categories/shopping" className="flex gap-2 items-center text-base font-medium">
+								Explore All <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
 							</Link>
 						</Button>
 					</div>
@@ -343,20 +390,22 @@ async function BusinessSections({ categories }) {
 
 			<Separator />
 
-			{/* AUTOMOTIVE SECTION */}
+			{/* AUTOMOTIVE SECTION - Enhanced Netflix-style */}
 			{categories.automotive.length > 0 && (
-				<div className="space-y-12">
-					<div className="flex justify-between items-center">
-						<div>
-							<h2 className="flex gap-2 items-center text-2xl font-semibold">
-								<Truck className="w-6 h-6 text-green-600" />
-								Automotive
-							</h2>
-							<p className="mt-1 text-muted-foreground">Auto repair, detailing, and services</p>
+				<div className="space-y-8">
+					<div className="flex justify-between items-start">
+						<div className="space-y-3">
+							<div className="flex items-center gap-3">
+								<div className="p-2 rounded-xl bg-green-100 dark:bg-green-900/30">
+									<Truck className="w-6 h-6 text-green-600 dark:text-green-400" />
+								</div>
+								<h2 className="text-3xl font-bold text-foreground tracking-tight">Automotive Services</h2>
+							</div>
+							<p className="text-lg text-muted-foreground max-w-2xl leading-relaxed">Professional auto repair, detailing, maintenance services, and automotive specialists for all your vehicle needs</p>
 						</div>
-						<Button variant="ghost" asChild>
-							<Link href="/categories/automotive" className="flex gap-2 items-center">
-								View all <ChevronRight className="w-4 h-4" />
+						<Button variant="outline" size="lg" className="border-2 hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-950/20 transition-all duration-300 group" asChild>
+							<Link href="/categories/automotive" className="flex gap-2 items-center text-base font-medium">
+								Explore All <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
 							</Link>
 						</Button>
 					</div>
@@ -381,9 +430,9 @@ export default async function Home() {
 			{/* Hero Section */}
 			<HeroSection />
 
-			{/* Main Content */}
+			{/* Main Content - Enhanced Layout */}
 			<div className="bg-white dark:bg-neutral-900">
-				<div className="px-4 py-12 space-y-20 lg:px-24">
+				<div className="px-6 py-16 space-y-24 lg:px-24 xl:px-32 max-w-8xl mx-auto">
 					{/* Dynamic Business Sections with SSR Data */}
 					<Suspense fallback={<SectionSkeleton />}>
 						<BusinessSections categories={categories} />
@@ -391,15 +440,17 @@ export default async function Home() {
 
 					<Separator />
 
-					{/* TRENDING & NEW SECTION */}
+					{/* TRENDING & NEW SECTION - Enhanced Netflix-style */}
 					{businesses.length > 0 && (
-						<div className="space-y-12">
-							<div>
-								<h2 className="flex gap-2 items-center text-2xl font-semibold">
-									<TrendingUp className="w-6 h-6 text-indigo-600" />
-									Trending & New
-								</h2>
-								<p className="mt-1 text-muted-foreground">What&apos;s popular and recently added</p>
+						<div className="space-y-8">
+							<div className="space-y-3">
+								<div className="flex items-center gap-3">
+									<div className="p-2 rounded-xl bg-indigo-100 dark:bg-indigo-900/30">
+										<TrendingUp className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+									</div>
+									<h2 className="text-3xl font-bold text-foreground tracking-tight">Trending & New</h2>
+								</div>
+								<p className="text-lg text-muted-foreground max-w-2xl leading-relaxed">Discover what&apos;s popular in your community and explore recently added businesses gaining attention</p>
 							</div>
 
 							{/* Trending This Week */}
@@ -420,18 +471,60 @@ export default async function Home() {
 						</div>
 					)}
 
-					{/* Business Owner CTA */}
-					<section className="p-8 rounded-2xl bg-muted/50 lg:p-12">
-						<div className="mx-auto max-w-4xl text-center">
-							<h2 className="mb-3 text-2xl font-semibold">Are You a Business Owner?</h2>
-							<p className="mx-auto mb-6 max-w-2xl text-muted-foreground">Join thousands of businesses connecting with customers in your area. Free to claim, easy to manage.</p>
-							<div className="flex gap-4 justify-center">
-								<Button size="lg" asChild>
-									<Link href="/claim-business">Claim Your Business</Link>
+					{/* Business Owner CTA - Enhanced Netflix-style */}
+					<section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary/10 via-blue-50/80 to-purple-50/80 dark:from-primary/5 dark:via-blue-950/50 dark:to-purple-950/50 border border-primary/20 dark:border-primary/10 p-12 lg:p-16">
+						{/* Background decoration */}
+						<div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+						<div className="absolute top-0 right-0 w-72 h-72 bg-primary/10 rounded-full blur-3xl"></div>
+						<div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
+
+						<div className="relative mx-auto max-w-4xl text-center">
+							<div className="mb-6 flex justify-center">
+								<div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/20 dark:bg-primary/10 border border-primary/30 dark:border-primary/20">
+									<span className="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+									<span className="text-sm font-medium text-primary">Business Owners</span>
+								</div>
+							</div>
+
+							<h2 className="mb-6 text-4xl font-bold text-foreground tracking-tight lg:text-5xl">
+								Grow Your Business with <span className="text-primary">Thorbis</span>
+							</h2>
+
+							<p className="mx-auto mb-8 max-w-3xl text-xl text-muted-foreground leading-relaxed">Join thousands of successful businesses connecting with customers in your area. Free to claim, easy to manage, and built to help you grow.</p>
+
+							<div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+								<Button size="lg" className="group bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-4 rounded-xl text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105" asChild>
+									<Link href="/claim-business" className="flex items-center gap-2">
+										Claim Your Business
+										<ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+									</Link>
 								</Button>
-								<Button size="lg" variant="outline" asChild>
+
+								<Button size="lg" variant="outline" className="border-2 border-primary/20 hover:border-primary hover:bg-primary/5 dark:hover:bg-primary/10 px-8 py-4 rounded-xl text-lg font-semibold transition-all duration-300" asChild>
 									<Link href="/business">Learn More</Link>
 								</Button>
+							</div>
+
+							{/* Trust indicators */}
+							<div className="mt-8 flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
+								<div className="flex items-center gap-2">
+									<div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center">
+										<div className="w-2 h-2 rounded-full bg-green-500"></div>
+									</div>
+									<span>Free Business Listing</span>
+								</div>
+								<div className="flex items-center gap-2">
+									<div className="w-5 h-5 rounded-full bg-blue-500/20 flex items-center justify-center">
+										<div className="w-2 h-2 rounded-full bg-blue-500"></div>
+									</div>
+									<span>Customer Reviews</span>
+								</div>
+								<div className="flex items-center gap-2">
+									<div className="w-5 h-5 rounded-full bg-purple-500/20 flex items-center justify-center">
+										<div className="w-2 h-2 rounded-full bg-purple-500"></div>
+									</div>
+									<span>Analytics Dashboard</span>
+								</div>
 							</div>
 						</div>
 					</section>

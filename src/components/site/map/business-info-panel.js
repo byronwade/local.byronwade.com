@@ -10,7 +10,7 @@ import { logger } from "@utils/logger";
 
 const BusinessInfoPanel = () => {
 	const { activeBusinessId, filteredBusinesses, setActiveBusinessId } = useBusinessStore();
-	const { centerOn } = useMapStore();
+	const { centerOn, isMapAvailable } = useMapStore();
 	const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 	const [isFavorited, setIsFavorited] = useState(false);
 
@@ -37,15 +37,15 @@ const BusinessInfoPanel = () => {
 
 	const allImages = [business?.image || "https://picsum.photos/400/300", "https://picsum.photos/400/301", "https://picsum.photos/400/302", "https://picsum.photos/400/303"];
 
-	// Center map on business when panel opens
+	// Center map on business when panel opens (only if map is available)
 	useEffect(() => {
-		if (business?.coordinates) {
+		if (isMapAvailable() && business?.coordinates) {
 			const { lat, lng } = business.coordinates;
 			if (typeof lat === "number" && typeof lng === "number" && !isNaN(lat) && !isNaN(lng) && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
 				centerOn(lat, lng);
 			}
 		}
-	}, [business?.coordinates, centerOn]);
+	}, [business?.coordinates, centerOn, isMapAvailable]);
 
 	const handlePrev = () => {
 		if (businessIndex > 0) {
