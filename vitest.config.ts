@@ -59,18 +59,22 @@ export default defineConfig({
 		},
 	},
 
-	// Path resolution for imports
-	resolve: {
-		alias: {
-			"@": resolve(__dirname, "."),
-			"@components": resolve(__dirname, "./components"),
-			"@lib": resolve(__dirname, "./lib"),
-			"@hooks": resolve(__dirname, "./hooks"),
-			"@store": resolve(__dirname, "./store"),
-			"@types": resolve(__dirname, "./types"),
-			"@tests": resolve(__dirname, "./tests"),
-		},
-	},
+        // Path resolution for imports
+        resolve: {
+                alias: {
+                        "@": resolve(__dirname, "./src"),
+                        "@components": resolve(__dirname, "./src/components"),
+                        "@lib": resolve(__dirname, "./src/lib"),
+                        "@hooks": resolve(__dirname, "./src/hooks"),
+                        "@store": resolve(__dirname, "./src/store"),
+                        "@types": resolve(__dirname, "./src/types"),
+                        "@utils": resolve(__dirname, "./src/utils"),
+                        "@context": resolve(__dirname, "./src/context"),
+                        "@data": resolve(__dirname, "./src/data"),
+                        "@config": resolve(__dirname, "./src/config"),
+                        "@tests": resolve(__dirname, "./tests"),
+                },
+        },
 
 	// Define global variables for tests
 	define: {
