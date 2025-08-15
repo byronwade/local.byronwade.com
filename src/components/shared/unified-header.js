@@ -363,16 +363,16 @@ export default function UnifiedHeader({
           <MicroInteractions type="navigation">
             <Link href="/" className="flex items-center space-x-3 text-xl font-bold group">
               <div className="relative">
-                <Image 
-                  src="/logos/ThorbisLogo.webp" 
-                  alt={config.title} 
-                  width={48} 
-                  height={48} 
-                  className="w-12 h-12 transition-transform duration-200 group-hover:scale-105" 
+                <Image
+                  src="/logos/ThorbisLogo.webp"
+                  alt={config.title}
+                  width={48}
+                  height={48}
+                  className="h-12 w-auto object-contain transition-transform duration-200 group-hover:scale-105"
                 />
                 <div className={`absolute inset-0 transition-opacity duration-200 rounded-full opacity-0 ${config.logoHoverClass} group-hover:opacity-100`} />
               </div>
-              <div className="hidden sm:block min-w-0">
+              <div className="min-w-0">
                 <h1 className="text-lg font-bold leading-none text-foreground truncate">{config.title}</h1>
                 <p className="text-xs text-muted-foreground truncate">{config.subtitle}</p>
               </div>
