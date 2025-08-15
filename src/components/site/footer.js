@@ -39,33 +39,29 @@ export default function Footer() {
 						legal: "Legal",
 						resources: "Resources",
 					},
-					links: {
-						aboutUs: "About Us",
-						careers: "Careers",
-						press: "Press",
-						investorRelations: "Investor Relations",
-						trustSafety: "Trust & Safety",
-						mobile: "Mobile App",
-						developers: "Developers",
-						contactSupport: "Contact Support",
-						helpCenter: "Help Center",
-						faq: "FAQ",
-						businessForBusiness: "For Business",
-						claimBusiness: "Claim Business",
-						advertise: "Advertise",
-						restaurantOwners: "Restaurant Owners",
-						terms: "Terms of Service",
-						privacy: "Privacy Policy",
-						contentGuidelines: "Content Guidelines",
-						accessibility: "Accessibility",
-						blog: "Blog",
-						news: "News",
-						events: "Events",
-						caseStudies: "Case Studies",
-						sitemap: "Sitemap",
-						status: "Status",
-						feedback: "Feedback",
-					},
+                                        links: {
+                                                aboutUs: "About Us",
+                                                careers: "Careers",
+                                                press: "Press",
+                                                investorRelations: "Investor Relations",
+                                                legal: "Legal",
+                                                mobile: "Mobile App",
+                                                developers: "Developers",
+                                                contactSupport: "Contact Support",
+                                                helpCenter: "Help Center",
+                                                faq: "FAQ",
+                                                businessForBusiness: "For Business",
+                                                claimBusiness: "Claim Business",
+                                                advertise: "Advertise",
+                                                restaurantOwners: "Restaurant Owners",
+                                                blog: "Blog",
+                                                news: "News",
+                                                events: "Events",
+                                                caseStudies: "Case Studies",
+                                                sitemap: "Sitemap",
+                                                status: "Status",
+                                                feedback: "Feedback",
+                                        },
 					copyright: "© 2024 Thorbis. All rights reserved.",
 					madeWith: "Made with love for local businesses",
 				}
@@ -217,23 +213,23 @@ export default function Footer() {
 						<div>
 							<h3 className="mb-4 text-sm font-semibold tracking-wide text-white uppercase">{footer.sections.about}</h3>
 							<div className="space-y-2">
-								<a href="/about-us" className="block text-sm text-slate-400 hover:text-white transition-colors">
-									{footer.links.aboutUs}
-								</a>
-								<a href="/careers" className="block text-sm text-slate-400 hover:text-white transition-colors">
-									{footer.links.careers}
-								</a>
-								<a href="/press" className="block text-sm text-slate-400 hover:text-white transition-colors">
-									{footer.links.press}
-								</a>
-								<a href="/investor-relations" className="block text-sm text-slate-400 hover:text-white transition-colors">
-									{footer.links.investorRelations}
-								</a>
-								<a href="/trust-safety" className="block text-sm text-slate-400 hover:text-white transition-colors">
-									{footer.links.trustSafety}
-								</a>
-							</div>
-						</div>
+                                                                <a href="/company" className="block text-sm text-slate-400 hover:text-white transition-colors">
+                                                                        {footer.links.aboutUs}
+                                                                </a>
+                                                                <a href="/jobs" className="block text-sm text-slate-400 hover:text-white transition-colors">
+                                                                        {footer.links.careers}
+                                                                </a>
+                                                                <a href="/company" className="block text-sm text-slate-400 hover:text-white transition-colors">
+                                                                        {footer.links.press}
+                                                                </a>
+                                                                <a href="/company" className="block text-sm text-slate-400 hover:text-white transition-colors">
+                                                                        {footer.links.investorRelations}
+                                                                </a>
+                                                                <a href="/legal" className="block text-sm text-slate-400 hover:text-white transition-colors">
+                                                                        {footer.links.legal}
+                                                                </a>
+                                                        </div>
+                                                </div>
 
 						<div>
 							<h3 className="mb-4 text-sm font-semibold tracking-wide text-white uppercase">{footer.sections.support}</h3>
@@ -274,23 +270,14 @@ export default function Footer() {
 							</div>
 						</div>
 
-						<div>
-							<h3 className="mb-4 text-sm font-semibold tracking-wide text-white uppercase">{footer.sections.legal}</h3>
-							<div className="space-y-2">
-								<a href="/terms" className="block text-sm text-slate-400 hover:text-white transition-colors">
-									{footer.links.terms}
-								</a>
-								<a href="/privacy" className="block text-sm text-slate-400 hover:text-white transition-colors">
-									{footer.links.privacy}
-								</a>
-								<a href="/content-guidelines" className="block text-sm text-slate-400 hover:text-white transition-colors">
-									{footer.links.contentGuidelines}
-								</a>
-								<a href="/accessibility-statement" className="block text-sm text-slate-400 hover:text-white transition-colors">
-									{footer.links.accessibility}
-								</a>
-							</div>
-						</div>
+                                                <div>
+                                                        <h3 className="mb-4 text-sm font-semibold tracking-wide text-white uppercase">{footer.sections.legal}</h3>
+                                                        <div className="space-y-2">
+                                                                <a href="/legal" className="block text-sm text-slate-400 hover:text-white transition-colors">
+                                                                        {footer.links.legal}
+                                                                </a>
+                                                        </div>
+                                                </div>
 
 						<div>
 							<h3 className="mb-4 text-sm font-semibold tracking-wide text-white uppercase">{footer.sections.resources}</h3>
@@ -316,9 +303,9 @@ export default function Footer() {
 						<div>
 							<h3 className="mb-4 text-sm font-semibold tracking-wide text-white uppercase">Industries</h3>
 							<div className="space-y-2">
-								<a href="/industries" className="block text-sm text-slate-400 hover:text-white transition-colors">
-									All Industries
-								</a>
+                                                                <a href="/discover#industries" className="block text-sm text-slate-400 hover:text-white transition-colors">
+                                                                        All Industries
+                                                                </a>
 								<a href="/field-management-software" className="block text-sm text-slate-400 hover:text-white transition-colors">
 									Field Management
 								</a>

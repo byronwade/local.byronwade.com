@@ -45,10 +45,11 @@ export const redirectConfig = {
 	"/neighborhoods": "/discover",
 
 	// Removed pages - redirect to appropriate alternatives
-	"/ad-choices": "/legal",
-	"/changelog": "/resources",
-	"/seo-examples": "/resources",
-	"/accessibility-statement": "/legal",
+        "/ad-choices": "/legal",
+        "/changelog": "/resources",
+        "/seo-examples": "/resources",
+        "/accessibility-statement": "/legal",
+        "/shop": "/store",
 
 	// Specific section redirects for better UX
 	"/support/contact": "/help#contact",
