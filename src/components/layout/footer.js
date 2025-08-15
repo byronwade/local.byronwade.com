@@ -40,10 +40,10 @@ export default function Footer() {
 			links: {
 				aboutUs: "About Us",
 				careers: "Careers",
-				press: "Press",
-				investorRelations: "Investor Relations",
-				trustSafety: "Trust & Safety",
-				transparency: "Transparency",
+                                press: "Press",
+                                investorRelations: "Investor Relations",
+                                legal: "Legal",
+                                transparency: "Transparency",
 				helpCenter: "Help Center",
 				contactSupport: "Contact Support",
 				faq: "FAQ",
@@ -250,18 +250,18 @@ export default function Footer() {
 						<div>
 							<h3 className="mb-6 text-lg font-semibold text-white">{footer.sections.about}</h3>
 							<div className="space-y-3">
-								{[
-									{ href: "/about-us", label: footer.links.aboutUs },
-									{ href: "/careers", label: footer.links.careers },
-									{ href: "/press", label: footer.links.press },
-									{ href: "/investor-relations", label: footer.links.investorRelations },
-									{ href: "/trust-safety", label: footer.links.trustSafety },
-									{ href: "/transparency", label: footer.links.transparency },
-								].map((link, index) => (
-									<a key={index} href={link.href} className="block text-sm text-neutral-400 hover:text-white transition-colors duration-200">
-										{link.label}
-									</a>
-								))}
+                                                                {[
+                                                                        { href: "/company", label: footer.links.aboutUs },
+                                                                        { href: "/jobs", label: footer.links.careers },
+                                                                        { href: "/company", label: footer.links.press },
+                                                                        { href: "/company", label: footer.links.investorRelations },
+                                                                        { href: "/legal", label: footer.links.legal },
+                                                                        { href: "/transparency", label: footer.links.transparency },
+                                                                ].map((link, index) => (
+                                                                        <a key={index} href={link.href} className="block text-sm text-neutral-400 hover:text-white transition-colors duration-200">
+                                                                                {link.label}
+                                                                        </a>
+                                                                ))}
 							</div>
 						</div>
 
@@ -303,25 +303,16 @@ export default function Footer() {
 							</div>
 						</div>
 
-						{/* Legal & Resources */}
-						<div>
-							<h3 className="mb-6 text-lg font-semibold text-white">{footer.sections.legal}</h3>
-							<div className="space-y-3">
-								{[
-									{ href: "/terms", label: footer.links.terms },
-									{ href: "/privacy", label: footer.links.privacy },
-									{ href: "/content-guidelines", label: footer.links.contentGuidelines },
-									{ href: "/community-guidelines", label: footer.links.communityGuidelines },
-									{ href: "/accessibility-statement", label: footer.links.accessibility },
-									{ href: "/ad-choices", label: footer.links.adChoices },
-								].map((link, index) => (
-									<a key={index} href={link.href} className="block text-sm text-neutral-400 hover:text-white transition-colors duration-200">
-										{link.label}
-									</a>
-								))}
-							</div>
-						</div>
-					</div>
+                                                {/* Legal & Resources */}
+                                                <div>
+                                                        <h3 className="mb-6 text-lg font-semibold text-white">{footer.sections.legal}</h3>
+                                                        <div className="space-y-3">
+                                                                <a href="/legal" className="block text-sm text-neutral-400 hover:text-white transition-colors duration-200">
+                                                                        {footer.links.legal}
+                                                                </a>
+                                                        </div>
+                                                </div>
+                                        </div>
 
 					{/* Industries Section */}
 					<div className="mb-16">
