@@ -21,7 +21,7 @@ import { OverviewSection, ServicesSection, TeamSection, BusinessHoursSection, Me
 
 // AI Integration imports
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
-import { Sparkles, Brain, Wand2, MessageSquare, Target, TrendingUp, Lightbulb, Zap, Robot, Star, MapPin, Phone, Globe, Calendar, Camera, Heart, ThumbsUp, MessageCircle, Quote, BarChart3, Users2, Clock4, CheckCircle2, Verified, Crown, Shield as ShieldIcon } from "lucide-react";
+import { Sparkles, Brain, Wand2, MessageSquare, Target, TrendingUp, Lightbulb, Zap, Star, MapPin, Phone, Globe, Calendar, Camera, Heart, ThumbsUp, MessageCircle, Quote, BarChart3, Users2, Clock4, CheckCircle2, Verified, Crown, Shield as ShieldIcon } from "lucide-react";
 
 // Import custom hook
 import { useBusinessProfile } from "@lib/hooks/business/profile/use-business-profile";

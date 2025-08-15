@@ -10,7 +10,7 @@ import { useState, useRef, useCallback, useMemo, useEffect } from "react";
 import { useBusinessStore } from "@store/business";
 import { useSearchStore } from "@store/search";
 import { useMapStore } from "@store/map";
-import { filterAndSortBusinesses, SORT_OPTIONS } from "@utils/sorting";
+import { filterAndSortBusinesses } from "@utils/sorting";
 import { withErrorHandling } from "@utils/error-handler";
 import { logger } from "@utils/logger";
 

@@ -6,16 +6,13 @@
 
 "use client";
 
-import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import React, { useState, useCallback, useMemo, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
 import { Badge } from "@components/ui/badge";
 import { Card, CardContent } from "@components/ui/card";
-import { ScrollArea } from "@components/ui/scroll-area";
-import { Separator } from "@components/ui/separator";
-import { Search, Mic, Camera, MapPin, Clock, Star, TrendingUp, Zap, Filter, Map, List, Users, Phone, Navigation, Heart, Share2, ArrowRight, Sparkles, Brain, Eye, ChevronDown, X } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
+import { Search, Mic, Camera, MapPin, Clock, Star, TrendingUp, Map, List, Phone, Navigation, Heart, Share2, ArrowRight, Sparkles, Brain } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 // Enhanced search interface component

@@ -7,10 +7,7 @@ import { z } from "zod";
 import { ArrowRight, ArrowLeft } from "react-feather";
 import { Button } from "@components/ui/button";
 
-import UserInfo from "@components/features/auth/onboarding/user-info";
-import UserAddress from "@components/features/auth/onboarding/user-address";
-import UserProfile from "@components/features/auth/onboarding/user-profile";
-import UserSuccess from "@components/features/auth/onboarding/user-success";
+import { UserInfo, UserAddress, UserProfile, UserSuccess } from "@features/auth";
 
 // Define schema for user steps only
 const userSchema = z.object({

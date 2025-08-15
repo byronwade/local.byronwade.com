@@ -1,111 +1,35 @@
 "use client";
 
-import Link from "next/link";
-import { Button } from "@components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
-import { Home, RefreshCw, AlertTriangle, Mail, Phone } from "lucide-react";
-
 export default function GlobalError({ error, reset }) {
+	const isDevMode = process.env.NODE_ENV === "development";
+
 	return (
-		<html>
-			<body>
-				<div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-100 flex items-center justify-center p-4">
-					<div className="max-w-2xl w-full text-center">
-						{/* Error Animation */}
-						<div className="mb-8">
-							<div className="text-9xl font-bold text-red-600 mb-4 animate-pulse">500</div>
-							<div className="text-6xl mb-4">⚠️</div>
-						</div>
-
-						{/* Error Message */}
-						<Card className="mb-8 shadow-xl border-red-200">
-							<CardHeader className="bg-red-50">
-								<CardTitle className="text-3xl font-bold text-gray-900 mb-2 flex items-center justify-center gap-3">
-									<AlertTriangle className="w-8 h-8 text-red-600" />
-									Something Went Wrong
-								</CardTitle>
-								<p className="text-xl text-gray-600">We&apos;re experiencing some technical difficulties.</p>
-							</CardHeader>
-							<CardContent className="space-y-6 pt-6">
-								<p className="text-gray-700">Don&apos;t panic! Our team has been notified and we&apos;re working to fix this issue. Please try again in a few minutes.</p>
-
-								{/* Error Details (Development) */}
-								{process.env.NODE_ENV === "development" && error && (
-									<div className="bg-gray-100 p-4 rounded-lg text-left">
-										<h4 className="font-semibold text-gray-900 mb-2">Error Details:</h4>
-										<pre className="text-sm text-red-600 overflow-auto">{error.message}</pre>
-									</div>
-								)}
-
-								{/* Action Buttons */}
-								<div className="flex flex-col sm:flex-row gap-4 justify-center">
-									<Button onClick={reset} size="lg" className="bg-red-600 hover:bg-red-700">
-										<RefreshCw className="w-5 h-5 mr-2" />
-										Try Again
-									</Button>
-									<Button asChild variant="outline" size="lg">
-										<Link href="/">
-											<Home className="w-5 h-5 mr-2" />
-											Go Home
-										</Link>
-									</Button>
-								</div>
-
-								{/* What You Can Do */}
-								<div className="pt-6 border-t">
-									<h3 className="text-lg font-semibold text-gray-900 mb-4">What You Can Do</h3>
-									<div className="text-left space-y-2 text-gray-700">
-										<p>• Refresh the page or try again in a few minutes</p>
-										<p>• Check your internet connection</p>
-										<p>• Clear your browser cache and cookies</p>
-										<p>• Try accessing the site from a different browser</p>
-									</div>
-								</div>
-
-								{/* Contact Support */}
-								<div className="pt-6 border-t">
-									<h3 className="text-lg font-semibold text-gray-900 mb-4">Still Having Issues?</h3>
-									<p className="text-gray-700 mb-4">Our support team is here to help you get back on track.</p>
-									<div className="flex flex-col sm:flex-row gap-4 justify-center text-sm">
-										<div className="flex items-center justify-center">
-											<Mail className="w-4 h-4 mr-2 text-red-600" />
-											<a href="mailto:support@byronwade.com" className="text-red-600 hover:text-red-800 transition-colors font-medium">
-												support@byronwade.com
-											</a>
-										</div>
-										<div className="flex items-center justify-center">
-											<Phone className="w-4 h-4 mr-2 text-red-600" />
-											<a href="tel:+1234567890" className="text-red-600 hover:text-red-800 transition-colors font-medium">
-												(123) 456-7890
-											</a>
-										</div>
-									</div>
-								</div>
-
-								{/* Status Page Link */}
-								<div className="pt-4">
-									<p className="text-sm text-gray-500">
-										Check our{" "}
-										<a href="https://status.byronwade.com" target="_blank" rel="noopener noreferrer" className="text-red-600 hover:text-red-800 underline transition-colors">
-											status page
-										</a>{" "}
-										for real-time updates on system performance.
-									</p>
-								</div>
-							</CardContent>
-						</Card>
-
-						{/* Error ID for Support */}
-						<div className="text-xs text-gray-400">
-							<p>
-								Error ID: {Date.now().toString(36).toUpperCase()}
-								<br />
-								Time: {new Date().toISOString()}
-							</p>
-						</div>
-					</div>
+		<div className="flex items-center justify-center min-h-screen bg-background text-foreground p-4">
+			<div className="max-w-md text-center">
+				<div className="relative inline-block mb-8">
+					<h1 className="text-9xl font-bold text-red-600">500</h1>
+					<p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-background text-sm font-medium px-2 bg-red-600 rounded-full">Critical Error</p>
 				</div>
-			</body>
-		</html>
+				<h2 className="text-2xl font-semibold mb-2">Something Went Wrong</h2>
+				<p className="text-muted-foreground mb-8">We're experiencing some technical difficulties. Please try again in a moment or head back home.</p>
+				<div className="flex gap-4 justify-center">
+					<button onClick={() => reset()} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-red-600 text-white shadow hover:bg-red-700 h-9 px-4 py-2">
+						Try Again
+					</button>
+					<a href="/" className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground hover:border-primary h-9 px-4 py-2">
+						Go Home
+					</a>
+				</div>
+
+				{isDevMode && error && (
+					<div className="mt-12 text-left text-sm bg-muted/40 border rounded-md p-4">
+						<p className="font-semibold text-red-600 mb-2">Error Details</p>
+						<pre className="whitespace-pre-wrap text-muted-foreground">{error.message || "No error message provided."}</pre>
+					</div>
+				)}
+
+				<div className="mt-6 text-xs text-muted-foreground/60">Error ID: <span className="font-mono text-red-600">{Date.now().toString(36).toUpperCase()}</span></div>
+			</div>
+		</div>
 	);
 }

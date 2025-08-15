@@ -23,17 +23,17 @@ export default function WebVitalsClient() {
 		(async () => {
 			try {
 				const mod = await import("web-vitals");
-				const onCLS = mod.onCLS || (await import("web-vitals/attribution")).onCLS;
-				const onFID = mod.onFID || (await import("web-vitals/attribution")).onFID;
-				const onLCP = mod.onLCP || (await import("web-vitals/attribution")).onLCP;
-				const onINP = mod.onINP || (await import("web-vitals/attribution")).onINP;
-				const onTTFB = mod.onTTFB || (await import("web-vitals/attribution")).onTTFB;
+				const onCLS = mod.onCLS;
+				const onFID = mod.onFID;
+				const onLCP = mod.onLCP;
+				const onINP = mod.onINP;
+				const onTTFB = mod.onTTFB;
 
-				onCLS(report);
-				onFID(report);
-				onLCP(report);
+				onCLS && onCLS(report);
+				onFID && onFID(report);
+				onLCP && onLCP(report);
 				onINP && onINP(report);
-				onTTFB(report);
+				onTTFB && onTTFB(report);
 			} catch {
 				// web-vitals is optional; ignore if missing
 			}

@@ -6,128 +6,128 @@ import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGrou
 import { cn } from "@utils";
 
 const sidebarLinks = {
-	"/dashboard/admin": [
+    "/admin": [
 		{
 			section: "Dashboard",
 			links: [
-				{ href: "/dashboard/admin", text: "Overview" },
-				{ href: "/dashboard/admin/analytics", text: "Analytics" },
-				{ href: "/dashboard/admin/activity-log", text: "Activity Log" },
-				{ href: "/dashboard/admin/notifications", text: "Notifications" },
+                { href: "/admin", text: "Overview" },
+                { href: "/admin/analytics", text: "Analytics" },
+                { href: "/admin/activity-log", text: "Activity Log" },
+                { href: "/admin/notifications", text: "Notifications" },
 			],
 		},
 	],
-	"/dashboard/admin/users": [
+    "/admin/users": [
 		{
 			section: "User Management",
 			links: [
-				{ href: "/dashboard/admin/users", text: "Customer List" },
-				{ href: "/dashboard/admin/users/add", text: "Add Customer" },
-				{ href: "/dashboard/admin/users/account-details", text: "Account Details" },
-				{ href: "/dashboard/admin/users/support", text: "Customer Support" },
-				{ href: "/dashboard/admin/users/feedback", text: "Feedback" },
-				{ href: "/dashboard/admin/users/settings", text: "Settings" },
+                { href: "/admin/users", text: "Customer List" },
+                { href: "/admin/users/add", text: "Add Customer" },
+                { href: "/admin/users/account-details", text: "Account Details" },
+                { href: "/admin/users/support", text: "Customer Support" },
+                { href: "/admin/users/feedback", text: "Feedback" },
+                { href: "/admin/users/settings", text: "Settings" },
 			],
 		},
 	],
-	"/dashboard/admin/customers": [
+    "/admin/customers": [
 		{
 			section: "Customers",
 			links: [
-				{ href: "/dashboard/admin/customers", text: "All Customers" },
-				{ href: "/dashboard/admin/customers/active", text: "Active Customers" },
-				{ href: "/dashboard/admin/customers/inactive", text: "Inactive Customers" },
-				{ href: "/dashboard/admin/customers/new", text: "New Customers" },
+                { href: "/admin/customers", text: "All Customers" },
+                { href: "/admin/customers/active", text: "Active Customers" },
+                { href: "/admin/customers/inactive", text: "Inactive Customers" },
+                { href: "/admin/customers/new", text: "New Customers" },
 			],
 		},
 		{
 			section: "Customer Management",
 			links: [
-				{ href: "/dashboard/admin/customers/profiles", text: "Customer Profiles" },
-				{ href: "/dashboard/admin/customers/communications", text: "Communications" },
-				{ href: "/dashboard/admin/customers/analytics", text: "Customer Analytics" },
-				{ href: "/dashboard/admin/customers/segments", text: "Customer Segments" },
+                { href: "/admin/customers/profiles", text: "Customer Profiles" },
+                { href: "/admin/customers/communications", text: "Communications" },
+                { href: "/admin/customers/analytics", text: "Customer Analytics" },
+                { href: "/admin/customers/segments", text: "Customer Segments" },
 			],
 		},
 		{
 			section: "Customer Support",
 			links: [
-				{ href: "/dashboard/admin/customers/tickets", text: "Support Tickets" },
-				{ href: "/dashboard/admin/customers/feedback", text: "Customer Feedback" },
-				{ href: "/dashboard/admin/customers/reports", text: "Customer Reports" },
+                { href: "/admin/customers/tickets", text: "Support Tickets" },
+                { href: "/admin/customers/feedback", text: "Customer Feedback" },
+                { href: "/admin/customers/reports", text: "Customer Reports" },
 			],
 		},
 	],
-	"/dashboard/admin/pro-accounts": [
+    "/admin/pro-accounts": [
 		{
 			section: "Pro Account Management",
 			links: [
-				{ href: "/dashboard/admin/pro-accounts", text: "Transactions" },
-				{ href: "/dashboard/admin/pro-accounts/invoices", text: "Invoices" },
-				{ href: "/dashboard/admin/pro-accounts/refunds", text: "Refunds" },
-				{ href: "/dashboard/admin/pro-accounts/payment-methods", text: "Payment Methods" },
-				{ href: "/dashboard/admin/pro-accounts/settings", text: "Settings" },
+                { href: "/admin/pro-accounts", text: "Transactions" },
+                { href: "/admin/pro-accounts/invoices", text: "Invoices" },
+                { href: "/admin/pro-accounts/refunds", text: "Refunds" },
+                { href: "/admin/pro-accounts/payment-methods", text: "Payment Methods" },
+                { href: "/admin/pro-accounts/settings", text: "Settings" },
 			],
 		},
 	],
-	"/dashboard/admin/reports": [
+    "/admin/reports": [
 		{
 			section: "Reporting",
 			links: [
-				{ href: "/dashboard/admin/reports", text: "Sales Reports" },
-				{ href: "/dashboard/admin/reports/customers", text: "Customer Reports" },
-				{ href: "/dashboard/admin/reports/employees", text: "Employee Reports" },
-				{ href: "/dashboard/admin/reports/financial", text: "Financial Reports" },
-				{ href: "/dashboard/admin/reports/custom", text: "Custom Reports" },
+                { href: "/admin/reports", text: "Sales Reports" },
+                { href: "/admin/reports/customers", text: "Customer Reports" },
+                { href: "/admin/reports/employees", text: "Employee Reports" },
+                { href: "/admin/reports/financial", text: "Financial Reports" },
+                { href: "/admin/reports/custom", text: "Custom Reports" },
 			],
 		},
 	],
-	"/dashboard/admin/support": [
+    "/admin/support": [
 		{
 			section: "Support Center",
 			links: [
-				{ href: "/dashboard/admin/support", text: "Tickets" },
-				{ href: "/dashboard/admin/support/live-chat", text: "Live Chat" },
-				{ href: "/dashboard/admin/support/faqs", text: "FAQs" },
-				{ href: "/dashboard/admin/support/help-articles", text: "Help Articles" },
-				{ href: "/dashboard/admin/support/settings", text: "Settings" },
+                { href: "/admin/support", text: "Tickets" },
+                { href: "/admin/support/live-chat", text: "Live Chat" },
+                { href: "/admin/support/faqs", text: "FAQs" },
+                { href: "/admin/support/help-articles", text: "Help Articles" },
+                { href: "/admin/support/settings", text: "Settings" },
 			],
 		},
 	],
-	"/dashboard/admin/billing": [
+    "/admin/billing": [
 		{
 			section: "Billing Management",
 			links: [
-				{ href: "/dashboard/admin/billing", text: "Overview" },
-				{ href: "/dashboard/admin/billing/pending", text: "Pending Bills" },
-				{ href: "/dashboard/admin/billing/paid", text: "Paid Bills" },
+                { href: "/admin/billing", text: "Overview" },
+                { href: "/admin/billing/pending", text: "Pending Bills" },
+                { href: "/admin/billing/paid", text: "Paid Bills" },
 			],
 		},
 		{
 			section: "Payment Settings",
 			links: [
-				{ href: "/dashboard/admin/billing/payment-methods", text: "Payment Methods" },
-				{ href: "/dashboard/admin/billing/settings", text: "Settings" },
+                { href: "/admin/billing/payment-methods", text: "Payment Methods" },
+                { href: "/admin/billing/settings", text: "Settings" },
 			],
 		},
 	],
-	"/dashboard/admin/settings": [
+    "/admin/settings": [
 		{
 			section: "System Settings",
 			links: [
-				{ href: "/dashboard/admin/settings", text: "General Settings" },
-				{ href: "/dashboard/admin/settings/profile", text: "Profile Settings" },
-				{ href: "/dashboard/admin/settings/security", text: "Security" },
-				{ href: "/dashboard/admin/settings/notifications", text: "Notifications" },
-				{ href: "/dashboard/admin/settings/preferences", text: "Preferences" },
+                { href: "/admin/settings", text: "General Settings" },
+                { href: "/admin/settings/profile", text: "Profile Settings" },
+                { href: "/admin/settings/security", text: "Security" },
+                { href: "/admin/settings/notifications", text: "Notifications" },
+                { href: "/admin/settings/preferences", text: "Preferences" },
 			],
 		},
 	],
 };
 
 export function AppSidebar({ className, ...props }) {
-	const pathname = usePathname();
-	const currentPath = pathname.split("/").slice(0, 3).join("/");
+    const pathname = usePathname();
+    const currentPath = pathname.split("/").slice(0, 3).join("/");
 	const currentSections = sidebarLinks[currentPath];
 
 	return (

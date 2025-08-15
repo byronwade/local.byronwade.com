@@ -501,15 +501,46 @@ export function initializeInstantLoading() {
 	const criticalContent = [
 		{
 			key: "user-dashboard",
-			loader: () => fetch("/api/dashboard/user").then((r) => r.json()),
+			loader: async () => {
+				try {
+					const res = await fetch("/api/dashboard/user");
+					if (!res.ok) throw new Error(`HTTP ${res.status}`);
+					// Guard against empty body
+					const text = await res.text();
+					return text ? JSON.parse(text) : {};
+				} catch (e) {
+					console.warn("Preload failed for user-dashboard:", e);
+					return {};
+				}
+			},
 		},
 		{
 			key: "categories",
-			loader: () => fetch("/api/categories").then((r) => r.json()),
+			loader: async () => {
+				try {
+					const res = await fetch("/api/categories");
+					if (!res.ok) throw new Error(`HTTP ${res.status}`);
+					const text = await res.text();
+					return text ? JSON.parse(text) : [];
+				} catch (e) {
+					console.warn("Preload failed for categories:", e);
+					return [];
+				}
+			},
 		},
 		{
 			key: "featured-businesses",
-			loader: () => fetch("/api/businesses/featured").then((r) => r.json()),
+			loader: async () => {
+				try {
+					const res = await fetch("/api/businesses/featured");
+					if (!res.ok) throw new Error(`HTTP ${res.status}`);
+					const text = await res.text();
+					return text ? JSON.parse(text) : { businesses: [] };
+				} catch (e) {
+					console.warn("Preload failed for featured-businesses:", e);
+					return { businesses: [] };
+				}
+			},
 		},
 	];
 

@@ -183,13 +183,67 @@ function extractAndPrefetchAssets(html, baseUrl) {
 	const parser = new DOMParser();
 	const doc = parser.parseFromString(html, "text/html");
 
+	// Get a safe base URL for resolving relative URLs
+	const safeBaseUrl = (() => {
+		try {
+			if (typeof window !== "undefined") {
+				return baseUrl || window.location.href;
+			}
+			return baseUrl || "http://localhost:3000";
+		} catch (e) {
+			return "http://localhost:3000";
+		}
+	})();
+
+	// Helper function to safely resolve URLs
+	const safeResolveUrl = (url, base) => {
+		try {
+			// Skip data URLs and blob URLs
+			if (url.startsWith("data:") || url.startsWith("blob:")) {
+				return null;
+			}
+			
+			// If URL is already absolute, return as-is
+			if (url.startsWith("http://") || url.startsWith("https://")) {
+				return url;
+			}
+			
+			// Ensure we have a valid base URL for the URL constructor
+			let validBase;
+			try {
+				// Check if base is already a valid URL
+				new URL(base);
+				validBase = base;
+			} catch (e) {
+				// If base is not a valid URL (e.g., "/dashboard"), use current origin
+				if (typeof window !== "undefined") {
+					validBase = window.location.origin;
+				} else {
+					validBase = "http://localhost:3000";
+				}
+			}
+			
+			// Try to resolve relative URL with valid base
+			const resolved = new URL(url, validBase);
+			return resolved.href;
+		} catch (e) {
+			// Silent failure - don't log errors as this is expected for some URLs
+			return null;
+		}
+	};
+
 	// Prefetch critical images
 	const images = doc.querySelectorAll("img[src]");
 	images.forEach((img, index) => {
 		if (index < 3) {
 			// Only prefetch first 3 images
-			const src = new URL(img.src, baseUrl).href;
-			intelligentPrefetch(src, ROUTE_PRIORITIES.HIGH, "image");
+			const srcAttr = img.getAttribute("src");
+			if (srcAttr) {
+				const resolvedSrc = safeResolveUrl(srcAttr, safeBaseUrl);
+				if (resolvedSrc) {
+					intelligentPrefetch(resolvedSrc, ROUTE_PRIORITIES.HIGH, "image");
+				}
+			}
 		}
 	});
 
@@ -198,8 +252,13 @@ function extractAndPrefetchAssets(html, baseUrl) {
 	stylesheets.forEach((link, index) => {
 		if (index < 2) {
 			// Only prefetch first 2 stylesheets
-			const href = new URL(link.href, baseUrl).href;
-			intelligentPrefetch(href, ROUTE_PRIORITIES.HIGH, "style");
+			const hrefAttr = link.getAttribute("href");
+			if (hrefAttr) {
+				const resolvedHref = safeResolveUrl(hrefAttr, safeBaseUrl);
+				if (resolvedHref) {
+					intelligentPrefetch(resolvedHref, ROUTE_PRIORITIES.HIGH, "style");
+				}
+			}
 		}
 	});
 }

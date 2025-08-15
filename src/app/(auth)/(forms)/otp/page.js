@@ -1,4 +1,4 @@
-import { AccountOTP } from "@components/features/auth";
+import { AccountOTP } from "@features/auth";
 
 export const metadata = {
 	title: "Two-Factor Authentication - Thorbis",

@@ -5,8 +5,8 @@
  */
 
 // Core location services
-export { useLocationServices } from "./Locationservices";
-export { default as LocationServices } from "./Locationservices";
+export { useLocationServices } from "./location-services";
+export { default as LocationServices } from "./location-services";
 
 // Search functionality
 export { useSearchSuggestions, SearchSuggestionsUI } from "./search-suggestions";

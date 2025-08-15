@@ -1,0 +1,35 @@
+{
+	"name": "Thorbis",
+	"short_name": "Thorbis",
+	"start_url": "/",
+	"scope": "/",
+	"display": "standalone",
+	"background_color": "#000000",
+	"theme_color": "#000000",
+	"description": "Discover local businesses, events, and community resources.",
+	"icons": [
+		{
+			"src": "/favicon-32x32.png",
+			"sizes": "32x32",
+			"type": "image/png"
+		},
+		{
+			"src": "/favicon-16x16.png",
+			"sizes": "16x16",
+			"type": "image/png"
+		},
+		{
+			"src": "/logos/ThorbisLogo.webp",
+			"sizes": "192x192",
+			"type": "image/webp",
+			"purpose": "any"
+		},
+		{
+			"src": "/logos/ThorbisLogo.webp",
+			"sizes": "512x512",
+			"type": "image/webp",
+			"purpose": "any maskable"
+		}
+	]
+}
+

@@ -1,3 +1,8 @@
+export * from "./business";
+export * from "./jobs";
+export * from "./user";
+export * from "./analytics";
+export * from "./business-hours";
 /**
  * Supabase Queries Barrel Export
  * Domain-based query organization for enterprise-level architecture

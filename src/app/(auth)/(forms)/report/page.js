@@ -1,14 +1,14 @@
 "use client";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import { VerifyAccount, ActiveUser, BusinessSearch, LoginPage } from "@components/features/auth";
+import { VerifyAccount, ActiveUser, BusinessSearch, LoginPage } from "@features/auth";
 import { Button } from "@components/ui/button";
 import { Card, CardContent } from "@components/ui/card";
 import { Badge } from "@components/ui/badge";
 import { ArrowRight, ArrowLeft } from "react-feather";
 import { Star, MapPin, Phone, Building2, AlertTriangle } from "lucide-react";
 import useAuth from "@hooks/use-auth";
-import WhatAreYouReporting from "@components/features/auth/report/what-are-you-reporting";
+import WhatAreYouReporting from "@features/auth/report/what-are-you-reporting";
 import { Progress } from "@components/ui/progress";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";

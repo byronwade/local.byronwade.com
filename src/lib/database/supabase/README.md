@@ -170,7 +170,7 @@ bun run seed:database    # Seed database with realistic test data
 ### **Basic Business Query**
 
 ```typescript
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/database/supabase/client';
 
 // Get all published businesses with reviews
 const { data: businesses } = await supabase
@@ -190,7 +190,7 @@ const { data: businesses } = await supabase
 ### **Advanced Job Search**
 
 ```typescript
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/database/supabase/client';
 
 // Use the optimized search function
 const { data: jobs } = await supabase.rpc('search_jobs', {
@@ -206,7 +206,7 @@ const { data: jobs } = await supabase.rpc('search_jobs', {
 ### **Nearby Businesses (Spatial Query)**
 
 ```typescript
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/database/supabase/client';
 
 // Find businesses within 10km of coordinates
 const { data: nearbyBusinesses } = await supabase.rpc('get_nearby_businesses', {
@@ -220,7 +220,7 @@ const { data: nearbyBusinesses } = await supabase.rpc('get_nearby_businesses', {
 ### **User Analytics**
 
 ```typescript
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/database/supabase/client';
 
 // Get comprehensive user analytics
 const { data: analytics } = await supabase.rpc('get_user_analytics', {
@@ -327,7 +327,7 @@ const { data: metrics } = await supabase
 Enable real-time subscriptions for live updates:
 
 ```typescript
-import { SupabaseRealtime } from '@/lib/supabase';
+import { SupabaseRealtime } from '@/lib/database/supabase/realtime/subscriptions';
 
 // Subscribe to business changes
 const unsubscribe = SupabaseRealtime.subscribeToBusinessChanges(

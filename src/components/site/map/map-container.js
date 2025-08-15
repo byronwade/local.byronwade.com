@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useRef, useEffect, useCallback, useMemo, Suspense, useState } from "react";
 import { Button } from "@components/ui/button";
 import { Minus, Plus, MapPin, Search, Target, ExternalLink, RefreshCw } from "lucide-react";

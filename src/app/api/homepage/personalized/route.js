@@ -6,8 +6,25 @@
 
 import { NextResponse } from 'next/server';
 import { generatePersonalizedHomepage } from '@utils/homepage-personalization-engine';
-import { supabase } from '@lib/database/supabase';
-import { logger } from '@utils/logger';
+import { supabase } from '@lib/database/supabase/client';
+// Import logger with fallback for build compatibility
+let logger;
+try {
+  logger = require('@utils/logger').logger;
+} catch (e) {
+  // Fallback logger for build time
+  logger = {
+    debug: console.debug,
+    info: console.info,
+    warn: console.warn,
+    error: console.error,
+    performance: () => {},
+    api: () => {},
+    businessMetrics: () => {},
+    security: () => {},
+    critical: () => {},
+  };
+}
 
 // Cache control headers for optimization
 const CACHE_HEADERS = {

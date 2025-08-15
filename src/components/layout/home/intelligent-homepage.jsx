@@ -14,13 +14,13 @@ import { logger } from "@utils/logger";
 import { cn } from "@utils";
 
 // Dynamic section components
-import HeroSection from "./sections/Personalizedhero-section";
+import HeroSection from "./sections/personalized-hero-section";
 import FeaturedBusinessesSection from "./sections/featured-businesses-section";
-import CategoryRecommendationsSection from "./sections/CategoryRecommendationsSection";
-import LocalSpotlightSection from "./sections/LocalSpotlightSection";
-import TrendingSection from "./sections/TrendingSection";
-import RecommendedSection from "./sections/RecommendedSection";
-import LoadingSkeletonSection from "./sections/LoadingSkeletonSection";
+import CategoryRecommendationsSection from "./sections/category-recommendations-section";
+import LocalSpotlightSection from "./sections/local-spotlight-section";
+import TrendingSection from "./sections/trending-section";
+import RecommendedSection from "./sections/recommended-section";
+import LoadingSkeletonSection from "./sections/loading-skeleton-section";
 
 // Performance monitoring
 import { PerformanceMonitor } from "@utils/performance-monitor";

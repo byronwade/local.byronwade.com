@@ -102,7 +102,7 @@ const BusinessInfoPanel = () => {
 			<ScrollArea className="flex-1">
 				{/* Image Gallery */}
 				<div className="relative h-64 bg-muted/30">
-					<Image src={allImages[selectedImageIndex]} alt={business.name} fill className="object-cover" />
+					<Image src={allImages[selectedImageIndex]} alt={business.name} fill sizes="(max-width: 768px) 100vw, 480px" className="object-cover" />
 
 					{/* Image Navigation */}
 					{allImages.length > 1 && (

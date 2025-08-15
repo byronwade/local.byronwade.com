@@ -106,6 +106,9 @@ function createSupabaseClient() {
 	}
 }
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export async function GET(request) {
 	const startTime = performance.now();
 

@@ -311,6 +311,7 @@ CREATE TABLE jobs (
     benefits TEXT[],
     application_deadline DATE,
     status job_status DEFAULT 'draft',
+    featured BOOLEAN DEFAULT FALSE,
     view_count INTEGER DEFAULT 0,
     application_count INTEGER DEFAULT 0,
     external_url TEXT,

@@ -5,7 +5,7 @@
  */
 
 import { logger } from "./logger";
-import { AnalyticsMutations } from "@lib/supabase/mutations/analytics";
+import { AnalyticsMutations } from "@lib/database/supabase/mutations/analytics";
 import { services } from "@config";
 
 /**

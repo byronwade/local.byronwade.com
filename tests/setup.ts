@@ -40,7 +40,7 @@ vi.mock("next/image", () => ({
 }));
 
 // Mock Supabase client
-vi.mock("@lib/supabase/client", () => ({
+vi.mock("@lib/database/supabase/client", () => ({
 	supabase: {
 		auth: {
 			getSession: vi.fn().mockResolvedValue({ data: { session: null }, error: null }),

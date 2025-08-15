@@ -10,7 +10,7 @@ import { CheckCircle2, Mail, AlertCircle, Loader2, ArrowRight } from "lucide-rea
 import { useAuth } from "@context/auth-context";
 import { toast } from "sonner";
 import { logger } from "@utils/logger";
-import { supabase } from "@lib/supabase/client";
+import { supabase } from "@lib/database/supabase/client";
 
 // Component that uses useSearchParams
 function VerifyEmailContent() {

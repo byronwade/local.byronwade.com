@@ -4,4 +4,4 @@
  */
 
 export { BusinessCard } from "./business-card";
-export { GoogleStyleBusinessCard } from "./GoogleStylebusiness-card";
+export { GoogleStyleBusinessCard } from "./google-style-business-card";

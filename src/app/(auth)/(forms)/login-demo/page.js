@@ -8,7 +8,7 @@ import { Badge } from "@components/ui/badge";
 import { Button } from "@components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 // Temporarily commented out problematic imports for build
-// import { IntelligentLoginButton } from "@components/features/auth";
+// import { IntelligentLoginButton } from "@features/auth";
 // import { LOGIN_CONTEXTS } from "@lib/auth/login-context";
 
 // Simple placeholder button for now

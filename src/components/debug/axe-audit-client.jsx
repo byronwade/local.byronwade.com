@@ -26,7 +26,26 @@ export default function AxeAuditClient() {
 		try {
 			setStatus("running");
 			setResults(null);
-			const axe = (await import("axe-core")).default;
+			
+			// Safe dynamic import with fallback
+			let axe;
+			try {
+				const axeModule = await import("axe-core");
+				axe = axeModule.default || axeModule;
+			} catch (importError) {
+				console.warn("axe-core not available:", importError);
+				setStatus("error");
+				setResults({ error: "axe-core module not available" });
+				return;
+			}
+			
+			if (!axe || typeof axe.run !== 'function') {
+				console.warn("axe-core not properly loaded");
+				setStatus("error");
+				setResults({ error: "axe-core not properly loaded" });
+				return;
+			}
+			
 			const res = await axe.run(document, { resultTypes: ["violations", "incomplete"] });
 			setResults(res);
 			setStatus("done");

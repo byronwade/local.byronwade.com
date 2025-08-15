@@ -7,7 +7,7 @@
 "use client";
 
 import { useState, useCallback, useRef } from "react";
-import { mapStyles, mapSettings } from "@lib/data/map";
+import { mapStyles } from "@lib/data/map";
 
 export const useMapUI = (initialConfig = {}) => {
 	const { initialStyle = mapStyles.streets, showControls = true, interactive = true, enableFullscreen = true, enableLayerSwitching = true } = initialConfig;

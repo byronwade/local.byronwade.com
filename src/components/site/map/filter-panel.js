@@ -202,8 +202,8 @@ const FilterPanel = ({ isOpen, onClose, filters, onFiltersChange, onClearFilters
 							{/* Categories */}
 							<div className="space-y-4">
 								<Label className="flex items-center gap-2 text-base font-medium">
-									<Tag className="w-4 h-4" />
-									Categories
+																	<div className="w-4 h-4 rounded bg-blue-500" />
+								Categories
 								</Label>
 								<div className="grid grid-cols-1 gap-3">
 									{BUSINESS_CATEGORIES.map((category) => (
@@ -220,8 +220,8 @@ const FilterPanel = ({ isOpen, onClose, filters, onFiltersChange, onClearFilters
 							{/* Features */}
 							<div className="space-y-4">
 								<Label className="flex items-center gap-2 text-base font-medium">
-									<Zap className="w-4 h-4" />
-									Features
+																	<div className="w-4 h-4 rounded bg-yellow-500" />
+								Features
 								</Label>
 								<div className="grid grid-cols-1 gap-3">
 									{BUSINESS_FEATURES.map((feature) => (

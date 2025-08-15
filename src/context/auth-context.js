@@ -3,7 +3,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { useEnhancedAuth } from "@hooks/use-enhanced-auth";
-import { getEnabledProviders } from "@lib/supabase/auth/providers";
+import { getEnabledProviders } from "@lib/database/supabase/auth/providers";
 import { logger } from "@utils/logger";
 
 const AuthContext = createContext();

@@ -1,4 +1,4 @@
-import { SignupPage } from "@components/features/auth";
+import { SignupPage } from "@features/auth";
 
 export const metadata = {
 	title: "Sign Up - Thorbis",

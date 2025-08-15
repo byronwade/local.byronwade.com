@@ -1,4 +1,4 @@
-import { PasswordReset } from "@components/features/auth";
+import { PasswordReset } from "@features/auth";
 
 export const metadata = {
 	title: "Reset Password - Thorbis",

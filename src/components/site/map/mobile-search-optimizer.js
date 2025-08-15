@@ -10,7 +10,7 @@ import React, { useState, useCallback, useEffect, useRef } from "react";
 import { Button } from "@components/ui/button";
 import { Badge } from "@components/ui/badge";
 import { ScrollArea } from "@components/ui/scroll-area";
-import { Search, Filter, SlidersHorizontal, MapPin, List, Map, ChevronUp, ChevronDown, X, Zap, TrendingUp, Clock, Star, DollarSign } from "lucide-react";
+import { Filter, MapPin, List, Map, Zap, TrendingUp, Clock, Star, DollarSign } from "lucide-react";
 import { withErrorHandling } from "@utils/error-handler";
 import { logger } from "@utils/logger";
 

@@ -1,19 +1,40 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
 import { Button } from "@components/ui/button";
 import { Badge } from "@components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 import { Progress } from "@components/ui/progress";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuLabel, DropdownMenuGroup } from "@components/ui/dropdown-menu";
-import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@components/ui/sheet";
-import { ChevronDown, Menu, Bell, Settings, HelpCircle, User, Crown, GraduationCap, Plus } from "lucide-react";
-import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
-import { RiComputerFill } from "react-icons/ri";
-import { useTheme } from "next-themes";
-import { useAuthStore } from "@store/auth";
+import { Avatar, AvatarImage, AvatarFallback } from "@components/ui/avatar";
+import { 
+  DropdownMenu, 
+  DropdownMenuTrigger, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuGroup, 
+  DropdownMenuSeparator,
+  DropdownMenuLabel
+} from "@components/ui/dropdown-menu";
+import { 
+  Sheet, 
+  SheetTrigger, 
+  SheetContent, 
+  SheetHeader, 
+  SheetTitle 
+} from "@components/ui/sheet";
+import { 
+  GraduationCap, 
+  ChevronDown, 
+  Plus, 
+  Bell, 
+  User, 
+  Crown, 
+  Settings, 
+  HelpCircle, 
+  Menu 
+} from "lucide-react";
+import { SunIcon, MoonIcon, DesktopIcon } from "@radix-ui/react-icons";
+import UnifiedHeader from "@components/shared/unified-header";
 
 // Mock companies for academy (learning paths or specializations)
 const mockLearningPaths = [
@@ -44,6 +65,19 @@ const mockLearningPaths = [
 ];
 
 export default function AcademyHeader() {
+  return (
+    <UnifiedHeader
+      dashboardType="academy"
+      showCompanySelector={false}
+      showSearch={false}
+      customTitle="Thorbis Academy"
+      customSubtitle="Learning Dashboard"
+    />
+  );
+}
+
+// Legacy component - now using UnifiedHeader system
+function LegacyAcademyHeader() {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 	const [currentPathId, setCurrentPathId] = useState("1"); // Default to first learning path
 	const pathname = usePathname();

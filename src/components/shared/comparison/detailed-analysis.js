@@ -1,6 +1,6 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
-import { CheckCircle, XCircle, AlertTriangle, Heart } from "lucide-react";
+import { CheckCircle, XCircle } from "lucide-react";
 
 /**
  * Individual analysis point component

@@ -3,7 +3,7 @@
 
 // Core Contexts
 export * from "./auth-context";
-export * from "./BusinessContext";
+export * from "./buisness-context";
 export * from "./language-context";
 export * from "./notification-context";
 export * from "./theme-context";

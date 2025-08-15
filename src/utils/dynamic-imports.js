@@ -11,7 +11,7 @@
  * - Bundle size optimization
  */
 
-import { lazy, Suspense, memo, useEffect, useState } from "react";
+import React, { lazy, Suspense, memo, useEffect, useState } from "react";
 import { logger } from "@utils/logger";
 
 // Cache for dynamic imports to prevent duplicate loading
@@ -32,31 +32,41 @@ export const createDynamicImport = (importFunction, options = {}) => {
 	}
 
 	// Create retry function for failed imports
-	const retryImport = async (attempt = 1) => {
-		try {
-			const startTime = performance.now();
-			const module = await importFunction();
-			const loadTime = performance.now() - startTime;
+  const retryImport = async (attempt = 1) => {
+    try {
+      const startTime = performance.now();
+      const importedModule = await importFunction();
+      const loadTime = performance.now() - startTime;
 
-			logger.debug(`Dynamic import loaded in ${loadTime.toFixed(2)}ms${chunkName ? ` (${chunkName})` : ""}`);
+      logger.debug(`Dynamic import loaded in ${loadTime.toFixed(2)}ms${chunkName ? ` (${chunkName})` : ""}`);
 
-			// Track slow imports
-			if (loadTime > 2000) {
-				logger.warn(`Slow dynamic import: ${chunkName || "unknown"} took ${loadTime.toFixed(2)}ms`);
-			}
+      if (loadTime > 2000) {
+        logger.warn(`Slow dynamic import: ${chunkName || "unknown"} took ${loadTime.toFixed(2)}ms`);
+      }
 
-			return module;
-		} catch (error) {
-			logger.error(`Dynamic import failed (attempt ${attempt}):`, error);
+      // React.lazy requires a module object with a default export
+      const resolved = importedModule && importedModule.default ? importedModule.default : importedModule;
 
-			if (attempt < retries) {
-				await new Promise((resolve) => setTimeout(resolve, retryDelay * attempt));
-				return retryImport(attempt + 1);
-			}
+      // Basic validation to surface clearer errors when a module doesn't export a component
+      const isRenderable = typeof resolved === "function" || (resolved && typeof resolved === "object");
+      if (!isRenderable) {
+        throw new Error(
+          `Dynamic import for ${chunkName || "component"} did not return a React component. Ensure a default export.`
+        );
+      }
 
-			throw error;
-		}
-	};
+      return { default: resolved };
+    } catch (error) {
+      logger.error(`Dynamic import failed (attempt ${attempt}):`, error);
+
+      if (attempt < retries) {
+        await new Promise((resolve) => setTimeout(resolve, retryDelay * attempt));
+        return retryImport(attempt + 1);
+      }
+
+      throw error;
+    }
+  };
 
 	// Create lazy component with error handling
 	const LazyComponent = lazy(retryImport);

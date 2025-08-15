@@ -2,7 +2,7 @@
 // Implements comprehensive security, performance, subdomain routing, redirects, and monitoring
 
 import { NextResponse } from "next/server";
-import { createProfessionalSubdomainMiddleware } from "./lib/middleware/professional-subdomain";
+import { createProfessionalSubdomainMiddleware } from "./src/lib/middleware/professional-subdomain";
 import { getRedirectDestination } from "./src/app/redirects";
 
 /**
@@ -48,8 +48,9 @@ export async function middleware(request) {
 		let response;
 
 		try {
-			// Try to use professional subdomain middleware
-			response = await createProfessionalSubdomainMiddleware(request);
+			// TEMPORARILY DISABLED - Try to use professional subdomain middleware
+			// response = await createProfessionalSubdomainMiddleware(request);
+			response = NextResponse.next();
 		} catch (middlewareError) {
 			// Fallback to basic response if advanced middleware fails
 			console.warn("Advanced middleware failed, using fallback:", middlewareError.message);

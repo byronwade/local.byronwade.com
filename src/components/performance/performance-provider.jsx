@@ -15,7 +15,6 @@ import React, { createContext, useContext, useEffect, useState, useRef } from "r
 import { initializeInstantLoading } from "@lib/performance/instant-loading";
 import { initializeExperimentalAPIs } from "@lib/performance/experimental-apis";
 import { useNextFasterPrefetch } from "@lib/performance/nextfaster-prefetch";
-import PerformanceMonitor from "./PerformanceMonitor";
 
 // Performance context
 const PerformanceContext = createContext({
@@ -294,27 +293,34 @@ export default function PerformanceProvider({ children, enableServiceWorker = tr
 	};
 
 	const startPerformanceMonitoring = () => {
-		// Monitor Core Web Vitals
+		// Monitor Core Web Vitals via web-vitals client events; guard unsupported observer types
 		if ("PerformanceObserver" in window) {
-			const observer = new PerformanceObserver((list) => {
-				for (const entry of list.getEntries()) {
-					// Track performance metrics
-					if (typeof gtag !== "undefined") {
-						gtag("event", "core_web_vital", {
-							event_category: "performance",
-							event_label: entry.name,
-							value: Math.round(entry.value),
-							custom_map: {
-								metric_name: entry.name,
-								metric_value: entry.value,
-								rating: getMetricRating(entry.name, entry.value),
-							},
-						});
-					}
+			try {
+				const supported = PerformanceObserver.supportedEntryTypes || [];
+				// Avoid observing non-existent 'web-vital' type (causes warning)
+				const typesToObserve = ["largest-contentful-paint", "first-input", "layout-shift"].filter((t) => supported.includes(t));
+				if (typesToObserve.length > 0) {
+					const observer = new PerformanceObserver((list) => {
+						for (const entry of list.getEntries()) {
+							if (typeof gtag !== "undefined") {
+								gtag("event", "core_web_vital", {
+									event_category: "performance",
+									event_label: entry.name,
+									value: Math.round(entry.value || 0),
+									custom_map: {
+										metric_name: entry.name,
+										metric_value: entry.value,
+										rating: getMetricRating(entry.name, entry.value),
+									},
+								});
+							}
+						}
+					});
+					observer.observe({ entryTypes: typesToObserve });
 				}
-			});
-
-			observer.observe({ entryTypes: ["web-vital"] });
+			} catch (e) {
+				// No-op; rely on web-vitals client elsewhere
+			}
 		}
 	};
 

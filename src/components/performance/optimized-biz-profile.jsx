@@ -10,17 +10,8 @@ import { Skeleton } from "@components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 import { Button } from "@components/ui/button";
 import { AlertCircle, RefreshCw } from "lucide-react";
-import LazyTabContent, { TabContentContainer, LazySection } from "./LazyTabContent";
-import dynamic from "next/dynamic";
-
-// Dynamically import the large BizProfileClient component
-const BizProfileClient = dynamic(
-	() => import("@app/(site)/biz/[slug]/biz-profile-client"),
-	{
-		loading: () => <BizProfileSkeleton />,
-		ssr: false, // Client-side only to prevent hydration issues
-	}
-);
+import { LazySection } from "./lazy-tab-content";
+import BizProfileClient from "@app/(site)/biz/[slug]/biz-profile-client";
 
 // Performance-optimized skeleton for business profile
 const BizProfileSkeleton = memo(() => (

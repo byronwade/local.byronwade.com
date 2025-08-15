@@ -1,7 +1,6 @@
 // REQUIRED: Intelligent Login Redirect Helpers
 // Provides easy-to-use functions for contextual login redirects
 
-import { LoginContextDetector } from "./login-context";
 
 /**
  * Intelligent redirect helpers for common authentication scenarios

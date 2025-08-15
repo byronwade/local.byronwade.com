@@ -5,7 +5,7 @@
  * Allows seeding individual tables or data types for targeted testing
  */
 
-const { createServiceRoleClient } = require("../lib/supabase/client.ts");
+const { createServiceRoleClient } = require("../src/lib/database/supabase/client.ts");
 const { generateBusinesses } = require("../lib/businessDataGenerator.js");
 const { faker } = require("@faker-js/faker");
 

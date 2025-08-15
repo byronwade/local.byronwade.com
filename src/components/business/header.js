@@ -1,19 +1,41 @@
 "use client";
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@components/ui/button";
-import { Input } from "@components/ui/input";
 import { Badge } from "@components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuLabel, DropdownMenuGroup } from "@components/ui/dropdown-menu";
-import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@components/ui/sheet";
-import { ChevronDown, Menu, Bell, Settings, Briefcase, CreditCard, HelpCircle, User, Zap, Building2, Plus, Star, BarChart3, Target, Calendar, FileText, Receipt, Users, MessageSquare, Book, Package, Clock, TrendingUp, Bot, Wrench, Activity, Calculator, Puzzle, Sliders, Search } from "lucide-react";
-import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
-import { RiComputerFill } from "react-icons/ri";
-import { useTheme } from "next-themes";
-import { useAuthStore } from "@store/auth";
+import { Input } from "@components/ui/input";
+import { Avatar, AvatarImage, AvatarFallback } from "@components/ui/avatar";
+import { 
+  DropdownMenu, 
+  DropdownMenuTrigger, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuGroup, 
+  DropdownMenuSeparator,
+  DropdownMenuLabel
+} from "@components/ui/dropdown-menu";
+import { 
+  Sheet, 
+  SheetTrigger, 
+  SheetContent, 
+  SheetHeader, 
+  SheetTitle 
+} from "@components/ui/sheet";
+import { 
+  Building2, 
+  ChevronDown, 
+  Plus, 
+  Search, 
+  Star, 
+  Bell, 
+  Settings, 
+  CreditCard, 
+  HelpCircle, 
+  Menu 
+} from "lucide-react";
+import { SunIcon, MoonIcon, DesktopIcon } from "@radix-ui/react-icons";
+import UnifiedHeader from "@components/shared/unified-header";
 
 // Mock data for companies
 const mockCompanies = [
@@ -43,7 +65,21 @@ const mockCompanies = [
 	},
 ];
 
-export default function Header() {
+export default function Header({ dashboardType = "business", ...props }) {
+  return (
+    <UnifiedHeader
+      dashboardType={dashboardType}
+      showCompanySelector={true}
+      showSearch={false}
+      customTitle="Thorbis Business"
+      customSubtitle="Directory & Field Services Dashboard"
+      {...props}
+    />
+  );
+}
+
+// Legacy component - now using UnifiedHeader system
+function LegacyHeader({ dashboardType = "business" }) {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 	const [currentCompanyId, setCurrentCompanyId] = useState("1"); // Default to first company
 	const [pinnedRoutes, setPinnedRoutes] = useState([]);
@@ -62,6 +98,47 @@ export default function Header() {
 	}));
 
 	const currentCompany = mockCompanies.find((company) => company.id === currentCompanyId) || mockCompanies[0];
+
+    // Dashboard-specific configuration (minimal, uniform)
+    const dashboardConfig = {
+        business: {
+            title: "Thorbis Business",
+            subtitle: "Dashboard",
+            showCompanySelector: true
+        },
+        user: {
+            title: "Thorbis",
+            subtitle: "Dashboard",
+            showCompanySelector: false
+        },
+        localhub: {
+            title: "Thorbis LocalHub",
+            subtitle: "Dashboard",
+            showCompanySelector: false
+        },
+        developers: {
+            title: "Thorbis Developers",
+            subtitle: "Dashboard",
+            showCompanySelector: false
+        },
+        gofor: {
+            title: "Thorbis GoFor",
+            subtitle: "Dashboard",
+            showCompanySelector: true
+        },
+        admin: {
+            title: "Thorbis Admin",
+            subtitle: "Dashboard",
+            showCompanySelector: false
+        },
+        academy: {
+            title: "Thorbis Academy",
+            subtitle: "Dashboard",
+            showCompanySelector: false
+        }
+    };
+
+	const config = dashboardConfig[dashboardType] || dashboardConfig.business;
 
 	const handleLogout = async () => {
 		try {
@@ -99,8 +176,8 @@ export default function Header() {
 		});
 	};
 
-	// Main navigation structure prioritized by: Directory > Field Management > Community
-	const mainNavItems = [
+    // Main navigation structure prioritized by: Directory > Field Management > Community
+    const businessMainNavItems = [
 		// Business Directory Functions (Primary)
 		{ key: "profile", text: "Directory Profile", icon: User, href: "/dashboard/business/profile", description: "Business directory listing & profile" },
 		{ key: "reviews", text: "Directory Reviews", icon: Star, href: "/dashboard/business/reviews", description: "Manage customer reviews & ratings" },
@@ -118,6 +195,7 @@ export default function Header() {
 
 		// Business Operations
 		{ key: "communication", text: "Communication", icon: MessageSquare, href: "/dashboard/business/communication", description: "Business communications hub" },
+		{ key: "gofor", text: "GoFor Delivery", icon: Truck, href: "/dashboard/gofor", description: "On-demand delivery for parts & supplies" },
 		{ key: "projects", text: "Projects", icon: Book, href: "/dashboard/business/projects", description: "Manage construction projects" },
 		{ key: "pricebook", text: "Service Catalog", icon: Package, href: "/dashboard/business/pricebook", description: "Services and products pricing" },
 		{ key: "service-plans", text: "Service Plans", icon: Wrench, href: "/dashboard/business/service-plans", description: "Maintenance plans & contracts" },
@@ -133,7 +211,31 @@ export default function Header() {
 		{ key: "tools", text: "Business Tools", icon: Calculator, href: "/dashboard/business/tools", description: "Business calculation tools" },
 		{ key: "settings", text: "Settings", icon: Sliders, href: "/dashboard/business/settings", description: "Business configuration" },
 		{ key: "support", text: "Support", icon: HelpCircle, href: "/dashboard/business/support", description: "Help and support" },
-	];
+    ];
+
+    // Admin navigation (minimal, uniform)
+    const adminMainNavItems = [
+        { key: "overview", text: "Overview", icon: BarChart3, href: "/admin" },
+        { key: "users", text: "Users", icon: Users, href: "/admin/users" },
+        { key: "customers", text: "Customers", icon: Users, href: "/admin/customers" },
+        { key: "billing", text: "Billing", icon: CreditCard, href: "/admin/billing" },
+        { key: "reports", text: "Reports", icon: TrendingUp, href: "/admin/reports" },
+        { key: "support", text: "Support", icon: HelpCircle, href: "/admin/support" },
+        { key: "settings", text: "Settings", icon: Settings, href: "/admin/settings" },
+    ];
+
+    // Academy navigation (minimal, uniform)
+    const academyMainNavItems = [
+        { key: "overview", text: "Overview", icon: BarChart3, href: "/academy" },
+        { key: "courses", text: "Courses", icon: Book, href: "/academy/courses" },
+    ];
+
+    // Choose nav items based on dashboard type
+    const mainNavItems = useMemo(() => {
+        if (dashboardType === "admin") return adminMainNavItems;
+        if (dashboardType === "academy") return academyMainNavItems;
+        return businessMainNavItems;
+    }, [dashboardType]);
 
 	// Sub-navigation items based on main selection
 	const subNavItems = {
@@ -311,7 +413,7 @@ export default function Header() {
 	const NAV_CATEGORIES = {
 		"Directory Management": ["profile", "reviews", "marketing", "ads"],
 		"Field Services": ["dashboard", "schedule", "jobs", "estimates", "invoices", "customers", "employees"],
-		"Business Operations": ["projects", "service-plans", "pricebook", "communication", "time-payroll", "performance"],
+		"Business Operations": ["communication", "gofor", "projects", "service-plans", "pricebook", "time-payroll", "performance"],
 		"Platform & Tools": ["companies", "billing", "analytics", "integrations", "automation", "tools", "settings"],
 		"Support & Growth": ["support"],
 	};
@@ -376,43 +478,42 @@ export default function Header() {
 	};
 
 	// Determine active main section based on current path
-	const activeMainSection = useMemo(() => {
-		const pathSegments = pathname.split("/");
-		const businessSegmentIndex = pathSegments.indexOf("business");
-		const mainSection = pathSegments[businessSegmentIndex + 1];
+    const activeMainSection = useMemo(() => {
+        if (dashboardType !== "business") return null;
+        const pathSegments = pathname.split("/");
+        const businessSegmentIndex = pathSegments.indexOf("business");
+        const mainSection = pathSegments[businessSegmentIndex + 1];
 
-		// Default to dashboard if no specific section or if root business path
-		if (!mainSection || mainSection === "business") {
-			return "dashboard";
-		}
+        if (!mainSection || mainSection === "business") {
+            return "dashboard";
+        }
 
-		// Check if the section exists in our nav items
-		const sectionExists = mainNavItems.some((item) => item.key === mainSection);
-		return sectionExists ? mainSection : "dashboard";
-	}, [pathname]);
+        const sectionExists = businessMainNavItems.some((item) => item.key === mainSection);
+        return sectionExists ? mainSection : "dashboard";
+    }, [pathname, dashboardType]);
 
 	// Get current sub-navigation items
-	const currentSubNavItems = subNavItems[activeMainSection] || [];
+    const currentSubNavItems = dashboardType === "business" ? subNavItems[activeMainSection] || [] : [];
 
 	return (
 		<>
-			<div className="sticky top-0 z-[60] bg-neutral-950/95 dark:bg-neutral-950/95 backdrop-blur-md border-b border-neutral-900 dark:border-neutral-900">
+			<div className="sticky top-0 z-[60] bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
 				{/* Main Header */}
-				<div className="flex items-center justify-between w-full gap-6 py-3 mx-auto px-4 lg:px-24">
+				<div className="flex items-center justify-between w-full gap-6 py-3 px-4 md:px-6">
 					{/* Left Section - Logo and Business Info */}
 					<div className="flex flex-row items-center w-full space-x-6">
 						<Link href="/" className="flex items-center space-x-3 text-xl font-bold group">
 							<div className="relative">
 								<Image src="/logos/ThorbisLogo.webp" alt="Thorbis Business Directory" width={50} height={50} className="w-12 h-12 transition-transform duration-200 group-hover:scale-105" />
-								<div className="absolute inset-0 transition-opacity duration-200 rounded-full opacity-0 bg-gradient-to-r from-green-500/20 to-blue-500/20 group-hover:opacity-100" />
 							</div>
 							<div className="hidden sm:block">
-								<h1 className="text-lg font-bold leading-none text-foreground">Thorbis Business Directory</h1>
-								<p className="text-xs text-muted-foreground">Field Service Management Portal</p>
+								<h1 className="text-lg font-bold leading-none text-foreground">{config.title}</h1>
+								<p className="text-xs text-muted-foreground">{config.subtitle}</p>
 							</div>
 						</Link>
 
-						{/* Current Company Dropdown */}
+						{/* Current Company Dropdown - Only show for business dashboards */}
+						{config.showCompanySelector && (
 						<div className="hidden lg:flex flex-row space-x-3">
 							<DropdownMenu>
 								<DropdownMenuTrigger asChild>
@@ -432,8 +533,8 @@ export default function Header() {
 									<DropdownMenuSeparator />
 									{mockCompanies.map((company) => (
 										<DropdownMenuItem key={company.id} onClick={() => setCurrentCompanyId(company.id)} className={`flex items-center space-x-3 p-3 ${company.id === currentCompanyId ? "bg-accent" : ""}`}>
-											<div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-												<Building2 className="w-4 h-4 text-white" />
+												<div className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center bg-muted/60 border border-border/60">
+													<Building2 className="w-4 h-4 text-foreground" />
 											</div>
 											<div className="flex-1 min-w-0">
 												<div className="flex items-center space-x-2">
@@ -453,8 +554,8 @@ export default function Header() {
 									<DropdownMenuSeparator />
 									<DropdownMenuItem asChild>
 										<Link href="/add-a-business" className="flex items-center space-x-3 p-3">
-											<div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-green-500 to-blue-600 rounded-lg flex items-center justify-center">
-												<Plus className="w-4 h-4 text-white" />
+												<div className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center bg-muted/60 border border-border/60">
+													<Plus className="w-4 h-4 text-foreground" />
 											</div>
 											<div className="flex-1">
 												<span className="font-medium text-foreground">Add New Company</span>
@@ -471,6 +572,7 @@ export default function Header() {
 								</DropdownMenuContent>
 							</DropdownMenu>
 						</div>
+						)}
 					</div>
 
 					{/* Right Section - Main Navigation and User Menu */}
@@ -781,7 +883,7 @@ export default function Header() {
 										Dark
 									</DropdownMenuItem>
 									<DropdownMenuItem onClick={() => setTheme("system")}>
-										<RiComputerFill className="w-4 h-4 mr-2 text-slate-500" />
+										<DesktopIcon className="w-4 h-4 mr-2 text-slate-500" />
 										System
 									</DropdownMenuItem>
 								</DropdownMenuGroup>
@@ -810,11 +912,12 @@ export default function Header() {
 									<SheetTitle>Business Directory Portal</SheetTitle>
 								</SheetHeader>
 
-								{/* Mobile Company Switcher */}
+								{/* Mobile Company Switcher - Only show for business dashboards */}
+								{config.showCompanySelector && (
 								<div className="mt-6 p-4 border-b border-border/50">
 									<div className="flex items-center space-x-3 p-3 bg-accent/50 rounded-lg">
-										<div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-											<Building2 className="w-5 h-5 text-white" />
+											<div className="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center bg-muted/60 border border-border/60">
+												<Building2 className="w-5 h-5 text-foreground" />
 										</div>
 										<div className="flex-1 min-w-0">
 											<p className="font-medium text-foreground">{currentCompany.name}</p>
@@ -833,17 +936,17 @@ export default function Header() {
 												}}
 												className={`w-full flex items-center space-x-3 p-3 rounded-lg text-left transition-colors ${company.id === currentCompanyId ? "bg-primary text-primary-foreground" : "hover:bg-accent"}`}
 											>
-												<div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-													<Building2 className="w-4 h-4 text-white" />
+												<div className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center bg-muted/60 border border-border/60">
+													<Building2 className="w-4 h-4 text-foreground" />
 												</div>
 												<div className="flex-1 min-w-0">
 													<div className="flex items-center space-x-2">
 														<span className="font-medium">{company.name}</span>
-														{company.subscription === "Pro" && (
-															<Badge variant="secondary" className="text-xs bg-gradient-to-r from-blue-500 to-purple-600 text-white">
-																Pro
-															</Badge>
-														)}
+													{company.subscription === "Pro" && (
+														<Badge variant="secondary" className="text-xs">
+															Pro
+														</Badge>
+													)}
 													</div>
 													<p className="text-xs opacity-80">{company.industry}</p>
 												</div>
@@ -852,8 +955,8 @@ export default function Header() {
 										))}
 
 										<Link href="/add-a-business" onClick={() => setMobileMenuOpen(false)} className="w-full flex items-center space-x-3 p-3 rounded-lg text-left hover:bg-accent transition-colors">
-											<div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-green-500 to-blue-600 rounded-lg flex items-center justify-center">
-												<Plus className="w-4 h-4 text-white" />
+												<div className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center bg-muted/60 border border-border/60">
+													<Plus className="w-4 h-4 text-foreground" />
 											</div>
 											<div className="flex-1">
 												<span className="font-medium text-foreground">Add New Company</span>
@@ -862,6 +965,7 @@ export default function Header() {
 										</Link>
 									</div>
 								</div>
+								)}
 
 								{/* Mobile Main Navigation */}
 								<nav className="mt-6">
@@ -890,8 +994,8 @@ export default function Header() {
 
 			{/* Sub-Header Navigation */}
 			{currentSubNavItems.length > 0 && (
-				<div className="border-t border-neutral-900/50 bg-neutral-950/50 backdrop-blur-sm">
-					<div className="mx-auto px-4 lg:px-24">
+					<div className="border-t border-neutral-900/50 bg-neutral-950/50 backdrop-blur-sm">
+						<div className="px-4 md:px-6">
 						{/* Desktop Sub-navigation */}
 						<div className="hidden md:flex items-center py-3 space-x-1 overflow-x-auto">
 							<div className="flex items-center space-x-1 min-w-0">

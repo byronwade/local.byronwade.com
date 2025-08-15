@@ -5,8 +5,8 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useAuthStore } from "@store/auth";
-import { mapAuthError, validatePasswordStrength, validateEmail, checkRateLimit, recordFailedAttempt, clearRateLimit } from "@lib/supabase/auth/utils";
-import { getEnabledProviders, createOAuthSignInOptions } from "@lib/supabase/auth/providers";
+import { mapAuthError, validatePasswordStrength, validateEmail, checkRateLimit, recordFailedAttempt, clearRateLimit } from "@lib/database/supabase/auth/utils";
+import { getEnabledProviders, createOAuthSignInOptions } from "@lib/database/supabase/auth/providers";
 import { supabase } from "@lib/database/supabase";
 import { toast } from "sonner";
 import { logger } from "@utils/logger";

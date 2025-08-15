@@ -1,8 +1,16 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 export default function SiteWideAlert() {
+	const pathname = usePathname();
+	
+	// Don't show alert on slideshow pages
+	if (pathname && pathname.includes("/slideshow")) {
+		return null;
+	}
+
 	// Build email only after mount to avoid exposing it in SSR HTML
 	const [email, setEmail] = useState("");
 	useEffect(() => {

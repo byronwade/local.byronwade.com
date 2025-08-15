@@ -3,14 +3,14 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FaDiscord, FaCertificate, FaAward, FaBriefcaseMedical, FaBookOpen, FaBuilding, FaArrowRight } from "react-icons/fa";
+import { FaDiscord, FaCertificate, FaAward, FaBriefcaseMedical, FaBookOpen, FaBuilding } from "react-icons/fa";
 import { SiYelp, SiGoogle, SiTripadvisor, SiExpedia, SiThumbtack } from "react-icons/si";
 import { MdVerifiedUser, MdGppGood, MdSecurity, MdRateReview, MdWork, MdCompare } from "react-icons/md";
 import LanguageSelector from "@components/ui/language-selector";
 import { useLanguage } from "@context/language-context";
 import { Twitter, Facebook, Instagram, Linkedin, Youtube } from "lucide-react";
 import { FaApple, FaGooglePlay } from "react-icons/fa";
-import PerformanceMonitor from "@components/performance/performance-monitor";
+ 
 
 export default function Footer() {
 	const pathname = usePathname();
@@ -20,6 +20,8 @@ export default function Footer() {
 	if (pathname.includes("/search")) {
 		return null;
 	}
+
+
 
 	// Ensure consistent initial rendering to prevent hydration mismatches
 	const footer =
@@ -236,20 +238,17 @@ export default function Footer() {
 						<div>
 							<h3 className="mb-4 text-sm font-semibold tracking-wide text-white uppercase">{footer.sections.support}</h3>
 							<div className="space-y-2">
-								<a href="/mobile" className="block text-sm text-slate-400 hover:text-white transition-colors">
-									{footer.links.mobile}
+								<a href="/help" className="block text-sm text-slate-400 hover:text-white transition-colors">
+									{footer.links.helpCenter}
+								</a>
+								<a href="/help" className="block text-sm text-slate-400 hover:text-white transition-colors">
+									{footer.links.contactSupport}
+								</a>
+								<a href="/help" className="block text-sm text-slate-400 hover:text-white transition-colors">
+									{footer.links.faq}
 								</a>
 								<a href="/developers" className="block text-sm text-slate-400 hover:text-white transition-colors">
 									{footer.links.developers}
-								</a>
-								<a href="/contact-support" className="block text-sm text-slate-400 hover:text-white transition-colors">
-									{footer.links.contactSupport}
-								</a>
-								<a href="/help-center" className="block text-sm text-slate-400 hover:text-white transition-colors">
-									{footer.links.helpCenter}
-								</a>
-								<a href="/faq" className="block text-sm text-slate-400 hover:text-white transition-colors">
-									{footer.links.faq}
 								</a>
 							</div>
 						</div>
@@ -257,6 +256,9 @@ export default function Footer() {
 						<div>
 							<h3 className="mb-4 text-sm font-semibold tracking-wide text-white uppercase">{footer.sections.business}</h3>
 							<div className="space-y-2">
+								<a href="/pricing" className="block text-sm text-slate-400 hover:text-white transition-colors">
+									Pricing
+								</a>
 								<a href="/business" className="block text-sm text-slate-400 hover:text-white transition-colors">
 									{footer.links.businessForBusiness}
 								</a>
@@ -293,17 +295,20 @@ export default function Footer() {
 						<div>
 							<h3 className="mb-4 text-sm font-semibold tracking-wide text-white uppercase">{footer.sections.resources}</h3>
 							<div className="space-y-2">
-								<a href="/blog" className="block text-sm text-slate-400 hover:text-white transition-colors">
+								<a href="/resources" className="block text-sm text-slate-400 hover:text-white transition-colors">
+									Resources Hub
+								</a>
+								<a href="/resources#blog" className="block text-sm text-slate-400 hover:text-white transition-colors">
 									{footer.links.blog}
 								</a>
-								<a href="/news" className="block text-sm text-slate-400 hover:text-white transition-colors">
+								<a href="/resources#news" className="block text-sm text-slate-400 hover:text-white transition-colors">
 									{footer.links.news}
 								</a>
-								<a href="/events" className="block text-sm text-slate-400 hover:text-white transition-colors">
+								<a href="/resources#events" className="block text-sm text-slate-400 hover:text-white transition-colors">
 									{footer.links.events}
 								</a>
-								<a href="/case-studies" className="block text-sm text-slate-400 hover:text-white transition-colors">
-									{footer.links.caseStudies}
+								<a href="/partners" className="block text-sm text-slate-400 hover:text-white transition-colors">
+									Partners
 								</a>
 							</div>
 						</div>
@@ -330,16 +335,7 @@ export default function Footer() {
 						</div>
 					</div>
 
-					{/* Developer Tools - Performance Monitor Widget */}
-					{process.env.NODE_ENV === "development" && (
-						<div className="mb-8 p-6 bg-neutral-800/50 rounded-xl border border-neutral-700">
-							<h3 className="text-sm font-semibold tracking-wide text-white uppercase mb-4 flex items-center gap-2">
-								<span className="w-2 h-2 bg-green-400 rounded-full"></span>
-								NextFaster Performance Tools
-							</h3>
-							<PerformanceMonitor showDetails={true} autoStart={true} position="footer-widget" />
-						</div>
-					)}
+
 
 					{/* Bottom Section */}
 					<div className="pt-8 border-t border-neutral-800">

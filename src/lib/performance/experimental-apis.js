@@ -491,23 +491,34 @@ export class PaintTimingMonitor {
 	}
 
 	recordLongTask(entry) {
-		console.warn("Long task detected:", {
-			duration: entry.duration,
-			startTime: entry.startTime,
-			attribution: entry.attribution,
-		});
+		// Only warn for very long tasks (>500ms) and throttle warnings
+		const now = Date.now();
+		const longTaskThreshold = 500; // ms
+		const warningCooldown = 5000; // 5 seconds between warnings
+		
+		if (entry.duration > longTaskThreshold) {
+			// Throttle console warnings to avoid spam
+			if (!this.lastLongTaskWarning || (now - this.lastLongTaskWarning) > warningCooldown) {
+				console.warn("Critical long task detected:", {
+					duration: Math.round(entry.duration),
+					startTime: Math.round(entry.startTime),
+					attribution: entry.attribution?.length || 0,
+				});
+				this.lastLongTaskWarning = now;
+			}
 
-		// Track long tasks for performance issues
-		if (typeof gtag !== "undefined") {
-			gtag("event", "long_task", {
-				event_category: "performance",
-				event_label: "blocking_task",
-				value: Math.round(entry.duration),
-				custom_map: {
-					task_duration: entry.duration,
-					start_time: entry.startTime,
-				},
-			});
+			// Track long tasks for performance issues (only critical ones)
+			if (typeof gtag !== "undefined") {
+				gtag("event", "long_task_critical", {
+					event_category: "performance",
+					event_label: "blocking_task",
+					value: Math.round(entry.duration),
+					custom_map: {
+						task_duration: entry.duration,
+						start_time: entry.startTime,
+					},
+				});
+			}
 		}
 	}
 

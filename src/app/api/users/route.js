@@ -1,4 +1,4 @@
-import { supabase } from "@lib/database/supabase";
+import { supabase } from "@lib/database/supabase/client";
 
 export async function GET(request) {
 	try {

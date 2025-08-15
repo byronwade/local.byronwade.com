@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@components/ui/button";
 import { redirect } from "next/navigation";
-import { VerifyAccount } from "@components/features/auth";
+import { VerifyAccount } from "@features/auth";
 
 const UnauthorizedNotification = () => {
 	const { isInitialized, user, loading } = useAuth();

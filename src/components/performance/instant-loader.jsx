@@ -11,7 +11,7 @@
 
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useInstantContent, backgroundPreloader } from "@lib/performance/instant-loading";
 
 /**

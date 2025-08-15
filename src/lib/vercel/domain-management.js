@@ -394,7 +394,7 @@ async function updateLocalHubDomainInfo(localHubId, domainInfo) {
 	// This would integrate with your Supabase update function
 	// Implementation depends on your database structure
 	try {
-		const { supabase } = await import("@lib/supabase/client");
+		const { supabase } = await import("@lib/database/supabase/client");
 
 		await supabase.from("local_hubs").update(domainInfo).eq("id", localHubId);
 	} catch (error) {

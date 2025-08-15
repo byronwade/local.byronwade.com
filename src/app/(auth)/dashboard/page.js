@@ -2,15 +2,14 @@
 
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ProtectedRoute } from "@components/features/auth";
+import { ProtectedRoute } from "@features/auth";
 import useAuth from "@hooks/use-auth";
 import { Skeleton } from "@components/ui/skeleton";
 import { Loader2 } from "lucide-react";
 
 /**
- * Smart Dashboard Router
- * Redirects users to their appropriate dashboard based on role and user type
- * Eliminates the generic dashboard that shouldn't exist
+ * Unified Dashboard Router
+ * Redirects all users to the consolidated business dashboard
  */
 export default function DashboardPage() {
 	return (
@@ -73,45 +72,23 @@ function DashboardRouter() {
 
 /**
  * Determine the correct dashboard path based on user data
+ * Simplified to use unified business dashboard for all business users
  */
 function getDashboardPath(user) {
-	// Use the new industry configuration system
-	const { getDashboardRoute } = require("../_shared/services/industryConfig");
+	const userRole = user?.user_metadata?.role || user?.role || "user";
+	const accountType = user?.user_metadata?.account_type || user?.account_type;
 
-	try {
-		return getDashboardRoute(user);
-	} catch (error) {
-		console.error("Error determining dashboard route:", error);
-
-		// Fallback to legacy logic
-		const userRole = user?.user_metadata?.role || user?.role || "user";
-		const accountType = user?.user_metadata?.account_type || user?.account_type;
-
-		// Admin users go to admin dashboard
-		if (userRole === "admin" || userRole === "super_admin") {
-			return "/dashboard/admin";
-		}
-
-		// LocalHub operators go to LocalHub dashboard
-		if (userRole === "localhub_operator" || accountType === "localhub") {
-			return "/dashboard/localhub";
-		}
-
-		// Business owners → split between Field Management and Business Admin
-		if (userRole === "business_owner" || accountType === "business" || userRole === "business_manager") {
-			try {
-				const pref = typeof window !== "undefined" ? window.sessionStorage.getItem("prefersFieldManagement") : null;
-				if (pref === "true") return "/dashboard/field-management";
-			} catch {}
-			return "/dashboard/business";
-		}
-
-		// Field service providers
-		if (accountType === "field_service" || userRole === "field_service") {
-			return "/dashboard/field-management";
-		}
-
-		// Default to general business dashboard
-		return "/dashboard/business";
+	// Admin users go to admin dashboard
+	if (userRole === "admin" || userRole === "super_admin") {
+		return "/dashboard/admin";
 	}
+
+	// LocalHub operators go to LocalHub dashboard
+	if (userRole === "localhub_operator" || accountType === "localhub") {
+		return "/dashboard/localhub";
+	}
+
+	// All business users (including field service) now use the unified business dashboard
+	// The business dashboard includes all functionality programmatically
+	return "/dashboard/business";
 }

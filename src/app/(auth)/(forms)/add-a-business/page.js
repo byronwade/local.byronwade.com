@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { VerifyAccount, ActiveUser, BusinessInfo, BusinessAddress, BusinessProfile, BusinessSuccess, LoginPage } from "@components/features/auth";
+import { VerifyAccount, ActiveUser, BusinessInfo, BusinessAddress, BusinessProfile, BusinessSuccess, LoginPage } from "@features/auth";
 import { Button } from "@components/ui/button";
 import { Progress } from "@components/ui/progress";
 import { Badge } from "@components/ui/badge";

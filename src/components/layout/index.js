@@ -1,22 +1,15 @@
-// Site Components Barrel Export
-// All public-facing site components
+// Layout Components Barrel Export
+// All layout-level components for cross-site usage
 
-// Core Site Layout
 export { default as Header } from "./header";
 export { default as Footer } from "./footer";
 
-// Home Page Components
-export { default as HeroSection } from "./home/hero-section";
-export { default as ImageGrid } from "./home/image-grid";
-export { default as ScrollSection } from "./home/scroll-section";
-export { default as HomeBusinessCard } from "./home/business-card";
-
-// Map Components
+// Map Layout components
 export { default as BusinessCardList } from "./map/business-card-list";
 export { default as BusinessInfoPanel } from "./map/business-info-panel";
 export { default as BusinessMarkers } from "./map/business-markers";
-export { default as EnhancedBusinessCard } from "./map/Enhancedbusiness-card";
-export { default as EnhancedBusinessHeader } from "./map/EnhancedBusinessheader";
+export { default as EnhancedBusinessCard } from "./map/enhanced-business-card";
+export { default as EnhancedBusinessHeader } from "./map/enhanced-business-header";
 export { default as FilterPanel } from "./map/filter-panel";
 export { default as FullScreenMapSkeleton } from "./map/full-screen-map-skeleton";
 export { default as LiveActivityFeed } from "./map/live-activity-feed";
@@ -31,9 +24,6 @@ export { default as SkeletonBusinessCard } from "./map/skeleton-business-card";
 export { default as SmartSearchSuggestions } from "./map/smart-search-suggestions";
 export { default as ThorbisIcon } from "./map/thorbis-icon";
 
-// Search Components
-export { default as InteractiveSearchBox } from "./search/interactive-search-box";
-
-// Category Components
-export { default as CategoryList } from "./categories/CategoryList";
-export { default as CategoryCard } from "./categories/CategoryCard";
+// Categories
+export { default as CategoryList } from "./categories/category-list";
+export { default as CategoryCard } from "./categories/category-card";

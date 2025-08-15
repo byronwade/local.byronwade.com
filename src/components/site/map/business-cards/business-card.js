@@ -9,8 +9,7 @@
 import React, { memo, forwardRef, useState } from "react";
 import { Button } from "@components/ui/button";
 import { Badge } from "@components/ui/badge";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@components/ui/tooltip";
-import { Star, Phone, MapPin, Navigation, ExternalLink, Share2, Eye, Users, Verified, TrendingUp, Zap } from "lucide-react";
+import { Star, Phone, MapPin, Navigation, ExternalLink, Users, Verified, TrendingUp } from "lucide-react";
 import { Card, CardContent } from "@components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 

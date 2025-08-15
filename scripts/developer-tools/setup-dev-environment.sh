@@ -300,7 +300,7 @@ create_dev_scripts() {
 
 echo "🗄️ Resetting development database..."
 
-if [[ -f "lib/supabase/complete_schema.sql" ]]; then
+if [[ -f "src/lib/database/supabase/complete_schema.sql" ]]; then
     echo "Applying schema..."
     # Add your database reset logic here
     echo "✅ Database reset complete"

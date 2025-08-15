@@ -8,7 +8,7 @@
 "use client";
 
 import React from "react";
-import { useLocationServices } from "./Locationservices";
+import { useLocationServices } from "./location-services";
 import { useSearchSuggestions } from "./search-suggestions";
 import { useMapBoundsManager } from "./map-bounds-manager";
 import LocationControls from "./location-controls";

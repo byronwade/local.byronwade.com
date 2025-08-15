@@ -82,7 +82,7 @@ export class BusinessSearchQueries {
 						rating,
 						text,
 						created_at,
-						user:users(name, avatar_url)
+						user_id
 					),
 					categories:business_categories(
 						category:categories(id, name, slug)
@@ -298,7 +298,7 @@ export class BusinessSearchQueries {
 						id,
 						rating,
 						created_at,
-						user:users(name, avatar_url)
+						user_id
 					),
 					categories:business_categories(
 						category:categories(id, name, slug)
@@ -385,7 +385,7 @@ export class BusinessSearchQueries {
 						rating,
 						text,
 						created_at,
-						user:users(name, avatar_url)
+						user_id
 					),
 					categories:business_categories!inner(
 						category:categories!inner(id, name, slug)

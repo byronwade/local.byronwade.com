@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { VerifyAccount, ActiveUser, BusinessSearch, BusinessSuccess, BusinessVerification } from "@components/features/auth";
+import { VerifyAccount, ActiveUser, BusinessSearch, BusinessSuccess, BusinessVerification } from "@features/auth";
 import { Button } from "@components/ui/button";
 import { Card, CardContent } from "@components/ui/card";
 import { Badge } from "@components/ui/badge";
@@ -13,7 +13,7 @@ import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import useAuth from "@hooks/use-auth";
-import { LoginPage } from "@components/features/auth";
+import { LoginPage } from "@features/auth";
 
 // Define schema for business verification step
 const businessVerificationSchema = z.object({

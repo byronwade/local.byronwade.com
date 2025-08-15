@@ -1,11 +1,11 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { VerifyAccount, ActiveUser, LoginPage } from "@components/features/auth";
+import { VerifyAccount, ActiveUser, LoginPage } from "@features/auth";
 import { Button } from "@components/ui/button";
 import { ArrowRight, ArrowLeft } from "react-feather";
 import useAuth from "@hooks/use-auth";
-import SupportInfo from "@components/features/auth/support/support-info";
+import SupportInfo from "@features/auth/support/support-info";
 
 const steps = [
 	{ component: ActiveUser, name: "Active User" },

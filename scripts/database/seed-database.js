@@ -5,8 +5,8 @@
  * Provides easy interface for seeding database with different configurations
  */
 
-const { runSeeding, SEEDING_CONFIGS } = require("../lib/supabase/seeder/index.ts");
-const { getConfigByEnvironment, validateConfig } = require("../lib/supabase/seeder/environments.ts");
+const { runSeeding, SEEDING_CONFIGS } = require("../src/lib/database/supabase/seeder/index.ts");
+const { getConfigByEnvironment, validateConfig } = require("../src/lib/database/supabase/seeder/environments.ts");
 
 // Command line argument parsing
 const args = process.argv.slice(2);

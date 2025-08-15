@@ -579,3 +579,119 @@ export const flags = {
 	dashboardDemoLocalhub: dashboardDemoLocalhubFlag,
 	dashboardDemoAdmin: dashboardDemoAdminFlag,
 };
+
+// Documentation for each flag
+export const flagDocs = {
+	// Search flags
+	"smart-search": {
+		name: "Smart Search",
+		description: "Enhanced search with AI-powered suggestions and auto-complete",
+		category: "Search",
+		impact: "High",
+		defaultValue: true
+	},
+	"ai-recommendations": {
+		name: "AI Recommendations",
+		description: "Personalized business recommendations based on user behavior",
+		category: "Search",
+		impact: "Medium",
+		defaultValue: false
+	},
+	"visual-search": {
+		name: "Visual Search",
+		description: "Search businesses using images and visual content",
+		category: "Search",
+		impact: "Low",
+		defaultValue: false
+	},
+	"voice-search": {
+		name: "Voice Search",
+		description: "Voice-activated search functionality",
+		category: "Search",
+		impact: "Medium",
+		defaultValue: false
+	},
+	"contextual-filters": {
+		name: "Contextual Filters",
+		description: "Dynamic filters based on location and search context",
+		category: "Search",
+		impact: "High",
+		defaultValue: true
+	},
+	"realtime-updates": {
+		name: "Real-time Updates",
+		description: "Live business status and availability updates",
+		category: "Search",
+		impact: "High",
+		defaultValue: true
+	},
+
+	// Site feature flags
+	"new-navigation": {
+		name: "New Navigation",
+		description: "Updated site navigation with improved UX",
+		category: "Site",
+		impact: "High",
+		defaultValue: false
+	},
+	"linkedin-clone": {
+		name: "Professional Network",
+		description: "LinkedIn-style professional networking features",
+		category: "Site",
+		impact: "Medium",
+		defaultValue: true
+	},
+	"jobs-app": {
+		name: "Jobs Application",
+		description: "Job posting and application management system",
+		category: "Site",
+		impact: "High",
+		defaultValue: true
+	},
+
+	// Dashboard flags
+	"dashboard-core": {
+		name: "Dashboard Core",
+		description: "Main dashboard functionality",
+		category: "Dashboard",
+		impact: "Critical",
+		defaultValue: true
+	},
+	"dashboard-analytics": {
+		name: "Dashboard Analytics",
+		description: "Business analytics and reporting tools",
+		category: "Dashboard",
+		impact: "High",
+		defaultValue: true
+	},
+	"dashboard-billing": {
+		name: "Dashboard Billing",
+		description: "Billing and payment management",
+		category: "Dashboard",
+		impact: "High",
+		defaultValue: true
+	},
+
+	// Profile flags
+	"profile-core": {
+		name: "Profile Core",
+		description: "Basic business profile functionality",
+		category: "Profile",
+		impact: "Critical",
+		defaultValue: true
+	},
+	"profile-photos": {
+		name: "Profile Photos",
+		description: "Photo management and gallery features",
+		category: "Profile",
+		impact: "Medium",
+		defaultValue: true
+	},
+	"profile-reviews": {
+		name: "Profile Reviews",
+		description: "Customer review and rating system",
+		category: "Profile",
+		impact: "High",
+		defaultValue: true
+	}
+};

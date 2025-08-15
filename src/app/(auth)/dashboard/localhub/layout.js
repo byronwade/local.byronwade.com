@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import Header from "@components/localhub/header";
+import UnifiedDashboardLayout from "@components/shared/layouts/UnifiedDashboardLayout";
 import { useEffect } from "react";
 import { redirect } from "next/navigation";
 import { useAuth } from "@context/auth-context";
@@ -28,9 +28,8 @@ export default function LocalHubLayout({ children }) {
 	}
 
 	return (
-		<div className="bg-white dark:bg-neutral-900 min-h-screen">
-			<Header />
+		<UnifiedDashboardLayout dashboardType="localhub">
 			<main className="flex flex-col min-h-screen">{children}</main>
-		</div>
+		</UnifiedDashboardLayout>
 	);
 }

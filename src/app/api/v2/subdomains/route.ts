@@ -5,10 +5,27 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { supabase } from "@lib/database/supabase";
+import { supabase } from "@lib/database/supabase/client";
 import { createTenantSubdomain } from "@lib/vercel/domain-management";
 export const dynamic = "force-dynamic";
-import { logger } from "@utils/logger";
+// Import logger with fallback for build compatibility
+let logger: any;
+try {
+  logger = require("@utils/logger").logger;
+} catch (e) {
+  // Fallback logger for build time
+  logger = {
+    debug: console.debug,
+    info: console.info,
+    warn: console.warn,
+    error: console.error,
+    performance: () => {},
+    api: () => {},
+    businessMetrics: () => {},
+    security: () => {},
+    critical: () => {},
+  };
+}
 
 // Validation schemas
 const createSubdomainSchema = z.object({

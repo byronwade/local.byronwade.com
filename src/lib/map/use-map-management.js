@@ -6,7 +6,7 @@
 
 "use client";
 
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef } from "react";
 import { withErrorHandling, showErrorToast, showSuccessToast } from "@utils/error-handler";
 import { calculateDistance, formatDistance, validateCoordinates, throttle } from "@lib/data/map";
 import { useMapStore } from "@store/map";

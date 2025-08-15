@@ -7,7 +7,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { BusinessHoursQueries } from "@lib/supabase/queries/business-hours.ts";
+import { BusinessHoursQueries } from "@lib/database/supabase/queries/business-hours";
 import { useAuthStore } from "@store/use-auth-store";
 import { toast } from "@components/ui/use-toast";
 import { logger } from "@utils/logger";

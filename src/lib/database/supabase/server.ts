@@ -6,15 +6,35 @@ import { cookies } from "next/headers";
 import { Database } from "./client";
 import { logger } from "@utils/logger";
 
+// Client cache with short TTL for server-side auth
+const serverClientCache = new Map<string, { client: any; expires: number }>();
+const CLIENT_CACHE_TTL = 30000; // 30 seconds
+
 /**
  * Create Supabase client for Server Components (App Router)
  * This runs on the server and has access to cookies for auth
+ * Implements caching to reduce client creation overhead
  */
 export async function createSupabaseServerClient() {
 	const startTime = performance.now();
 
 	try {
 		const cookieStore = await cookies();
+		
+		// Create cache key based on auth cookies
+		const authCookies = cookieStore.getAll()
+			.filter(cookie => cookie.name.startsWith('sb-'))
+			.map(cookie => `${cookie.name}=${cookie.value}`)
+			.join('|');
+		const cacheKey = `server_client_${Buffer.from(authCookies).toString('base64').slice(0, 20)}`;
+		
+		// Check cache
+		const cached = serverClientCache.get(cacheKey);
+		if (cached && cached.expires > Date.now()) {
+			const duration = performance.now() - startTime;
+			logger.performance(`Supabase Server Client cached in ${duration.toFixed(2)}ms`);
+			return cached.client;
+		}
 
 		const client = createServerClient<Database>(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {
 			cookies: {
@@ -34,6 +54,22 @@ export async function createSupabaseServerClient() {
 				},
 			},
 		});
+
+		// Cache the client
+		serverClientCache.set(cacheKey, {
+			client,
+			expires: Date.now() + CLIENT_CACHE_TTL
+		});
+
+		// Clean up old cache entries periodically
+		if (serverClientCache.size > 100) {
+			const now = Date.now();
+			for (const [key, entry] of serverClientCache.entries()) {
+				if (entry.expires <= now) {
+					serverClientCache.delete(key);
+				}
+			}
+		}
 
 		const duration = performance.now() - startTime;
 		logger.performance(`Supabase Server Client created in ${duration.toFixed(2)}ms`);
@@ -112,7 +148,7 @@ export async function getServerUser() {
 
 /**
  * Optimized data fetching for SSR pages
- * Includes caching and error handling
+ * Includes intelligent caching and error handling
  */
 export async function fetchPageData<T>(
 	fetcher: () => Promise<T>,
@@ -122,11 +158,33 @@ export async function fetchPageData<T>(
 	const startTime = performance.now();
 
 	try {
-		// TODO: Add Redis/memory cache integration here if needed
+		// If no cache key provided, execute directly
+		if (!cacheKey) {
+			const data = await fetcher();
+			const duration = performance.now() - startTime;
+			logger.performance(`Page data fetched in ${duration.toFixed(2)}ms (no cache)`);
+			return { data, error: null };
+		}
+
+		// Try to get from cache first
+		const { CacheManager } = await import("@utils/cache-manager");
+		const cached = CacheManager.memory.get(cacheKey);
+		
+		if (cached) {
+			const duration = performance.now() - startTime;
+			logger.performance(`Page data cache hit in ${duration.toFixed(2)}ms: ${cacheKey}`);
+			return { data: cached, error: null };
+		}
+
+		// Cache miss - fetch fresh data
 		const data = await fetcher();
+		
+		// Cache the result
+		const ttlMs = ttlSeconds * 1000;
+		CacheManager.memory.set(cacheKey, data, ttlMs);
 
 		const duration = performance.now() - startTime;
-		logger.performance(`Page data fetched in ${duration.toFixed(2)}ms`);
+		logger.performance(`Page data fetched and cached in ${duration.toFixed(2)}ms: ${cacheKey}`);
 
 		return { data, error: null };
 	} catch (error) {
@@ -183,7 +241,7 @@ export const BusinessDataFetchers = {
 							helpful_count,
 							response,
 							response_date,
-							user:users(id, name, avatar_url)
+							user_id
 						),
 						business_categories(
 							category:categories(id, name, slug, icon)

@@ -2,7 +2,7 @@
 // Handles OAuth redirects from providers like Google, GitHub, etc.
 
 import { NextResponse } from "next/server";
-import { createSupabaseRouteHandlerClient } from "@lib/supabase/ssr";
+import { createSupabaseRouteHandlerClient } from "@lib/database/supabase/ssr";
 import { logger } from "@utils/logger";
 
 export async function GET(request) {

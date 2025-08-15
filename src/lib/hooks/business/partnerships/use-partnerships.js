@@ -7,7 +7,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { toast } from "@components/ui/use-toast";
 import { logger } from "@utils/logger";
 import { useBusinessStore } from "@store/business";
-import { createPartnership, validatePartnership, getVerificationProgress, canStartVerification, generateVerificationId, validateDocumentUpload, formatFileSize } from "@lib/business/partnerships";
+import { createPartnership, validatePartnership, canStartVerification, generateVerificationId, validateDocumentUpload } from "@lib/business/partnerships";
 import { SEARCH_CONFIG, DOCUMENT_UPLOAD_CONFIG, VERIFICATION_STATUS, PARTNERSHIP_STATUS } from "@lib/business/partnerships/constants";
 
 export const usePartnerships = (profile, setProfile) => {

@@ -1,7 +1,25 @@
 // REQUIRED: High-performance Supabase client with connection pooling
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import { Database } from "./types";
-import { logger } from "@utils/logger";
+// Import logger with fallback for build compatibility
+let logger: any;
+try {
+  const loggerModule = require("../../utils/logger");
+  logger = loggerModule.logger || loggerModule.default || loggerModule;
+} catch (e) {
+  // Fallback logger for build time
+  logger = {
+    debug: () => {},
+    info: () => {},
+    warn: () => {},
+    error: () => {},
+    performance: () => {},
+    security: () => {},
+    critical: () => {},
+    api: () => {},
+    businessMetrics: () => {},
+  };
+}
 
 // Environment variable validation
 const validateEnvironmentVariables = () => {
@@ -103,8 +121,12 @@ class SupabaseManager {
 			this.instance = createClient<Database>(supabaseUrl, supabaseAnonKey, config);
 
 			const initTime = performance.now() - startTime;
-			logger.performance(`Supabase client initialized in ${initTime.toFixed(2)}ms`);
-			logger.info(`Connected to Supabase project: ${supabaseUrl}`);
+			if (logger && logger.performance) {
+				logger.performance(`Supabase client initialized in ${initTime.toFixed(2)}ms`);
+			}
+			if (logger && logger.info) {
+				logger.info(`Connected to Supabase project: ${supabaseUrl}`);
+			}
 
 			// Monitor connection health
 			this.setupConnectionMonitoring();
@@ -152,7 +174,9 @@ class SupabaseManager {
 			});
 
 			this.connectionPool.set(poolKey, client);
-			logger.debug(`Created pooled connection for: ${poolKey}`);
+			if (logger && logger.debug) {
+				logger.debug(`Created pooled connection for: ${poolKey}`);
+			}
 		}
 
 		return this.connectionPool.get(poolKey)!;
@@ -164,11 +188,15 @@ class SupabaseManager {
 	private static setupConnectionMonitoring(): void {
 		// Simple performance logging without query builder modification
 		// This avoids TypeScript issues with complex query builder types
-		logger.info("Supabase connection monitoring enabled");
+		if (logger && logger.info) {
+			logger.info("Supabase connection monitoring enabled");
+		}
 
 		// Log connection status
 		if (process.env.NODE_ENV === "development") {
-			logger.debug("Supabase client connection monitoring initialized");
+			if (logger && logger.debug) {
+				logger.debug("Supabase client connection monitoring initialized");
+			}
 		}
 	}
 
@@ -190,7 +218,9 @@ class SupabaseManager {
 		if (this.connectionPool) {
 			this.connectionPool.clear();
 		}
-		logger.debug("Supabase connection pool cleaned up");
+		if (logger && logger.debug) {
+			logger.debug("Supabase connection pool cleaned up");
+		}
 	}
 }
 

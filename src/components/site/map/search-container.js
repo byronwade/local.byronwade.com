@@ -10,11 +10,7 @@ import { useSearchParams } from "next/navigation";
 import { logger } from "@utils/logger";
 
 // Lazy-load the heavy map to improve initial TTI and SEO (client-only)
-import dynamic from "next/dynamic";
-const MapContainer = dynamic(() => import("@components/site/map/map-container"), {
-  ssr: false,
-  loading: () => <div className="h-full w-full bg-muted/20" aria-hidden />,
-});
+import MapContainer from "@components/site/map/map-container";
 
 const SearchContainer = ({ searchParams: propSearchParams }) => {
 	const urlSearchParams = useSearchParams();

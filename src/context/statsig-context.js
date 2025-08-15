@@ -6,7 +6,7 @@ import { StatsigSessionReplayPlugin } from "@statsig/session-replay";
 import { StatsigAutoCapturePlugin } from "@statsig/web-analytics";
 import { services } from "@config";
 import { logger } from "@utils/logger";
-import { AnalyticsMutations } from "@lib/supabase/mutations/analytics";
+import { AnalyticsMutations } from "@lib/database/supabase/mutations/analytics";
 
 /**
  * Statsig Context - Performance-First Analytics with Session Replay

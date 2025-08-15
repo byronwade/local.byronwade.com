@@ -1,4 +1,4 @@
-import { Login } from "@components/features/auth";
+import { Login } from "@features/auth";
 
 export const metadata = {
 	title: "Login - Thorbis",

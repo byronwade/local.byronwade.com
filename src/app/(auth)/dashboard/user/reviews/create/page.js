@@ -8,7 +8,7 @@ import { Label } from "@components/ui/label";
 import { Input } from "@components/ui/input";
 import { Textarea } from "@components/ui/textarea";
 import { toast } from "sonner";
-import BusinessSearch from "@components/features/auth/shared/business-search";
+import BusinessSearch from "@features/auth/shared/business-search";
 import Link from "next/link";
 import { useAuthStore } from "@store/auth";
 

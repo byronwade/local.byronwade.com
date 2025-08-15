@@ -47,12 +47,9 @@ export class SEODataIntegration {
           ),
           reviews(
             id, rating, title, text, created_at, helpful_count, status,
-            sentiment_score, topic_tags, seo_value_score,
-            user:users(name, avatar_url)
+            sentiment_score, topic_tags, seo_value_score, user_id
           ),
-          owner:users(
-            id, name, email, avatar_url
-          )
+          owner_id
         `
 				)
 				.eq("id", businessId)
@@ -141,8 +138,7 @@ export class SEODataIntegration {
 				.from("reviews")
 				.select(
 					`
-          id, rating, title, text, created_at, helpful_count,
-          user:users(name, avatar_url)
+          id, rating, title, text, created_at, helpful_count, user_id
         `
 				)
 				.eq("business_id", businessId)

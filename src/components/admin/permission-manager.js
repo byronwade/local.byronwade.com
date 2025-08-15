@@ -10,7 +10,7 @@ import { Separator } from "@components/ui/separator";
 import { toast } from "sonner";
 import { ROLES, RoleManager, PERMISSIONS } from "@lib/auth/roles";
 import { useAuth } from "@context/auth-context";
-import { usePermissions } from "@components/features/auth";
+import { usePermissions } from "@features/auth";
 import { Search, User, Shield, Settings, Edit, Trash2, Save, X, AlertTriangle } from "lucide-react";
 import { logger } from "@utils/logger";
 

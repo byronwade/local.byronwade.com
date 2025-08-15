@@ -159,7 +159,7 @@ async function searchBusinesses(req: ApiRequest, searchParams: BusinessSearchPar
           text,
           created_at,
           helpful_count,
-          user:users(name, avatar_url)
+          user_id
         )
       `;
 		}

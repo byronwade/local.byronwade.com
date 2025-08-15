@@ -172,7 +172,7 @@ async function getReviews(req: ApiRequest, queryParams: ReviewQueryParams): Prom
           responder_type,
           created_at,
           business:businesses(name),
-          user:users(name, role)
+          user_id
         )
       `;
 		}

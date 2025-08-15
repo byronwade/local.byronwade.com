@@ -3,7 +3,7 @@
  * Handles data fetching, caching, and transformation for LocalHub dashboard
  */
 
-import { supabase } from "@lib/supabase/client";
+import { supabase } from "@lib/database/supabase/client";
 import { logger } from "@utils/logger";
 import { withErrorHandling } from "@utils/error-handler";
 

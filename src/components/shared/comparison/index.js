@@ -1,20 +1,20 @@
 // Testimonial Components
-export { TestimonialCard, TestimonialSection } from "./TestimonialCard";
+export { TestimonialCard, TestimonialSection } from "./testimonial-card";
 
 // ROI Calculator Components
-export { ROICalculator, ServiceBusinessROI, TravelBusinessROI } from "./ROICalculator";
+export { ROICalculator, ServiceBusinessROI, TravelBusinessROI } from "./roi-calculator";
 
 // Interactive Demo Components
-export { InteractiveDemo, ServiceBusinessDemo, TravelBusinessDemo, RestaurantBusinessDemo } from "./InteractiveDemo";
+export { InteractiveDemo, ServiceBusinessDemo, TravelBusinessDemo, RestaurantBusinessDemo } from "./interactive-demo";
 
 // Comparison Table Components
-export { ComparisonTable, ServicePlatformComparison, TravelPlatformComparison, RestaurantPlatformComparison } from "./ComparisonTable";
+export { ComparisonTable, ServicePlatformComparison, TravelPlatformComparison, RestaurantPlatformComparison } from "./comparison-table";
 
 // CTA Section Components
-export { CTASection, ServiceBusinessCTA, TravelBusinessCTA, RestaurantBusinessCTA, GeneralBusinessCTA } from "./CTASection";
+export { CTASection, ServiceBusinessCTA, TravelBusinessCTA, RestaurantBusinessCTA, GeneralBusinessCTA } from "./cta-section";
 
 // Detailed Analysis Components
-export { DetailedAnalysis, ServicePlatformAnalysis, TravelPlatformAnalysis, RestaurantPlatformAnalysis } from "./DetailedAnalysis";
+export { DetailedAnalysis, ServicePlatformAnalysis, TravelPlatformAnalysis, RestaurantPlatformAnalysis } from "./detailed-analysis";
 
 // Example usage patterns for documentation:
 

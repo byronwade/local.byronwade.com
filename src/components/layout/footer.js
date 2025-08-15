@@ -3,11 +3,10 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FaDiscord, FaCertificate, FaAward, FaBriefcaseMedical, FaBookOpen, FaBuilding, FaArrowRight, FaApple, FaGooglePlay } from "react-icons/fa";
+import { FaDiscord, FaCertificate, FaAward, FaBriefcaseMedical, FaBookOpen, FaBuilding, FaGooglePlay } from "react-icons/fa";
 import { SiYelp, SiGoogle, SiTripadvisor, SiExpedia, SiThumbtack } from "react-icons/si";
-import { MdVerifiedUser, MdGppGood, MdSecurity, MdRateReview, MdWork, MdCompare, MdAndroid, MdApple } from "react-icons/md";
+import { MdVerifiedUser, MdGppGood, MdSecurity, MdRateReview, MdWork, MdCompare, MdApple } from "react-icons/md";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@components/ui/tooltip";
-import { Badge } from "@components/ui/badge";
 import { Button } from "@components/ui/button";
 import LanguageSelector from "@components/ui/language-selector";
 import { useLanguage } from "@context/language-context";
@@ -271,12 +270,12 @@ export default function Footer() {
 							<h3 className="mb-6 text-lg font-semibold text-white">{footer.sections.support}</h3>
 							<div className="space-y-3">
 								{[
-									{ href: "/help-center", label: footer.links.helpCenter },
-									{ href: "/contact-support", label: footer.links.contactSupport },
-									{ href: "/faq", label: footer.links.faq },
-									{ href: "/mobile", label: footer.links.mobile },
+									{ href: "/help", label: footer.links.helpCenter },
+									{ href: "/help", label: footer.links.contactSupport },
+									{ href: "/help", label: footer.links.faq },
 									{ href: "/developers", label: footer.links.developers },
-									{ href: "/rss", label: footer.links.rss },
+									{ href: "/resources", label: "Resources" },
+									{ href: "/partners", label: "Partners" },
 								].map((link, index) => (
 									<a key={index} href={link.href} className="block text-sm text-neutral-400 hover:text-white transition-colors duration-200">
 										{link.label}

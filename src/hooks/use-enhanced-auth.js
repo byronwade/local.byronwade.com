@@ -5,11 +5,10 @@
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@lib/database/supabase";
+import { supabase } from "@lib/database/supabase/client";
 import { logger } from "@utils/logger";
 import { PasswordSecurity } from "@lib/security/password-security";
-import { DeviceFingerprint } from "@lib/security/device-fingerprint";
-import { validateEmail, validatePasswordStrength } from "@lib/supabase/auth/utils";
+import { validateEmail, validatePasswordStrength } from "@lib/database/supabase/auth/utils";
 import { toast } from "sonner";
 
 // Simple secure storage fallback for missing utility

@@ -185,7 +185,7 @@ export class BusinessProfileQueries {
 						rating,
 						text,
 						created_at,
-						user:users(name, avatar_url)
+						user_id
 					),
 					categories:business_categories(
 						category:categories(id, name, slug)

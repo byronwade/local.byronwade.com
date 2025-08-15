@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 
 import { readFileSync } from "fs";
-import { createServiceRoleClient } from "../lib/supabase/client.ts";
+import { createServiceRoleClient } from "../src/lib/database/supabase/client.ts";
 import { logger } from "../lib/utils/logger.js";
 
 /**

@@ -1,12 +1,18 @@
 import React from "react";
-import { ProtectedRoute } from "@components/features/auth";
+import { ProtectedRoute } from "@features/auth";
 import { PERMISSIONS } from "@lib/auth/roles";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
+import { IntegrationVisibility } from "@components/dashboard/business/integrations/IntegrationVisibility";
 import { Button } from "@components/ui/button";
 import { Badge } from "@components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
+import FieldServiceTabTrigger from "@components/dashboard/business/integrations/field-service-tab-trigger";
 import { Star, Eye, Plus, Edit, BarChart3, MapPin, TrendingUp, MessageSquare, Download, Filter, Calendar, Users, Wrench, FileText, Receipt, DollarSign } from "lucide-react";
-import RoleDebugger from "@components/debug/RoleDebugger";
+import EnabledIntegrations from "@components/dashboard/business/enabled-integrations";
+import { AgricultureWidget, AutomotiveWidget, EcommerceWidget, LogisticsWidget, PropertyManagementWidget, HospitalityWidget } from "@components/dashboard/business/integrations/widgets/IndustryOpsWidgets";
+import FieldServiceJobsWidget from "@components/dashboard/business/integrations/widgets/FieldServiceJobs";
+import HospitalityPOSWidget from "@components/dashboard/business/integrations/widgets/HospitalityPOS";
+import RoleDebugger from "@components/debug/role-debugger";
 
 /**
  * Business dashboard page for business owners
@@ -266,7 +272,7 @@ function BusinessDashboardContent() {
 			<Tabs defaultValue="overview" className="space-y-6">
 				<TabsList className="grid w-full grid-cols-3">
 					<TabsTrigger value="overview">Overview</TabsTrigger>
-					<TabsTrigger value="field-service">Field Service</TabsTrigger>
+					<FieldServiceTabTrigger />
 					<TabsTrigger value="businesses">Business Listings</TabsTrigger>
 				</TabsList>
 				{/* Overview Tab */}
@@ -322,6 +328,15 @@ function BusinessDashboardContent() {
 
 						{/* Right Sidebar */}
 						<div className="space-y-6">
+							<EnabledIntegrations />
+							<FieldServiceJobsWidget />
+							<HospitalityPOSWidget />
+							<AgricultureWidget />
+							<AutomotiveWidget />
+							<EcommerceWidget />
+							<LogisticsWidget />
+							<PropertyManagementWidget />
+							<HospitalityWidget />
 							{/* Quick Actions */}
 							<Card>
 								<CardHeader>
@@ -389,54 +404,56 @@ function BusinessDashboardContent() {
 					</div>
 				</TabsContent>
 				;{/* Field Service Tab */}
-				<TabsContent value="field-service" className="space-y-6">
-					{/* FSM Stats Cards */}
-					<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-						{fsmStats.map((stat, index) => {
-							const IconComponent = stat.icon;
-							return (
-								<Card key={index} className="relative overflow-hidden">
-									<CardContent className="p-6">
-										<div className="flex items-center justify-between">
-											<div>
-												<p className="text-sm font-medium text-muted-foreground">{stat.title}</p>
-												<p className="text-2xl font-bold">{stat.value}</p>
-												<p className="text-xs text-muted-foreground mt-1">{stat.change}</p>
-											</div>
-											<div className={`flex h-12 w-12 items-center justify-center rounded-lg ${stat.bgColor}`}>
-												<IconComponent className={`h-6 w-6 ${stat.color}`} />
-											</div>
-										</div>
-									</CardContent>
-								</Card>
-							);
-						})}
-					</div>
-
-					{/* FSM Quick Actions Grid */}
-					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-						{fsmQuickActions.map((action, index) => {
-							const IconComponent = action.icon;
-							return (
-								<a key={index} href={action.href} className="block group">
-									<Card className="hover:shadow-md transition-shadow">
+				<IntegrationVisibility featureKey="field_management">
+					<TabsContent value="field-service" className="space-y-6">
+						{/* FSM Stats Cards */}
+						<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+							{fsmStats.map((stat, index) => {
+								const IconComponent = stat.icon;
+								return (
+									<Card key={index} className="relative overflow-hidden">
 										<CardContent className="p-6">
-											<div className="flex items-center space-x-4">
-												<div className={`flex h-12 w-12 items-center justify-center rounded-lg ${action.bgColor}`}>
-													<IconComponent className={`h-6 w-6 ${action.color}`} />
+											<div className="flex items-center justify-between">
+												<div>
+													<p className="text-sm font-medium text-muted-foreground">{stat.title}</p>
+													<p className="text-2xl font-bold">{stat.value}</p>
+													<p className="text-xs text-muted-foreground mt-1">{stat.change}</p>
 												</div>
-												<div className="flex-1">
-													<p className="font-medium group-hover:text-primary transition-colors">{action.title}</p>
-													<p className="text-sm text-muted-foreground">{action.description}</p>
+												<div className={`flex h-12 w-12 items-center justify-center rounded-lg ${stat.bgColor}`}>
+													<IconComponent className={`h-6 w-6 ${stat.color}`} />
 												</div>
 											</div>
 										</CardContent>
 									</Card>
-								</a>
-							);
-						})}
-					</div>
-				</TabsContent>
+								);
+							})}
+						</div>
+
+						{/* FSM Quick Actions Grid */}
+						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+							{fsmQuickActions.map((action, index) => {
+								const IconComponent = action.icon;
+								return (
+									<a key={index} href={action.href} className="block group">
+										<Card className="hover:shadow-md transition-shadow">
+											<CardContent className="p-6">
+												<div className="flex items-center space-x-4">
+													<div className={`flex h-12 w-12 items-center justify-center rounded-lg ${action.bgColor}`}>
+														<IconComponent className={`h-6 w-6 ${action.color}`} />
+													</div>
+													<div className="flex-1">
+														<p className="font-medium group-hover:text-primary transition-colors">{action.title}</p>
+														<p className="text-sm text-muted-foreground">{action.description}</p>
+													</div>
+												</div>
+											</CardContent>
+										</Card>
+									</a>
+								);
+							})}
+						</div>
+					</TabsContent>
+				</IntegrationVisibility>
 				;{/* Business Listings Tab */}
 				<TabsContent value="businesses" className="space-y-6">
 					<Card>

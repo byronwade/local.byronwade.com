@@ -3,17 +3,41 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
 import { Button } from "@components/ui/button";
 import { Badge } from "@components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuGroup } from "@components/ui/dropdown-menu";
-import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@components/ui/sheet";
-import { Menu, Bell, Settings, Users, CreditCard, HelpCircle } from "react-feather";
-import { BarChart3, Shield } from "lucide-react";
-import { useAuthStore } from "@store/auth";
+import { Avatar, AvatarImage, AvatarFallback } from "@components/ui/avatar";
+import { 
+  DropdownMenu, 
+  DropdownMenuTrigger, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuGroup, 
+  DropdownMenuSeparator 
+} from "@components/ui/dropdown-menu";
+import { 
+  Sheet, 
+  SheetTrigger, 
+  SheetContent, 
+  SheetHeader, 
+  SheetTitle 
+} from "@components/ui/sheet";
+import { Bell, Settings, Menu } from "lucide-react";
+import UnifiedHeader from "@components/shared/unified-header";
 
 export default function Header() {
+  return (
+    <UnifiedHeader
+      dashboardType="admin"
+      showCompanySelector={false}
+      showSearch={false}
+      customTitle="Thorbis Admin"
+      customSubtitle="Administrative Dashboard"
+    />
+  );
+}
+
+// Legacy component - now using UnifiedHeader system  
+function LegacyHeader() {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 	const pathname = usePathname();
 	const { user, userRoles, logout } = useAuthStore((state) => ({
@@ -31,15 +55,15 @@ export default function Header() {
 		}
 	};
 
-	const adminNavItems = [
-		{ href: "/dashboard/admin", text: "Dashboard", icon: BarChart3 },
-		{ href: "/dashboard/admin/users", text: "Users", icon: Users },
-		{ href: "/dashboard/admin/pro-accounts", text: "Pro Accounts", icon: Shield },
-		{ href: "/dashboard/admin/customers", text: "Customers", icon: Users },
-		{ href: "/dashboard/admin/support", text: "Support", icon: HelpCircle },
-		{ href: "/dashboard/admin/billing", text: "Billing", icon: CreditCard },
-		{ href: "/dashboard/admin/settings", text: "Settings", icon: Settings },
-	];
+    const adminNavItems = [
+        { href: "/admin", text: "Dashboard", icon: BarChart3 },
+        { href: "/admin/users", text: "Users", icon: Users },
+        { href: "/admin/pro-accounts", text: "Pro Accounts", icon: Shield },
+        { href: "/admin/customers", text: "Customers", icon: Users },
+        { href: "/admin/support", text: "Support", icon: HelpCircle },
+        { href: "/admin/billing", text: "Billing", icon: CreditCard },
+        { href: "/admin/settings", text: "Settings", icon: Settings },
+    ];
 
 	return (
 		<div className="sticky top-0 z-[60] bg-neutral-950/95 dark:bg-neutral-950/95 backdrop-blur-md border-b border-neutral-900 dark:border-neutral-900 w-full">
@@ -59,8 +83,8 @@ export default function Header() {
 				</div>
 				{/* Right Section - Navigation and User Menu */}
 				<div className="hidden space-x-1 lg:flex xl:space-x-2">
-					{adminNavItems.map((item) => {
-						const isActive = pathname === item.href || (item.href !== "/dashboard/admin" && pathname.startsWith(item.href));
+                    {adminNavItems.map((item) => {
+                        const isActive = pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href));
 						return (
 							<Link key={item.href} href={item.href} passHref>
 								<Button variant={isActive ? "default" : "ghost"} size="sm" className={`text-sm font-medium transition-colors ${isActive ? "border bg-primary/5 text-primary border-primary/20 hover:text-white" : "hover:text-white hover:bg-muted"}`}>
@@ -162,8 +186,8 @@ export default function Header() {
 							</SheetHeader>
 							<nav className="mt-6">
 								<ul className="space-y-2">
-									{adminNavItems.map((item) => {
-										const isActive = pathname === item.href || (item.href !== "/dashboard/admin" && pathname.startsWith(item.href));
+                                    {adminNavItems.map((item) => {
+                                        const isActive = pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href));
 										return (
 											<li key={item.href}>
 												<Link href={item.href} onClick={() => setMobileMenuOpen(false)}>

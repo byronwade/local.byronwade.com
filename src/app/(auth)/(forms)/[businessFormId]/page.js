@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
-import { BusinessForm } from "@components/features/auth/forms/business-form";
+import { BusinessForm } from "@features/auth";
 
 const subscriptionTiers = [
 	{

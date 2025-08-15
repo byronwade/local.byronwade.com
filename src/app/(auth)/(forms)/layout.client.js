@@ -1,4 +1,5 @@
 "use client";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@components/ui/button";
@@ -6,8 +7,18 @@ import { ArrowLeft } from "react-feather";
 import DarkModeToggle from "@components/ui/dark-mode-toggle";
 
 function DevAuthTools() {
-	if (typeof window === "undefined" || process.env.NODE_ENV !== "development") return null;
-	const enabled = typeof window !== "undefined" && localStorage.getItem("thorbis_auth_dev_disabled") === "1";
+	const [enabled, setEnabled] = useState(false);
+	const [mounted, setMounted] = useState(false);
+
+	useEffect(() => {
+		setMounted(true);
+		if (process.env.NODE_ENV === "development") {
+			setEnabled(localStorage.getItem("thorbis_auth_dev_disabled") === "1");
+		}
+	}, []);
+
+	if (!mounted || process.env.NODE_ENV !== "development") return null;
+
 	const toggle = () => {
 		const now = localStorage.getItem("thorbis_auth_dev_disabled") === "1";
 		if (now) {
@@ -19,6 +30,7 @@ function DevAuthTools() {
 		}
 		window.location.reload();
 	};
+
 	return (
 		<button onClick={toggle} className="text-xs px-2 py-1 rounded border border-border text-muted-foreground hover:text-foreground">
 			{enabled ? "Auth OFF" : "Auth ON"}

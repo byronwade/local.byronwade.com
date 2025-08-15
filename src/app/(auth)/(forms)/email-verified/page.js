@@ -11,7 +11,7 @@ import { Input } from "@components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@components/ui/form";
 import { ArrowRight } from "react-feather";
 import useAuth from "@hooks/use-auth";
-import { supabase } from "@lib/database/supabase";
+import { supabase } from "@lib/database/supabase/client";
 
 const resendSchema = z.object({
 	email: z.string().email({ message: "Invalid email address" }),
